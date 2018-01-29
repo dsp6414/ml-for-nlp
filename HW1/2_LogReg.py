@@ -50,45 +50,52 @@ def one_hot(batch,depth):
 	ones = torch.sparse.torch.eye(depth)
 	return ones.index_select(0,batch)
 
+def validate(model):
+	correct, n = 0.0, 0.0
+	for batch in val_iter:
+		for x,y in zip(batch.text,  batch.label):
+			bow_vec = autograd.Variable(make_bow_vector(x))
+			target = y - 1
+			log_probs = logreg((bow_vec))
+			_, predicted = torch.max(log_probs.data, 1)
+			if torch.equal((target.float()), Variable(predicted.float())):
+				correct += 1
+			n +=1
+	return correct/n
+
 print("Training")
-for batch in train_iter:
-	for x,y in zip(batch.text,  batch.label):
-		# Step 1. Remember that Pytorch accumulates gradients.
-		# We need to clear them out before each instance
-		logreg.zero_grad()
 
-		# Step 2. Make our BOW vector and also we must wrap the target in a
-		# Variable as an integer. For example, if the target is SPANISH, then
-		# we wrap the integer 0. The loss function then knows that the 0th
-		# element of the log probabilities is the log probability
-		# corresponding to SPANISH
-		bow_vec = autograd.Variable(make_bow_vector(x))
-		target = y - 1
+for i in range(20):
+	print(i)
+	for batch in train_iter:
+		for x,y in zip(batch.text,  batch.label):
+			# Step 1. Remember that Pytorch accumulates gradients.
+			# We need to clear them out before each instance
+			logreg.zero_grad()
 
-		# Step 3. Run our forward pass.
-		log_probs = logreg(bow_vec)
+			# Step 2. Make our BOW vector and also we must wrap the target in a
+			# Variable as an integer. For example, if the target is SPANISH, then
+			# we wrap the integer 0. The loss function then knows that the 0th
+			# element of the log probabilities is the log probability
+			# corresponding to SPANISH
+			bow_vec = autograd.Variable(make_bow_vector(x))
+			target = y - 1
 
-		# Step 4. Compute the loss, gradients, and update the parameters by
-		# calling optimizer.step()
-		loss = loss_function(log_probs, target)
-		loss.backward()
-		optimizer.step()
+			# Step 3. Run our forward pass.
+			log_probs = logreg(bow_vec)
+
+			# Step 4. Compute the loss, gradients, and update the parameters by
+			# calling optimizer.step()
+			loss = loss_function(log_probs, target)
+			#print(loss)
+			loss.backward()
+			optimizer.step()
+		#print(validate(logreg))
 
 print("Done training")
-correct, n = 0.0, 0.0
-# To run the model, pass in a BoW vector, but wrapped in an autograd.Variable
-for batch in val_iter:
-	for x,y in zip(batch.text,  batch.label):
-		bow_vec = autograd.Variable(make_bow_vector(x))
-		target = y - 1
-		log_probs = logreg((bow_vec))
-		_, predicted = torch.max(log_probs.data, 1)
-		#print(log_probs)
-		#print(predicted)
-		#print(target, predicted)
-		if torch.equal((target.float()), Variable(predicted.float())):
-			correct += 1
-		n +=1
 
-print("Validation accuracy", correct/n, correct, n)
+# To run the model, pass in a BoW vector, but wrapped in an autograd.Variable
+
+
+print("Validation accuracy", validate(logreg))
 
