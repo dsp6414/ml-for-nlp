@@ -14,3 +14,4 @@ train, val, test = torchtext.datasets.SST.splits(
     filter_pred=lambda ex: ex.label != 'neutral')
 
 print(val[:5])
+print(train:size())
