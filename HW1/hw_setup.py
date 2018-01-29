@@ -15,22 +15,24 @@ train, val, test = torchtext.datasets.SST.splits(
 TEXT.build_vocab(train)
 LABEL.build_vocab(train)
 
-
 train_iter, val_iter, test_iter = torchtext.data.BucketIterator.splits(
     (train, val, test), batch_size=10, device=-1)
 
 batch = next(iter(train_iter))
+for b in train_iter:
+	print(b.text)
 print("Size of text batch [max sent length, batch size]", batch.text.size())
 print("Second in batch", batch.text[:, 0])
 print("Converted back to string: ", " ".join([TEXT.vocab.itos[i] for i in batch.text[:, 0].data]))
 
+embed = nn.Embedding(len(vocab), emb_dim)
 
 def test(model):
     "All models should be able to be run with following command."
     upload = []
     # Update: for kaggle the bucket iterator needs to have batch_size 10
     test_iter = torchtext.data.BucketIterator(test, train=False, batch_size=10)
-    for batch in test_iter:
+    for b in test_iter:
         # Your prediction data here (don't cheat!)
         probs = model(b.text)
         _, argmax = probs.max(1)
