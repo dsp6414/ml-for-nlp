@@ -23,3 +23,19 @@ batch = next(iter(train_iter))
 print("Size of text batch [max sent length, batch size]", batch.text.size())
 print("Second in batch", batch.text[:, 0])
 print("Converted back to string: ", " ".join([TEXT.vocab.itos[i] for i in batch.text[:, 0].data]))
+
+
+def test(model):
+    "All models should be able to be run with following command."
+    upload = []
+    # Update: for kaggle the bucket iterator needs to have batch_size 10
+    test_iter = torchtext.data.BucketIterator(test, train=False, batch_size=10)
+    for batch in test_iter:
+        # Your prediction data here (don't cheat!)
+        probs = model(b.text)
+        _, argmax = probs.max(1)
+        upload += list(argmax.data)
+
+    with open("predictions.txt", "w") as f:
+        for u in upload:
+            f.write(str(u) + "\n")
