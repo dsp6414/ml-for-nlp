@@ -75,6 +75,7 @@ for batch in train_iter:
 		optimizer.step()
 
 print("Done training")
+correct, n = 0.0, 0.0
 # To run the model, pass in a BoW vector, but wrapped in an autograd.Variable
 for batch in val_iter:
 	for x,y in zip(batch.text,  batch.label):
@@ -84,5 +85,10 @@ for batch in val_iter:
 		_, predicted = torch.max(log_probs.data, 1)
 		#print(log_probs)
 		#print(predicted)
-		print(target, predicted)
+		#print(target, predicted)
+		if torch.equal((target.float()), Variable(predicted.float())):
+			correct += 1
+		n +=1
+
+print("Validation accuracy", correct/n, correct, n)
 
