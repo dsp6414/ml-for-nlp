@@ -70,7 +70,7 @@ for i in range(100):
 		batch_bows = torch.stack([
 			make_bow_vector(x_i).view(-1) for 
 			x_i in torch.unbind(batch.text, dim=1)], dim=1)
-		print(batch_bows)
+		print(batch_bows[:5])
 		#print(batch_bows, batch_bows.size())
 		for x,y in zip(batch.text.t(),  batch.label):
 			#print(x,y)
