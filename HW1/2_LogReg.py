@@ -65,10 +65,14 @@ def validate(model, val_iter):
 
 print("Training")
 
-for i in range(1):
+for i in range(100):
 	#print(i)
 	for batch in train_iter:
-		#print(batch.text)
+		batch_bows = torch.stack([
+			make_bow_vector(x_i).view(-1) for 
+			x_i in torch.unbind(batch.text, dim=1)], dim=1)
+		print(batch_bows.size())
+		#print(batch_bows, batch_bows.size())
 		for x,y in zip(batch.text.t(),  batch.label):
 			#print(x,y)
 			# Step 1. Remember that Pytorch accumulates gradients.
@@ -80,6 +84,7 @@ for i in range(1):
 			# we wrap the integer 0. The loss function then knows that the 0th
 			# element of the log probabilities is the log probability
 			# corresponding to SPANISH
+			print(x.size())
 			bow_vec = autograd.Variable(make_bow_vector(x))
 
 			#print(bow_vec)
