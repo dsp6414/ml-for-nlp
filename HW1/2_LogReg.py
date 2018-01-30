@@ -57,6 +57,7 @@ def validate(model, val_iter):
 			bow_vec = autograd.Variable(make_bow_vector(x))
 			target = y - 1
 			log_probs = logreg((bow_vec))
+			print(log_probs.size())
 			_, predicted = torch.max(log_probs.data, 1)
 			if torch.equal((target.float()), Variable(predicted.float())):
 				correct += 1
@@ -65,7 +66,7 @@ def validate(model, val_iter):
 
 print("Training")
 
-for i in range(10):
+for i in range(100):
 	for batch in train_iter:
 		batch_bows = torch.stack([
 			make_bow_vector(x_i).view(-1) for 
