@@ -1,38 +1,63 @@
 
 import torch
 import torch.autograd as autograd
+from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torchtext
 from torchtext.vocab import Vectors, GloVe
 
-import pbd
+import pdb
 
 torch.manual_seed(42)
 
-def make_context_vector(text):
-    tensor = torch.LongTensor(context)
-    return autograd.Variable(tensor), target
+def test(model, test_iter):
+    "All models should be able to be run with following command."
+    upload = []
+    # Update: for kaggle the bucket iterator needs to have batch_size 10
+    # test_iter = torchtext.data.BucketIterator(test, train=False, batch_size=10, repeat=False)
+    for batch in test_iter:
+        # Your prediction data here (don't cheat!)
+        probs = model(batch.text)
+        _, argmax = probs.max(1)
+        upload += list(argmax.data)
+    print("Upload: ", upload)
 
-# make_context_vector(data[0][0], word_to_ix)  # example
+    with open("predictions.txt", "w") as f:
+        for u in upload:
+            f.write(str(u) + "\n")
+
+def validate(model, val_iter):
+    correct, total = 0.0, 0.0
+
+    for batch in val_iter:
+        probs = model(batch.text)
+        _, argmax = probs.max(1)
+        for i, predicted in enumerate(list(argmax.data)):
+
+            if predicted+1 == batch.label[i].data[0]:
+                correct += 1
+            total += 1
+
+    return correct / total
 
 class CBOW(nn.Module):
 
-    def __init__(self, context_size=2, embedding_size=100, vocab_size=None):
+    def __init__(self, embedding_size=100, vocab_size=None, num_labels=None):
         super(CBOW, self).__init__()
         self.embeddings = nn.Embedding(vocab_size, embedding_size)
-        self.linear1 = nn.Linear(embedding_size, vocab_size)
+        self.linear1 = nn.Linear(embedding_size, num_labels)
 
     def forward(self, inputs):
         embeddings = self.embeddings(inputs).sum(dim=0) #Unsure why I need to do this
         out = self.linear1(embeddings)
-        log_probs = F.log_softmax(out)
+        log_probs = F.log_softmax(out, dim=0)
+
         return log_probs
 
 if __name__ == '__main__':
-    CONTEXT_SIZE = 4
-    EMBEDDING_SIZE = 10
+    EMBEDDING_SIZE = 150
 
     # Our input $x$
     TEXT = torchtext.data.Field()
@@ -47,60 +72,53 @@ if __name__ == '__main__':
     LABEL.build_vocab(train)
 
     train_iter, val_iter, test_iter = torchtext.data.BucketIterator.splits(
-        (train, val, test), batch_size=10, device=-1)
+        (train, val, test), batch_size=10, device=-1, repeat=False)
 
     # Build the vocabulary with word embeddings
     url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
     TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
 
-    net = CBOW(CONTEXT_SIZE, embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab))
-    criterion = nn.CrossEntropyLoss()
+    net = CBOW(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_labels=2)
+    criterion = nn.NLLLoss()
     optimizer = optim.SGD(net.parameters(), lr=0.1)
 
-    # Training for CBOW
-
-    train_iter1, val_iter1, test_iter1 = torchtext.data.BucketIterator.splits(
-        (train, val, test), batch_size=10, device=-1)
-
-    data = []
-    for batch in train_iter1:
-        text = batch.text
-        for i in range(2, len(text)-2):
-            context = [text[i-2], text[i-1],
-                        text[i+1], text[i+2]]
-            target = text[i]
-            data.append((context, target))
-
-    pbd.trace()
-
+    # Training for sentiment classification
+    losses = []
     for epoch in range(100):
-        total_loss = 0
-        for context, target in data:
+        total_loss = torch.Tensor([0])
+        for batch in train_iter:
+            text, label = batch.text, batch.label
+            label = label - 1
             net.zero_grad()
-            context_var = make_context_vector(context)
-            log_probs = net(context_var)
-            loss = criterion(log_probs, target)
+
+            # Currently a batch, not an individual sentence
+            log_probs = net(text)
+            loss = criterion(log_probs, label)
             loss.backward()
             optimizer.step()
 
             total_loss += loss.data
-        print(total_loss)
+        losses.append(total_loss)
+    print(losses)
 
-    # # Training for sentiment classification
-    # for epoch in range(50):
-    #     total_loss = 0
-    #     for batch in train_iter:
-    #         text, label = batch.text, batch.label
-    #         net.zero_grad()
 
-    #         # Currently a batch, not an individual sentence
-    #         context_var, target = make_context_vector(text)
-    #         log_probs = net(context_var)
+    for param in net.parameters():
+        print(param)
 
-    #         loss = criterion(log_probs, target)
+    print(validate(net, val_iter))
+    
+    # TESTING
+    "All models should be able to be run with following command."
+    upload = []
+    # Update: for kaggle the bucket iterator needs to have batch_size 10
+    # test_iter = torchtext.data.BucketIterator(test, train=False, batch_size=10, repeat=False)
+    for batch in test_iter:
+        # Your prediction data here (don't cheat!)
+        probs = net(batch.text)
+        _, argmax = probs.max(1)
+        upload += list(argmax.data)
+    print("Upload: ", upload)
 
-    #         loss.backward()
-    #         optimizer.step()
-
-    #         total_loss += loss.data
-    #     print("loss =", total_loss)
+    with open("predictions.txt", "w") as f:
+        for u in upload:
+            f.write(str(u) + "\n")
