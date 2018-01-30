@@ -27,17 +27,14 @@ def validate(model, val_iter):
 
 class CNN(nn.Module):
 
-    def __init__(self, args):
+    def __init__(self, vocab_size=None, embedding_dim=128, class_number=None,
+                feature_maps=100, filter_windows=[3,4,5], dropout=0.5):
         super(CNN, self).__init__()
         self.args = args
 
         # Change these names
-        vocab_size = args.vocab_size
-        embedding_dim = args.embedding_dim
-        class_number = args.class_num
         in_channel = 1
-        out_channel = args.feature_maps
-        filter_windows = args.filter_windows
+        out_channel = feature_maps
 
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
 
@@ -49,7 +46,7 @@ class CNN(nn.Module):
         self.fc = nn.Linear(len(filter_windows) * out_channel, class_number)
 
     # What's going on
-    def convolution_max_pool(x, convolution):
+    def convolution_max_pool(self, x, convolution):
         return F.relu(convolution(x).permute(0, 2, 1).max(1)[0])
 
     def forward(self, inputs):
@@ -71,11 +68,6 @@ args = parser.parse_args()
 
 if __name__ == '__main__':
     EMBEDDING_SIZE = 10
-    LEARN_RATE = 0.1
-    FEATURE_WINDOWS = 3, 4, 5
-    FEATURE_MAPS = 100
-    EMBEDDING_DIM = 128
-    DROPOUT = 0.5
     MAX_NORM = 3
 
     # Our input $x$
@@ -97,7 +89,7 @@ if __name__ == '__main__':
     url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
     TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
 
-    net = CNN(args)
+    net = CNN(vocab_size=len(TEXT.vocab), class_number=2)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=0.1)
 
@@ -110,7 +102,7 @@ if __name__ == '__main__':
 
             # Figure out if this is the right call
             logit = net(text)
-            loss = criterion(log_probs, label)
+            loss = criterion(logit, label)
             loss.backward()
             optimizer.step()
 
