@@ -50,7 +50,7 @@ def one_hot(batch,depth):
 	ones = torch.sparse.torch.eye(depth)
 	return ones.index_select(0,batch)
 
-def validate(model):
+def validate(model, val_iter):
 	correct, n = 0.0, 0.0
 	for batch in val_iter:
 		for x,y in zip(batch.text,  batch.label):
@@ -65,10 +65,12 @@ def validate(model):
 
 print("Training")
 
-for i in range(20):
-	print(i)
+for i in range(1):
+	#print(i)
 	for batch in train_iter:
-		for x,y in zip(batch.text,  batch.label):
+		#print(batch.text)
+		for x,y in zip(batch.text.t(),  batch.label):
+			#print(x,y)
 			# Step 1. Remember that Pytorch accumulates gradients.
 			# We need to clear them out before each instance
 			logreg.zero_grad()
@@ -79,10 +81,14 @@ for i in range(20):
 			# element of the log probabilities is the log probability
 			# corresponding to SPANISH
 			bow_vec = autograd.Variable(make_bow_vector(x))
+
+			#print(bow_vec)
 			target = y - 1
 
 			# Step 3. Run our forward pass.
 			log_probs = logreg(bow_vec)
+
+			#print(log_probs)
 
 			# Step 4. Compute the loss, gradients, and update the parameters by
 			# calling optimizer.step()
@@ -97,5 +103,6 @@ print("Done training")
 # To run the model, pass in a BoW vector, but wrapped in an autograd.Variable
 
 
-print("Validation accuracy", validate(logreg))
+print("Validation accuracy", validate(logreg, val_iter))
+print("Test accuracy", validate(logreg, test_iter))
 
