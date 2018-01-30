@@ -57,7 +57,7 @@ class CBOW(nn.Module):
         return log_probs
 
 if __name__ == '__main__':
-    EMBEDDING_SIZE = 150
+    EMBEDDING_SIZE = 128
 
     # Our input $x$
     TEXT = torchtext.data.Field()

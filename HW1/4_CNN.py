@@ -27,35 +27,75 @@ def validate(model, val_iter):
 
 class CNN(nn.Module):
 
-    def __init__(self, vocab_size=None, embedding_dim=128, class_number=None,
+    def __init__(self, model="non-static", vocab_size=None, embedding_dim=128, class_number=None,
                 feature_maps=100, filter_windows=[3,4,5], dropout=0.5):
         super(CNN, self).__init__()
-        self.args = args
 
         # Change these names
-        in_channel = 1
-        out_channel = feature_maps
+        self.vocab_size = vocab_size
+        self.embedding_dim = embedding_dim
+        self.class_number = class_number
+        self.filter_windows = filter_windows
+        self.in_channel = 1
+        self.out_channel = feature_maps
 
-        self.embedding = nn.Embedding(vocab_size, embedding_dim)
+        self.model = model
+        self.embedding = nn.Embedding(vocab_size+2, embedding_dim, padding_idx=vocab_size+1)
 
         # Go and understand this
-        self.conv = nn.ModuleList([nn.Conv2d(in_channel, out_channel, (F, embedding_dim)) for F in filter_windows])
-        self.dropout = nn.Dropout(args.dropout)
+        self.conv = nn.ModuleList([nn.Conv1d(self.in_channel, self.out_channel, embedding_dim * F) for F in filter_windows])
+        self.dropout = nn.Dropout(dropout)
 
         # Go and understand this
-        self.fc = nn.Linear(len(filter_windows) * out_channel, class_number)
+        self.fc = nn.Linear(len(filter_windows) * self.out_channel, class_number) # Fully connected layer
 
-    # What's going on
-    def convolution_max_pool(self, x, convolution):
-        return F.relu(convolution(x).permute(0, 2, 1).max(1)[0])
+        if model == "static":
+            self.embedding.weight.requires_grad = False
+        elif model == "multichannel":
+            self.embedding2 = nn.Embedding(vocab_size+2, embedding_dim, padding_idx=vocab_size+1)
+            self.embedding2.weight.requires_grad = False
+            in_channel = 2
+
+    def convolution_max_pool(self, inputs, convolution, i):
+
+        pdb.set_trace()
+        result = F.relu(convolution(inputs.squeeze(1)))
+
+        pdb.set_trace()
+        result = F.max_pool1d(result, inputs.size(3) - self.filter_windows[i] + 1).view(-1, self.out_channel)
+        # OLD CODE
+        # x = F.relu(convolution(x)).squeeze(3) # (batch_size, out_channel, max_seq_len)
+        # x = F.max_pool1d(x, x.size(2)).squeeze(2) # (batch_size, out_channel)
+        # return x
+        return result
 
     def forward(self, inputs):
+        embedding = self.embedding(inputs).view(-1, 1, self.embedding_dim, inputs.size(1))
 
-        embedding = self.embedding(inputs)
-        result = [self.convolution_max_pool(embedding, k) for k in self.conv] # k is each filter
-        result = self.fc(self.dropout(torch.cat(x, 1))) # Concat and dropout. Why is it called fc?
+        pdb.set_trace()
+
+        if self.model == "multichannel":
+            embedding2 = self.embedding2(inputs).view(-1, 1, self.embedding_dim, inputs.size(1))
+            embedding = torch.cat((embedding, embedding2), 1)
+
+        result = [self.convolution_max_pool(embedding, k, i) for i, k in enumerate(self.conv)]
+        result = self.fc(self.dropout(torch.cat(result, 1)))
 
         return result
+
+        # OLD CODE
+        # embedding = self.embedding(inputs) # (batch_size, max_seq_len, embedding_size)
+        # if self.model == "multichannel":
+        #     embedding2 = self.embedding2(inputs)
+        #     embedding = torch.cat((embedding, embedding2), 1)
+
+        # embedding = embedding.unsqueeze(1) # () might be a problem in multichannel
+        # result = [self.convolution_max_pool(embedding, k) for k in self.conv] # k is each filter
+        
+        # pdb.set_trace()
+
+        # result = self.fc(self.dropout(torch.cat(result, 1))) # Concat and dropout. Why is it called fc?
+        # return result
 
 parser = argparse.ArgumentParser(description='Text Classification through CNN')
 parser.add_argument('-lr', type=float, default=1e-1, help='setting learning rate')
@@ -67,7 +107,7 @@ parser.add_argument('-max-norm', type=float, default=3.0, help='l2 constraint of
 args = parser.parse_args()
 
 if __name__ == '__main__':
-    EMBEDDING_SIZE = 10
+    EMBEDDING_SIZE = 128
     MAX_NORM = 3
 
     # Our input $x$
@@ -96,7 +136,7 @@ if __name__ == '__main__':
     for epoch in range(100):
         total_loss = 0
         for batch in train_iter:
-            text, label = batch.text, batch.label
+            text, label = batch.text.t_(), batch.label
             label = label - 1
             net.zero_grad()
 
