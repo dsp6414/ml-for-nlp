@@ -43,7 +43,8 @@ class CNN(nn.Module):
         self.embedding = nn.Embedding(vocab_size+2, embedding_dim, padding_idx=vocab_size+1)
 
         # Go and understand this
-        self.conv = nn.ModuleList([nn.Conv1d(self.in_channel, self.out_channel, embedding_dim * F) for F in filter_windows])
+        self.conv = nn.ModuleList([nn.Conv2d(self.in_channel, self.out_channel, (F, embedding_dim)) for F in filter_windows])
+        # self.conv = nn.ModuleList([nn.Conv1d(self.in_channel, self.out_channel, embedding_dim * F) for F in filter_windows])
         self.dropout = nn.Dropout(dropout)
 
         # Go and understand this
@@ -56,13 +57,10 @@ class CNN(nn.Module):
             self.embedding2.weight.requires_grad = False
             in_channel = 2
 
-    def convolution_max_pool(self, inputs, convolution, i):
+    def convolution_max_pool(self, inputs, convolution, i, max_sent_len):
 
-        pdb.set_trace()
-        result = F.relu(convolution(inputs.squeeze(1)))
-
-        pdb.set_trace()
-        result = F.max_pool1d(result, inputs.size(3) - self.filter_windows[i] + 1).view(-1, self.out_channel)
+        result_convolution = F.relu(convolution(inputs))
+        result = F.max_pool1d(result_convolution, max_sent_len - self.filter_windows[i] + 1).view(-1, self.out_channel)
         # OLD CODE
         # x = F.relu(convolution(x)).squeeze(3) # (batch_size, out_channel, max_seq_len)
         # x = F.max_pool1d(x, x.size(2)).squeeze(2) # (batch_size, out_channel)
@@ -70,32 +68,37 @@ class CNN(nn.Module):
         return result
 
     def forward(self, inputs):
-        embedding = self.embedding(inputs).view(-1, 1, self.embedding_dim, inputs.size(1))
+        # max_sent_len = inputs.size(1)
 
-        pdb.set_trace()
+        # embedding = self.embedding(inputs).view(-1, 1, self.embedding_dim * inputs.size(1))
 
-        if self.model == "multichannel":
-            embedding2 = self.embedding2(inputs).view(-1, 1, self.embedding_dim, inputs.size(1))
-            embedding = torch.cat((embedding, embedding2), 1)
-
-        result = [self.convolution_max_pool(embedding, k, i) for i, k in enumerate(self.conv)]
-        result = self.fc(self.dropout(torch.cat(result, 1)))
-
-        return result
-
-        # OLD CODE
-        # embedding = self.embedding(inputs) # (batch_size, max_seq_len, embedding_size)
         # if self.model == "multichannel":
-        #     embedding2 = self.embedding2(inputs)
+        #     embedding2 = self.embedding2(inputs).view(-1, 1, self.embedding_dim * inputs.size(1))
         #     embedding = torch.cat((embedding, embedding2), 1)
 
-        # embedding = embedding.unsqueeze(1) # () might be a problem in multichannel
-        # result = [self.convolution_max_pool(embedding, k) for k in self.conv] # k is each filter
+        # pdb.set_trace()
+        # result = [self.convolution_max_pool(embedding, k, i, max_sent_len) for i, k in enumerate(self.conv)]
         
         # pdb.set_trace()
+        # result = self.fc(self.dropout(torch.cat(result, 1)))
+
+        # return result
+
+        # OLD CODE
+        embedding = self.embedding(inputs) # (batch_size, max_seq_len, embedding_size)
+        if self.model == "multichannel":
+            embedding2 = self.embedding2(inputs)
+            embedding = torch.cat((embedding, embedding2), 1)
+
+        embedding = embedding.unsqueeze(1) # () might be a problem in multichannel
+        x = [F.relu(conv(embedding)).squeeze(3) for conv in self.conv]
+        x = [F.max_pool1d(i, i.size(2)).squeeze(2) for i in x] # Passing in max_sentence_length - filter_window + 1
+        result = self.fc(self.dropout(torch.cat(x, 1)))
+
+        # result = [self.convolution_max_pool(embedding, k) for k in self.conv] # k is each filter
 
         # result = self.fc(self.dropout(torch.cat(result, 1))) # Concat and dropout. Why is it called fc?
-        # return result
+        return result
 
 parser = argparse.ArgumentParser(description='Text Classification through CNN')
 parser.add_argument('-lr', type=float, default=1e-1, help='setting learning rate')
@@ -123,7 +126,7 @@ if __name__ == '__main__':
     LABEL.build_vocab(train)
 
     train_iter, val_iter, test_iter = torchtext.data.BucketIterator.splits(
-        (train, val, test), batch_size=50, device=-1, repeat=False)
+        (train, val, test), batch_size=10, device=-1, repeat=False)
 
     # Build the vocabulary with word embeddings
     url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
