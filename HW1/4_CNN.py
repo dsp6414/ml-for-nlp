@@ -15,7 +15,7 @@ def validate(model, val_iter):
     correct, total = 0.0, 0.0
 
     for batch in val_iter:
-        probs = model(batch.text)
+        probs = model(batch.text.t_())
         _, argmax = probs.max(1)
         for i, predicted in enumerate(list(argmax.data)):
 
@@ -43,8 +43,8 @@ class CNN(nn.Module):
         self.embedding = nn.Embedding(vocab_size+2, embedding_dim, padding_idx=vocab_size+1)
 
         # Go and understand this
-        self.conv = nn.ModuleList([nn.Conv2d(self.in_channel, self.out_channel, (F, embedding_dim)) for F in filter_windows])
-        # self.conv = nn.ModuleList([nn.Conv1d(self.in_channel, self.out_channel, embedding_dim * F) for F in filter_windows])
+        self.conv = nn.ModuleList([nn.Conv2d(self.in_channel, self.out_channel, (F, embedding_dim), stride=embedding_dim) for F in filter_windows])
+        # self.conv = nn.ModuleList([nn.Conv1d(self.in_channel, self.out_channel, embedding_dim * F, stride=embedding_dim) for F in filter_windows])
         self.dropout = nn.Dropout(dropout)
 
         # Go and understand this
@@ -58,47 +58,48 @@ class CNN(nn.Module):
             in_channel = 2
 
     def convolution_max_pool(self, inputs, convolution, i, max_sent_len):
-
-        result_convolution = F.relu(convolution(inputs))
-        result = F.max_pool1d(result_convolution, max_sent_len - self.filter_windows[i] + 1).view(-1, self.out_channel)
+        # result_convolution = F.relu(convolution(inputs))
+        # result = F.max_pool1d(result_convolution, max_sent_len - self.filter_windows[i] + 1).view(-1, self.out_channel)
+        
         # OLD CODE
-        # x = F.relu(convolution(x)).squeeze(3) # (batch_size, out_channel, max_seq_len)
-        # x = F.max_pool1d(x, x.size(2)).squeeze(2) # (batch_size, out_channel)
-        # return x
+        # pdb.set_trace()
+
+        result_convolution = F.relu(convolution(inputs)).squeeze(3) # (batch_size, out_channel, max_seq_len)
+        
+        # pdb.set_trace()
+        result = F.max_pool1d(result_convolution, result_convolution.size(2)).squeeze(2) # (batch_size, out_channel)
         return result
 
     def forward(self, inputs):
-        # max_sent_len = inputs.size(1)
+        max_sent_len = inputs.size(1)
 
-        # embedding = self.embedding(inputs).view(-1, 1, self.embedding_dim * inputs.size(1))
-
-        # if self.model == "multichannel":
-        #     embedding2 = self.embedding2(inputs).view(-1, 1, self.embedding_dim * inputs.size(1))
-        #     embedding = torch.cat((embedding, embedding2), 1)
-
-        # pdb.set_trace()
-        # result = [self.convolution_max_pool(embedding, k, i, max_sent_len) for i, k in enumerate(self.conv)]
-        
-        # pdb.set_trace()
-        # result = self.fc(self.dropout(torch.cat(result, 1)))
-
-        # return result
-
-        # OLD CODE
         embedding = self.embedding(inputs) # (batch_size, max_seq_len, embedding_size)
         if self.model == "multichannel":
             embedding2 = self.embedding2(inputs)
             embedding = torch.cat((embedding, embedding2), 1)
 
         embedding = embedding.unsqueeze(1) # () might be a problem in multichannel
-        x = [F.relu(conv(embedding)).squeeze(3) for conv in self.conv]
-        x = [F.max_pool1d(i, i.size(2)).squeeze(2) for i in x] # Passing in max_sentence_length - filter_window + 1
-        result = self.fc(self.dropout(torch.cat(x, 1)))
 
-        # result = [self.convolution_max_pool(embedding, k) for k in self.conv] # k is each filter
+        # embedding = self.embedding(inputs).view(-1, 1, self.embedding_dim * inputs.size(1))
 
-        # result = self.fc(self.dropout(torch.cat(result, 1))) # Concat and dropout. Why is it called fc?
+        # if self.model == "multichannel":
+            # embedding2 = self.embedding2(inputs).view(-1, 1, self.embedding_dim * inputs.size(1))
+            # embedding = torch.cat((embedding, embedding2), 1)
+
+        # pdb.set_trace()
+        result = [self.convolution_max_pool(embedding, k, i, max_sent_len) for i, k in enumerate(self.conv)]
+        
+        # pdb.set_trace()
+        result = self.fc(self.dropout(torch.cat(result, 1)))
+
         return result
+
+        # OLD CODE
+
+        # x = [F.relu(conv(embedding)).squeeze(3) for conv in self.conv]
+        # x = [F.max_pool1d(i, i.size(2)).squeeze(2) for i in x] # Passing in max_sentence_length - filter_window + 1
+        # result = self.fc(self.dropout(torch.cat(x, 1)))
+        # return result 
 
 parser = argparse.ArgumentParser(description='Text Classification through CNN')
 parser.add_argument('-lr', type=float, default=1e-1, help='setting learning rate')
@@ -126,7 +127,7 @@ if __name__ == '__main__':
     LABEL.build_vocab(train)
 
     train_iter, val_iter, test_iter = torchtext.data.BucketIterator.splits(
-        (train, val, test), batch_size=10, device=-1, repeat=False)
+        (train, val, test), batch_size=25, device=-1, repeat=False)
 
     # Build the vocabulary with word embeddings
     url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
@@ -136,13 +137,16 @@ if __name__ == '__main__':
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=0.1)
 
-    for epoch in range(100):
+    for epoch in range(1):
         total_loss = 0
         for batch in train_iter:
             text, label = batch.text.t_(), batch.label
+            # if len(text) < max(self.filter_windows):
+            #     text = F.pad(text, (1, ceiling((max(self.filter_windows)-len(text))/2)), value=) # FINISH THIS PADDING
             label = label - 1
             net.zero_grad()
 
+            # pdb.set_trace()
             # Figure out if this is the right call
             logit = net(text)
             loss = criterion(logit, label)
@@ -164,7 +168,7 @@ upload = []
 # test_iter = torchtext.data.BucketIterator(test, train=False, batch_size=10, repeat=False)
 for batch in test_iter:
     # Your prediction data here (don't cheat!)
-    probs = net(batch.text)
+    probs = net(batch.text.t_())
     _, argmax = probs.max(1)
     upload += list(argmax.data)
 print("Upload: ", upload)
