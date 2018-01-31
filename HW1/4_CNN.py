@@ -1,4 +1,5 @@
 import argparse
+from math import ceil
 import torch
 import torch.autograd as autograd
 import torch.nn as nn
@@ -38,21 +39,21 @@ class CNN(nn.Module):
         self.filter_windows = filter_windows
         self.in_channel = 1
         self.out_channel = feature_maps
-
         self.model = model
-        self.embedding = nn.Embedding(vocab_size+2, embedding_dim, padding_idx=vocab_size+1)
-
-        self.conv = nn.ModuleList([nn.Conv2d(self.in_channel, self.out_channel, (F, embedding_dim), padding=2) for F in filter_windows])
-        # self.conv = nn.ModuleList([nn.Conv1d(self.in_channel, self.out_channel, embedding_dim * F, stride=embedding_dim) for F in filter_windows])
-        self.dropout = nn.Dropout(dropout)
-        self.fc = nn.Linear(len(filter_windows) * self.out_channel, class_number) # Fully connected layer
 
         if model == "static":
             self.embedding.weight.requires_grad = False
         elif model == "multichannel":
             self.embedding2 = nn.Embedding(vocab_size+2, embedding_dim, padding_idx=vocab_size+1)
             self.embedding2.weight.requires_grad = False
-            in_channel = 2
+            self.in_channel = 2
+
+        self.embedding = nn.Embedding(vocab_size+2, embedding_dim, padding_idx=vocab_size+1)
+
+        self.conv = nn.ModuleList([nn.Conv2d(self.in_channel, self.out_channel, (F, embedding_dim)) for F in filter_windows])
+        # self.conv = nn.ModuleList([nn.Conv1d(self.in_channel, self.out_channel, embedding_dim * F, stride=embedding_dim) for F in filter_windows])
+        self.dropout = nn.Dropout(dropout)
+        self.fc = nn.Linear(len(filter_windows) * self.out_channel, class_number) # Fully connected layer
 
     def convolution_max_pool(self, inputs, convolution, i, max_sent_len):
         ############ OLD CODE
@@ -63,10 +64,10 @@ class CNN(nn.Module):
 
         # CODE THAT WORKS
         ########
-        pdb.set_trace()
+        # pdb.set_trace()
         result_convolution = F.relu(convolution(inputs)).squeeze(3) # (batch_size, out_channel, max_seq_len)
         
-        pdb.set_trace()
+        # pdb.set_trace()
         result = F.max_pool1d(result_convolution, result_convolution.size(2)).squeeze(2) # (batch_size, out_channel)
         return result
         ##########
@@ -75,16 +76,18 @@ class CNN(nn.Module):
 
         # CODE THAT WORKS
         ########
+        if inputs.size()[1] <= max(self.filter_windows):
+            inputs = F.pad(inputs, (1, ceil((max(self.filter_windows)-inputs.size()[1])/2))) # FINISH THIS PADDING
         max_sent_len = inputs.size(1)
+
         embedding = self.embedding(inputs) # (batch_size, max_seq_len, embedding_size)
+        embedding = embedding.unsqueeze(1)
+
         if self.model == "multichannel":
             embedding2 = self.embedding2(inputs)
+            embedding2 = embedding2.unsqueeze(1)
             embedding = torch.cat((embedding, embedding2), 1)
-
-        embedding = embedding.unsqueeze(1) #
-
-
-
+        
         result = [self.convolution_max_pool(embedding, k, i, max_sent_len) for i, k in enumerate(self.conv)]
         result = self.fc(self.dropout(torch.cat(result, 1)))
         return result
@@ -104,9 +107,6 @@ class CNN(nn.Module):
         ###################
 
 if __name__ == '__main__':
-    EMBEDDING_SIZE = 128
-    MAX_NORM = 3
-
     # Our input $x$
     TEXT = torchtext.data.Field()
     # Our labels $y$
@@ -126,9 +126,10 @@ if __name__ == '__main__':
     url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
     TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
 
-    net = CNN(vocab_size=len(TEXT.vocab), class_number=2)
+    net = CNN(model='multichannel', vocab_size=len(TEXT.vocab), class_number=2)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(net.parameters(), lr=0.1)
+    parameters = filter(lambda p: p.requires_grad, net.parameters())
+    optimizer = optim.SGD(parameters, lr=0.1)
 
     for epoch in range(1):
         counter = 0
@@ -136,8 +137,6 @@ if __name__ == '__main__':
         for batch in train_iter:
             counter += 1
             text, label = batch.text.t_(), batch.label
-            # if len(text) < max(self.filter_windows):
-            #     text = F.pad(text, (1, ceiling((max(self.filter_windows)-len(text))/2)), value=) # FINISH THIS PADDING
             label = label - 1
             net.zero_grad()
 
@@ -148,9 +147,8 @@ if __name__ == '__main__':
             loss.backward()
             optimizer.step()
 
-
-            if counter > 40:
-                break
+            # if counter > 40:
+                # break
             total_loss += loss.data
         print("loss =", total_loss)
 
