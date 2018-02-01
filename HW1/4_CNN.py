@@ -152,6 +152,8 @@ if __name__ == '__main__':
             print("loss =", total_loss)
 
         print("LR VAL SET", validate(net, val_iter))
+        filename = 'cnn_lr=' + str(lr)
+        torch.save(net.state_dict(), filename)
 
 
 # TESTING
