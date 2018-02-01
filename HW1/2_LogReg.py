@@ -8,9 +8,11 @@ import torchtext
 from torchtext.vocab import Vectors, GloVe
 
 binarize_bool = True
-regularize = False 
+dec = .25
+lrate = .5
+mom = 0
 
-hyperparams = {'bin': binarize_bool, 'reg': regularize}
+hyperparams = {'bin': binarize_bool, 'reg': dec, 'lr': lrate, 'momentum':mom}
 torch.manual_seed(42)
 
 class LogReg(nn.Module):
@@ -41,7 +43,8 @@ TEXT.build_vocab(train)
 LABEL.build_vocab(train)
 
 logreg = LogReg(len(TEXT.vocab))
-optimizer = torch.optim.SGD(logreg.parameters(), lr = 0.1) #initialize with parameters
+print("GRADIENT DESCENT = Adadelta")
+optimizer = torch.optim.Adadelta(logreg.parameters(), lr = lrate) #initialize with parameters
 loss_function = nn.NLLLoss()
 train_iter, val_iter, test_iter = torchtext.data.BucketIterator.splits(
 	(train, val, test), batch_size=10, device=-1, repeat=False)
@@ -50,7 +53,7 @@ def make_bow_vector(sentence, binarize=True):
 	seen = set([])
 	vec = torch.zeros(len(TEXT.vocab))
 	for word in sentence:
-		if (word not in seen) or (binarize=False):
+		if (word not in seen) or (binarize==False):
 			seen.add(word.data)
 			vec[word.data] += 1
 	return vec.view(1, -1)
@@ -59,18 +62,17 @@ def make_bow_vector(sentence, binarize=True):
 def validate(model, val_iter):
 	correct, n = 0.0, 0.0
 	for batch in val_iter:
-		for x,y in zip(batch.text,  batch.label):
+		for x,y in zip(batch.text.t(),  batch.label):
 			bow_vec = autograd.Variable(make_bow_vector(x))
 			target = y - 1
 			log_probs = logreg((bow_vec))
-			print(log_probs.size())
 			_, predicted = torch.max(log_probs.data, 1)
 			if torch.equal((target.float()), Variable(predicted.float())):
 				correct += 1
 			n +=1
 	return correct/n
 
-print("HYPERPARAMETERS: ")
+print("HYPERPARAMETERS: ", hyperparams)
 print("Training")
 
 for i in range(100):
@@ -109,6 +111,9 @@ for i in range(100):
 		loss.backward()
 		optimizer.step()
 		#print(validate(logreg))
+	if i in [1, 2, 3, 5, 7, 9, 10, 15, 20, 30, 50]:
+		print("EPOCH:", i, "; validation accuracy = ", validate(logreg, val_iter), "; test accuracy = ", validate(logreg, test_iter))
+
 
 print("Done training")
 

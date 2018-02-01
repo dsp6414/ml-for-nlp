@@ -92,7 +92,8 @@ if __name__ == '__main__':
     url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
     TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
 
-    learning_rate = [0.1, 0.5, 0.8, 1]
+    # learning_rate = [0.1, 0.5, 0.8, 1]
+    learning_rate = [1, .8, .5, .1, .01]
     # saved_nets = []
 
     for lr in learning_rate:
@@ -118,7 +119,7 @@ if __name__ == '__main__':
             print(str(epoch) + " loss = " + str(total_loss))
 
         print("LR VAL SET", validate(net, val_iter))
-        filename = 'cnn_lr=' + str(lr)
+        filename = 'cnn_lr=' + str(lr) + 'changedpadding'
         torch.save(net.state_dict(), filename)
 
 

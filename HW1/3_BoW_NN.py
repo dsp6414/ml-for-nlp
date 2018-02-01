@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
 
     # Training for sentiment classification
-    learning_rates = [0.5, 0.8, 1]
+    learning_rates = [1]
 
     for lr in learning_rates:
         net = CBOW(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_labels=2)
