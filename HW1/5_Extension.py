@@ -26,7 +26,7 @@ def validate(model, val_iter):
 class CNN(nn.Module):
 
     def __init__(self, model="non-static", vocab_size=None, embedding_dim=128, class_number=None,
-                feature_maps=100, filter_windows=[2,3,4,5], dropout=0.5):
+                feature_maps=100, filter_windows=[3,4,5,6], dropout=0.5):
         super(CNN, self).__init__()
 
         self.vocab_size = vocab_size
@@ -40,16 +40,17 @@ class CNN(nn.Module):
         if model == "static":
             self.embedding.weight.requires_grad = False
         elif model == "multichannel":
-            self.embedding2 = nn.Embedding(vocab_size+2, embedding_dim, padding_idx=vocab_size+1)
+            self.embedding2 = nn.Embedding(vocab_size+2, embedding_dim)
             self.embedding2.weight.requires_grad = False
             self.in_channel = 2
 
-        self.embedding = nn.Embedding(vocab_size+2, embedding_dim, padding_idx=vocab_size+1)
+        self.embedding = nn.Embedding(vocab_size+2, embedding_dim)
         self.conv = nn.ModuleList([nn.Conv2d(self.in_channel, self.out_channel, (F, embedding_dim)) for F in filter_windows])
         self.dropout = nn.Dropout(dropout)
-        self.fc1 = nn.Linear(len(filter_windows) * self.out_channel, 128) # Fully connected layer
-        self.fc2 = nn.Linear(128, 50)
-        self.fc3 = nn.Linear(50, class_number)
+        self.fc = nn.Linear(len(filter_windows) * self.out_channel, 128)
+        # self.fc1 = nn.Linear(len(filter_windows) * self.out_channel, 128) # Fully connected layer
+        # self.fc2 = nn.Linear(128, 80)
+        # self.fc3 = nn.Linear(80, class_number)
 
     def convolution_max_pool(self, inputs, convolution, i, max_sent_len):
         result_convolution = F.relu(convolution(inputs)).squeeze(3) # (batch_size, out_channel, max_seq_len)
@@ -71,9 +72,10 @@ class CNN(nn.Module):
             embedding = torch.cat((embedding, embedding2), 1)
         
         result = [self.convolution_max_pool(embedding, k, i, max_sent_len) for i, k in enumerate(self.conv)]
-        result = self.fc1(self.dropout(torch.cat(result, 1)))
-        result = F.relu(self.fc2(result))
-        result = F.relu(self.fc3(result))
+        result = self.fc(self.dropout(torch.cat(result, 1)))
+        # result = self.fc1(self.dropout(torch.cat(result, 1)))
+        # result = F.relu(self.fc2(result))
+        # result = F.relu(self.fc3(result))
         return result
 
 if __name__ == '__main__':
@@ -96,32 +98,28 @@ if __name__ == '__main__':
     url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
     TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
 
-    learning_rate = [0.1, 0.5, 0.8, 1]
-    # saved_nets = []
+    net = CNN(model='multichannel', vocab_size=len(TEXT.vocab), class_number=2)
+    criterion = nn.CrossEntropyLoss()
+    parameters = filter(lambda p: p.requires_grad, net.parameters())
+    optimizer = optim.Adadelta(parameters, lr=0.5)
 
-    for lr in learning_rate:
-        net = CNN(model='multichannel', vocab_size=len(TEXT.vocab), class_number=2)
-        criterion = nn.CrossEntropyLoss()
-        parameters = filter(lambda p: p.requires_grad, net.parameters())
-        optimizer = optim.Adadelta(parameters, lr=lr)
+    for epoch in range(20):
+        total_loss = 0
+        for batch in train_iter:
+            text, label = batch.text.t_(), batch.label
+            label = label - 1
+            net.zero_grad()
 
-        for epoch in range(50):
-            total_loss = 0
-            for batch in train_iter:
-                text, label = batch.text.t_(), batch.label
-                label = label - 1
-                net.zero_grad()
+            logit = net(text)
+            loss = criterion(logit, label)
+            loss.backward()
+            nn.utils.clip_grad_norm(parameters, max_norm=3)
+            optimizer.step()
 
-                logit = net(text)
-                loss = criterion(logit, label)
-                loss.backward()
-                nn.utils.clip_grad_norm(parameters, max_norm=3)
-                optimizer.step()
+            total_loss += loss.data
+        print(str(epoch) + " loss = " + str(total_loss))
 
-                total_loss += loss.data
-            print(str(epoch) + " loss = " + str(total_loss))
-
-        print("LR VAL SET", validate(net, val_iter))
+    print("LR VAL SET", validate(net, val_iter))
 
 # TESTING
 "All models should be able to be run with following command."
