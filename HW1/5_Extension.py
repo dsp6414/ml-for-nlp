@@ -26,7 +26,7 @@ def validate(model, val_iter):
 class CNN(nn.Module):
 
     def __init__(self, model="non-static", vocab_size=None, embedding_dim=128, class_number=None,
-                feature_maps=100, filter_windows=[3,4,5,6], dropout=0.5):
+                feature_maps=100, filter_windows=[3,4,5], dropout=0.5):
         super(CNN, self).__init__()
 
         self.vocab_size = vocab_size
@@ -101,9 +101,9 @@ if __name__ == '__main__':
     net = CNN(model='multichannel', vocab_size=len(TEXT.vocab), class_number=2)
     criterion = nn.CrossEntropyLoss()
     parameters = filter(lambda p: p.requires_grad, net.parameters())
-    optimizer = optim.Adadelta(parameters, lr=0.5)
+    optimizer = optim.Adam(parameters, lr=0.00025)
 
-    for epoch in range(20):
+    for epoch in range(50):
         total_loss = 0
         for batch in train_iter:
             text, label = batch.text.t_(), batch.label
@@ -119,7 +119,7 @@ if __name__ == '__main__':
             total_loss += loss.data
         print(str(epoch) + " loss = " + str(total_loss))
 
-    print("LR VAL SET", validate(net, val_iter))
+    print("VAL SET", validate(net, val_iter))
 
 # TESTING
 "All models should be able to be run with following command."

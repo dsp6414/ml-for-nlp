@@ -6,7 +6,6 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torchtext
 from torchtext.vocab import Vectors, GloVe
-
 import pdb
 
 torch.manual_seed(42)
@@ -58,31 +57,25 @@ if __name__ == '__main__':
     TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
 
 
-    # Training for sentiment classification
-    learning_rates = [1]
+    net = CBOW(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_labels=2)
+    criterion = nn.NLLLoss()
+    optimizer = optim.Adadelta(net.parameters(), lr=0.8)
 
-    for lr in learning_rates:
-        net = CBOW(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_labels=2)
-        criterion = nn.NLLLoss()
-        optimizer = optim.Adadelta(net.parameters(), lr=lr)
 
-        for epoch in range(20):
-            total_loss = torch.Tensor([0])
-            for batch in train_iter:
-                text, label = batch.text, batch.label
-                label = label - 1
-                net.zero_grad()
-                log_probs = net(text)
-                loss = criterion(log_probs, label)
-                loss.backward()
-                optimizer.step()
+    for epoch in range(50):
+        total_loss = torch.Tensor([0])
+        for batch in train_iter:
+            text, label = batch.text, batch.label
+            label = label - 1
+            net.zero_grad()
+            log_probs = net(text)
+            loss = criterion(log_probs, label)
+            loss.backward()
+            optimizer.step()
 
-                total_loss += loss.data
-            print(str(epoch) + " loss = " + str(total_loss))
-        print(validate(net, val_iter))
+            total_loss += loss.data
 
-    # for param in net.parameters():
-    #     print(param)
+        print(str(epoch) + " loss = " + str(total_loss))
     
     # Running our test dataset
     "All models should be able to be run with following command."
