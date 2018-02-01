@@ -1,5 +1,6 @@
 import argparse
 from math import ceil
+import copy
 import torch
 import torch.autograd as autograd
 import torch.nn as nn
@@ -19,7 +20,6 @@ def validate(model, val_iter):
         probs = model(batch.text.t_())
         _, argmax = probs.max(1)
         for i, predicted in enumerate(list(argmax.data)):
-
             if predicted+1 == batch.label[i].data[0]:
                 correct += 1
             total += 1
@@ -120,7 +120,7 @@ if __name__ == '__main__':
     LABEL.build_vocab(train)
 
     train_iter, val_iter, test_iter = torchtext.data.BucketIterator.splits(
-        (train, val, test), batch_size=25, device=-1, repeat=False)
+        (train, val, test), batch_size=50, device=-1, repeat=False)
 
     # Build the vocabulary with word embeddings
     url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
@@ -129,45 +129,52 @@ if __name__ == '__main__':
     net = CNN(model='multichannel', vocab_size=len(TEXT.vocab), class_number=2)
     criterion = nn.CrossEntropyLoss()
     parameters = filter(lambda p: p.requires_grad, net.parameters())
-    optimizer = optim.SGD(parameters, lr=0.1)
+    # optimizer = optim.Adadelta(parameters, lr=0.5)
 
-    for epoch in range(1):
-        counter = 0
-        total_loss = 0
-        for batch in train_iter:
-            counter += 1
-            text, label = batch.text.t_(), batch.label
-            label = label - 1
-            net.zero_grad()
+    learning_rate = [0.01, 0.1, 0.5, 0.8, 1]
+    saved_nets = []
 
-            logit = net(text)
+    for lr in learning_rate:
+        optimizer = optim.Adadelta(parameters, lr=lr)
+        # Tune epochs thorugh early stopping (test on the validation set until the percentage goes down)
+        for epoch in range(50):
+            counter = 0
+            total_loss = 0
+            for batch in train_iter:
+                text, label = batch.text.t_(), batch.label
+                label = label - 1
+                net.zero_grad()
 
-            # pdb.set_trace()
-            loss = criterion(logit, label)
-            loss.backward()
-            optimizer.step()
+                logit = net(text)
+                loss = criterion(logit, label)
+                loss.backward()
+                nn.utils.clip_grad_norm(parameters, max_norm=3)
+                optimizer.step()
+                total_loss += loss.data
+            print("loss =", total_loss)
 
-            # if counter > 40:
-                # break
-            total_loss += loss.data
-        print("loss =", total_loss)
+            if epoch in epochs:
+                saved_nets.append(copy.deepcopy(net))
+                print("LR VAL SET", validate(net, val_iter))
 
-    for param in net.parameters():
-        print(param)
-
-    print(validate(net, val_iter))
-    
 # TESTING
 "All models should be able to be run with following command."
 upload = []
 # Update: for kaggle the bucket iterator needs to have batch_size 10
 # test_iter = torchtext.data.BucketIterator(test, train=False, batch_size=10, repeat=False)
+correct, total = 0.0, 0.0
 for batch in test_iter:
     # Your prediction data here (don't cheat!)
     probs = net(batch.text.t_())
     _, argmax = probs.max(1)
+    for i, predicted in enumerate(list(argmax.data)):
+        if predicted+1 == batch.label[i].data[0]:
+            correct += 1
+        total += 1
+
     upload += list(argmax.data)
-print("Upload: ", upload)
+print("TEST SET:", correct / total)
+# print("Upload: ", upload)
 
 with open("predictions.txt", "w") as f:
     for u in upload:
