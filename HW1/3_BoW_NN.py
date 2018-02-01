@@ -46,6 +46,8 @@ class CBOW(nn.Module):
 
     def __init__(self, embedding_size=100, vocab_size=None, num_labels=None):
         super(CBOW, self).__init__()
+
+        pdb.set_trace()
         self.embeddings = nn.Embedding(vocab_size, embedding_size)
         self.linear1 = nn.Linear(embedding_size, num_labels)
 

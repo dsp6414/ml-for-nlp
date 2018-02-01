@@ -7,6 +7,10 @@ import torch.optim as optim
 import torchtext
 from torchtext.vocab import Vectors, GloVe
 
+binarize_bool = True
+regularize = False 
+
+hyperparams = {'bin': binarize_bool, 'reg': regularize}
 torch.manual_seed(42)
 
 class LogReg(nn.Module):
@@ -42,15 +46,15 @@ loss_function = nn.NLLLoss()
 train_iter, val_iter, test_iter = torchtext.data.BucketIterator.splits(
 	(train, val, test), batch_size=10, device=-1, repeat=False)
 
-def make_bow_vector(sentence):
+def make_bow_vector(sentence, binarize=True):
+	seen = set([])
 	vec = torch.zeros(len(TEXT.vocab))
 	for word in sentence:
-		vec[word.data] += 1
+		if (word not in seen) or (binarize=False):
+			seen.add(word.data)
+			vec[word.data] += 1
 	return vec.view(1, -1)
 
-def one_hot(batch,depth):
-	ones = torch.sparse.torch.eye(depth)
-	return ones.index_select(0,batch)
 
 def validate(model, val_iter):
 	correct, n = 0.0, 0.0
@@ -66,6 +70,7 @@ def validate(model, val_iter):
 			n +=1
 	return correct/n
 
+print("HYPERPARAMETERS: ")
 print("Training")
 
 for i in range(100):
