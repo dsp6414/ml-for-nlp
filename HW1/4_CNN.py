@@ -25,7 +25,7 @@ def validate(model, val_iter):
 
 class CNN(nn.Module):
 
-    def __init__(self, model="non-static", vocab_size=None, embedding_dim=128, class_number=None,
+    def __init__(self, model="non-static", vocab_size=None, embedding_dim=256, class_number=None,
                 feature_maps=100, filter_windows=[3,4,5], dropout=0.5):
         super(CNN, self).__init__()
 
@@ -40,11 +40,11 @@ class CNN(nn.Module):
         if model == "static":
             self.embedding.weight.requires_grad = False
         elif model == "multichannel":
-            self.embedding2 = nn.Embedding(vocab_size+2, embedding_dim, padding_idx=vocab_size+1)
+            self.embedding2 = nn.Embedding(vocab_size+2, embedding_dim)
             self.embedding2.weight.requires_grad = False
             self.in_channel = 2
 
-        self.embedding = nn.Embedding(vocab_size+2, embedding_dim, padding_idx=vocab_size+1)
+        self.embedding = nn.Embedding(vocab_size+2, embedding_dim)
         self.conv = nn.ModuleList([nn.Conv2d(self.in_channel, self.out_channel, (F, embedding_dim)) for F in filter_windows])
         self.dropout = nn.Dropout(dropout)
         self.fc = nn.Linear(len(filter_windows) * self.out_channel, class_number) # Fully connected layer
@@ -61,7 +61,7 @@ class CNN(nn.Module):
         
         max_sent_len = inputs.size(1)
         embedding = self.embedding(inputs) # (batch_size, max_seq_len, embedding_size)
-        embedding = embedding.unsqueeze(1)
+        embedding = embedding.unsqueeze(1) # (batch_size, 1, max_seq_len, embedding_size)
 
         if self.model == "multichannel":
             embedding2 = self.embedding2(inputs)
@@ -92,34 +92,31 @@ if __name__ == '__main__':
     url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
     TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
 
-    learning_rate = [0.1, 0.5, 0.8, 1]
-    # saved_nets = []
+    net = CNN(model='multichannel', vocab_size=len(TEXT.vocab), class_number=2)
+    criterion = nn.CrossEntropyLoss()
+    parameters = filter(lambda p: p.requires_grad, net.parameters())
+    optimizer = optim.Adadelta(parameters, lr=0.5)
 
-    for lr in learning_rate:
-        net = CNN(model='multichannel', vocab_size=len(TEXT.vocab), class_number=2)
-        criterion = nn.CrossEntropyLoss()
-        parameters = filter(lambda p: p.requires_grad, net.parameters())
-        optimizer = optim.Adadelta(parameters, lr=lr)
+    for epoch in range(50):
+        total_loss = 0
+        for batch in train_iter:
+            text, label = batch.text.t_(), batch.label
+            label = label - 1
+            net.zero_grad()
 
-        for epoch in range(50):
-            total_loss = 0
-            for batch in train_iter:
-                text, label = batch.text.t_(), batch.label
-                label = label - 1
-                net.zero_grad()
+            logit = net(text)
+            loss = criterion(logit, label)
+            loss.backward()
+            nn.utils.clip_grad_norm(parameters, max_norm=3)
+            optimizer.step()
 
-                logit = net(text)
-                loss = criterion(logit, label)
-                loss.backward()
-                nn.utils.clip_grad_norm(parameters, max_norm=3)
-                optimizer.step()
+            total_loss += loss.data
 
-                total_loss += loss.data
-            print(str(epoch) + " loss = " + str(total_loss))
+    print("VAL SET", validate(net, val_iter))
 
-        print("LR VAL SET", validate(net, val_iter))
 
-# TESTING
+
+# TEST SET
 "All models should be able to be run with following command."
 upload = []
 # Update: for kaggle the bucket iterator needs to have batch_size 10
