@@ -26,7 +26,7 @@ def validate(model, val_iter):
 class CNN(nn.Module):
 
     def __init__(self, model="non-static", vocab_size=None, embedding_dim=128, class_number=None,
-                feature_maps=100, filter_windows=[3,4,5], dropout=0.5):
+                feature_maps=100, filter_windows=[2,3,4,5], dropout=0.5):
         super(CNN, self).__init__()
 
         self.vocab_size = vocab_size
@@ -47,7 +47,9 @@ class CNN(nn.Module):
         self.embedding = nn.Embedding(vocab_size+2, embedding_dim, padding_idx=vocab_size+1)
         self.conv = nn.ModuleList([nn.Conv2d(self.in_channel, self.out_channel, (F, embedding_dim)) for F in filter_windows])
         self.dropout = nn.Dropout(dropout)
-        self.fc = nn.Linear(len(filter_windows) * self.out_channel, class_number) # Fully connected layer
+        self.fc1 = nn.Linear(len(filter_windows) * self.out_channel, 128) # Fully connected layer
+        self.fc2 = nn.Linear(128, 50)
+        self.fc3 = nn.Linear(50, class_number)
 
     def convolution_max_pool(self, inputs, convolution, i, max_sent_len):
         result_convolution = F.relu(convolution(inputs)).squeeze(3) # (batch_size, out_channel, max_seq_len)
@@ -69,7 +71,9 @@ class CNN(nn.Module):
             embedding = torch.cat((embedding, embedding2), 1)
         
         result = [self.convolution_max_pool(embedding, k, i, max_sent_len) for i, k in enumerate(self.conv)]
-        result = self.fc(self.dropout(torch.cat(result, 1)))
+        result = self.fc1(self.dropout(torch.cat(result, 1)))
+        result = F.relu(self.fc2(result))
+        result = F.relu(self.fc3(result))
         return result
 
 if __name__ == '__main__':
