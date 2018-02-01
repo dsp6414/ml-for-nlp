@@ -7,6 +7,8 @@ import torch.optim as optim
 import torchtext
 from torchtext.vocab import Vectors, GloVe
 
+torch.manual_seed(42)
+
 class LogReg(nn.Module):
 
 	def __init__(self, vocab_size):

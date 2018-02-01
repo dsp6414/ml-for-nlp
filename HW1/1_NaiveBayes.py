@@ -6,6 +6,9 @@ import torchtext
 from torchtext.vocab import Vectors, GloVe
 import math
 
+
+torch.manual_seed(42)
+
 # Our input $x$
 TEXT = torchtext.data.Field()
 

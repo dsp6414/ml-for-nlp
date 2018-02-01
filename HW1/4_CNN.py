@@ -42,7 +42,7 @@ class CNN(nn.Module):
         self.model = model
         self.embedding = nn.Embedding(vocab_size+2, embedding_dim, padding_idx=vocab_size+1)
 
-        self.conv = nn.ModuleList([nn.Conv2d(self.in_channel, self.out_channel, (F, embedding_dim), padding=2) for F in filter_windows])
+        self.conv = nn.ModuleList([nn.Conv2d(self.in_channel, self.out_channel, (F, embedding_dim)) for F in filter_windows])
         # self.conv = nn.ModuleList([nn.Conv1d(self.in_channel, self.out_channel, embedding_dim * F, stride=embedding_dim) for F in filter_windows])
         self.dropout = nn.Dropout(dropout)
         self.fc = nn.Linear(len(filter_windows) * self.out_channel, class_number) # Fully connected layer
@@ -63,10 +63,10 @@ class CNN(nn.Module):
 
         # CODE THAT WORKS
         ########
-        pdb.set_trace()
+        # pdb.set_trace()
         result_convolution = F.relu(convolution(inputs)).squeeze(3) # (batch_size, out_channel, max_seq_len)
         
-        pdb.set_trace()
+        # pdb.set_trace()
         result = F.max_pool1d(result_convolution, result_convolution.size(2)).squeeze(2) # (batch_size, out_channel)
         return result
         ##########
@@ -148,9 +148,6 @@ if __name__ == '__main__':
             loss.backward()
             optimizer.step()
 
-
-            if counter > 40:
-                break
             total_loss += loss.data
         print("loss =", total_loss)
 
