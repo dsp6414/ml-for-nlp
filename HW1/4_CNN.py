@@ -126,15 +126,13 @@ if __name__ == '__main__':
     url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
     TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
 
-    net = CNN(model='multichannel', vocab_size=len(TEXT.vocab), class_number=2)
-    criterion = nn.CrossEntropyLoss()
-    parameters = filter(lambda p: p.requires_grad, net.parameters())
-    # optimizer = optim.Adadelta(parameters, lr=0.5)
-
     learning_rate = [0.01, 0.1, 0.5, 0.8, 1]
-    saved_nets = []
+    # saved_nets = []
 
     for lr in learning_rate:
+        net = CNN(model='multichannel', vocab_size=len(TEXT.vocab), class_number=2)
+        criterion = nn.CrossEntropyLoss()
+        parameters = filter(lambda p: p.requires_grad, net.parameters())
         optimizer = optim.Adadelta(parameters, lr=lr)
         # Tune epochs thorugh early stopping (test on the validation set until the percentage goes down)
         for epoch in range(50):
@@ -153,9 +151,7 @@ if __name__ == '__main__':
                 total_loss += loss.data
             print("loss =", total_loss)
 
-            if epoch in epochs:
-                saved_nets.append(copy.deepcopy(net))
-                print("LR VAL SET", validate(net, val_iter))
+        print("LR VAL SET", validate(net, val_iter))
 
 # TESTING
 "All models should be able to be run with following command."
