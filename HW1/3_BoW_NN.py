@@ -57,31 +57,32 @@ if __name__ == '__main__':
     url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
     TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
 
-    net = CBOW(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_labels=2)
-    criterion = nn.NLLLoss()
-    optimizer = optim.SGD(net.parameters(), lr=0.1)
 
     # Training for sentiment classification
-    losses = []
-    for epoch in range(100):
-        total_loss = torch.Tensor([0])
-        for batch in train_iter:
-            text, label = batch.text, batch.label
-            label = label - 1
-            net.zero_grad()
-            log_probs = net(text)
-            loss = criterion(log_probs, label)
-            loss.backward()
-            optimizer.step()
+    learning_rates = [0.5, 0.8, 1]
 
-            total_loss += loss.data
-        losses.append(total_loss)
-    print(losses)
+    for lr in learning_rates:
+        net = CBOW(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_labels=2)
+        criterion = nn.NLLLoss()
+        optimizer = optim.Adadelta(net.parameters(), lr=lr)
+
+        for epoch in range(20):
+            total_loss = torch.Tensor([0])
+            for batch in train_iter:
+                text, label = batch.text, batch.label
+                label = label - 1
+                net.zero_grad()
+                log_probs = net(text)
+                loss = criterion(log_probs, label)
+                loss.backward()
+                optimizer.step()
+
+                total_loss += loss.data
+            print(str(epoch) + " loss = " + str(total_loss))
+        print(validate(net, val_iter))
 
     # for param in net.parameters():
     #     print(param)
-
-    # print(validate(net, val_iter))
     
     # Running our test dataset
     "All models should be able to be run with following command."
