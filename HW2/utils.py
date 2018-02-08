@@ -13,10 +13,14 @@ def validate(model, val_iter):
 
 		# cut off the first target unless there is a previous prediction
 		targets = x[0, :] if last_pred is not None else x[0, 1:]
-		# cut off the last prediction for now
+
+		print(targets)
+
+		# cut off the last prediction for now, use it later
 		current_preds = preds[:-1]
 		current_preds = torch.cat([last_pred, current_preds]) if last_pred is not None else current_preds
 
+		# Use the last prediction in the next row
 		last_pred = preds[-1:]
 
 		correct += sum(current_preds == targets.data)

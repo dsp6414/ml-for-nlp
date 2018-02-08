@@ -11,6 +11,7 @@ class TrigramsLM(nn.Module):
 		self.unigram_probs = torch.zeros(self.vocab_size) + alpha # vocab_size
 		self.bigram_probs = torch.zeros(self.vocab_size, self.vocab_size) + alpha
 		self.trigram_probs = torch.zeros(self.vocab_size, self.vocab_size, self.vocab_size) + alpha
+
 		
 	def forward(self, input_data):
 		# Batch shape is bptt, batch_size
@@ -32,6 +33,7 @@ class TrigramsLM(nn.Module):
 			preds.append(pred.squeeze())
 
 		tensor_preds = torch.stack(preds)
+		# print(tensor_preds)
 		return tensor_preds
 	
 	# I know Sasha said not to put training in the model, but how else would it work for trigrams??
@@ -63,8 +65,6 @@ class TrigramsLM(nn.Module):
 					self.trigram_probs[w_t_3, w_t_2, w_t_1] += 1
 			batch_num += 1
 
-		print(batch_num)
-
 		# Transform counts into probabilities
 		self.unigram_probs = self.unigram_probs / float(torch.sum(self.unigram_probs))
 		
@@ -73,6 +73,10 @@ class TrigramsLM(nn.Module):
 
 		trigram_counts = torch.sum(self.trigram_probs, dim=2).float()
 		self.trigram_probs = self.trigram_probs/ trigram_counts
+
+		print("unigram max", max(self.unigram_probs))
+		print("bigram max", torch.max(self.bigram_probs))
+		print('trigram max', torch.max(self.trigram_probs))
 
 
 	
