@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 class TrigramsLM(nn.Module):
-	def __init__(self, vocab_size, lambdas = [1./3.,1./3.,1./3.], alpha=0):
+	def __init__(self, vocab_size, lambdas = [1./100.,39./100.,6./10.], alpha=0):
 		super(TrigramsLM, self).__init__()
 		
 
@@ -17,8 +17,6 @@ class TrigramsLM(nn.Module):
 		# Assume input has observations in columns 
 		last_unigrams = input_data[-1, :] # size = batch_size
 		last_bigrams = input_data[-2:, :] # size = 2 x batch_size
-		print('unigrams', last_unigrams)
-		print('bigrams', last_bigrams)
 
 		batch_size = last_unigrams.size()[0]
 		# Unigram probabilities
@@ -27,7 +25,6 @@ class TrigramsLM(nn.Module):
 		for i in range(batch_size):
 			unigram = last_unigrams[i].data
 			bigram = last_bigrams[:, i].data # 2 x 1
-			print(bigram.size())
 			p_unigrams = self.unigram_probs # vocab_size
 			p_bigrams = self.bigram_probs[unigram] # vocab_size
 			p_trigrams = self.trigram_probs[bigram[0], bigram[1]] # vocab_size
@@ -35,7 +32,6 @@ class TrigramsLM(nn.Module):
 			preds.append(pred.squeeze())
 
 		tensor_preds = torch.stack(preds)
-		print(tensor_preds.size())
 		return tensor_preds
 	
 	# I know Sasha said not to put training in the model, but how else would it work for trigrams??
@@ -43,7 +39,6 @@ class TrigramsLM(nn.Module):
 		# Transposed batches to be batch_size, max_bptt
 		batch_num = 0
 		for batch in train_iter:
-			print(batch.text.size())
 			if debug and batch_num > 10:
 				break
 			x = batch.text.t() 
@@ -67,6 +62,8 @@ class TrigramsLM(nn.Module):
 					w_t_1 = row[j + 2].data # Most recently seen word
 					self.trigram_probs[w_t_3, w_t_2, w_t_1] += 1
 			batch_num += 1
+
+		print(batch_num)
 
 		# Transform counts into probabilities
 		self.unigram_probs = self.unigram_probs / float(torch.sum(self.unigram_probs))
