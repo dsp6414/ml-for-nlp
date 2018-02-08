@@ -35,11 +35,11 @@ class TrigramsLM(nn.Module):
 		return tensor_preds
 	
 	# I know Sasha said not to put training in the model, but how else would it work for trigrams??
-	def train(self, train_iter, debug=False):
+	def train(self, train_iter, n_iters=None):
 		# Transposed batches to be batch_size, max_bptt
 		batch_num = 0
 		for batch in train_iter:
-			if debug and batch_num > 10:
+			if n_iters is not None and batch_num > n_iters:
 				break
 			x = batch.text.t() 
 			# Update unigram counts

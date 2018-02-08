@@ -27,5 +27,5 @@ train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
 	(train, val, test), batch_size=10, device=-1, bptt_len=32, repeat=False)
 
 trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=1)
-trigrams_lm.train(train_iter, debug=True)
+trigrams_lm.train(train_iter, n_iters=None)
 print(utils.validate(trigrams_lm, val_iter))
