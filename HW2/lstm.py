@@ -84,7 +84,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
 scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[TEMP_EPOCH], gamma=1/DECAY)
 
-def train_batch(model, criterion, optim, text, target):
+def train_batch(model, criterion, optim, text, target, epoch):
     # initialize hidden vectors
     hidden = (Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)),
             Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN))) # This includes (hidden, cell)
@@ -104,9 +104,7 @@ def train_batch(model, criterion, optim, text, target):
     # backpropagate and step
     loss.backward()
     nn.utils.clip_grad_norm(model.parameters(), max_norm=GRAD_NORM)
-    # optimizer.step()
-    print("learning rate: " + str(scheduler.get_lr()))
-    scheduler.step()
+    optimizer.step()
     return loss.data[0]
 
 def train(model, criterion, optim):
@@ -123,10 +121,12 @@ def train(model, criterion, optim):
                 text = text.cuda()
                 target = target.cuda()
 
-            batch_loss = train_batch(model, criterion, optim, text, target)
+            batch_loss = train_batch(model, criterion, optim, text, target, epoch)
             total_loss += batch_loss
             # print(str(counter) + "   " + str(total_loss))
             counter += 1
+        scheduler.step()
+        print("learning rate: " + str(scheduler.get_lr()))
         print("Epoch " + str(epoch) + " Loss: " + str(total_loss))
         print(rnn)
 

@@ -110,7 +110,6 @@ if __name__ == '__main__':
             loss.backward()
             nn.utils.clip_grad_norm(parameters, max_norm=3)
             optimizer.step()
-
             total_loss += loss.data
 
     print("VAL SET", validate(net, val_iter))
