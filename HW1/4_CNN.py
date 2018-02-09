@@ -98,7 +98,6 @@ if __name__ == '__main__':
     parameters = filter(lambda p: p.requires_grad, net.parameters())
     optimizer = optim.Adadelta(parameters, lr=0.5)
 
-
     for epoch in range(50):
         total_loss = 0
         for batch in train_iter:
