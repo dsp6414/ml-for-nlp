@@ -18,16 +18,16 @@ BATCH_SIZE = 20
 HIDDEN = 650 # per layer
 DROPOUT = 0.5
 EPOCHS = 39
-LR = 1 # decreased by 1.2 for each epoch after 6th
+LR = 1 * 1.2 # decreased by 1.2 for each epoch after 6th
 DECAY = 1.2
-TEMP_EPOCH = 2
+TEMP_EPOCH = 6
 GRAD_NORM = 5
 
 # Large LSTM
 # HIDDEN = 1500 # per layer
 # DROPOUT = 0.65
 # EPOCHS = 55
-# LR = 1 # decreased by 1.15 for each epoch after 14th
+# LR = 1 * 1.15 # decreased by 1.15 for each epoch after 14th
 # DECAY = 1.15
 # TEMP_EPOCH = 14
 # GRAD_NORM = 10
@@ -50,7 +50,7 @@ train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
     (train, val, test), batch_size=BATCH_SIZE, device=-1, bptt_len=UNROLL, repeat=False)
 url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
 TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
-
+print("vocab size: " + str(len(TEXT.vocab)))
 
 class LSTM(nn.Module):
     def __init__(self, embedding_size, vocab_size, hidden_size, num_layers=2, dropout=DROPOUT):
@@ -80,8 +80,9 @@ class LSTM(nn.Module):
 rnn = LSTM(embedding_size=EMBEDDING_SIZE , vocab_size=len(TEXT.vocab), hidden_size=HIDDEN, num_layers=NUM_LAYERS, dropout=DROPOUT)
 criterion = nn.CrossEntropyLoss()
 
-optimizer = optim.SGD(rnn.parameters(), lr=LR/DECAY)
-scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[TEMP_EPOCH], gamma=1/DECAY)
+# optimizer = optim.SGD(rnn.parameters(), lr=LR/DECAY)
+optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
+# scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[TEMP_EPOCH], gamma=1/DECAY)
 
 def train_batch(model, criterion, optim, text, target):
     # initialize hidden vectors
@@ -103,7 +104,8 @@ def train_batch(model, criterion, optim, text, target):
     # backpropagate and step
     loss.backward()
     nn.utils.clip_grad_norm(model.parameters(), max_norm=GRAD_NORM)
-    scheduler.step()
+    optimizer.step()
+    # scheduler.step()
     return loss.data[0]
 
 def train(model, criterion, optim):
