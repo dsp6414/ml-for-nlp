@@ -32,27 +32,28 @@ print('len(TEXT.vocab)', len(TEXT.vocab))
 train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
 	(train, val, test), batch_size=10, device=-1, bptt_len=32, repeat=False)
 
-coef_1 = 0.0
-# lambdas = [.001, 0, .999]
-values_for_l = [.00001, .0001, .001, .01, .1, .2, .3, .5, .7]
-l_1 = random.choice(values_for_l)
-while l_1 > .1:
-	l_1 = random.uniform(0,.1)
-l_2 = random.choice(values_for_l)
-while l_1 + l_2 > 1:
-	l_2 = random.choice(values_for_l)
-l_3 = 1 - l_1 - l_2
+# coef_1 = 0.0
+# # lambdas = [.001, 0, .999]
+# values_for_l = [.00001, .0001, .001, .01, .1, .2, .3, .5, .7]
+# l_1 = random.choice(values_for_l)
+# while l_1 > .1:
+# 	l_1 = random.uniform(0,.1)
+# l_2 = random.choice(values_for_l)
+# while l_1 + l_2 > 1:
+# 	l_2 = random.choice(values_for_l)
+# l_3 = 1 - l_1 - l_2
 
-lambdas = [l_1, l_2, l_3] 
+# lambdas = [l_1, l_2, l_3] 
 
 
-print('lambdas = ', lambdas)
-trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=1, lambdas=lambdas)
-trigrams_lm.train(train_iter, n_iters=None)
-print(utils.validate(trigrams_lm, val_iter))
+# print('lambdas = ', lambdas)
+# trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=1, lambdas=lambdas)
+# trigrams_lm.train(train_iter, n_iters=None)
+# print(utils.validate(trigrams_lm, val_iter))
 
-NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100)
+NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
 # 
 loss_function = nn.NLLLoss()
 optimizer = optim.SGD(NNLM.parameters(), lr=0.1)
 utils.train(NNLM, train_iter, 1, loss_function, optimizer, hidden=True)
+print(utils.validate(NNLM, val_iter, hidden=True))

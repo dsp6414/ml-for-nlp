@@ -3,13 +3,13 @@ import torch.nn as nn
 import torch.autograd as autograd
 
 class LSTMLM(nn.Module):
-	def __init__(self, vocab_size, embedding_dim, hidden_size=20):
+	def __init__(self, vocab_size, embedding_dim, n, hidden_size=20):
 		super(LSTMLM, self).__init__()
 		self.num_layers = 5
 		self.hidden_size=hidden_size
 		self.embedding = nn.Embedding(vocab_size, embedding_dim) # num_embeddings, embedding_dim
 		self.lstm = nn.LSTM(embedding_dim, hidden_size, self.num_layers, batch_first=False)
-		self.linear = nn.Linear(hidden_size * 31, vocab_size)
+		self.linear = nn.Linear(hidden_size * n, vocab_size)
 		self.init_weights()
 		self.initial_hidden = None #autograd.Variable(torch.zeros(1, hidden_size))
 		
@@ -22,7 +22,7 @@ class LSTMLM(nn.Module):
 		print(batch.size())
 		# Embed word ids to vectors
 		word_vectors = self.embedding(batch) 
-		# print(word_vectors)
+		print(word_vectors)
 		
 		# Get predictions and hidden state from LSTM  
 		# print(self.lstm(word_vectors, h))
