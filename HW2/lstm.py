@@ -109,7 +109,7 @@ def train_batch(model, criterion, optim, text, target, epoch):
 
 def train(model, criterion, optim):
     # for epoch in range(EPOCHS):
-    for epoch in range(5):
+    for epoch in range(12):
         total_loss = 0
         counter = 0
         print(sum(1 for _ in train_iter))
