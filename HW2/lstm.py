@@ -134,10 +134,12 @@ def validate(model, val_iter, hidden=False):
     correct = 0.0
     total  = 0.0
     num_zeros = 0.0
-    if hidden:
-        h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
-        c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
-        h = (h_0, c_0)
+
+    # if hidden:
+    h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
+    c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
+    h = (h_0, c_0)
+
     for batch in val_iter:
         text = batch.text[:-1,:]
         target = batch.text[1:,:].view(-1)
@@ -146,9 +148,10 @@ def validate(model, val_iter, hidden=False):
             text = text.cuda()
             target = target.cuda()
 
-        if hidden:
-            h, probs = model(text, h)
-        probs = model(text)
+        # if hidden:
+        h, probs = model(text, h)
+        # else:
+        #     probs = model(text)
         _, preds = torch.max(probs, 1)
         print(probs, target)
         correct += sum(preds == target.data)
@@ -164,4 +167,4 @@ if torch.cuda.is_available():
 #######
 
 train(rnn, criterion, optimizer)
-validate(rnn, val_iter, hidden=False)
+validate(rnn, val_iter, hidden=True)
