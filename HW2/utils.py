@@ -24,18 +24,18 @@ def validate(model, val_iter):
 	return correct / total
 
 def train(model, train_iter, num_epochs, criterion, optimizer, hidden=False):
-	if hidden:
-		h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
-		c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
-		h = (h_0, c_0)
 	for epoch in range(num_epochs):
+		if hidden:
+			h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
+			c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
+			h = (h_0, c_0)
 		for batch in train_iter:
 			# Line vector
 			for vector in batch.text.t():
 				model.zero_grad()
 
 				x = vector[:-1].data
-				y = vector[-1].view(1,1)	
+				y = vector[-1].view(1)	
 
 				print("x", x.size())
 				
@@ -43,8 +43,9 @@ def train(model, train_iter, num_epochs, criterion, optimizer, hidden=False):
 					h, probs = model.forward(x, h)
 				else:
 					probs = model.forward(x)
+
+				probs = probs.view(1, -1)
 				print("probs", probs)
-				print("y", y)
 				loss = criterion(probs, y)
-				loss.backward()
+				loss.backward(retain_graph=True)
 				optimizer.step()

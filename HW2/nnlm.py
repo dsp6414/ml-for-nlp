@@ -9,7 +9,7 @@ class LSTMLM(nn.Module):
 		self.hidden_size=hidden_size
 		self.embedding = nn.Embedding(vocab_size, embedding_dim) # num_embeddings, embedding_dim
 		self.lstm = nn.LSTM(embedding_dim, hidden_size, self.num_layers, batch_first=False)
-		self.linear = nn.Linear(hidden_size, vocab_size)
+		self.linear = nn.Linear(hidden_size * 31, vocab_size)
 		self.init_weights()
 		self.initial_hidden = None #autograd.Variable(torch.zeros(1, hidden_size))
 		
@@ -19,7 +19,7 @@ class LSTMLM(nn.Module):
 		self.linear.weight.data.uniform_(-0.1, 0.1)
 		
 	def forward(self, batch, h):
-		print(h)
+		print(batch.size())
 		# Embed word ids to vectors
 		word_vectors = self.embedding(batch) 
 		# print(word_vectors)
@@ -28,7 +28,7 @@ class LSTMLM(nn.Module):
 		# print(self.lstm(word_vectors, h))
 		out, h = self.lstm(word_vectors, h)
 		
-		out = out.squeeze()
+		out = out.squeeze().view(-1)
 		print("out.size()", out.size())
 		# Decode hidden states of all time step
 		out = self.linear(out)  
