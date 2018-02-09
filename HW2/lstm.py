@@ -130,6 +130,33 @@ def train(model, criterion, optim):
         print("Epoch " + str(epoch) + " Loss: " + str(total_loss))
         print(rnn)
 
+def validate(model, val_iter, hidden=False):
+    correct = 0.0
+    total  = 0.0
+    num_zeros = 0.0
+    if hidden:
+        h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
+        c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
+        h = (h_0, c_0)
+    for batch in val_iter:
+        text = batch.text[:-1,:]
+        target = batch.text[1:,:].view(-1)
+        
+        if torch.cuda.is_available():
+            text = text.cuda()
+            target = target.cuda()
+
+        if hidden:
+            h, probs = model(text, h)
+        probs = model(text)
+        _, preds = torch.max(probs, 1)
+        print(probs, target)
+        correct += sum(preds == target.data)
+        total += 1
+        num_zeros += sum(torch.zeros_like(target.data) == target.data)
+    print(correct,total, num_zeros)
+    return correct / total
+
 ####### CHECK FOR CUDA
 if torch.cuda.is_available():
     print("USING CUDA")
@@ -137,3 +164,4 @@ if torch.cuda.is_available():
 #######
 
 train(rnn, criterion, optimizer)
+validate(rnn, val_iter, hidden=False)
