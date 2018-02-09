@@ -14,16 +14,29 @@ class TrigramsLM(nn.Module):
 		self.unigram_probs = {}
 		self.bigram_probs = {}
 		self.trigram_probs = {}
-		print('initialized')
 		
 	def forward(self, input_data):
 		def p_ngram(ngram_dict, ngram, n):
 			if ngram in ngram_dict:
 				return ngram_dict[ngram]
 			else:
-				return 0
+				if alpha == 0:
+					return 0
+				if n == 1:
+					denom = self.vocab_size * self.alpha + self.sum_unigrams
+				elif n == 2:
+					prev_unigram, i = ngram
+					denom = self.vocab_size * self.alpha + self.unigram_counts[prev_unigram]
+				elif n == 3:
+					b1, b2, i = ngram
+					if (b1, b2) not in self.bigram_counts:
+						denom = self.alpha * self.vocab_size
+					else:
+						denom = self.vocab_size * self.alpha + self.bigram_counts[(b1, b2)]	
+				return self.alpha/ denom
 		# Batch shape is bptt, batch_size
-		# Assume input has observations in columns 
+		# Assume input has observations in rows, transpose it to be observations in columns
+		# input_data = input_data.t() 
 		last_unigrams = input_data[-1, :] # size = batch_size
 		last_bigrams = input_data[-2:, :] # size = 2 x batch_size
 
@@ -60,13 +73,12 @@ class TrigramsLM(nn.Module):
 				d[val] += 1
 			else:
 				d[val] = 1
-		print('Training')
-		# Transposed batches to be batch_size, max_bptt
+		# Assume batches to be batch_size, max_bptt
 		batch_num = 0
 		for batch in train_iter:
 			if n_iters is not None and batch_num > n_iters:
 				break
-			x = batch.text.t() 
+			x = batch.text
 			# Update unigram counts
 			for row in x:
 				for word in row:
@@ -103,10 +115,10 @@ class TrigramsLM(nn.Module):
 			self.bigram_probs[bigram] = (count + self.alpha) / (float(self.unigram_counts[w_t_1]) + self.vocab_size * self.alpha)
 
 		# Normalize unigram counts with laplace smoothing
-		sum_unigrams = sum(self.unigram_counts.values())
+		self.sum_unigrams = sum(self.unigram_counts.values())
 		for unigram, count in self.unigram_counts.items():
 			# self.bigram_probs['missing'] = 
-			self.unigram_probs[unigram] = (count + self.alpha) / (sum_unigrams + float(self.vocab_size * self.alpha))
+			self.unigram_probs[unigram] = (count + self.alpha) / (self.sum_unigrams + float(self.vocab_size * self.alpha))
 
 
 
