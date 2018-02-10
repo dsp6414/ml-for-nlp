@@ -7,6 +7,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torchtext
 from torchtext.vocab import Vectors, GloVe
+import pickle
 import pdb
 
 EMBEDDING_SIZE = 128
@@ -108,8 +109,8 @@ def train_batch(model, criterion, optim, text, target, epoch):
     return loss.data[0]
 
 def train(model, criterion, optim):
-    # for epoch in range(EPOCHS):
-    for epoch in range(12):
+    for epoch in range(EPOCHS):
+    # for epoch in range(12):
         total_loss = 0
         counter = 0
         print(sum(1 for _ in train_iter))
@@ -167,4 +168,9 @@ if torch.cuda.is_available():
 #######
 
 train(rnn, criterion, optimizer)
-validate(rnn, val_iter, hidden=True)
+
+filename = 'lstm_model.sav'
+pickle.dump(rnn, open(filename, 'wb'))
+
+loaded_model = pickle.load(open(filename, 'rb'))
+validate(loaded_model, val_iter, hidden=True)
