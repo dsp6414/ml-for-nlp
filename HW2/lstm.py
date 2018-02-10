@@ -39,19 +39,22 @@ GRAD_NORM = 5
 # args = parser.parse_args()
 
 
-# TEXT = torchtext.data.Field()
-# # Data distributed with the assignment
-# train, val, test = torchtext.datasets.LanguageModelingDataset.splits(
-#     path=".", 
-#     train="train.5k.txt", validation="valid.txt", test="valid.txt", text_field=TEXT)
-# TEXT.build_vocab(train)
-# if args.mini:
-#     TEXT.build_vocab(train, max_size=1000)
-# train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
-#     (train, val, test), batch_size=BATCH_SIZE, device=-1, bptt_len=UNROLL, repeat=False)
-# url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
-# TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
-# print("vocab size: " + str(len(TEXT.vocab)))
+TEXT = torchtext.data.Field()
+# Data distributed with the assignment
+train, val, test = torchtext.datasets.LanguageModelingDataset.splits(
+    path=".", 
+    train="train.5k.txt", validation="valid.txt", test="valid.txt", text_field=TEXT)
+TEXT.build_vocab(train)
+if args.mini:
+    TEXT.build_vocab(train, max_size=1000)
+train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
+    (train, val, test), batch_size=BATCH_SIZE, device=-1, bptt_len=UNROLL, repeat=False)
+url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
+TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
+
+VOCAB_SIZE = len(TEXT.vocab)
+
+print("vocab size: " + str(VOCAB_SIZE))
 
 class LSTM(nn.Module):
     def __init__(self, embedding_size, vocab_size, hidden_size, num_layers=2, dropout=DROPOUT):
@@ -78,7 +81,7 @@ class LSTM(nn.Module):
         # output.view(batch_size, -1)
         return output, hidden
 
-rnn = LSTM(embedding_size=EMBEDDING_SIZE , vocab_size=len(TEXT.vocab), hidden_size=HIDDEN, num_layers=NUM_LAYERS, dropout=DROPOUT)
+rnn = LSTM(embedding_size=EMBEDDING_SIZE , vocab_size=VOCAB_SIZE, hidden_size=HIDDEN, num_layers=NUM_LAYERS, dropout=DROPOUT)
 criterion = nn.CrossEntropyLoss()
 
 # optimizer = optim.SGD(rnn.parameters(), lr=LR/DECAY)
@@ -99,7 +102,7 @@ def train_batch(model, criterion, optim, text, target, epoch):
     # calculate forward pass
     output, hidden = model(text, hidden)
     # calculate loss
-    output_flat = output.view(-1, len(TEXT.vocab))
+    output_flat = output.view(-1, VOCAB_SIZE)
     loss = criterion(output_flat, target) # output: [bptt_len-1 x batch x vocab_size]
     # target: [bptt_len-1 x batch]
     # backpropagate and step
@@ -139,7 +142,6 @@ def evaluate(model, val_iter, hidden=False):
     total_loss = 0.0
 
     model.eval()
-    vocab_size = len(TEXT.vocab)
 
     # if hidden:
     h = (Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)), 
@@ -155,7 +157,7 @@ def evaluate(model, val_iter, hidden=False):
 
         # if hidden:
         probs, h = model(text, h)
-        probs_flat = probs.view(-1, vocab_size)
+        probs_flat = probs.view(-1, VOCAB_SIZE)
 
         total_loss += criterion(probs_flat, target).data
         # else:
