@@ -137,9 +137,8 @@ def validate(model, val_iter, hidden=False):
     num_zeros = 0.0
 
     # if hidden:
-    h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
-    c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
-    h = (h_0, c_0)
+    h = (Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)), 
+        Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)))
 
     for batch in val_iter:
         text = batch.text[:-1,:]
@@ -155,7 +154,7 @@ def validate(model, val_iter, hidden=False):
         #     probs = model(text)
         _, preds = torch.max(probs, 1)
         print(probs, target)
-        correct += sum(preds == target.data)
+        correct += sum(preds.view(-1, len(TEXT.vocab)) == target.data)
         total += 1
         num_zeros += sum(torch.zeros_like(target.data) == target.data)
     print(correct,total, num_zeros)
