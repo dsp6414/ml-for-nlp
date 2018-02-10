@@ -95,9 +95,7 @@ class LSTM(nn.Module):
             Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, self.hidden_size)))
 
     def forward(self, inputs, hidden):
-        pdb.set_trace()
         embedding = self.dropout(self.embedding(inputs)) # [bptt_len - 1 x batch x embedding_size]
-        pdb.set_trace()
         # embedding = embedding.transpose(0, 1)
 
         # hidden size: [layers x batch x units]

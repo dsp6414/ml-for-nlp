@@ -59,7 +59,6 @@ def evaluate(model, iter_data, criterion):
     model.eval()
     total_loss = 0.0
     h = model.init_hidden()
-    pdb.set_trace()
     it = next(iter(iter_data))
     for batch in iter_data:
         text, target = get_batch(batch)
