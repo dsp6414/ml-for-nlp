@@ -8,7 +8,11 @@ import torch.optim as optim
 import torchtext
 from torchtext.vocab import Vectors, GloVe
 import pickle
+import utils
+
 import pdb
+
+torch.manual_seed(1)
 
 EMBEDDING_SIZE = 128
 NUM_LAYERS = 2
@@ -23,6 +27,7 @@ LR = 1 * 1.2 # decreased by 1.2 for each epoch after 6th
 DECAY = 1.2
 TEMP_EPOCH = 6
 GRAD_NORM = 5
+INIT_PARAM = 0.05
 
 # Large LSTM
 # HIDDEN = 1500 # per layer
@@ -32,41 +37,66 @@ GRAD_NORM = 5
 # DECAY = 1.15
 # TEMP_EPOCH = 14
 # GRAD_NORM = 10
+# INIT_PARAM = 0.04
 
 # PARSE ARGS
-parser = argparse.ArgumentParser(description='LSTM Language Model')
-parser.add_argument('--mini', type=bool, default=False, help='run smaller dataset')
-args = parser.parse_args()
 
-TEXT = torchtext.data.Field()
-# Data distributed with the assignment
-train, val, test = torchtext.datasets.LanguageModelingDataset.splits(
-    path=".", 
-    train="train.5k.txt", validation="valid.txt", test="valid.txt", text_field=TEXT)
-TEXT.build_vocab(train)
-if args.mini:
-    TEXT.build_vocab(train, max_size=1000)
-train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
-    (train, val, test), batch_size=BATCH_SIZE, device=-1, bptt_len=UNROLL, repeat=False)
-url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
-TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
+# TEXT = torchtext.data.Field()
+# # Data distributed with the assignment
+# train, val, test = torchtext.datasets.LanguageModelingDataset.splits(
+#     path=".", 
+#     train="train.5k.txt", validation="valid.txt", test="valid.txt", text_field=TEXT)
+# TEXT.build_vocab(train)
+# if args.mini:
+#     TEXT.build_vocab(train, max_size=1000)
+# train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
+#     (train, val, test), batch_size=BATCH_SIZE, device=-1, bptt_len=UNROLL, repeat=False)
+# url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
+# TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
 
-VOCAB_SIZE = len(TEXT.vocab)
+# VOCAB_SIZE = len(TEXT.vocab)
 
-print("vocab size: " + str(VOCAB_SIZE))
+# print("vocab size: " + str(VOCAB_SIZE))
 
 class LSTM(nn.Module):
-    def __init__(self, embedding_size, vocab_size, hidden_size, num_layers=2, dropout=DROPOUT):
+    def __init__(self, embedding_size, vocab_size, num_layers=2, lstm_type='medium'):
         super(LSTM, self).__init__()
+        self.lstm_type = lstm_type
         self.embedding_size = embedding_size
         self.vocab_size = vocab_size
-        self.hidden_size = hidden_size
         self.num_layers = num_layers
 
+        if lstm_type == 'medium':
+            self.hidden_size = 650
+            self.init_param = 0.05
+            self.dropout = 0.5
+        elif lstm_type == 'large':
+            self.hidden_size = 1500
+            self.init_param = 0.04
+            self.dropout = 0.65
+
         self.embedding = nn.Embedding(vocab_size, embedding_size)
-        self.rnn = nn.LSTM(embedding_size, hidden_size, num_layers, dropout=dropout)
-        self.linear = nn.Linear(hidden_size, vocab_size)
-        self.dropout = nn.Dropout(dropout)
+        self.rnn = nn.LSTM(embedding_size, self.hidden_size, num_layers, dropout=self.dropout)
+        
+        if torch.cuda.is_available():
+            print("USING CUDA")
+            self.rnn = self.rnn.cuda()
+
+        self.linear = nn.Linear(self.hidden_size, vocab_size)
+        self.dropout = nn.Dropout(self.dropout)
+        self.init_weights()
+
+    def init_weights(self):
+        self.embedding.weight.data.uniform_(-self.init_param, self.init_param)
+        self.linear.weight.data.uniform_(-self.init_param, self.init_param)
+
+    def init_hidden(self):
+        if torch.cuda.is_available():
+            return (Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)).cuda(),
+            Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)).cuda())
+
+        return (Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)),
+            Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)))
 
     def forward(self, inputs, hidden):
         embedding = self.dropout(self.embedding(inputs)) # [bptt_len - 1 x batch x embedding_size]
@@ -76,25 +106,20 @@ class LSTM(nn.Module):
         output, hidden = self.rnn(embedding, hidden) # [bptt_len - 1 x batch x units]
         # embedding..view(1, batch_size, -1) without transpose
         output = self.dropout(output)
-        output = self.linear(output) # [bptt_len - 1 x batch x vocab_size]
+        output = self.linear(output.view(-1, self.hidden_size)) # [bptt_len - 1 x batch x vocab_size]
         # output.view(batch_size, -1)
         return output, hidden
 
-rnn = LSTM(embedding_size=EMBEDDING_SIZE , vocab_size=VOCAB_SIZE, hidden_size=HIDDEN, num_layers=NUM_LAYERS, dropout=DROPOUT)
-criterion = nn.CrossEntropyLoss()
+# rnn = LSTM(embedding_size=EMBEDDING_SIZE , vocab_size=VOCAB_SIZE, hidden_size=HIDDEN, num_layers=NUM_LAYERS, dropout=DROPOUT)
+# criterion = nn.CrossEntropyLoss()
 
 # optimizer = optim.SGD(rnn.parameters(), lr=LR/DECAY)
-optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
-scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[TEMP_EPOCH], gamma=1/DECAY)
+# optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
+# scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[TEMP_EPOCH], gamma=1/DECAY)
 
 def train_batch(model, criterion, optim, text, target, epoch):
     # initialize hidden vectors
-    hidden = (Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)),
-            Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN))) # This includes (hidden, cell)
-
-    if torch.cuda.is_available():
-        hidden = (Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)).cuda(),
-            Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)).cuda())
+    hidden = model.init_hidden() # This includes (hidden, cell)
 
     # clear gradients
     model.zero_grad()
@@ -118,12 +143,7 @@ def train(model, criterion, optim):
         counter = 0
         print(sum(1 for _ in train_iter))
         for batch in train_iter:
-            text = batch.text[:-1,:]
-            target = batch.text[1:,:].view(-1)
-
-            if torch.cuda.is_available():
-                text = text.cuda()
-                target = target.cuda()
+            text, target = utils.get_batch(batch, )
 
             batch_loss = train_batch(model, criterion, optim, text, target, epoch)
             total_loss += batch_loss
@@ -142,9 +162,8 @@ def evaluate(model, val_iter, hidden=False):
 
     model.eval()
 
-    # if hidden:
-    h = (Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)), 
-        Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)))
+    # if hidden
+    h = model.init_hidden()
 
     for batch in val_iter:
         text = batch.text[:-1,:]
@@ -172,19 +191,19 @@ def evaluate(model, val_iter, hidden=False):
     return total_loss
 
 ####### CHECK FOR CUDA
-if torch.cuda.is_available():
-    print("USING CUDA")
-    rnn = rnn.cuda()
+# if torch.cuda.is_available():
+#     print("USING CUDA")
+#     rnn = rnn.cuda()
 #######
 
 # train(rnn, criterion, optimizer)
 
-filename = 'lstm_model.sav'
+# filename = 'lstm_model.sav'
 # pickle.dump(rnn, open(filename, 'wb'))
 
-loaded_model = pickle.load(open(filename, 'rb'))
-print("Validation Set")
-evaluate(loaded_model, val_iter, hidden=True)
-print("Test Set")
-evaluate(loaded_model, test_iter, hidden=True)
+# loaded_model = pickle.load(open(filename, 'rb'))
+# print("Validation Set")
+# evaluate(loaded_model, val_iter, hidden=True)
+# print("Test Set")
+# evaluate(loaded_model, test_iter, hidden=True)
 

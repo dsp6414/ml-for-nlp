@@ -1,22 +1,55 @@
-import torchtext
-from torchtext.vocab import Vectors
+import argparse
+import torch
+import torch.autograd as autograd
+from torch.autograd import Variable
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.optim as optim
-import trigrams, nnlm
-import utils
+import torchtext
+from torchtext.vocab import Vectors, GloVe
+import pickle
 import random
 
-import torch
+import trigrams, nnlm, lstm
+import utils
+import utilslstm
+
+import pdb
+
+BATCH_SIZE = 20
+BPTT = 35
+EMBEDDING_SIZE = 128
+NUM_LAYERS = 2
+LR = 1 * 1.2 # decreased by 1.2 for each epoch after 6th
+DECAY = 1.2
+TEMP_EPOCH = 6
+EPOCHS = 39
+
+# Large LSTM
+# HIDDEN = 1500 # per layer
+# DROPOUT = 0.65
+# EPOCHS = 55
+# LR = 1 * 1.15 # decreased by 1.15 for each epoch after 14th
+# DECAY = 1.15
+# TEMP_EPOCH = 14
+# GRAD_NORM = 10
+# INIT_PARAM = 0.04
+
+parser = argparse.ArgumentParser(description='Language Modeling')
+parser.add_argument('--model', type=str, default='LSTM',
+                    help='type of RNN')
+parser.add_argument('--mini', type=bool, default=False, help='run smaller dataset')
+args = parser.parse_args()
+
 CUDA = False
+if torch.cuda.is_available():
+	CUDA = True
 
-DEBUG = True
+DEBUG = True if args.mini else False
 train_file = "train.5k.txt" if DEBUG else "train.txt"
-
 
 # Our input $x$
 TEXT = torchtext.data.Field()
-
-# Data distributed with the assignment
 train, val, test = torchtext.datasets.LanguageModelingDataset.splits(
 	path=".", 
 	train=train_file, validation="valid.txt", test="valid.txt", text_field=TEXT)
@@ -30,7 +63,7 @@ else:
 print('len(TEXT.vocab)', len(TEXT.vocab))
 
 train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
-	(train, val, test), batch_size=10, device=-1, bptt_len=32, repeat=False)
+	(train, val, test), batch_size=BATCH_SIZE, device=-1, bptt_len=BPTT, repeat=False)
 
 # coef_1 = 0.0
 # # lambdas = [.001, 0, .999]
@@ -51,9 +84,27 @@ train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
 # trigrams_lm.train(train_iter, n_iters=None)
 # print(utils.validate(trigrams_lm, val_iter))
 
-NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
-# 
-loss_function = nn.NLLLoss()
-optimizer = optim.SGD(NNLM.parameters(), lr=0.1)
-utils.train(NNLM, train_iter, 1, loss_function, optimizer, hidden=True)
-print(utils.validate(NNLM, val_iter, hidden=True))
+if args.model == 'NNLM':
+	NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
+	criterion = nn.NLLLoss()
+	optimizer = optim.SGD(NNLM.parameters(), lr=0.1)
+	utils.train(NNLM, train_iter, 1, criterion, optimizer, hidden=True)
+	print(utils.validate(NNLM, val_iter, hidden=True))
+
+if args.model == 'LSTM':
+	rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS)
+	criterion = nn.CrossEntropyLoss()
+	optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
+	scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[TEMP_EPOCH], gamma=1/DECAY)
+	# print("TRAINING DATA")
+	# utilslstm.train(rnn, train_iter, 1, criterion, optimizer, scheduler=scheduler, grad_norm=5) #change grad norm
+
+	filename = 'lstm_small.sav'
+	# pickle.dump(rnn, open(filename, 'wb'))
+
+	loaded_model = pickle.load(open(filename, 'rb'))
+	print("VALIDATION SET")
+	utilslstm.evaluate(loaded_model, val_iter, criterion)
+	# print("TEST SET")
+	# utilslstm.evaluate(loaded_model, test_iter, criterion)
+

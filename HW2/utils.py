@@ -3,6 +3,8 @@ import torchtext
 import torch
 import torch.autograd as autograd
 
+torch.manual_seed(1)
+
 # Batch will have the observations vertically.
 def process_batch(batch, n):
 	n_rows = batch.text.size()[1]
@@ -19,7 +21,6 @@ def process_batch(batch, n):
 	xs = torch.stack([x_i for x_i in xs])
 	ys = torch.stack([y_i for y_i in ys])
 	return(torch.cat((xs, ys), dim=1))
-
 
 def validate(model, val_iter, hidden=False):
 	correct = 0.0
@@ -55,7 +56,7 @@ def validate(model, val_iter, hidden=False):
 	print(correct,total, num_zeros)
 	return correct / total
 
-def train(model, train_iter, num_epochs, criterion, optimizer, hidden=False):
+def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, hidden=False):
 	for epoch in range(num_epochs):
 		if hidden:
 			h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))

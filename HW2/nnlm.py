@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch.autograd as autograd
 
+torch.manual_seed(1)
+
 class LSTMLM(nn.Module):
 	def __init__(self, vocab_size, embedding_dim, n, hidden_size=20):
 		super(LSTMLM, self).__init__()
