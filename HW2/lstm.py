@@ -92,11 +92,11 @@ class LSTM(nn.Module):
 
     def init_hidden(self):
         if torch.cuda.is_available():
-            return (Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)).cuda(),
-            Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)).cuda())
+            return (Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, self.hidden_size)).cuda(),
+            Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, self.hidden_size)).cuda())
 
-        return (Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)),
-            Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)))
+        return (Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, self.hidden_size)),
+            Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, self.hidden_size)))
 
     def forward(self, inputs, hidden):
         embedding = self.dropout(self.embedding(inputs)) # [bptt_len - 1 x batch x embedding_size]
@@ -110,7 +110,7 @@ class LSTM(nn.Module):
         # output.view(batch_size, -1)
         return output, hidden
 
-# rnn = LSTM(embedding_size=EMBEDDING_SIZE , vocab_size=VOCAB_SIZE, hidden_size=HIDDEN, num_layers=NUM_LAYERS, dropout=DROPOUT)
+# rnn = LSTM(embedding_size=EMBEDDING_SIZE , vocab_size=VOCAB_SIZE, hidden_size=self.hidden_size, num_layers=NUM_LAYERS, dropout=DROPOUT)
 # criterion = nn.CrossEntropyLoss()
 
 # optimizer = optim.SGD(rnn.parameters(), lr=LR/DECAY)

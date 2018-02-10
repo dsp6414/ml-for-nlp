@@ -48,9 +48,9 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, g
             text, target = get_batch(batch)
             batch_loss = train_batch(model, text, target, criterion, optimizer, grad_norm)
             total_loss += batch_loss
-            if counter % 20 == 0:
-                print(str(counter) + "   " + str(total_loss))
-            counter += 1
+            # if counter % 20 == 0:
+                # print(str(counter) + "   " + str(total_loss))
+            # counter += 1
         scheduler.step()
         print("learning rate: " + str(scheduler.get_lr()))
         print("Epoch " + str(epoch) + " Loss: " + str(total_loss))
@@ -74,10 +74,15 @@ def evaluate(model, iter_data, criterion):
     print(total_loss[0])
     return total_loss
 
-# def kaggle(model, ):
-#   f = open('input.txt')
-#   lines = f.readlines()
-#   hidden = model.init_hidden()
+def kaggle(model, ):
+    f = open('input.txt')
+    lines = f.readlines()
+    hidden = model.init_hidden()
 
-#   with open('sample.txt', 'w') as out:
-#       for line in lines:
+    with open('sample.txt', 'w') as out:
+        for i, line in enumerate(lines):
+            h = model.init_hidden()
+            probs, h = model(line, h)
+            pdb.set_trace(probs)
+            predictions = sorted(range(len(a)), key=lambda i: a[i])[-2:]
+            print("%d,%s"%(i, " ".join(predictions)), file=out)

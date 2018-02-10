@@ -20,20 +20,17 @@ BATCH_SIZE = 20
 BPTT = 35
 EMBEDDING_SIZE = 128
 NUM_LAYERS = 2
-LR = 1 * 1.2 # decreased by 1.2 for each epoch after 6th
-DECAY = 1.2
-TEMP_EPOCH = 6
-EPOCHS = 39
+# LR = 1 * 1.2 # decreased by 1.2 for each epoch after 6th
+# DECAY = 1.2
+# TEMP_EPOCH = 6
+# EPOCHS = 39
 
 # Large LSTM
-# HIDDEN = 1500 # per layer
-# DROPOUT = 0.65
-# EPOCHS = 55
-# LR = 1 * 1.15 # decreased by 1.15 for each epoch after 14th
-# DECAY = 1.15
-# TEMP_EPOCH = 14
-# GRAD_NORM = 10
-# INIT_PARAM = 0.04
+EPOCHS = 55
+LR = 1 * 1.15 # decreased by 1.15 for each epoch after 14th
+DECAY = 1.15
+TEMP_EPOCH = 14
+GRAD_NORM = 10
 
 parser = argparse.ArgumentParser(description='Language Modeling')
 parser.add_argument('--model', type=str, default='LSTM',
@@ -92,15 +89,15 @@ if args.model == 'NNLM':
 	print(utils.validate(NNLM, val_iter, hidden=True))
 
 if args.model == 'LSTM':
-	rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS)
+	rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
 	criterion = nn.CrossEntropyLoss()
 	optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
 	scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[TEMP_EPOCH], gamma=1/DECAY)
-	# print("TRAINING DATA")
-	# utilslstm.train(rnn, train_iter, 1, criterion, optimizer, scheduler=scheduler, grad_norm=5) #change grad norm
+	print("TRAINING DATA")
+	utilslstm.train(rnn, train_iter, 1, criterion, optimizer, scheduler=scheduler, grad_norm=10) #change grad norm
 
-	filename = 'lstm_small.sav'
-	# pickle.dump(rnn, open(filename, 'wb'))
+	filename = 'lstm_large.sav'
+	pickle.dump(rnn, open(filename, 'wb'))
 
 	loaded_model = pickle.load(open(filename, 'rb'))
 	print("VALIDATION SET")
