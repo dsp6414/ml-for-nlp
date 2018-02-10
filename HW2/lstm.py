@@ -77,10 +77,6 @@ class LSTM(nn.Module):
 
         self.embedding = nn.Embedding(vocab_size, embedding_size)
         self.rnn = nn.LSTM(embedding_size, self.hidden_size, num_layers, dropout=self.dropout)
-        
-        if torch.cuda.is_available():
-            print("USING CUDA")
-            self.rnn = self.rnn.cuda()
 
         self.linear = nn.Linear(self.hidden_size, vocab_size)
         self.dropout = nn.Dropout(self.dropout)

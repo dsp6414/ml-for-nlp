@@ -90,6 +90,9 @@ if args.model == 'NNLM':
 
 if args.model == 'LSTM':
 	rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
+	if torch.cuda.is_available():
+		print("USING CUDA")
+		rnn = rnn.cuda()
 	criterion = nn.CrossEntropyLoss()
 	optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
 	scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[TEMP_EPOCH], gamma=1/DECAY)
