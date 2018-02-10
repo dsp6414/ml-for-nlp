@@ -7,7 +7,6 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torchtext
 from torchtext.vocab import Vectors, GloVe
-import pickle
 import random
 
 import trigrams, nnlm, lstm
@@ -97,12 +96,13 @@ if args.model == 'LSTM':
 	optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
 	scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[TEMP_EPOCH], gamma=1/DECAY)
 	print("TRAINING DATA")
-	utilslstm.train(rnn, train_iter, 1, criterion, optimizer, scheduler=scheduler, grad_norm=10) #change grad norm
+	utilslstm.train(rnn, train_iter, EPOCHS, criterion, optimizer, scheduler=scheduler, grad_norm=10) #change grad norm
 
 	filename = 'lstm_large.sav'
-	pickle.dump(rnn, open(filename, 'wb'))
+	torch.save(rnn.state_dict(), filename)
 
-	loaded_model = pickle.load(open(filename, 'rb'))
+	loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
+	loaded_model.load_state_dict(torch.load(filename))
 	print("VALIDATION SET")
 	utilslstm.evaluate(loaded_model, val_iter, criterion)
 	# print("TEST SET")
