@@ -34,24 +34,24 @@ GRAD_NORM = 5
 # GRAD_NORM = 10
 
 # PARSE ARGS
-parser = argparse.ArgumentParser(description='LSTM Language Model')
-parser.add_argument('--mini', type=bool, default=False, help='run smaller dataset')
-args = parser.parse_args()
+# parser = argparse.ArgumentParser(description='LSTM Language Model')
+# parser.add_argument('--mini', type=bool, default=False, help='run smaller dataset')
+# args = parser.parse_args()
 
 
-TEXT = torchtext.data.Field()
-# Data distributed with the assignment
-train, val, test = torchtext.datasets.LanguageModelingDataset.splits(
-    path=".", 
-    train="train.5k.txt", validation="valid.txt", test="valid.txt", text_field=TEXT)
-TEXT.build_vocab(train)
-if args.mini:
-    TEXT.build_vocab(train, max_size=1000)
-train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
-    (train, val, test), batch_size=BATCH_SIZE, device=-1, bptt_len=UNROLL, repeat=False)
-url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
-TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
-print("vocab size: " + str(len(TEXT.vocab)))
+# TEXT = torchtext.data.Field()
+# # Data distributed with the assignment
+# train, val, test = torchtext.datasets.LanguageModelingDataset.splits(
+#     path=".", 
+#     train="train.5k.txt", validation="valid.txt", test="valid.txt", text_field=TEXT)
+# TEXT.build_vocab(train)
+# if args.mini:
+#     TEXT.build_vocab(train, max_size=1000)
+# train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
+#     (train, val, test), batch_size=BATCH_SIZE, device=-1, bptt_len=UNROLL, repeat=False)
+# url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
+# TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
+# print("vocab size: " + str(len(TEXT.vocab)))
 
 class LSTM(nn.Module):
     def __init__(self, embedding_size, vocab_size, hidden_size, num_layers=2, dropout=DROPOUT):
@@ -109,6 +109,7 @@ def train_batch(model, criterion, optim, text, target, epoch):
     return loss.data[0]
 
 def train(model, criterion, optim):
+    model.train()
     for epoch in range(EPOCHS):
     # for epoch in range(12):
         total_loss = 0
@@ -131,10 +132,14 @@ def train(model, criterion, optim):
         print("Epoch " + str(epoch) + " Loss: " + str(total_loss))
         print(rnn)
 
-def validate(model, val_iter, hidden=False):
-    correct = 0.0
-    total  = 0.0
-    num_zeros = 0.0
+def evaluate(model, val_iter, hidden=False):
+    # correct = 0.0
+    # total  = 0.0
+    # num_zeros = 0.0
+    total_loss = 0.0
+
+    model.eval()
+    vocab_size = len(TEXT.vocab)
 
     # if hidden:
     h = (Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, HIDDEN)), 
@@ -149,16 +154,21 @@ def validate(model, val_iter, hidden=False):
             target = target.cuda()
 
         # if hidden:
-        h, probs = model(text, h)
+        probs, h = model(text, h)
+        probs_flat = probs.view(-1, vocab_size)
+
+        total_loss += criterion(probs_flat, target).data
         # else:
         #     probs = model(text)
-        _, preds = torch.max(probs, 1)
-        print(probs, target)
-        correct += sum(preds.view(-1, len(TEXT.vocab)) == target.data)
-        total += 1
-        num_zeros += sum(torch.zeros_like(target.data) == target.data)
-    print(correct,total, num_zeros)
-    return correct / total
+
+        # _, preds = torch.max(probs, 1)
+        # print(probs, target)
+        # correct += sum(preds.view(-1, len(TEXT.vocab)) == target.data)
+        # total += 1
+        # num_zeros += sum(torch.zeros_like(target.data) == target.data)
+
+    print(total_loss[0])
+    return total_loss
 
 ####### CHECK FOR CUDA
 if torch.cuda.is_available():
@@ -166,10 +176,14 @@ if torch.cuda.is_available():
     rnn = rnn.cuda()
 #######
 
-train(rnn, criterion, optimizer)
+# train(rnn, criterion, optimizer)
 
 filename = 'lstm_model.sav'
-pickle.dump(rnn, open(filename, 'wb'))
+# pickle.dump(rnn, open(filename, 'wb'))
 
 loaded_model = pickle.load(open(filename, 'rb'))
-validate(loaded_model, val_iter, hidden=True)
+print("Validation Set")
+evaluate(loaded_model, val_iter, hidden=True)
+print("Test Set")
+evaluate(loaded_model, test_iter, hidden=True)
+

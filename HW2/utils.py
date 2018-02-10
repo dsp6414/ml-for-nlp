@@ -72,7 +72,7 @@ def train(model, train_iter, num_epochs, criterion, optimizer, hidden=False):
 				model.zero_grad()
 
 				x = vector[:-1]
-				y = vector[-1].view(1)	
+				y = vector[-1].view(1)
 
 				if hidden:
 					h, probs = model.forward(x, h)
