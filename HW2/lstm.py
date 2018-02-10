@@ -34,10 +34,9 @@ GRAD_NORM = 5
 # GRAD_NORM = 10
 
 # PARSE ARGS
-# parser = argparse.ArgumentParser(description='LSTM Language Model')
-# parser.add_argument('--mini', type=bool, default=False, help='run smaller dataset')
-# args = parser.parse_args()
-
+parser = argparse.ArgumentParser(description='LSTM Language Model')
+parser.add_argument('--mini', type=bool, default=False, help='run smaller dataset')
+args = parser.parse_args()
 
 TEXT = torchtext.data.Field()
 # Data distributed with the assignment
