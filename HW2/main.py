@@ -106,9 +106,9 @@ if args.model == 'LSTM':
 	# filename = 'lstm_medium.sav'
 	# torch.save(rnn.state_dict(), filename)
 
-	filename = 'lstm_medium.sav'
+	filename = 'lstm_medium30.sav'
 	print("LOADING MODEL")
-	loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='medium')
+	loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
 	if torch.cuda.is_available():
 		print("USING CUDA")
 		loaded_model = loaded_model.cuda()
