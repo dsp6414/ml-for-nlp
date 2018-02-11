@@ -19,17 +19,17 @@ BATCH_SIZE = 20
 BPTT = 35
 EMBEDDING_SIZE = 128
 NUM_LAYERS = 2
-# LR = 1 * 1.2 # decreased by 1.2 for each epoch after 6th
-# DECAY = 1.2
-# TEMP_EPOCH = 6
-# EPOCHS = 39
+LR = 1 * 1.2 # decreased by 1.2 for each epoch after 6th
+DECAY = 1.2
+TEMP_EPOCH = 6
+EPOCHS = 39
 
 # Large LSTM
-EPOCHS = 55
-LR = 1 * 1.15 # decreased by 1.15 for each epoch after 14th
-DECAY = 1.15
-TEMP_EPOCH = 14
-GRAD_NORM = 10
+# EPOCHS = 55
+# LR = 1 * 1.15 # decreased by 1.15 for each epoch after 14th
+# DECAY = 1.15
+# TEMP_EPOCH = 14
+# GRAD_NORM = 10
 
 parser = argparse.ArgumentParser(description='Language Modeling')
 parser.add_argument('--model', type=str, default='LSTM',
@@ -94,16 +94,19 @@ if args.model == 'LSTM':
 		rnn = rnn.cuda()
 	criterion = nn.CrossEntropyLoss()
 	optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
-	scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[TEMP_EPOCH], gamma=1/DECAY)
+
+	# THIS NEEDS TO DECREASE AFTER EACH EPOCH
+	milestones = list(range(TEMP_EPOCH, EPOCHS - 1))
+	scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
 	print("TRAINING DATA")
-	utilslstm.train(rnn, train_iter, EPOCHS, criterion, optimizer, scheduler=scheduler, grad_norm=10) #change grad norm
+	utilslstm.train(rnn, train_iter, EPOCHS, criterion, optimizer, scheduler=scheduler, grad_norm=5) #change grad norm
 
 	print("SAVING MODEL")
-	filename = 'lstm_large.sav'
+	filename = 'lstm_medium.sav'
 	torch.save(rnn.state_dict(), filename)
 
 	print("LOADING MODEL")
-	loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
+	loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='medium')
 	loaded_model.load_state_dict(torch.load(filename))
 	print("VALIDATION SET")
 	utilslstm.evaluate(loaded_model, val_iter, criterion)
