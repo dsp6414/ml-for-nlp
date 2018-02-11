@@ -7,7 +7,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torchtext
 from torchtext.vocab import Vectors, GloVe
-import pickle
+import math
 import random
 import pdb
 
@@ -61,20 +61,21 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, g
 def evaluate(model, iter_data, criterion):
     model.eval()
     total_loss = 0.0
+    total_len = 0.0
     h = model.init_hidden()
-    it = next(iter(iter_data))
     for batch in iter_data:
         text, target = get_batch(batch)
         probs, h = model(text, h)
         probs_flat = probs.view(-1, model.vocab_size)
-        total_loss += criterion(probs_flat, target).data
+        total_loss += len(text) * criterion(probs_flat, target).data
+        total_len += len(text)
         # _, preds = torch.max(probs, 1)
         # print(probs, target)
         # correct += sum(preds.view(-1, len(TEXT.vocab)) == target.data)
         # total += 1
         # num_zeros += sum(torch.zeros_like(target.data) == target.data)
-    print(total_loss[0])
-    return total_loss
+    print(total_loss[0] / total_len)
+    return total_loss[0] / total_len
 
 def kaggle(model, ):
     f = open('input.txt')

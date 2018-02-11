@@ -7,6 +7,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torchtext
 from torchtext.vocab import Vectors, GloVe
+import math
 import random
 
 import trigrams, nnlm, lstm
@@ -114,7 +115,9 @@ if args.model == 'LSTM':
 	loaded_model.load_state_dict(torch.load(filename))
 	criterion = nn.CrossEntropyLoss()
 	print("VALIDATION SET")
-	utilslstm.evaluate(loaded_model, val_iter, criterion)
+	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
+	print("Perplexity")
+	print(math.exp(loss))
 	# print("TEST SET")
 	# utilslstm.evaluate(loaded_model, test_iter, criterion)
 
