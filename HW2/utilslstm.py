@@ -41,9 +41,9 @@ def train_batch(model, text, target, criterion, optimizer, grad_norm):
 
 def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, grad_norm=5):
     model.train()
+    filename = 'lstm_large'
     for epoch in range(num_epochs):
         total_loss = 0
-        counter = 0
         for batch in train_iter:
             text, target = get_batch(batch)
             batch_loss = train_batch(model, text, target, criterion, optimizer, grad_norm)
@@ -54,6 +54,9 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, g
         scheduler.step()
         print("learning rate: " + str(scheduler.get_lr()))
         print("Epoch " + str(epoch) + " Loss: " + str(total_loss))
+        if epoch % 5 == 0:
+            print("SAVING MODEL #" + str(epoch))
+            torch.save(model.state_dict(), filename + str(epoch) + ".sav")
 
 def evaluate(model, iter_data, criterion):
     model.eval()

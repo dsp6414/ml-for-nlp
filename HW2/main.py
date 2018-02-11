@@ -98,9 +98,11 @@ if args.model == 'LSTM':
 	print("TRAINING DATA")
 	utilslstm.train(rnn, train_iter, EPOCHS, criterion, optimizer, scheduler=scheduler, grad_norm=10) #change grad norm
 
+	print("SAVING MODEL")
 	filename = 'lstm_large.sav'
 	torch.save(rnn.state_dict(), filename)
 
+	print("LOADING MODEL")
 	loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
 	loaded_model.load_state_dict(torch.load(filename))
 	print("VALIDATION SET")
