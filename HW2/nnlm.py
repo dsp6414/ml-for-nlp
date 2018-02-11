@@ -25,9 +25,6 @@ class LSTMLM(nn.Module):
 		# Embed word ids to vectors
 
 		print("batch size",batch.size())
-		if torch.cuda.is_available():
-			batch = batch.cuda()
-			print("batch to cuda")
 
 		print("pre emedding")
 		word_vectors = self.embedding(batch) # [n x embedding_dim]

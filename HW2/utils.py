@@ -81,6 +81,9 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 				x = vector[:-1]
 				y = vector[-1].view(1)
 
+				if torch.cuda.is_available():
+					x = x.cuda()
+
 				print(x,h)
 
 				if hidden:
