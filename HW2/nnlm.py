@@ -32,7 +32,7 @@ class LSTMLM(nn.Module):
 		print("pre emedding")
 		word_vectors = self.embedding(batch) # [n x embedding_dim]
 		if torch.cuda.is_available():
-			word_vectors.cuda()
+			word_vectors = word_vectors.cuda()
 		print('hello')
 		print("w,h", word_vectors.size(), h[0].size(), h[1].size())
 		
