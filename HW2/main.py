@@ -81,6 +81,22 @@ train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
 # trigrams_lm.train(train_iter, n_iters=None)
 # print(utils.validate(trigrams_lm, val_iter))
 
+def kaggle(model, file):
+    f = open(file)
+    lines = f.readlines()
+    hidden = model.init_hidden()
+    with open('sample.txt', 'w') as out:
+        for i, line in enumerate(lines):
+            text = Variable([TEXT.vocab.stoi[word] for word in line])
+            if torch.cuda.is_available():
+                text = text.cuda()
+            h = model.init_hidden()
+            probs, h = model(text, h)
+            print("vocab size ", mode.vocab_size)
+            pdb.set_trace(probs)
+            predictions = sorted(range(len(a)), key=lambda i: a[i])[-2:]
+            print("%d,%s"%(i, " ".join(predictions)), file=out)
+
 if args.model == 'NNLM':
 	NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
 	criterion = nn.NLLLoss()
@@ -114,10 +130,9 @@ if args.model == 'LSTM':
 		loaded_model = loaded_model.cuda()
 	loaded_model.load_state_dict(torch.load(filename))
 	criterion = nn.CrossEntropyLoss()
-	print("VALIDATION SET")
-	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
-	print("Perplexity")
-	print(math.exp(loss))
+	# print("VALIDATION SET")
+	# loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
+	# print("Perplexity")
+	# print(math.exp(loss))
 	print("KAGGLE")
 	utilslstm.kaggle(loaded_model, 'input.txt')
-

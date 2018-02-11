@@ -76,21 +76,3 @@ def evaluate(model, iter_data, criterion):
         # num_zeros += sum(torch.zeros_like(target.data) == target.data)
     print(total_loss[0] / total_len)
     return total_loss[0] / total_len
-
-def kaggle(model, file):
-    f = open(file)
-    lines = f.readlines()
-    hidden = model.init_hidden()
-
-    with open('sample.txt', 'w') as out:
-        for i, line in enumerate(lines):
-
-            text = Variable([TEXT.vocab.stoi[word] for word in line])
-            if torch.cuda.is_available():
-                text = text.cuda()
-            h = model.init_hidden()
-            probs, h = model(text, h)
-            print("vocab size ", mode.vocab_size)
-            pdb.set_trace(probs)
-            predictions = sorted(range(len(a)), key=lambda i: a[i])[-2:]
-            print("%d,%s"%(i, " ".join(predictions)), file=out)
