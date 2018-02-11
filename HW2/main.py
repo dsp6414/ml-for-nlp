@@ -93,7 +93,8 @@ def kaggle(model, file):
             h = model.init_hidden(batch_size=1)
             probs, h = model(text, h) # probs: [10 x vocab_size]
             values, indices = torch.sort(probs[-1], descending=True)
-            print("%d,%s"%(i, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
+            print('id, word', file=out)
+            print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
 
 if args.model == 'NNLM':
 	NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
