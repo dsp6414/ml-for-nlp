@@ -82,6 +82,10 @@ train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
 
 if args.model == 'NNLM':
 	NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
+	if torch.cuda.is_available():
+		print("converting NNLM to cuda")
+		NNLM = NNLM.cuda()
+
 	criterion = nn.NLLLoss()
 	optimizer = optim.SGD(NNLM.parameters(), lr=0.1)
 	utils.train(NNLM, train_iter, 1, criterion, optimizer, hidden=True)

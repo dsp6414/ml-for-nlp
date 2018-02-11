@@ -23,6 +23,11 @@ class LSTMLM(nn.Module):
 	def forward(self, batch, h):
 		# print("input to forward", batch.size()) # [n] 
 		# Embed word ids to vectors
+
+		if torch.cuda.is_available():
+			print("converted batch to cuda")
+			batch = batch.cuda()
+
 		word_vectors = self.embedding(batch) # [n x embedding_dim]
 		
 		# Get predictions and hidden state from LSTM  

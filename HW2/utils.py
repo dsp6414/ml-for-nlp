@@ -57,18 +57,25 @@ def validate(model, val_iter, hidden=False):
 	return correct / total
 
 def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, hidden=False):
+	print("TRAINING")
 	for epoch in range(num_epochs):
 		if hidden:
 			h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
 			c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
 			h = (h_0, c_0)
+			if torch.cuda.is_available():
+				h = (h_0.cuda(), c_0.cuda())
+
 		n_iters = 0
 		for batch in train_iter:
-			if n_iters > 2:
-				break
+			print(n_iters)
+			if n_iters > 1:
+				print("good enough")
+				return
+
 			# Line vector
-			processed_batch = process_batch(batch, 3)
-			for vector in autograd.Variable(processed_batch):
+			processed_batch = autograd.Variable(process_batch(batch, 3))
+			for vector in processed_batch:
 				model.zero_grad()
 
 				x = vector[:-1]
@@ -84,3 +91,5 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 				loss.backward(retain_graph=True)
 				optimizer.step()
 			n_iters +=1
+
+	print("done training")
