@@ -20,17 +20,17 @@ BATCH_SIZE = 20
 BPTT = 35
 EMBEDDING_SIZE = 128
 NUM_LAYERS = 2
-# LR = 1 * 1.2 # decreased by 1.2 for each epoch after 6th
-# DECAY = 1.2
-# TEMP_EPOCH = 6
-# EPOCHS = 39
+LR = 1 * 1.2 # decreased by 1.2 for each epoch after 6th
+DECAY = 1.2
+TEMP_EPOCH = 6
+EPOCHS = 39
 
 # Large LSTM
-EPOCHS = 55
-LR = 1 * 1.15 # decreased by 1.15 for each epoch after 14th
-DECAY = 1.15
-TEMP_EPOCH = 14
-GRAD_NORM = 10
+# EPOCHS = 55
+# LR = 1 * 1.15 # decreased by 1.15 for each epoch after 14th
+# DECAY = 1.15
+# TEMP_EPOCH = 14
+# GRAD_NORM = 10
 
 parser = argparse.ArgumentParser(description='Language Modeling')
 parser.add_argument('--model', type=str, default='LSTM',
@@ -106,9 +106,9 @@ if args.model == 'LSTM':
 	# filename = 'lstm_medium.sav'
 	# torch.save(rnn.state_dict(), filename)
 
-	filename = 'lstm_large.sav'
+	filename = 'lstm_medium.sav'
 	print("LOADING MODEL")
-	loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
+	loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='medium')
 	if torch.cuda.is_available():
 		print("USING CUDA")
 		loaded_model = loaded_model.cuda()
