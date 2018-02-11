@@ -7,6 +7,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torchtext
 from torchtext.vocab import Vectors, GloVe
+import math
 import random
 
 import trigrams, nnlm, lstm
@@ -19,17 +20,17 @@ BATCH_SIZE = 20
 BPTT = 35
 EMBEDDING_SIZE = 128
 NUM_LAYERS = 2
-# LR = 1 * 1.2 # decreased by 1.2 for each epoch after 6th
-# DECAY = 1.2
-# TEMP_EPOCH = 6
-# EPOCHS = 39
+LR = 1 * 1.2 # decreased by 1.2 for each epoch after 6th
+DECAY = 1.2
+TEMP_EPOCH = 6
+EPOCHS = 39
 
 # Large LSTM
-EPOCHS = 55
-LR = 1 * 1.15 # decreased by 1.15 for each epoch after 14th
-DECAY = 1.15
-TEMP_EPOCH = 14
-GRAD_NORM = 10
+# EPOCHS = 55
+# LR = 1 * 1.15 # decreased by 1.15 for each epoch after 14th
+# DECAY = 1.15
+# TEMP_EPOCH = 14
+# GRAD_NORM = 10
 
 parser = argparse.ArgumentParser(description='Language Modeling')
 parser.add_argument('--model', type=str, default='LSTM',
@@ -80,6 +81,23 @@ train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
 # trigrams_lm.train(train_iter, n_iters=None)
 # print(utils.validate(trigrams_lm, val_iter))
 
+def kaggle(model, file):
+    f = open(file)
+    lines = f.readlines()
+    hidden = model.init_hidden()
+    with open('sample.txt', 'w') as out:
+        for i, line in enumerate(lines):
+            text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
+            if torch.cuda.is_available():
+                text = text.cuda()
+            h = model.init_hidden(batch_size=1)
+            pdb.set_trace()
+            probs, h = model(text, h)
+            print("vocab size ", model.vocab_size)
+            pdb.set_trace()
+            predictions = sorted(range(len(a)), key=lambda i: a[i])[-2:]
+            print("%d,%s"%(i, " ".join(predictions)), file=out)
+
 if args.model == 'NNLM':
 	NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
 	if torch.cuda.is_available():
@@ -117,8 +135,9 @@ if args.model == 'LSTM':
 		loaded_model = loaded_model.cuda()
 	loaded_model.load_state_dict(torch.load(filename))
 	criterion = nn.CrossEntropyLoss()
-	print("VALIDATION SET")
-	utilslstm.evaluate(loaded_model, val_iter, criterion)
-	# print("TEST SET")
-	# utilslstm.evaluate(loaded_model, test_iter, criterion)
-
+	# print("VALIDATION SET")
+	# loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
+	# print("Perplexity")
+	# print(math.exp(loss))
+	print("KAGGLE")
+	kaggle(loaded_model, 'input.txt')
