@@ -27,7 +27,7 @@ class LSTMLM(nn.Module):
 		print("batch size",batch.size())
 
 		print("pre emedding")
-		word_vectors = self.embedding(batch) # [n x embedding_dim]
+		word_vectors = self.embedding(batch).unsqueeze(1) # [n x embedding_dim]
 		if torch.cuda.is_available():
 			word_vectors = word_vectors.cuda()
 		print('hello')
