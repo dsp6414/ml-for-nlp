@@ -87,10 +87,11 @@ def kaggle(model, file):
     hidden = model.init_hidden()
     with open('sample.txt', 'w') as out:
         for i, line in enumerate(lines):
-            text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line]))
+            text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line])).unsqueeze(1)
             if torch.cuda.is_available():
                 text = text.cuda()
             h = model.init_hidden()
+            pdb.set_trace()
             probs, h = model(text, h)
             print("vocab size ", mode.vocab_size)
             pdb.set_trace(probs)
