@@ -77,8 +77,8 @@ def evaluate(model, iter_data, criterion):
     print(total_loss[0] / total_len)
     return total_loss[0] / total_len
 
-def kaggle(model, ):
-    f = open('input.txt')
+def kaggle(model, file):
+    f = open(file)
     lines = f.readlines()
     hidden = model.init_hidden()
 
@@ -86,6 +86,7 @@ def kaggle(model, ):
         for i, line in enumerate(lines):
             h = model.init_hidden()
             probs, h = model(line, h)
+            print("vocab size ", mode.vocab_size)
             pdb.set_trace(probs)
             predictions = sorted(range(len(a)), key=lambda i: a[i])[-2:]
             print("%d,%s"%(i, " ".join(predictions)), file=out)

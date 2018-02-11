@@ -118,6 +118,6 @@ if args.model == 'LSTM':
 	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
 	print("Perplexity")
 	print(math.exp(loss))
-	# print("TEST SET")
-	# utilslstm.evaluate(loaded_model, test_iter, criterion)
+	print("KAGGLE")
+	utilslstm.kaggle(loaded_model, 'input.txt')
 
