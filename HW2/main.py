@@ -92,11 +92,11 @@ def kaggle(model, file):
                 text = text.cuda()
             h = model.init_hidden(batch_size=1)
             pdb.set_trace()
-            probs, h = model(text, h)
+            probs, h = model(text, h) # probs: [10 x vocab_size]
             print("vocab size ", model.vocab_size)
             pdb.set_trace()
-            predictions = sorted(range(len(a)), key=lambda i: a[i])[-2:]
-            print("%d,%s"%(i, " ".join(predictions)), file=out)
+            values, indices = torch.sort(probs[-1], descending=True)
+            print("%d,%s"%(i, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:10]])), file=out)
 
 if args.model == 'NNLM':
 	NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
