@@ -90,7 +90,7 @@ def kaggle(model, file):
             text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
             if torch.cuda.is_available():
                 text = text.cuda()
-            h = model.init_hidden()
+            h = model.init_hidden(batch_size=1)
             pdb.set_trace()
             probs, h = model(text, h)
             print("vocab size ", model.vocab_size)
