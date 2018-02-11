@@ -34,7 +34,8 @@ class LSTMLM(nn.Module):
 		if torch.cuda.is_available():
 			word_vectors = word_vectors.cuda()
 		print('hello')
-		print("w,h", word_vectors.size(), h[0].size(), h[1].size())
+		print("w,h sizes", word_vectors.size(), h[0].size(), h[1].size())
+		print('w,h', word_vectors, h)
 		
 		# Get predictions and hidden state from LSTM  
 		# print(self.lstm(word_vectors, h)
