@@ -32,7 +32,7 @@ class LSTMLM(nn.Module):
 		print("pre emedding")
 		word_vectors = self.embedding(batch) # [n x embedding_dim]
 		print('hello')
-		print("w,h", word_vectors.size(), h.size())
+		print("w,h", word_vectors.size(), h[0].size(), h[1].size())
 		
 		# Get predictions and hidden state from LSTM  
 		# print(self.lstm(word_vectors, h)
