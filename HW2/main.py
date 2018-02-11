@@ -34,7 +34,7 @@ EPOCHS = 39
 
 parser = argparse.ArgumentParser(description='Language Modeling')
 parser.add_argument('--model', type=str, default='LSTM',
-                    help='type of RNN')
+					help='type of RNN')
 parser.add_argument('--mini', type=bool, default=False, help='run smaller dataset')
 args = parser.parse_args()
 
@@ -82,19 +82,19 @@ train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
 # print(utils.validate(trigrams_lm, val_iter))
 
 def kaggle(model, file):
-    f = open(file)
-    lines = f.readlines()
-    hidden = model.init_hidden()
-    with open('sample.txt', 'w') as out:
-    	print('id, word', file=out)
-        for i, line in enumerate(lines):
-            text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
-            if torch.cuda.is_available():
-                text = text.cuda()
-            h = model.init_hidden(batch_size=1)
-            probs, h = model(text, h) # probs: [10 x vocab_size]
-            values, indices = torch.sort(probs[-1], descending=True)
-            print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
+	f = open(file)
+	lines = f.readlines()
+	hidden = model.init_hidden()
+	with open('sample.txt', 'w') as out:
+		print('id, word', file=out)
+		for i, line in enumerate(lines):
+			text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
+			if torch.cuda.is_available():
+				text = text.cuda()
+			h = model.init_hidden(batch_size=1)
+			probs, h = model(text, h) # probs: [10 x vocab_size]
+			values, indices = torch.sort(probs[-1], descending=True)
+			print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
 
 if args.model == 'NNLM':
 	NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
