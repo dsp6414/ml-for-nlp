@@ -24,7 +24,7 @@ class LSTMLM(nn.Module):
 		# print("input to forward", batch.size()) # [n] 
 		# Embed word ids to vectors
 
-		print(batch)
+		print("batch size",batch.size())
 		if torch.cuda.is_available():
 			batch = batch.cuda()
 			print("batch to cuda")
