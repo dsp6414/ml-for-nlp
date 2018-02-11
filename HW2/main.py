@@ -91,10 +91,8 @@ def kaggle(model, file):
             if torch.cuda.is_available():
                 text = text.cuda()
             h = model.init_hidden(batch_size=1)
-            pdb.set_trace()
             probs, h = model(text, h) # probs: [10 x vocab_size]
             print("vocab size ", model.vocab_size)
-            pdb.set_trace()
             values, indices = torch.sort(probs[-1], descending=True)
             print("%d,%s"%(i, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:10]])), file=out)
 
