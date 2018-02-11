@@ -94,7 +94,7 @@ def kaggle(model, file):
             pdb.set_trace()
             probs, h = model(text, h)
             print("vocab size ", model.vocab_size)
-            pdb.set_trace(probs)
+            pdb.set_trace()
             predictions = sorted(range(len(a)), key=lambda i: a[i])[-2:]
             print("%d,%s"%(i, " ".join(predictions)), file=out)
 
