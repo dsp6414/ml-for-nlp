@@ -135,4 +135,4 @@ if args.model == 'LSTM':
 	# print("Perplexity")
 	# print(math.exp(loss))
 	print("KAGGLE")
-	utilslstm.kaggle(loaded_model, 'input.txt')
+	kaggle(loaded_model, 'input.txt')
