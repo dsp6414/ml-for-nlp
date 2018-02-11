@@ -81,7 +81,7 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 				x = vector[:-1]
 				y = vector[-1].view(1)
 
-				print x,h
+				print(x,h)
 
 				if hidden:
 					h, probs = model.forward(x, h)
