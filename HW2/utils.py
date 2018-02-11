@@ -85,8 +85,6 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 					x = x.cuda()
 					y = y.cuda()
 
-				print(x,h)
-
 				if hidden:
 					h, probs = model.forward(x, h)
 				else:
