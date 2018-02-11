@@ -21,18 +21,18 @@ class LSTMLM(nn.Module):
 		self.linear.weight.data.uniform_(-0.1, 0.1)
 		
 	def forward(self, batch, h):
-		print(batch.size())
+		# print("input to forward", batch.size()) # [n] 
 		# Embed word ids to vectors
-		word_vectors = self.embedding(batch) 
-		print(word_vectors)
+		word_vectors = self.embedding(batch) # [n x embedding_dim]
 		
 		# Get predictions and hidden state from LSTM  
 		# print(self.lstm(word_vectors, h))
-		out, h = self.lstm(word_vectors, h)
+		out, h = self.lstm(word_vectors, h) # out is [n, 1, hidden_size]
+		# print("result of lstm", out.size())
 		
 		out = out.squeeze().view(-1)
-		print("out.size()", out.size())
+		# print("out.size()", out.size()) # [60]
 		# Decode hidden states of all time step
 		out = self.linear(out)  
-		print("after linear out.size()", out.size())
+		# print("after linear out.size()", out.size())
 		return h, out
