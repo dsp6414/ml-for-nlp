@@ -83,6 +83,7 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 
 				if torch.cuda.is_available():
 					x = x.cuda()
+					y = y.cuda()
 
 				print(x,h)
 
