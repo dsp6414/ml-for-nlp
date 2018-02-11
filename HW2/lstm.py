@@ -86,13 +86,13 @@ class LSTM(nn.Module):
         self.embedding.weight.data.uniform_(-self.init_param, self.init_param)
         self.linear.weight.data.uniform_(-self.init_param, self.init_param)
 
-    def init_hidden(self):
+    def init_hidden(self, batch_size=BATCH_SIZE):
         if torch.cuda.is_available():
-            return (Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, self.hidden_size)).cuda(),
-            Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, self.hidden_size)).cuda())
+            return (Variable(torch.zeros(NUM_LAYERS, batch_size, self.hidden_size)).cuda(),
+            Variable(torch.zeros(NUM_LAYERS, batch_size, self.hidden_size)).cuda())
 
-        return (Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, self.hidden_size)),
-            Variable(torch.zeros(NUM_LAYERS, BATCH_SIZE, self.hidden_size)))
+        return (Variable(torch.zeros(NUM_LAYERS, batch_size, self.hidden_size)),
+            Variable(torch.zeros(NUM_LAYERS, batch_size, self.hidden_size)))
 
     def forward(self, inputs, hidden):
         embedding = self.dropout(self.embedding(inputs)) # [bptt_len - 1 x batch x embedding_size]
