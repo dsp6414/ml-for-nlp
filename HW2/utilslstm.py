@@ -41,7 +41,7 @@ def train_batch(model, text, target, criterion, optimizer, grad_norm):
 
 def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, grad_norm=5):
     model.train()
-    filename = 'lstm_medium'
+    filename = 'lstm_large_new'
     for epoch in range(num_epochs):
         total_loss = 0
         for batch in train_iter:
