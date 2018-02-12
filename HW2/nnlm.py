@@ -12,6 +12,7 @@ class LSTMLM(nn.Module):
 		self.num_layers = 2
 		self.hidden_size=hidden_size
 		self.embedding = nn.Embedding(vocab_size, embedding_dim) # num_embeddings, embedding_dim
+		self.tanh = nn.Tanh()
 		self.lstm = nn.LSTM(embedding_dim, hidden_size, self.num_layers, batch_first=False)
 		self.dropout = nn.Dropout(0.5)
 		self.linear = nn.Linear(hidden_size * n, vocab_size)
@@ -27,7 +28,7 @@ class LSTMLM(nn.Module):
 		# print("input to forward", batch.size()) # [n] 
 		# Embed word ids to vectors
 
-		word_vectors = self.embedding(batch) # [n x embedding_dim]
+		word_vectors = self.tanh(self.embedding(batch)) # [n x embedding_dim]
 
 		if word_vectors.dim() == 1:	
 			word_vectors = word_vectors.unsqueeze(1)
