@@ -38,7 +38,6 @@ def train_batch(model, text, target, hidden, criterion, optimizer, grad_norm):
     # calculate loss
     output_flat = output.view(-1, model.vocab_size)
     loss = criterion(output_flat, target) # output: [bptt_len-1 x batch x vocab_size]
-    pdb.set_trace()
     # target: [bptt_len-1 x batch]
     loss.backward()
     nn.utils.clip_grad_norm(model.parameters(), max_norm=grad_norm)
@@ -71,11 +70,9 @@ def evaluate(model, iter_data, criterion):
     for batch in iter_data:
         text, target = get_batch(batch)
         probs, h = model(text, h)
-        pdb.set_trace()
         probs_flat = probs.view(-1, model.vocab_size)
         total_loss += len(text) * criterion(probs_flat, target).data
         total_len += len(text)
-        pdb.set_trace()
         h = reset_hidden(h)
         # _, preds = torch.max(probs, 1)
         # print(probs, target)
