@@ -71,7 +71,9 @@ def validate(model, val_iter, hidden=False):
 def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, hidden=False):
 	print("TRAINING")
 	for epoch in range(num_epochs):
+		loss_total = 0.0
 		n_iters = 0
+		n_obs = 0.0
 		for batch in train_iter:
 			print(n_iters)
 			processed_batch = autograd.Variable(process_batch(batch, 3))
@@ -99,9 +101,15 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 
 			# probs = probs.view(1, -1)
 			loss = criterion(probs, y)
+			loss_total += loss
+			n_obs += processed_batch.size()[0]
 			loss.backward(retain_graph=True)
 			nn.utils.clip_grad_norm(model.parameters(), max_norm=NNLM_GRAD_NORM)
 			optimizer.step()
 			n_iters +=1
+
+		# take avg of losses
+		loss_avg = loss_total / float(n_obs)
+		print("perplexity", 2.0 ** loss_avg)
 
 	print("done training")
