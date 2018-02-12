@@ -60,13 +60,10 @@ def validate(model, val_iter, hidden=False):
 			# Probs is 1-d if you go vector by vector
 		_, preds = torch.max(probs, 1)
 
-		print("probs",probs)
-		print((preds==y)[0])
-		correct += torch.sum(preds.data == y.data)
+		correct += torch.sum(torch.eq(preds.data,y))
 		# total += batch.text.size()[1] - 1
-		total += 1
-		num_zeros += sum(torch.zeros_like(y.data) == y.data)
-		n_vectors += 1
+		total += y.size()[0]
+		num_zeros += sum(torch.zeros_like(y) == y)
 		# print(preds, y)
 	print(correct,total, num_zeros)
 	return correct / total
@@ -84,7 +81,7 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 		n_iters = 0
 		for batch in train_iter:
 			print(n_iters)
-			if n_iters > 10:
+			if n_iters > 1:
 				return
 			processed_batch = autograd.Variable(process_batch(batch, 3))
 
