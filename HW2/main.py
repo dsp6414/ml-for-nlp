@@ -60,6 +60,9 @@ else:
 	TEXT.build_vocab(train)
 print('len(TEXT.vocab)', len(TEXT.vocab))
 
+if args.model == 'extension':
+	BATCH_SIZE = 40
+
 train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
 	(train, val, test), batch_size=BATCH_SIZE, device=-1, bptt_len=BPTT, repeat=False)
 
@@ -138,6 +141,36 @@ elif args.model == 'LSTM':
 
 	print("SAVING MODEL")
 	filename = 'lstm_large_new.sav'
+	torch.save(rnn.state_dict(), filename)
+
+	# filename = 'lstm_large.sav'
+	# print("LOADING MODEL")
+	# loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
+	# if torch.cuda.is_available():
+	# 	print("USING CUDA")
+	# 	loaded_model = loaded_model.cuda()
+	# loaded_model.load_state_dict(torch.load(filename))
+	# criterion = nn.CrossEntropyLoss()
+	# print("VALIDATION SET")
+	# loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
+	# print("Perplexity")
+	# print(math.exp(loss))
+	# print("KAGGLE")
+	# kaggle(loaded_model, 'input.txt')
+
+if args.model == 'extension':
+	rnn = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
+	if torch.cuda.is_available():
+		print("USING CUDA")
+		rnn = rnn.cuda()
+	criterion = nn.CrossEntropyLoss()
+	optimizer = optim.ASGD(rnn.parameters(), lr=30)
+
+	print("TRAINING DATA")
+	utilslstm.train(rnn, train_iter, 50, criterion, optimizer, grad_norm=0.25) #change grad norm
+
+	print("SAVING MODEL")
+	filename = 'lstm_extension.sav'
 	torch.save(rnn.state_dict(), filename)
 
 	# filename = 'lstm_large.sav'
