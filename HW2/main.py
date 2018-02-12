@@ -148,4 +148,5 @@ elif args.model == 'LSTM':
 else: 
 	filename = args.model
 	model = torch.load(filename)
+	criterion = nn.CrossEntropyLoss()
 	print("perplexity", utils.validate(model, val_iter, criterion, hidden=True))
