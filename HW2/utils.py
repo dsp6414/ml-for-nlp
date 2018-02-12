@@ -5,7 +5,7 @@ import torch.autograd as autograd
 import torch.nn as nn
 
 torch.manual_seed(1)
-
+NNLM_GRAD_NORM = 5
 
 
 # Batch will have the observations vertically.
@@ -108,7 +108,7 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 				probs = probs.view(1, -1)
 				loss = criterion(probs, y)
 				loss.backward(retain_graph=True)
-				nn.utils.clip_grad_norm(model.parameters(), max_norm=GRAD_NORM)
+				nn.utils.clip_grad_norm(model.parameters(), max_norm=NNLM_GRAD_NORM)
 				optimizer.step()
 				n_iters +=1
 
