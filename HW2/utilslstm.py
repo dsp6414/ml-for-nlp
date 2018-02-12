@@ -75,7 +75,7 @@ def evaluate(model, iter_data, criterion):
         # correct += sum(preds.view(-1, len(TEXT.vocab)) == target.data)
         # total += 1
         # num_zeros += sum(torch.zeros_like(target.data) == target.data)
-    print("Total Loss ," total_loss[0])
-    print("Total Len ," total_len)
+    print("Total Loss ", total_loss[0])
+    print("Total Len ", total_len)
     print(total_loss[0] / total_len)
     return total_loss[0] / total_len
