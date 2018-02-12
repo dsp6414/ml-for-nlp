@@ -22,9 +22,15 @@ def get_batch(batch, n=20):
         target = target.cuda()
     return text, target
 
-def train_batch(model, text, target, criterion, optimizer, grad_norm):
+def reset_hidden(h):
+    if type(h) == Variable:
+        return Variable(h.data)
+    else:
+        return tuple(reset_hidden(v) for v in h)
+
+def train_batch(model, text, target, hidden, criterion, optimizer, grad_norm):
     # initialize hidden vectors
-    hidden = model.init_hidden() # This includes (hidden, cell)
+    hidden = reset_hidden(hidden) # This includes (hidden, cell)
     # clear gradients
     model.zero_grad()
     # calculate forward pass
@@ -33,24 +39,21 @@ def train_batch(model, text, target, criterion, optimizer, grad_norm):
     output_flat = output.view(-1, model.vocab_size)
     loss = criterion(output_flat, target) # output: [bptt_len-1 x batch x vocab_size]
     # target: [bptt_len-1 x batch]
-    # backpropagate and step
     loss.backward()
     nn.utils.clip_grad_norm(model.parameters(), max_norm=grad_norm)
     optimizer.step()
-    return loss.data[0]
+    return loss.data[0], hidden
 
 def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, grad_norm=5):
     model.train()
-    filename = 'lstm_extension'
+    filename = 'lstm_large_hidden'
+    hidden = model.init_hidden()
     for epoch in range(num_epochs):
         total_loss = 0
         for batch in train_iter:
             text, target = get_batch(batch)
-            batch_loss = train_batch(model, text, target, criterion, optimizer, grad_norm)
+            batch_loss, hidden = train_batch(model, text, target, hidden, criterion, optimizer, grad_norm)
             total_loss += batch_loss
-            # if counter % 20 == 0:
-                # print(str(counter) + "   " + str(total_loss))
-            # counter += 1
         if scheduler:
             scheduler.step()
             print("learning rate: " + str(scheduler.get_lr()))
@@ -67,9 +70,11 @@ def evaluate(model, iter_data, criterion):
     for batch in iter_data:
         text, target = get_batch(batch)
         probs, h = model(text, h)
+        pdb.set_trace()
         probs_flat = probs.view(-1, model.vocab_size)
         total_loss += len(text) * criterion(probs_flat, target).data
         total_len += len(text)
+        h = reset_hidden(h)
         # _, preds = torch.max(probs, 1)
         # print(probs, target)
         # correct += sum(preds.view(-1, len(TEXT.vocab)) == target.data)
