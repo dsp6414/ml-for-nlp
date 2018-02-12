@@ -33,19 +33,19 @@ def validate(model, val_iter, hidden=False):
 	correct = 0.0
 	total  = 0.0
 	num_zeros = 0.0
-	if hidden:
-		h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 640, model.hidden_size))
-		c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 640, model.hidden_size))
-		h = (h_0, c_0)
-		if torch.cuda.is_available():
-			h = (h_0.cuda(), c_0.cuda())
-
 	n_vectors = 0
 	for batch in val_iter:
 		processed_batch = process_batch(batch, 3)
 		if torch.cuda.is_available():
 			processed_batch = processed_batch.cuda()
 		print(processed_batch)
+		if hidden:
+			h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
+			c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
+			h = (h_0, c_0)
+		if torch.cuda.is_available():
+			h = (h_0.cuda(), c_0.cuda())
+
 
 		x = processed_batch[:, :-1]
 		y = processed_batch[:, -1]
@@ -73,17 +73,17 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 	for epoch in range(num_epochs):
 		n_iters = 0
 		for batch in train_iter:
-			if hidden:
-				if torch.cuda.is_available():
-					h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 640, model.hidden_size)).cuda()
-					c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 640, model.hidden_size)).cuda()
-					h = (h_0, c_0)
-				else:
-					h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 640, model.hidden_size))
-					c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 640, model.hidden_size))
-					h = (h_0, c_0)
 			print(n_iters)
 			processed_batch = autograd.Variable(process_batch(batch, 3))
+			if hidden:
+				if torch.cuda.is_available():
+					h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size)).cuda()
+					c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size)).cuda()
+					h = (h_0, c_0)
+				else:
+					h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
+					c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
+					h = (h_0, c_0)
 			if torch.cuda.is_available():
 				processed_batch = processed_batch.cuda()
 			# about 200 rows and 4 columns
