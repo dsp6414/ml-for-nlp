@@ -130,7 +130,6 @@ class LSTM(nn.Module):
 class LSTMExtension(nn.Module):
     def __init__(self, embedding_size, vocab_size, num_layers=2):
         super(LSTMExtension, self).__init__()
-        self.lstm_type = lstm_type
         self.embedding_size = 400
         self.vocab_size = vocab_size
         self.num_layers = num_layers
