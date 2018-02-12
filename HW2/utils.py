@@ -48,10 +48,6 @@ def validate(model, val_iter, hidden=False):
 		print(processed_batch)
 		# print("processed shape", processed_batch.size(), processed_batch)
 		for vector in autograd.Variable(processed_batch):
-			if n_vectors > 5000:
-				print("correct", correct)
-				print("total", total)
-				return(correct / total)
 			x = vector[:-1]
 			y = vector[-1].view(1)
 			if hidden:

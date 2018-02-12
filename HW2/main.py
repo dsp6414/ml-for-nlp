@@ -103,7 +103,7 @@ if args.model == 'NNLM':
 		NNLM = NNLM.cuda()
 
 	criterion = nn.CrossEntropyLoss()
-	optimizer = optim.SGD(NNLM.parameters(), lr=0.1)
+	optimizer = optim.Adadelta(NNLM.parameters(), lr=0.01)
 	utils.train(NNLM, train_iter, 10, criterion, optimizer, hidden=True)
 
 	print("SAVING MODEL")
