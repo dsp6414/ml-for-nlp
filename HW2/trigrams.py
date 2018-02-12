@@ -122,4 +122,4 @@ class TrigramsLM(nn.Module):
 			self.unigram_probs[unigram] = (count + self.alpha) / (self.sum_unigrams + float(self.vocab_size * self.alpha))
 		print("done training")
 
-	
+		
