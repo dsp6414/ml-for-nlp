@@ -34,24 +34,35 @@ def validate(model, val_iter, hidden=False):
 		h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
 		c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
 		h = (h_0, c_0)
+		if torch.cuda.is_available():
+			h = (h_0.cuda(), c_0.cuda())
 
+	n_vectors = 0
 	for batch in val_iter:
 		processed_batch = process_batch(batch, 3)
+		print(processed_batch)
 		# print("processed shape", processed_batch.size(), processed_batch)
 		for vector in autograd.Variable(processed_batch):
+			if n_vectors > 5000:
+				print("correct", correct)
+				print("total", total)
+				return(correct / total)
 			x = vector[:-1]
 			y = vector[-1].view(1)
 			if hidden:
 				h, probs = model(x, h)
-			probs = model(x)
+			else:
+				probs = model(x)
+				# Probs is 1-d if you go vector by vector
+			_, preds = torch.max(probs, 0)
 
-			_, preds = torch.max(probs, 1)
-
-			print(probs, y)
-			correct += sum(preds == y.data)
+			print("probs",probs)
+			print((preds==y)[0])
+			correct += torch.sum(preds.data == y.data)
 			# total += batch.text.size()[1] - 1
 			total += 1
 			num_zeros += sum(torch.zeros_like(y.data) == y.data)
+			n_vectors += 1
 		# print(preds, y)
 	print(correct,total, num_zeros)
 	return correct / total
@@ -68,14 +79,13 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 
 		n_iters = 0
 		for batch in train_iter:
-			print(n_iters)
-			if n_iters > 1:
-				print("good enough")
-				return
-
 			# Line vector
 			processed_batch = autograd.Variable(process_batch(batch, 3))
 			for vector in processed_batch:
+				print(n_iters)
+				if n_iters > 1000:
+					print("good enough")
+					return
 				model.zero_grad()
 
 				x = vector[:-1]
@@ -94,6 +104,6 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 				loss = criterion(probs, y)
 				loss.backward(retain_graph=True)
 				optimizer.step()
-			n_iters +=1
+				n_iters +=1
 
 	print("done training")
