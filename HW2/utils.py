@@ -82,14 +82,12 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 			print(n_iters)
 			processed_batch = autograd.Variable(process_batch(batch, 3))
 			if hidden:
+				h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
+				c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
+				h = (h_0, c_0)
 				if torch.cuda.is_available():
-					h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size)).cuda()
-					c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size)).cuda()
-					h = (h_0, c_0)
-				else:
-					h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
-					c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
-					h = (h_0, c_0)
+					h = (h_0.cuda(), c_0.cuda())
+
 			if torch.cuda.is_available():
 				processed_batch = processed_batch.cuda()
 			# about 200 rows and 4 columns
