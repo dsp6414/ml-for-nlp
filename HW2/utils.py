@@ -2,8 +2,11 @@ import numpy as np
 import torchtext 
 import torch
 import torch.autograd as autograd
+import torch.nn as nn
 
 torch.manual_seed(1)
+NNLM_GRAD_NORM = 5
+
 
 # Batch will have the observations vertically.
 def process_batch(batch, n):
@@ -26,72 +29,89 @@ def process_batch(batch, n):
 	# Return batch horizontally (each row is obs, last column is label)
 	return(torch.cat((xs, ys), dim=1))
 
-def validate(model, val_iter, hidden=False):
+def validate(model, val_iter, criterion, hidden=False):
 	correct = 0.0
 	total  = 0.0
 	num_zeros = 0.0
-	if hidden:
-		h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
-		c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
-		h = (h_0, c_0)
-
+	loss_total = 0.0
+	n_vectors = 0
 	for batch in val_iter:
 		processed_batch = process_batch(batch, 3)
-		# print("processed shape", processed_batch.size(), processed_batch)
-		for vector in autograd.Variable(processed_batch):
-			x = vector[:-1]
-			y = vector[-1].view(1)
-			if hidden:
-				h, probs = model(x, h)
-			probs = model(x)
-
-			_, preds = torch.max(probs, 1)
-
-			print(probs, y)
-			correct += sum(preds == y.data)
-			# total += batch.text.size()[1] - 1
-			total += 1
-			num_zeros += sum(torch.zeros_like(y.data) == y.data)
-		# print(preds, y)
-	print(correct,total, num_zeros)
-	return correct / total
-
-def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, hidden=False):
-	print("TRAINING")
-	for epoch in range(num_epochs):
+		if torch.cuda.is_available():
+			processed_batch = processed_batch.cuda()
+		print(processed_batch)
 		if hidden:
-			h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
-			c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
+			h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
+			c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
 			h = (h_0, c_0)
 			if torch.cuda.is_available():
 				h = (h_0.cuda(), c_0.cuda())
 
+		x = processed_batch[:, :-1]
+		y = processed_batch[:, -1]
+
+		if torch.cuda.is_available():
+			x = x.cuda()
+			y = y.cuda()
+		if hidden:
+			h, probs = model(x, h)
+		else:
+			probs = model(x)
+			# Probs is 1-d if you go vector by vector
+		_, preds = torch.max(probs, 1)
+
+		loss = criterion(probs, autograd.Variable(y))
+		loss_total += loss.data[0]
+		# total += batch.text.size()[1] - 1
+		total += y.size()[0]
+		num_zeros += sum(torch.zeros_like(y) == y)
+		# print(preds, y)
+
+	mean_loss = loss_total /float(total)
+	return( 2.0 ** mean_loss)
+
+def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, hidden=False):
+	print("TRAINING")
+	for epoch in range(num_epochs):
+		loss_total = 0.0
 		n_iters = 0
+		n_obs = 0.0
 		for batch in train_iter:
 			print(n_iters)
-			if n_iters > 1:
-				print("good enough")
-				return
-
-			# Line vector
 			processed_batch = autograd.Variable(process_batch(batch, 3))
-			for vector in processed_batch:
-				model.zero_grad()
-
-				x = vector[:-1]
-				y = vector[-1].view(1)
-
-				print(x,h)
-
-				if hidden:
-					h, probs = model.forward(x, h)
+			if hidden:
+				if torch.cuda.is_available():
+					h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size)).cuda()
+					c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size)).cuda()
+					h = (h_0, c_0)
 				else:
-					probs = model.forward(x)
+					h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
+					c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
+					h = (h_0, c_0)
+			if torch.cuda.is_available():
+				processed_batch = processed_batch.cuda()
+			# about 200 rows and 4 columns
+			model.zero_grad()
 
-				probs = probs.view(1, -1)
-				loss = criterion(probs, y)
-				loss.backward(retain_graph=True)
-				optimizer.step()
+			x = processed_batch[:, :-1] # 200 x3 
+			y = processed_batch[:, -1] # 200 x 1
+
+			if hidden:
+				h, probs = model.forward(x, h)
+			else:
+				probs = model.forward(x)
+
+			# probs = probs.view(1, -1)
+			loss = criterion(probs, y)
+			loss_total += loss.data[0]
+			n_obs += processed_batch.size()[0]
+			loss.backward()
+			nn.utils.clip_grad_norm(model.parameters(), max_norm=NNLM_GRAD_NORM)
+			optimizer.step()
 			n_iters +=1
+
+		# take avg of losses
+		# loss_avg = loss_total / float(n_obs)
+		# print("perplexity", 2.0 ** loss_avg)
 
 	print("done training")
