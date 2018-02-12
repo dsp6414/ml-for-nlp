@@ -103,7 +103,7 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 
 			# probs = probs.view(1, -1)
 			loss = criterion(probs, y)
-			# loss_total += loss
+			loss_total += loss.data[0]
 			n_obs += processed_batch.size()[0]
 			loss.backward()
 			nn.utils.clip_grad_norm(model.parameters(), max_norm=NNLM_GRAD_NORM)
