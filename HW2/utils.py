@@ -43,9 +43,8 @@ def validate(model, val_iter, criterion, hidden=False):
 			h_0 = (torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
 			c_0 = (torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
 			h = (h_0, c_0)
-		if torch.cuda.is_available():
-			h = (h_0.cuda(), c_0.cuda())
-
+			if torch.cuda.is_available():
+				h = (h_0.cuda(), c_0.cuda())
 
 		x = processed_batch[:, :-1]
 		y = processed_batch[:, -1]
@@ -61,7 +60,7 @@ def validate(model, val_iter, criterion, hidden=False):
 		_, preds = torch.max(probs, 1)
 
 		loss = criterion(probs, y)
-		loss_total += loss
+		loss_total += loss.data[0]
 		# total += batch.text.size()[1] - 1
 		total += y.size()[0]
 		num_zeros += sum(torch.zeros_like(y) == y)
