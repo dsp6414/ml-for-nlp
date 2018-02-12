@@ -180,12 +180,12 @@ if args.model == 'extension':
 
 	filename = 'lstm_extension40.sav'
 	print("LOADING MODEL")
-	loaded_model = lstm.LSTM(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
+	loaded_model = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
 	pdb.set_trace()
+	loaded_model.load_state_dict(torch.load(filename))
 	if torch.cuda.is_available():
 		print("USING CUDA")
 		loaded_model = loaded_model.cuda()
-	loaded_model.load_state_dict(torch.load(filename))
 	criterion = nn.CrossEntropyLoss()
 	print("VALIDATION SET")
 	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
