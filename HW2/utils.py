@@ -62,7 +62,7 @@ def validate(model, val_iter, criterion, hidden=False):
 
 		loss = criterion(probs, autograd.Variable(y))
 		total += y.size()[0]
-		loss_total += loss.data[0] * total
+		loss_total += loss.data[0] * y.size()[0]
 		print(loss.data[0], loss_total)
 		# total += batch.text.size()[1] - 1
 		print(y.size()[0])
@@ -107,8 +107,7 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 			# probs = probs.view(1, -1)
 			loss = criterion(probs, y)
 			n_obs += processed_batch.size()[0]
-			print(n_obs)
-			loss_total += loss.data[0] * n_obs
+			loss_total += loss.data[0] * processed_batch.size()[0]
 			loss.backward()
 			nn.utils.clip_grad_norm(model.parameters(), max_norm=NNLM_GRAD_NORM)
 			optimizer.step()
