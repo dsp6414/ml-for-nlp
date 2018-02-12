@@ -103,7 +103,7 @@ def kaggle(model, file):
 def kaggle_trigrams(model, file):
 	f = open(file)
 	lines = f.readlines()
-	with open('sample.txt', 'w') as out:
+	with open('trigrams.txt', 'w') as out:
 		print('id,word', file=out)
 		for i, line in enumerate(lines):
 			text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
@@ -145,7 +145,7 @@ elif args.model == 'Trigrams':
 	trigrams_lm.train(train_iter, n_iters=None)
 	# print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
 	print("KAGGLE TRIGRAMS")
-	kaggle_trigrams(trigrams_lm, "trigrams_lm.txt")
+	kaggle_trigrams(trigrams_lm, "input.txt")
 
 elif args.model == 'LSTM':
 	rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
