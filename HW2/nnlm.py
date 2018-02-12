@@ -5,11 +5,11 @@ import torch.autograd as autograd
 torch.manual_seed(1)
 
 class LSTMLM(nn.Module):
-	def __init__(self, vocab_size, embedding_dim, n, hidden_size=500):
+	def __init__(self, vocab_size, embedding_dim, n, hidden_size=60):
 		super(LSTMLM, self).__init__()
 		self.dropout = 0.5
 		self.n = n
-		self.num_layers = 2
+		self.num_layers = 1
 		self.hidden_size=hidden_size
 		self.embedding = nn.Embedding(vocab_size, embedding_dim) # num_embeddings, embedding_dim
 		self.tanh = nn.Tanh()
