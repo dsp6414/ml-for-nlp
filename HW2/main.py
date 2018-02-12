@@ -149,4 +149,4 @@ else:
 	filename = args.model
 	try:
 		model.load_state_dict(torch.load(filename))
-		utils.validate(model, val_iter, criterion, hidden=True)
+		print("perplexity", utils.validate(model, val_iter, criterion, hidden=True))
