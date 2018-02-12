@@ -176,7 +176,7 @@ if args.model == 'extension':
 	# filename = 'lstm_extension.sav'
 	# torch.save(rnn.state_dict(), filename)
 
-	filename = 'lstm_extension.sav'
+	filename = 'lstm_extension45.sav'
 	print("LOADING MODEL")
 	loaded_model = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
 	loaded_model.load_state_dict(torch.load(filename))
