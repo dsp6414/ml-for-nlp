@@ -40,8 +40,8 @@ def validate(model, val_iter, criterion, hidden=False):
 			processed_batch = processed_batch.cuda()
 		print(processed_batch)
 		if hidden:
-			h_0 = (torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
-			c_0 = (torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
+			h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
+			c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
 			h = (h_0, c_0)
 			if torch.cuda.is_available():
 				h = (h_0.cuda(), c_0.cuda())
