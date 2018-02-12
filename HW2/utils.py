@@ -34,8 +34,8 @@ def validate(model, val_iter, hidden=False):
 	total  = 0.0
 	num_zeros = 0.0
 	if hidden:
-		h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
-		c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 1, model.hidden_size))
+		h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 640, model.hidden_size))
+		c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 640, model.hidden_size))
 		h = (h_0, c_0)
 		if torch.cuda.is_available():
 			h = (h_0.cuda(), c_0.cuda())
@@ -46,24 +46,27 @@ def validate(model, val_iter, hidden=False):
 		if torch.cuda.is_available():
 			processed_batch = processed_batch.cuda()
 		print(processed_batch)
-		# print("processed shape", processed_batch.size(), processed_batch)
-		for vector in autograd.Variable(processed_batch):
-			x = vector[:-1]
-			y = vector[-1].view(1)
-			if hidden:
-				h, probs = model(x, h)
-			else:
-				probs = model(x)
-				# Probs is 1-d if you go vector by vector
-			_, preds = torch.max(probs, 0)
 
-			print("probs",probs)
-			print((preds==y)[0])
-			correct += torch.sum(preds.data == y.data)
-			# total += batch.text.size()[1] - 1
-			total += 1
-			num_zeros += sum(torch.zeros_like(y.data) == y.data)
-			n_vectors += 1
+		x = vector[:, :-1]
+		y = vector[:, -1]
+
+		if torch.cuda.is_available():
+			x = x.cuda()
+			y = y.cuda()
+		if hidden:
+			h, probs = model(x, h)
+		else:
+			probs = model(x)
+			# Probs is 1-d if you go vector by vector
+		_, preds = torch.max(probs, 1)
+
+		print("probs",probs)
+		print((preds==y)[0])
+		correct += torch.sum(preds.data == y.data)
+		# total += batch.text.size()[1] - 1
+		total += 1
+		num_zeros += sum(torch.zeros_like(y.data) == y.data)
+		n_vectors += 1
 		# print(preds, y)
 	print(correct,total, num_zeros)
 	return correct / total
