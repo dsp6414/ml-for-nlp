@@ -102,9 +102,9 @@ if args.model == 'NNLM':
 		print("converting NNLM to cuda")
 		NNLM = NNLM.cuda()
 
-	criterion = nn.NLLLoss()
+	criterion = nn.CrossEntropyLoss()
 	optimizer = optim.SGD(NNLM.parameters(), lr=0.1)
-	utils.train(NNLM, train_iter, 1, criterion, optimizer, hidden=True)
+	utils.train(NNLM, train_iter, 10, criterion, optimizer, hidden=True)
 
 	print("SAVING MODEL")
 	filename = 'nnlm_1.sav'
