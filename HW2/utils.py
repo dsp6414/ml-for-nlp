@@ -5,6 +5,8 @@ import torch.autograd as autograd
 
 torch.manual_seed(1)
 
+
+
 # Batch will have the observations vertically.
 def process_batch(batch, n):
 	n_rows = batch.text.size()[1]
@@ -85,7 +87,7 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 			processed_batch = autograd.Variable(process_batch(batch, 3))
 			for vector in processed_batch:
 				print(n_iters)
-				if n_iters > 10:
+				if n_iters > 500:
 					print("good enough")
 					return
 				model.zero_grad()
@@ -105,6 +107,7 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 				probs = probs.view(1, -1)
 				loss = criterion(probs, y)
 				loss.backward(retain_graph=True)
+				nn.utils.clip_grad_norm(model.parameters(), max_norm=GRAD_NORM)
 				optimizer.step()
 				n_iters +=1
 
