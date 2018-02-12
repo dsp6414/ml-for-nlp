@@ -47,8 +47,8 @@ def validate(model, val_iter, hidden=False):
 			processed_batch = processed_batch.cuda()
 		print(processed_batch)
 
-		x = vector[:, :-1]
-		y = vector[:, -1]
+		x = processed_batch[:, :-1]
+		y = processed_batch[:, -1]
 
 		if torch.cuda.is_available():
 			x = x.cuda()
