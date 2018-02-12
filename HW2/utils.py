@@ -39,7 +39,6 @@ def validate(model, val_iter, criterion, hidden=False):
 		processed_batch = process_batch(batch, 3)
 		if torch.cuda.is_available():
 			processed_batch = processed_batch.cuda()
-		print(processed_batch)
 		if hidden:
 			h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
 			c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
@@ -61,12 +60,15 @@ def validate(model, val_iter, criterion, hidden=False):
 		_, preds = torch.max(probs, 1)
 
 		loss = criterion(probs, autograd.Variable(y))
-		loss_total += loss.data[0]
-		# total += batch.text.size()[1] - 1
 		total += y.size()[0]
+		loss_total += loss.data[0] * y.size()[0]
+		print(loss.data[0], loss_total)
+		# total += batch.text.size()[1] - 1
+		print(y.size()[0])
 		num_zeros += sum(torch.zeros_like(y) == y)
 		# print(preds, y)
 
+	print(loss_total, total)
 	mean_loss = loss_total /float(total)
 	return( 2.0 ** mean_loss)
 
@@ -80,14 +82,12 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 			print(n_iters)
 			processed_batch = autograd.Variable(process_batch(batch, 3))
 			if hidden:
+				h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
+				c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
+				h = (h_0, c_0)
 				if torch.cuda.is_available():
-					h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size)).cuda()
-					c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size)).cuda()
-					h = (h_0, c_0)
-				else:
-					h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
-					c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
-					h = (h_0, c_0)
+					h = (h_0.cuda(), c_0.cuda())
+
 			if torch.cuda.is_available():
 				processed_batch = processed_batch.cuda()
 			# about 200 rows and 4 columns
@@ -103,15 +103,15 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 
 			# probs = probs.view(1, -1)
 			loss = criterion(probs, y)
-			loss_total += loss.data[0]
 			n_obs += processed_batch.size()[0]
+			loss_total += loss.data[0] * processed_batch.size()[0]
 			loss.backward()
 			nn.utils.clip_grad_norm(model.parameters(), max_norm=NNLM_GRAD_NORM)
 			optimizer.step()
 			n_iters +=1
 
 		# take avg of losses
-		# loss_avg = loss_total / float(n_obs)
-		# print("perplexity", 2.0 ** loss_avg)
+		loss_avg = loss_total / float(n_obs)
+		print("perplexity", 2.0 ** loss_avg)
 
 	print("done training")
