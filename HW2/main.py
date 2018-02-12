@@ -147,6 +147,5 @@ elif args.model == 'LSTM':
 
 else: 
 	filename = args.model
-	try:
-		model.load_state_dict(torch.load(filename))
-		print("perplexity", utils.validate(model, val_iter, criterion, hidden=True))
+	model = torch.load(filename)
+	print("perplexity", utils.validate(model, val_iter, criterion, hidden=True))
