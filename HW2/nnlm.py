@@ -36,7 +36,8 @@ class LSTMLM(nn.Module):
 		
 		# Get predictions and hidden state from LSTM  
 		# print(self.lstm(word_vectors, h)
-		out, h = self.lstm(word_vectors, h) # out is [n, 1, hidden_size]
+		print(h[0].size(), h[1].size(),batch.size())
+		out, h = self.lstm(word_vectors.t(), h) # out is [n, 1, hidden_size]
 		print("result of lstm", out.size())
 
 		out = self.dropout(out)
