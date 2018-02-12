@@ -112,6 +112,6 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 
 		# take avg of losses
 		# loss_avg = loss_total / float(n_obs)
-		print("perplexity", 2.0 ** loss_avg)
+		# print("perplexity", 2.0 ** loss_avg)
 
 	print("done training")
