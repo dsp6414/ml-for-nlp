@@ -110,7 +110,7 @@ if args.model == 'NNLM':
 		NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
 		if torch.cuda.is_available():
 			print("converting NNLM to cuda")
-			NNLM = NNLM.cuda()
+			NNLM.cuda()
 
 		criterion = nn.CrossEntropyLoss()
 		optimizer = optim.Adadelta(NNLM.parameters(), lr=0.01)
