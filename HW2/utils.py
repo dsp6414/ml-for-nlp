@@ -84,13 +84,11 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 
 		n_iters = 0
 		for batch in train_iter:
+			print(n_iters)
 			# Line vector
 			processed_batch = autograd.Variable(process_batch(batch, 3))
 			for vector in processed_batch:
 				print(n_iters)
-				if n_iters > 500:
-					print("good enough")
-					return
 				model.zero_grad()
 
 				x = vector[:-1]
@@ -110,6 +108,6 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 				loss.backward(retain_graph=True)
 				nn.utils.clip_grad_norm(model.parameters(), max_norm=NNLM_GRAD_NORM)
 				optimizer.step()
-				n_iters +=1
+			n_iters +=1
 
 	print("done training")
