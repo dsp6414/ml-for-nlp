@@ -52,4 +52,4 @@ class LSTMLM(nn.Module):
 		# Decode hidden states of all time step
 		#out = self.linear(out)  
 		# print("after linear out.size()", out.size())
-		return h, out
+		return h, out.squeeze()
