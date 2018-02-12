@@ -61,12 +61,15 @@ def validate(model, val_iter, criterion, hidden=False):
 		_, preds = torch.max(probs, 1)
 
 		loss = criterion(probs, autograd.Variable(y))
-		loss_total += loss.data[0]
-		# total += batch.text.size()[1] - 1
 		total += y.size()[0]
+		loss_total += loss.data[0] * total
+		print(loss.data[0], loss_total)
+		# total += batch.text.size()[1] - 1
+		print(y.size()[0])
 		num_zeros += sum(torch.zeros_like(y) == y)
 		# print(preds, y)
 
+	print(loss_total, total)
 	mean_loss = loss_total /float(total)
 	return( 2.0 ** mean_loss)
 
@@ -103,15 +106,16 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 
 			# probs = probs.view(1, -1)
 			loss = criterion(probs, y)
-			loss_total += loss.data[0]
 			n_obs += processed_batch.size()[0]
+			print(n_obs)
+			loss_total += loss.data[0] * n_obs
 			loss.backward()
 			nn.utils.clip_grad_norm(model.parameters(), max_norm=NNLM_GRAD_NORM)
 			optimizer.step()
 			n_iters +=1
 
 		# take avg of losses
-		# loss_avg = loss_total / float(n_obs)
-		# print("perplexity", 2.0 ** loss_avg)
+		loss_avg = loss_total / float(n_obs)
+		print("perplexity", 2.0 ** loss_avg)
 
 	print("done training")

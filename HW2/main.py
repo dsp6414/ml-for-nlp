@@ -120,7 +120,7 @@ if args.model == 'NNLM':
 		filename = 'nnlm_2.sav'
 		# torch.save(NNLM.state_dict(), filename)
 
-		print(utils.validate(NNLM, val_iter, criterion, hidden=True))
+		print("perplex",utils.validate(NNLM, val_iter, criterion, hidden=True))
 
 elif args.model == 'LSTM':
 	rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
