@@ -29,7 +29,7 @@ class LSTMLM(nn.Module):
 
 		word_vectors = self.embedding(batch) # [n x embedding_dim]
 
-		if word_vectors.dim() == 1:
+		if word_vectors.dim() == 1:	
 			word_vectors = word_vectors.unsqueeze(1)
 		if torch.cuda.is_available():
 			word_vectors = word_vectors.cuda()

@@ -29,7 +29,7 @@ def process_batch(batch, n):
 	# Return batch horizontally (each row is obs, last column is label)
 	return(torch.cat((xs, ys), dim=1))
 
-def validate(model, val_iter, hidden=False):
+def validate(model, val_iter, criterion, hidden=False):
 	correct = 0.0
 	total  = 0.0
 	num_zeros = 0.0
@@ -60,13 +60,15 @@ def validate(model, val_iter, hidden=False):
 			# Probs is 1-d if you go vector by vector
 		_, preds = torch.max(probs, 1)
 
-		correct += torch.sum(torch.eq(preds.data,y))
+		loss = criterion(probs, y)
+		loss_total += loss
 		# total += batch.text.size()[1] - 1
 		total += y.size()[0]
 		num_zeros += sum(torch.zeros_like(y) == y)
 		# print(preds, y)
-	print(correct,total, num_zeros)
-	return correct / total
+
+	mean_loss = loss /float(total)
+	return( 2.0 ** mean_loss)
 
 def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, hidden=False):
 	print("TRAINING")
