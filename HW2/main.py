@@ -105,11 +105,12 @@ if args.model == 'NNLM':
 	criterion = nn.NLLLoss()
 	optimizer = optim.SGD(NNLM.parameters(), lr=0.1)
 	utils.train(NNLM, train_iter, 1, criterion, optimizer, hidden=True)
-	print(utils.validate(NNLM, val_iter, hidden=True))
 
 	print("SAVING MODEL")
 	filename = 'nnlm_1.sav'
 	torch.save(NNLM.state_dict(), filename)
+
+	print(utils.validate(NNLM, val_iter, hidden=True))
 
 if args.model == 'LSTM':
 	rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')

@@ -40,6 +40,8 @@ def validate(model, val_iter, hidden=False):
 	n_vectors = 0
 	for batch in val_iter:
 		processed_batch = process_batch(batch, 3)
+		if torch.cuda.is_available():
+			processed_batch = processed_batch.cuda()
 		print(processed_batch)
 		# print("processed shape", processed_batch.size(), processed_batch)
 		for vector in autograd.Variable(processed_batch):
@@ -83,7 +85,7 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 			processed_batch = autograd.Variable(process_batch(batch, 3))
 			for vector in processed_batch:
 				print(n_iters)
-				if n_iters > 1000:
+				if n_iters > 10:
 					print("good enough")
 					return
 				model.zero_grad()
