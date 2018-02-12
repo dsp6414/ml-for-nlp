@@ -9,7 +9,7 @@ class LSTMLM(nn.Module):
 		super(LSTMLM, self).__init__()
 		self.dropout = 0.5
 		self.n = n
-		self.num_layers = 5
+		self.num_layers = 2
 		self.hidden_size=hidden_size
 		self.embedding = nn.Embedding(vocab_size, embedding_dim) # num_embeddings, embedding_dim
 		self.lstm = nn.LSTM(embedding_dim, hidden_size, self.num_layers, batch_first=False)
@@ -36,12 +36,8 @@ class LSTMLM(nn.Module):
 		
 		# Get predictions and hidden state from LSTM  
 		# print(self.lstm(word_vectors, h)
-		print(h[0].size(), h[1].size(),batch.size())
 		out, h = self.lstm(word_vectors.t(), h) # out is [n, 1, hidden_size]
-		print("result of lstm", out.size())
-
 		out = self.dropout(out)
-		
 		out = out.view(-1, self.hidden_size * self.n)
 		# print("out.size()", out.size()) # [60]
 		# Decode hidden states of all time step

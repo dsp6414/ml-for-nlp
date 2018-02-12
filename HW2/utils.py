@@ -71,29 +71,26 @@ def validate(model, val_iter, hidden=False):
 def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, hidden=False):
 	print("TRAINING")
 	for epoch in range(num_epochs):
-		if hidden:
-			h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 640, model.hidden_size))
-			c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 640, model.hidden_size))
-			h = (h_0, c_0)
-			if torch.cuda.is_available():
-				h = (h_0.cuda(), c_0.cuda())
-
 		n_iters = 0
 		for batch in train_iter:
+			if hidden:
+				if torch.cuda.is_available():
+					h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 640, model.hidden_size)).cuda()
+					c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 640, model.hidden_size)).cuda()
+					h = (h_0, c_0)
+				else:
+					h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 640, model.hidden_size))
+					c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, 640, model.hidden_size))
+					h = (h_0, c_0)
 			print(n_iters)
 			processed_batch = autograd.Variable(process_batch(batch, 3))
-
-			print(processed_batch.size())
-
+			if torch.cuda.is_available():
+				processed_batch = processed_batch.cuda()
 			# about 200 rows and 4 columns
 			model.zero_grad()
 
 			x = processed_batch[:, :-1] # 200 x3 
 			y = processed_batch[:, -1] # 200 x 1
-
-			if torch.cuda.is_available():
-				x = x.cuda()
-				y = y.cuda()
 
 			if hidden:
 				h, probs = model.forward(x, h)
