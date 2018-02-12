@@ -97,7 +97,7 @@ def kaggle(model, file):
 			print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
 
 if args.model == 'NNLM':
-	NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
+	NNLM = nnlm.LSTMLM(len(TEXT.vocab), 500, 3)
 	if torch.cuda.is_available():
 		print("converting NNLM to cuda")
 		NNLM = NNLM.cuda()
@@ -107,8 +107,8 @@ if args.model == 'NNLM':
 	utils.train(NNLM, train_iter, 10, criterion, optimizer, hidden=True)
 
 	print("SAVING MODEL")
-	filename = 'nnlm_1.sav'
-	torch.save(NNLM.state_dict(), filename)
+	filename = 'nnlm_2.sav'
+	# torch.save(NNLM.state_dict(), filename)
 
 	print(utils.validate(NNLM, val_iter, hidden=True))
 

@@ -81,29 +81,31 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 		n_iters = 0
 		for batch in train_iter:
 			print(n_iters)
+			if n_iters > 10:
+				return
 			# Line vector
 			processed_batch = autograd.Variable(process_batch(batch, 3))
-			for vector in processed_batch:
-				print(n_iters)
-				model.zero_grad()
 
-				x = vector[:-1]
-				y = vector[-1].view(1)
+			# about 200 rows and 4 columns
+			model.zero_grad()
 
-				if torch.cuda.is_available():
-					x = x.cuda()
-					y = y.cuda()
+			x = processed_batch[:, :-1] # 200 x3 
+			y = processed_batch[:, -1] # 200 x 1
 
-				if hidden:
-					h, probs = model.forward(x, h)
-				else:
-					probs = model.forward(x)
+			if torch.cuda.is_available():
+				x = x.cuda()
+				y = y.cuda()
 
-				probs = probs.view(1, -1)
-				loss = criterion(probs, y)
-				loss.backward(retain_graph=True)
-				nn.utils.clip_grad_norm(model.parameters(), max_norm=NNLM_GRAD_NORM)
-				optimizer.step()
+			if hidden:
+				h, probs = model.forward(x, h)
+			else:
+				probs = model.forward(x)
+
+			# probs = probs.view(1, -1)
+			loss = criterion(probs, y)
+			loss.backward(retain_graph=True)
+			nn.utils.clip_grad_norm(model.parameters(), max_norm=NNLM_GRAD_NORM)
+			optimizer.step()
 			n_iters +=1
 
 	print("done training")
