@@ -110,6 +110,7 @@ def kaggle_trigrams(model, file):
 			if torch.cuda.is_available():
 				text = text.cuda()
 			probs = model(text) # probs: [10 x vocab_size]
+			print(probs)
 			values, indices = torch.sort(probs[-1], descending=True)
 			print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
 
