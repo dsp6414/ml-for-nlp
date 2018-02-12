@@ -36,6 +36,7 @@ parser = argparse.ArgumentParser(description='Language Modeling')
 parser.add_argument('--model', type=str, default='LSTM',
 					help='type of RNN')
 parser.add_argument('--mini', type=bool, default=False, help='run smaller dataset')
+parser.add_argument('--path', type=str, default=None, help='load a past model')
 args = parser.parse_args()
 
 CUDA = False
@@ -97,20 +98,28 @@ def kaggle(model, file):
 			print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
 
 if args.model == 'NNLM':
-	NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
-	if torch.cuda.is_available():
-		print("converting NNLM to cuda")
-		NNLM = NNLM.cuda()
+	if args.path is not None:
+		NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
+		if torch.cuda.is_available():
+			print("converting NNLM to cuda")
+			NNLM = NNLM.cuda()
+		NNLM.load_state_dict(torch.load(args.path))
+		criterion = nn.CrossEntropyLoss()
+		print("perplexity", utils.validate(model, val_iter, criterion, hidden=True))
+	else:
+		if torch.cuda.is_available():
+			print("converting NNLM to cuda")
+			NNLM = NNLM.cuda()
 
-	criterion = nn.CrossEntropyLoss()
-	optimizer = optim.Adadelta(NNLM.parameters(), lr=0.01)
-	utils.train(NNLM, train_iter, 5, criterion, optimizer, hidden=True)
+		criterion = nn.CrossEntropyLoss()
+		optimizer = optim.Adadelta(NNLM.parameters(), lr=0.01)
+		utils.train(NNLM, train_iter, 5, criterion, optimizer, hidden=True)
 
-	print("SAVING MODEL")
-	filename = 'nnlm_2.sav'
-	# torch.save(NNLM.state_dict(), filename)
+		print("SAVING MODEL")
+		filename = 'nnlm_2.sav'
+		# torch.save(NNLM.state_dict(), filename)
 
-	print(utils.validate(NNLM, val_iter, criterion, hidden=True))
+		print(utils.validate(NNLM, val_iter, criterion, hidden=True))
 
 elif args.model == 'LSTM':
 	rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
@@ -144,9 +153,3 @@ elif args.model == 'LSTM':
 	# print(math.exp(loss))
 	# print("KAGGLE")
 	# kaggle(loaded_model, 'input.txt')
-
-else: 
-	filename = args.model
-	model = torch.load(filename)
-	criterion = nn.CrossEntropyLoss()
-	print("perplexity", utils.validate(model, val_iter, criterion, hidden=True))
