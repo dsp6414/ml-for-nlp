@@ -117,7 +117,7 @@ if args.model == 'NNLM':
 
 		criterion = nn.CrossEntropyLoss()
 		optimizer = optim.Adadelta(NNLM.parameters(), lr=0.001)
-		utils.train(NNLM, train_iter, 1, criterion, optimizer, hidden=True)
+		utils.train(NNLM, train_iter, 3, criterion, optimizer, hidden=True)
 
 		print("SAVING MODEL")
 		filename = 'nnlm_2.sav'
