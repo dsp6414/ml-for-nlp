@@ -51,8 +51,9 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, g
             # if counter % 20 == 0:
                 # print(str(counter) + "   " + str(total_loss))
             # counter += 1
-        scheduler.step()
-        print("learning rate: " + str(scheduler.get_lr()))
+        if scheduler:
+            scheduler.step()
+            print("learning rate: " + str(scheduler.get_lr()))
         print("Epoch " + str(epoch) + " Loss: " + str(total_loss))
         if epoch % 5 == 0:
             print("SAVING MODEL #" + str(epoch))
