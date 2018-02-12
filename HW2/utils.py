@@ -33,6 +33,7 @@ def validate(model, val_iter, criterion, hidden=False):
 	correct = 0.0
 	total  = 0.0
 	num_zeros = 0.0
+	loss_total = 0.0
 	n_vectors = 0
 	for batch in val_iter:
 		processed_batch = process_batch(batch, 3)
@@ -66,7 +67,7 @@ def validate(model, val_iter, criterion, hidden=False):
 		num_zeros += sum(torch.zeros_like(y) == y)
 		# print(preds, y)
 
-	mean_loss = loss /float(total)
+	mean_loss = loss_total /float(total)
 	return( 2.0 ** mean_loss)
 
 def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, hidden=False):
