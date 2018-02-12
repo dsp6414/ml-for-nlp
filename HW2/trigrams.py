@@ -20,7 +20,7 @@ class TrigramsLM(nn.Module):
 			if ngram in ngram_dict:
 				return ngram_dict[ngram]
 			else:
-				if alpha == 0:
+				if self.alpha == 0:
 					return 0
 				if n == 1:
 					denom = self.vocab_size * self.alpha + self.sum_unigrams
@@ -36,11 +36,13 @@ class TrigramsLM(nn.Module):
 				return self.alpha/ denom
 		# Batch shape is bptt, batch_size
 		# Assume input has observations in rows, transpose it to be observations in columns
-		# input_data = input_data.t() 
+		input_data = input_data.t() 
 		last_unigrams = input_data[-1, :] # size = batch_size
 		last_bigrams = input_data[-2:, :] # size = 2 x batch_size
-
+		print(input_data.size())
 		batch_size = last_unigrams.size()[0]
+		print(batch_size)
+		print(last_unigrams, last_bigrams)
 		# Unigram probabilities
 
 		def p_i(i, prev_unigram, prev_bigram):

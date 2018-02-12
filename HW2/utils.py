@@ -29,6 +29,52 @@ def process_batch(batch, n):
 	# Return batch horizontally (each row is obs, last column is label)
 	return(torch.cat((xs, ys), dim=1))
 
+def validate_trigrams(model, val_iter, criterion, hidden=False):
+	correct = 0.0
+	total  = 0.0
+	num_zeros = 0.0
+	loss_total = 0.0
+	n_vectors = 0
+	for batch in val_iter:
+		processed_batch = autograd.Variable(process_batch(batch, 3))
+		if torch.cuda.is_available():
+			processed_batch = processed_batch.cuda()
+		if hidden:
+			h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
+			c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
+			h = (h_0, c_0)
+			if torch.cuda.is_available():
+				h = (h_0.cuda(), c_0.cuda())
+
+		x = processed_batch[:, :-1]
+		y = processed_batch[:, -1]
+
+		if torch.cuda.is_available():
+			x = x.cuda()
+			y = y.cuda()
+		if hidden:
+			h, probs = model(x, h)
+		else:
+			probs = model(x)
+			# Probs is 1-d if you go vector by vector
+		_, preds = torch.max(probs, 1)
+
+		print(probs.size(),y.size())
+
+		loss = criterion(autograd.Variable(probs), y)
+		total += y.size()[0]
+		loss_total += loss.data[0] * y.size()[0]
+		print(loss.data[0], loss_total)
+		# total += batch.text.size()[1] - 1
+		print(y.size()[0])
+		num_zeros += sum(torch.zeros_like(y) == y)
+		# print(preds, y)
+
+	print(loss_total, total)
+	mean_loss = loss_total /float(total)
+	return( 2.0 ** mean_loss)
+
+
 def validate(model, val_iter, criterion, hidden=False):
 	correct = 0.0
 	total  = 0.0
