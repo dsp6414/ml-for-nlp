@@ -59,7 +59,7 @@ def validate(model, val_iter, criterion, hidden=False):
 			# Probs is 1-d if you go vector by vector
 		_, preds = torch.max(probs, 1)
 
-		loss = criterion(probs, y)
+		loss = criterion(probs, autograd.Variable(y))
 		loss_total += loss.data[0]
 		# total += batch.text.size()[1] - 1
 		total += y.size()[0]
