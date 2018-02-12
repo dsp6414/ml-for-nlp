@@ -178,9 +178,9 @@ if args.model == 'extension':
 	# filename = 'lstm_extension.sav'
 	# torch.save(rnn.state_dict(), filename)
 
-	filename = 'lstm_extension30.sav'
+	filename = 'lstm_extension40.sav'
 	print("LOADING MODEL")
-	loaded_model = lstm.LSTM(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2, lstm_type='large')
+	loaded_model = lstm.LSTM(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
 	if torch.cuda.is_available():
 		print("USING CUDA")
 		loaded_model = loaded_model.cuda()
