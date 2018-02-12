@@ -124,6 +124,11 @@ if args.model == 'NNLM':
 		# torch.save(NNLM.state_dict(), filename)
 
 		print("perplex",utils.validate(NNLM, val_iter, criterion, hidden=True))
+elif args.model == 'Trigrams':
+	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=1, lambdas=[.1, .4, .5])
+	criterion = nn.CrossEntropyLoss()
+	trigrams_lm.train(train_iter, n_iters=None)
+	print(utils.validate(trigrams_lm, val_iter, criterion))
 
 elif args.model == 'LSTM':
 	rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
