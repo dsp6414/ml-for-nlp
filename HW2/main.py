@@ -164,31 +164,31 @@ elif args.model == 'LSTM':
 	# kaggle(loaded_model, 'input.txt')
 
 if args.model == 'extension':
-	rnn = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
-	if torch.cuda.is_available():
-		print("USING CUDA")
-		rnn = rnn.cuda()
-	criterion = nn.CrossEntropyLoss()
-	optimizer = optim.ASGD(rnn.parameters(), lr=30)
-
-	print("TRAINING DATA")
-	utilslstm.train(rnn, train_iter, 50, criterion, optimizer, grad_norm=0.25) #change grad norm
-
-	print("SAVING MODEL")
-	filename = 'lstm_extension.sav'
-	torch.save(rnn.state_dict(), filename)
-
-	# filename = 'lstm_large.sav'
-	# print("LOADING MODEL")
-	# loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
+	# rnn = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
 	# if torch.cuda.is_available():
 	# 	print("USING CUDA")
-	# 	loaded_model = loaded_model.cuda()
-	# loaded_model.load_state_dict(torch.load(filename))
+	# 	rnn = rnn.cuda()
 	# criterion = nn.CrossEntropyLoss()
-	# print("VALIDATION SET")
-	# loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
-	# print("Perplexity")
-	# print(math.exp(loss))
+	# optimizer = optim.ASGD(rnn.parameters(), lr=30)
+
+	# print("TRAINING DATA")
+	# utilslstm.train(rnn, train_iter, 50, criterion, optimizer, grad_norm=0.25) #change grad norm
+
+	# print("SAVING MODEL")
+	# filename = 'lstm_extension.sav'
+	# torch.save(rnn.state_dict(), filename)
+
+	filename = 'lstm_extension30.sav'
+	print("LOADING MODEL")
+	loaded_model = lstm.LSTM(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2, lstm_type='large')
+	if torch.cuda.is_available():
+		print("USING CUDA")
+		loaded_model = loaded_model.cuda()
+	loaded_model.load_state_dict(torch.load(filename))
+	criterion = nn.CrossEntropyLoss()
+	print("VALIDATION SET")
+	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
+	print("Perplexity")
+	print(math.exp(loss))
 	# print("KAGGLE")
 	# kaggle(loaded_model, 'input.txt')

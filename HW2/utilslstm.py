@@ -65,8 +65,11 @@ def evaluate(model, iter_data, criterion):
     total_len = 0.0
     h = model.init_hidden()
     for batch in iter_data:
+        pdb.set_trace()
         text, target = get_batch(batch)
+        pdb.set_trace()
         probs, h = model(text, h)
+        pdb.set_trace()
         probs_flat = probs.view(-1, model.vocab_size)
         total_loss += len(text) * criterion(probs_flat, target).data
         total_len += len(text)
