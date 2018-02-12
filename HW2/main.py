@@ -90,7 +90,7 @@ def kaggle(model, file):
 	lines = f.readlines()
 	hidden = model.init_hidden()
 	with open('sample.txt', 'w') as out:
-		print('id, word', file=out)
+		print('id,word', file=out)
 		for i, line in enumerate(lines):
 			text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
 			if torch.cuda.is_available():
@@ -137,18 +137,16 @@ elif args.model == 'LSTM':
 		rnn = rnn.cuda()
 	criterion = nn.CrossEntropyLoss()
 	optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
-
-	# THIS NEEDS TO DECREASE AFTER EACH EPOCH
 	milestones = list(range(TEMP_EPOCH, EPOCHS - 1))
 	scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
 	print("TRAINING DATA")
 	utilslstm.train(rnn, train_iter, EPOCHS, criterion, optimizer, scheduler=scheduler, grad_norm=10) #change grad norm
 
 	print("SAVING MODEL")
-	filename = 'lstm_large_new.sav'
+	filename = 'lstm_large_hidden.sav'
 	torch.save(rnn.state_dict(), filename)
 
-	# filename = 'lstm_large.sav'
+	# filename = 'lstm_large_hidden.sav'
 	# print("LOADING MODEL")
 	# loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
 	# if torch.cuda.is_available():
@@ -178,17 +176,17 @@ if args.model == 'extension':
 	# filename = 'lstm_extension.sav'
 	# torch.save(rnn.state_dict(), filename)
 
-	filename = 'lstm_extension30.sav'
+	filename = 'lstm_extension45.sav'
 	print("LOADING MODEL")
-	loaded_model = lstm.LSTM(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2, lstm_type='large')
+	loaded_model = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
+	loaded_model.load_state_dict(torch.load(filename))
 	if torch.cuda.is_available():
 		print("USING CUDA")
 		loaded_model = loaded_model.cuda()
-	loaded_model.load_state_dict(torch.load(filename))
 	criterion = nn.CrossEntropyLoss()
 	print("VALIDATION SET")
 	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
 	print("Perplexity")
 	print(math.exp(loss))
-	# print("KAGGLE")
-	# kaggle(loaded_model, 'input.txt')
+	print("KAGGLE")
+	kaggle(loaded_model, 'input.txt')
