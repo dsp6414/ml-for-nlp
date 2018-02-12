@@ -2,6 +2,7 @@ import numpy as np
 import torchtext 
 import torch
 import torch.autograd as autograd
+import torch.nn as nn
 
 torch.manual_seed(1)
 
