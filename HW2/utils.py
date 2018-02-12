@@ -81,8 +81,6 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 		n_iters = 0
 		for batch in train_iter:
 			print(n_iters)
-			if n_iters > 1:
-				return
 			processed_batch = autograd.Variable(process_batch(batch, 3))
 
 			print(processed_batch.size())

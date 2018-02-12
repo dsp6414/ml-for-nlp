@@ -5,7 +5,7 @@ import torch.autograd as autograd
 torch.manual_seed(1)
 
 class LSTMLM(nn.Module):
-	def __init__(self, vocab_size, embedding_dim, n, hidden_size=100):
+	def __init__(self, vocab_size, embedding_dim, n, hidden_size=500):
 		super(LSTMLM, self).__init__()
 		self.dropout = 0.5
 		self.n = n
