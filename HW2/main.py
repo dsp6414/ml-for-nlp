@@ -90,7 +90,7 @@ def kaggle(model, file):
 	lines = f.readlines()
 	hidden = model.init_hidden()
 	with open('sample.txt', 'w') as out:
-		print('id, word', file=out)
+		print('id,word', file=out)
 		for i, line in enumerate(lines):
 			text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
 			if torch.cuda.is_available():
@@ -178,7 +178,7 @@ if args.model == 'extension':
 	# filename = 'lstm_extension.sav'
 	# torch.save(rnn.state_dict(), filename)
 
-	filename = 'lstm_extension40.sav'
+	filename = 'lstm_extension45.sav'
 	print("LOADING MODEL")
 	loaded_model = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
 	loaded_model.load_state_dict(torch.load(filename))
@@ -186,9 +186,9 @@ if args.model == 'extension':
 		print("USING CUDA")
 		loaded_model = loaded_model.cuda()
 	criterion = nn.CrossEntropyLoss()
-	# print("VALIDATION SET")
-	# loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
-	# print("Perplexity")
-	# print(math.exp(loss))
+	print("VALIDATION SET")
+	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
+	print("Perplexity")
+	print(math.exp(loss))
 	print("KAGGLE")
 	kaggle(loaded_model, 'input.txt')
