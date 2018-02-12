@@ -97,7 +97,7 @@ def kaggle(model, file):
 			print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
 
 if args.model == 'NNLM':
-	NNLM = nnlm.LSTMLM(len(TEXT.vocab), 500, 3)
+	NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
 	if torch.cuda.is_available():
 		print("converting NNLM to cuda")
 		NNLM = NNLM.cuda()
