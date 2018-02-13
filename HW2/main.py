@@ -132,7 +132,7 @@ if args.model == 'NNLM':
 			NNLM.cuda()
 
 		criterion = nn.CrossEntropyLoss()
-		optimizer = optim.Adadelta(NNLM.parameters(), lr=0.1)
+		optimizer = optim.Adadelta(NNLM.parameters(), lr=0.3)
 		utils.train(NNLM, train_iter, 50, criterion, optimizer, hidden=True)
 
 		print("SAVING MODEL")
@@ -145,12 +145,24 @@ elif args.model == 'Trigrams':
 	criterion = nn.CrossEntropyLoss()
 	trigrams_lm.train(train_iter, n_iters=None)
 	print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
-	print("KAGGLE TRIGRAMS")
 	kaggle_trigrams(trigrams_lm, "input.txt")
+	print("KAGGLE TRIGRAMS")
 elif args.model == 'Ensemble':
+	print("TRAINING TRIGRAMS MODEL")
 	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=1, lambdas=[.1, .4, .5])
 	criterion = nn.CrossEntropyLoss()
 	trigrams_lm.train(train_iter, n_iters=None)
+
+	filename = 'lstm_large_hidden45.sav'
+	print("LOADING LSTM MODEL")
+	loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
+	if torch.cuda.is_available():
+		print("USING CUDA")
+		loaded_model = loaded_model.cuda()
+	loaded_model.load_state_dict(torch.load(filename))
+	criterion = nn.CrossEntropyLoss()
+	print("VALIDATION SET")
+	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
 elif args.model == 'LSTM':
 	# rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
 	# if torch.cuda.is_available():

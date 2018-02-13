@@ -35,7 +35,13 @@ def validate_trigrams(model, val_iter, criterion, hidden=False):
 	num_zeros = 0.0
 	loss_total = 0.0
 	n_vectors = 0
+	n_iters = 0
 	for batch in val_iter:
+		n_iters += 1
+		if n_iters > 100:
+			print(loss_total, total)
+			mean_loss = loss_total /float(total)
+			return( 2.0 ** mean_loss)
 		processed_batch = autograd.Variable(process_batch(batch, 3))
 		if torch.cuda.is_available():
 			processed_batch = processed_batch.cuda()
@@ -52,10 +58,8 @@ def validate_trigrams(model, val_iter, criterion, hidden=False):
 		if torch.cuda.is_available():
 			x = x.cuda()
 			y = y.cuda()
-		if hidden:
-			h, probs = model(x, h)
-		else:
-			probs = model(x)
+
+		probs = model(x)
 			# Probs is 1-d if you go vector by vector
 		_, preds = torch.max(probs, 1)
 
