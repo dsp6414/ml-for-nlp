@@ -131,35 +131,35 @@ elif args.model == 'Trigrams':
 	print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
 
 elif args.model == 'LSTM':
-	rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
-	if torch.cuda.is_available():
-		print("USING CUDA")
-		rnn = rnn.cuda()
-	criterion = nn.CrossEntropyLoss()
-	optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
-	milestones = list(range(TEMP_EPOCH, EPOCHS - 1))
-	scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
-	print("TRAINING DATA")
-	utilslstm.train(rnn, train_iter, EPOCHS, criterion, optimizer, scheduler=scheduler, grad_norm=10) #change grad norm
-
-	print("SAVING MODEL")
-	filename = 'lstm_large_hidden.sav'
-	torch.save(rnn.state_dict(), filename)
-
-	# filename = 'lstm_large_hidden.sav'
-	# print("LOADING MODEL")
-	# loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
+	# rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
 	# if torch.cuda.is_available():
 	# 	print("USING CUDA")
-	# 	loaded_model = loaded_model.cuda()
-	# loaded_model.load_state_dict(torch.load(filename))
+	# 	rnn = rnn.cuda()
 	# criterion = nn.CrossEntropyLoss()
-	# print("VALIDATION SET")
-	# loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
-	# print("Perplexity")
-	# print(math.exp(loss))
-	# print("KAGGLE")
-	# kaggle(loaded_model, 'input.txt')
+	# optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
+	# milestones = list(range(TEMP_EPOCH, EPOCHS - 1))
+	# scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
+	# print("TRAINING DATA")
+	# utilslstm.train(rnn, train_iter, EPOCHS, criterion, optimizer, scheduler=scheduler, grad_norm=10) #change grad norm
+
+	# print("SAVING MODEL")
+	# filename = 'lstm_large_hidden.sav'
+	# torch.save(rnn.state_dict(), filename)
+
+	filename = 'lstm_large_hidden45.sav'
+	print("LOADING MODEL")
+	loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
+	if torch.cuda.is_available():
+		print("USING CUDA")
+		loaded_model = loaded_model.cuda()
+	loaded_model.load_state_dict(torch.load(filename))
+	criterion = nn.CrossEntropyLoss()
+	print("VALIDATION SET")
+	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
+	print("Perplexity")
+	print(math.exp(loss))
+	print("KAGGLE")
+	kaggle(loaded_model, 'input.txt')
 
 if args.model == 'extension':
 	# rnn = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)

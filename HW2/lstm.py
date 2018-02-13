@@ -1,13 +1,9 @@
-import argparse
 import torch
 import torch.autograd as autograd
 from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-import torchtext
-from torchtext.vocab import Vectors, GloVe
-import pickle
 import utils
 import math
 
@@ -17,30 +13,7 @@ torch.manual_seed(1)
 
 EMBEDDING_SIZE = 128
 NUM_LAYERS = 2
-UNROLL = 35
 BATCH_SIZE = 20
-
-# Medium LSTM
-HIDDEN = 650 # per layer
-DROPOUT = 0.5
-EPOCHS = 39
-LR = 1 * 1.2 # decreased by 1.2 for each epoch after 6th
-DECAY = 1.2
-TEMP_EPOCH = 6
-GRAD_NORM = 5
-INIT_PARAM = 0.05
-
-# Large LSTM
-# HIDDEN = 1500 # per layer
-# DROPOUT = 0.65
-# EPOCHS = 55
-# LR = 1 * 1.15 # decreased by 1.15 for each epoch after 14th
-# DECAY = 1.15
-# TEMP_EPOCH = 14
-# GRAD_NORM = 10
-# INIT_PARAM = 0.04
-
-# PARSE ARGS
 
 class LSTM(nn.Module):
     def __init__(self, embedding_size, vocab_size, num_layers=2, lstm_type='medium'):
@@ -80,52 +53,10 @@ class LSTM(nn.Module):
 
     def forward(self, inputs, hidden):
         embedding = self.dropout(self.embedding(inputs)) # [bptt_len - 1 x batch x embedding_size]
-        # embedding = embedding.transpose(0, 1)
-
-        # hidden size: [layers x batch x units]
         output, hidden = self.rnn(embedding, hidden) # [bptt_len - 1 x batch x units]
-        # embedding..view(1, batch_size, -1) without transpose
         output = self.dropout(output)
         output = self.linear(output.view(-1, self.hidden_size)) # [bptt_len - 1 x batch x vocab_size]
-        # output.view(batch_size, -1)
         return output, hidden
-
-# def train_batch(model, criterion, optim, text, target, epoch):
-#     # initialize hidden vectors
-#     hidden = model.init_hidden() # This includes (hidden, cell)
-
-#     # clear gradients
-#     model.zero_grad()
-#     # calculate forward pass
-#     output, hidden = model(text, hidden)
-#     # calculate loss
-#     output_flat = output.view(-1, VOCAB_SIZE)
-#     loss = criterion(output_flat, target) # output: [bptt_len-1 x batch x vocab_size]
-#     # target: [bptt_len-1 x batch]
-#     # backpropagate and step
-#     loss.backward()
-#     nn.utils.clip_grad_norm(model.parameters(), max_norm=GRAD_NORM)
-#     optimizer.step()
-#     return loss.data[0]
-
-# def train(model, criterion, optim):
-#     model.train()
-#     for epoch in range(EPOCHS):
-#     # for epoch in range(12):
-#         total_loss = 0
-#         counter = 0
-#         print(sum(1 for _ in train_iter))
-#         for batch in train_iter:
-#             text, target = utils.get_batch(batch, )
-
-#             batch_loss = train_batch(model, criterion, optim, text, target, epoch)
-#             total_loss += batch_loss
-#             # print(str(counter) + "   " + str(total_loss))
-#             counter += 1
-#         scheduler.step()
-#         print("learning rate: " + str(scheduler.get_lr()))
-#         print("Epoch " + str(epoch) + " Loss: " + str(total_loss))
-#         print(rnn)
 
 class LSTMExtension(nn.Module):
     def __init__(self, embedding_size, vocab_size, num_layers=2):
@@ -164,14 +95,8 @@ class LSTMExtension(nn.Module):
     def forward(self, inputs, hidden):
         self.set_weights()
         embedding = self.dropout_embedding(self.embedding(inputs)) # [bptt_len - 1 x batch x embedding_size]
-        # embedding = embedding.transpose(0, 1)
         # hidden size: [layers x batch x units]
         output, hidden = self.rnn(embedding, hidden) # [bptt_len - 1 x batch x units]
-        # embedding..view(1, batch_size, -1) without transpose
         output = self.dropout(output)
         output = self.linear(output.view(-1, self.hidden_size)) # [bptt_len - 1 x batch x vocab_size]
-        # output.view(batch_size, -1)
         return output, hidden
-
-
-
