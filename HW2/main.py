@@ -139,7 +139,7 @@ if args.model == 'NNLM':
 		print("perplexity", utils.validate(model, val_iter, criterion, hidden=True))
 	else:
 		url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
-    	TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
+		TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
 		NNLM = nnlm.LSTMLM(len(TEXT.vocab), 60, 3)
 		if torch.cuda.is_available():
 			print("converting NNLM to cuda")
