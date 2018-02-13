@@ -138,6 +138,8 @@ if args.model == 'NNLM':
 		criterion = nn.CrossEntropyLoss()
 		print("perplexity", utils.validate(model, val_iter, criterion, hidden=True))
 	else:
+		url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
+    	TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
 		NNLM = nnlm.LSTMLM(len(TEXT.vocab), 60, 3)
 		if torch.cuda.is_available():
 			print("converting NNLM to cuda")
@@ -148,7 +150,7 @@ if args.model == 'NNLM':
 		utils.train(NNLM, train_iter, 10, criterion, optimizer, hidden=True)
 
 		print("SAVING MODEL")
-		filename = 'nnlm_two_layers_ten_iter_sixtyembed.sav'
+		filename = 'nnlm_two_layers_ten_iter_sixtyembed_with_vectors.sav'
 		# torch.save(NNLM.state_dict(), filename)
 
 		print("perplex",utils.validate(NNLM, val_iter, criterion, hidden=True))
