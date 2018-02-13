@@ -66,7 +66,10 @@ class TrigramsLM(nn.Module):
 
 		tensor_preds = torch.stack(preds)
 		return tensor_preds
-	
+
+	def set_lambdas(self, lambdas):
+		self.alphas = lambdas
+
 	# I know Sasha said not to put training in the model, but how else would it work for trigrams??
 	def train(self, train_iter, n_iters=None):
 		def update_dict(d, val):

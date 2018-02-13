@@ -107,6 +107,7 @@ def kaggle_trigrams(model, file):
 		print('id,word', file=out)
 		for i, line in enumerate(lines):
 			text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
+			print(text.size())
 			if torch.cuda.is_available():
 				text = text.cuda()
 			probs = model(text) # probs: [10 x vocab_size]
@@ -117,7 +118,7 @@ def kaggle_trigrams(model, file):
 
 if args.model == 'NNLM':
 	if args.path is not None:
-		NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
+		NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 5)
 		if torch.cuda.is_available():
 			print("converting NNLM to cuda")
 			NNLM = NNLM.cuda()
@@ -131,11 +132,11 @@ if args.model == 'NNLM':
 			NNLM.cuda()
 
 		criterion = nn.CrossEntropyLoss()
-		optimizer = optim.Adadelta(NNLM.parameters(), lr=0.001)
-		utils.train(NNLM, train_iter, 3, criterion, optimizer, hidden=True)
+		optimizer = optim.Adadelta(NNLM.parameters(), lr=0.1)
+		utils.train(NNLM, train_iter, 50, criterion, optimizer, hidden=True)
 
 		print("SAVING MODEL")
-		filename = 'nnlm_2.sav'
+		filename = 'nnlm_50_iter.sav'
 		# torch.save(NNLM.state_dict(), filename)
 
 		print("perplex",utils.validate(NNLM, val_iter, criterion, hidden=True))
@@ -143,10 +144,13 @@ elif args.model == 'Trigrams':
 	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=1, lambdas=[.1, .4, .5])
 	criterion = nn.CrossEntropyLoss()
 	trigrams_lm.train(train_iter, n_iters=None)
-	# print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
+	print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
 	print("KAGGLE TRIGRAMS")
 	kaggle_trigrams(trigrams_lm, "input.txt")
-
+elif args.model == 'Ensemble':
+	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=1, lambdas=[.1, .4, .5])
+	criterion = nn.CrossEntropyLoss()
+	trigrams_lm.train(train_iter, n_iters=None)
 elif args.model == 'LSTM':
 	# rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
 	# if torch.cuda.is_available():
