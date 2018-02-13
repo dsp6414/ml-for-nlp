@@ -114,7 +114,7 @@ def kaggle_trigrams(model, file):
 			values, indices = torch.sort(probs[-1], descending=True)
 			print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
 
-def ensembled_kaggle(model_lstm, model_trigrams file):
+def ensembled_kaggle(model_lstm, model_trigrams, file):
 	f = open(file)
 	lines = f.readlines()
 	with open('ensembeld.txt', 'w') as out:
