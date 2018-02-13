@@ -167,7 +167,7 @@ elif args.model == 'LSTM':
 	# filename = 'lstm_large_hidden.sav'
 	# torch.save(rnn.state_dict(), filename)
 
-	filename = 'lstm_large_hidden.sav'
+	filename = 'lstm_large_new.sav'
 	print("LOADING MODEL")
 	loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
 	if torch.cuda.is_available():
@@ -177,10 +177,6 @@ elif args.model == 'LSTM':
 	criterion = nn.CrossEntropyLoss()
 	print("VALIDATION SET")
 	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
-	print("Perplexity")
-	print(math.exp(loss))
-	print("TEST SET")
-	loss = utilslstm.evaluate(loaded_model, test_iter, criterion)
 	print("Perplexity")
 	print(math.exp(loss))
 	print("KAGGLE")
