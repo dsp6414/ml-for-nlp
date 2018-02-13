@@ -118,7 +118,7 @@ def kaggle_trigrams(model, file):
 
 if args.model == 'NNLM':
 	if args.path is not None:
-		NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
+		NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 5)
 		if torch.cuda.is_available():
 			print("converting NNLM to cuda")
 			NNLM = NNLM.cuda()
@@ -132,7 +132,7 @@ if args.model == 'NNLM':
 			NNLM.cuda()
 
 		criterion = nn.CrossEntropyLoss()
-		optimizer = optim.Adadelta(NNLM.parameters(), lr=0.001)
+		optimizer = optim.Adadelta(NNLM.parameters(), lr=0.01)
 		utils.train(NNLM, train_iter, 3, criterion, optimizer, hidden=True)
 
 		print("SAVING MODEL")

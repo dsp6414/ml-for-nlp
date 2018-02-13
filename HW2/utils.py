@@ -125,7 +125,6 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 		n_iters = 0
 		n_obs = 0.0
 		for batch in train_iter:
-			print(n_iters)
 			processed_batch = autograd.Variable(process_batch(batch, 3))
 			if hidden:
 				h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
@@ -154,7 +153,6 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 			loss.backward()
 			nn.utils.clip_grad_norm(model.parameters(), max_norm=NNLM_GRAD_NORM)
 			optimizer.step()
-			n_iters +=1
 
 		# take avg of losses
 		loss_avg = loss_total / float(n_obs)
