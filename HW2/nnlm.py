@@ -27,7 +27,7 @@ class LSTMLM(nn.Module):
 		self.is_eval = True
 		
 	def init_weights(self):
-		self.embedding.weight.data.uniform_(-0.1, 0.1)
+		# self.embedding.weight.data.uniform_(-0.1, 0.1)
 		self.linear.bias.data.fill_(0)
 		self.linear.weight.data.uniform_(-0.1, 0.1)
 		self.linear_two.bias.data.fill_(0)
