@@ -18,6 +18,7 @@ class LSTMLM(nn.Module):
 		self.dropout = nn.Dropout(DROPOUT)
 		self.linear = nn.Linear(hidden_size * n, vocab_size)
 		self.linear_two = nn.Linear(self.embedding_dim * n, vocab_size)
+		self.inner_lin = nn.Linear(self.embedding_dim * n, self.embedding_dim * n)
 		self.init_weights()
 		self.initial_hidden = None #autograd.Variable(torch.zeros(1, hidden_size))
 		self.is_eval = False
@@ -26,7 +27,7 @@ class LSTMLM(nn.Module):
 		self.is_eval = True
 		
 	def init_weights(self):
-		self.embedding.weight.data.uniform_(-0.1, 0.1)
+		# self.embedding.weight.data.uniform_(-0.1, 0.1)
 		self.linear.bias.data.fill_(0)
 		self.linear.weight.data.uniform_(-0.1, 0.1)
 		self.linear_two.bias.data.fill_(0)
@@ -52,8 +53,14 @@ class LSTMLM(nn.Module):
 		out = word_vectors.t().contiguous().view(1, -1, self.n * self.embedding_dim)
 		# print(reshaped.size())
 
+
+		out = self.tanh(out)
+		out = self.inner_lin(out)
 		out = self.tanh(out)
 		out = self.linear_two(out)
+
+		
+
 
 
 		## out, h = self.lstm(reshaped, h) # out is [n, 1, hidden_size]
