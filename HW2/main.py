@@ -130,7 +130,7 @@ def ensembled_kaggle(model_lstm, model_trigrams, file):
 				
 if args.model == 'NNLM':
 	if args.path is not None:
-		NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 5)
+		NNLM = nnlm.LSTMLM(len(TEXT.vocab), 60, 3)
 		if torch.cuda.is_available():
 			print("converting NNLM to cuda")
 			NNLM = NNLM.cuda()
@@ -146,7 +146,7 @@ if args.model == 'NNLM':
 			NNLM.cuda()
 
 		criterion = nn.CrossEntropyLoss()
-		optimizer = optim.Adadelta(NNLM.parameters(), lr=0.3)
+		optimizer = optim.SGD(NNLM.parameters(), lr=0.001)
 		utils.train(NNLM, train_iter, 10, criterion, optimizer, hidden=True)
 
 		print("SAVING MODEL")

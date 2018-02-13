@@ -60,9 +60,6 @@ class LSTMLM(nn.Module):
 		out = self.linear_two(out)
 
 		
-
-
-
 		## out, h = self.lstm(reshaped, h) # out is [n, 1, hidden_size]
 		out = self.dropout(out)	
 		#print(out.size())
