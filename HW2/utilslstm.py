@@ -6,7 +6,7 @@ import torch.optim as optim
 import torchtext
 from torchtext.vocab import Vectors, GloVe
 import pdb
-
+import utils
 torch.manual_seed(1)
 
 def get_batch(batch):
@@ -62,6 +62,29 @@ def evaluate(model, iter_data, criterion):
         text, target = get_batch(batch)
         probs, h = model(text, h)
         probs_flat = probs.view(-1, model.vocab_size)
+        total_loss += len(text) * criterion(probs_flat, target).data
+        total_len += len(text)
+        h = reset_hidden(h)
+    print("Total Loss ", total_loss[0])
+    print("Total Len ", total_len)
+    print(total_loss[0] / total_len)
+    return total_loss[0] / total_len
+
+def evaluate(model_lstm, trigrams_model, iter_data, criterion):
+    model_lstm.eval()
+    total_loss = 0.0
+    total_len = 0.0
+    h = model_lstm.init_hidden()
+    for batch in iter_data:
+        text, target = get_batch(batch)
+        probs, h = model_lstm(text, h)
+        probs_flat = probs.view(-1, model.vocab_size)
+        print(probs_flat.size())
+
+        processed_batch = autograd.Variable(process_batch(batch, 3))
+
+        trigrams_probs = trigrams_model(processed_batch)
+        print(trigrams_probs.size())
         total_loss += len(text) * criterion(probs_flat, target).data
         total_len += len(text)
         h = reset_hidden(h)
