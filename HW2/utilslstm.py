@@ -37,7 +37,7 @@ def train_batch(model, text, target, hidden, criterion, optimizer, grad_norm):
 
 def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, grad_norm=5):
     model.train()
-    filename = 'lstm_large_hidden'
+    filename = 'lstm_extension_new'
     hidden = model.init_hidden()
     for epoch in range(num_epochs):
         total_loss = 0
