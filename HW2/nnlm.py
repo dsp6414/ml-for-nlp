@@ -18,6 +18,7 @@ class LSTMLM(nn.Module):
 		self.dropout = nn.Dropout(DROPOUT)
 		self.linear = nn.Linear(hidden_size * n, vocab_size)
 		self.linear_two = nn.Linear(self.embedding_dim * n, vocab_size)
+		self.linear_three = nn.Linear(self.embedding_dim * n, vocab_size)
 		self.init_weights()
 		self.initial_hidden = None #autograd.Variable(torch.zeros(1, hidden_size))
 		self.is_eval = False
@@ -54,6 +55,10 @@ class LSTMLM(nn.Module):
 
 		out = self.tanh(out)
 		out = self.linear_two(out)
+
+		out = self.tanh(out)
+
+		out = self.linear_three(out)
 
 
 		## out, h = self.lstm(reshaped, h) # out is [n, 1, hidden_size]
