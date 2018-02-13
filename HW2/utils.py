@@ -108,9 +108,9 @@ def validate(model, val_iter, criterion, hidden=False):
 		loss = criterion(probs, autograd.Variable(y))
 		total += y.size()[0]
 		loss_total += loss.data[0] * y.size()[0]
-		print(loss.data[0], loss_total)
+		# print(loss.data[0], loss_total)
 		# total += batch.text.size()[1] - 1
-		print(y.size()[0])
+		# print(y.size()[0])
 		num_zeros += sum(torch.zeros_like(y) == y)
 		# print(preds, y)
 
@@ -161,3 +161,5 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 		print("perplexity", 2.0 ** loss_avg)
 
 	print("done training")
+
+

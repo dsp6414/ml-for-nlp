@@ -43,12 +43,13 @@ class LSTMLM(nn.Module):
 		
 		# Get predictions and hidden state from LSTM  
 		# print(self.lstm(word_vectors, h)
-		print(word_vectors.size())
+		print(word_vectors.t().size()) # Word vectors is: [640 x 3 x 100] -> [3 x 640 x 100]
 		out, h = self.lstm(word_vectors.t(), h) # out is [n, 1, hidden_size]
-		out = self.dropout(out)
-		out = out.view(-1, self.hidden_size * self.n)
+		out = self.dropout(out)	
+		#print(out.size())
+		#out = out.view(-1, self.hidden_size * self.n)
 		# print("out.size()", out.size()) # [60]
 		# Decode hidden states of all time step
-		out = self.linear(out)  
+		#out = self.linear(out)  
 		# print("after linear out.size()", out.size())
-		return h, out
+		return h, out.squeeze()

@@ -39,7 +39,6 @@ class TrigramsLM(nn.Module):
 		input_data = input_data.t() 
 		last_unigrams = input_data[-1, :] # size = batch_size
 		last_bigrams = input_data[-2:, :] # size = 2 x batch_size
-		print(input_data.size())
 		batch_size = last_unigrams.size()[0]
 		print(batch_size)
 		print(last_unigrams, last_bigrams)
@@ -121,7 +120,6 @@ class TrigramsLM(nn.Module):
 		for unigram, count in self.unigram_counts.items():
 			# self.bigram_probs['missing'] = 
 			self.unigram_probs[unigram] = (count + self.alpha) / (self.sum_unigrams + float(self.vocab_size * self.alpha))
+		print("done training")
 
-
-
-	
+		
