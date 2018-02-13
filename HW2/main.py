@@ -85,11 +85,13 @@ train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
 # trigrams_lm.train(train_iter, n_iters=None)
 # print(utils.validate(trigrams_lm, val_iter))
 
-def kaggle(model, file):
+def kaggle(model, file, outputfile=None):
 	f = open(file)
 	lines = f.readlines()
 	hidden = model.init_hidden()
-	with open('sample.txt', 'w') as out:
+	if outputfile is None:
+		outpufile = 'sample.txt'
+	with open(outputfile, 'w') as out:
 		print('id,word', file=out)
 		for i, line in enumerate(lines):
 			text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
@@ -100,7 +102,7 @@ def kaggle(model, file):
 			values, indices = torch.sort(probs[-1], descending=True)
 			print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
 
-def kaggle_trigrams(model, file):
+def kaggle_trigrams(model, file, output):
 	f = open(file)
 	lines = f.readlines()
 	with open('trigrams.txt', 'w') as out:
@@ -151,7 +153,8 @@ if args.model == 'NNLM':
 
 		print("SAVING MODEL")
 		filename = 'nnlm_two_layers_ten_iter_sixtyembed_with_vectors.sav'
-		# torch.save(NNLM.state_dict(), filename)
+		#torch.save(NNLM.state_dict(), filename)
+		kaggle(NNLM, 'input.txt', 'NNLM_preds.txt')
 
 		print("perplex",utils.validate(NNLM, val_iter, criterion, hidden=True))
 elif args.model == 'Trigrams':
