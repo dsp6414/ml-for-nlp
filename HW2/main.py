@@ -107,6 +107,7 @@ def kaggle_trigrams(model, file):
 		print('id,word', file=out)
 		for i, line in enumerate(lines):
 			text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
+			print(text.size())
 			if torch.cuda.is_available():
 				text = text.cuda()
 			probs = model(text) # probs: [10 x vocab_size]

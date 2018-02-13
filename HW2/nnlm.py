@@ -10,6 +10,7 @@ class LSTMLM(nn.Module):
 		self.n = n
 		self.num_layers = 1
 		self.hidden_size=hidden_size
+		self.embedding_dim = embedding_dim
 		self.embedding = nn.Embedding(vocab_size, embedding_dim) # num_embeddings, embedding_dim
 		self.tanh = nn.Tanh()
 		self.lstm = nn.LSTM(embedding_dim, hidden_size, self.num_layers, batch_first=False)
@@ -43,8 +44,10 @@ class LSTMLM(nn.Module):
 		
 		# Get predictions and hidden state from LSTM  
 		# print(self.lstm(word_vectors, h)
-		print(word_vectors.t().size()) # Word vectors is: [640 x 3 x 100] -> [3 x 640 x 100]
-		out, h = self.lstm(word_vectors.t(), h) # out is [n, 1, hidden_size]
+		print(word_vectors.t().size()) # Word vectors is: [640 x 3 x 100] -> [1 x 640 x 300]
+		reshaped = word_vectors.t().view(1, -1, self.n * self.embedding_dim)
+
+		out, h = self.lstm(reshaped, h) # out is [n, 1, hidden_size]
 		out = self.dropout(out)	
 		#print(out.size())
 		#out = out.view(-1, self.hidden_size * self.n)
