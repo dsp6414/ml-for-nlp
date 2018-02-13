@@ -121,6 +121,7 @@ def validate(model, val_iter, criterion, hidden=False):
 def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, hidden=False):
 	print("TRAINING")
 	for epoch in range(num_epochs):
+		print("EPOCH ", epoch)
 		loss_total = 0.0
 		n_iters = 0
 		n_obs = 0.0
