@@ -162,7 +162,7 @@ elif args.model == 'Ensemble':
 	loaded_model.load_state_dict(torch.load(filename))
 	criterion = nn.CrossEntropyLoss()
 	print("VALIDATION SET")
-	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
+	loss = utilslstm.evaluate2(loaded_model, val_iter, criterion)
 elif args.model == 'LSTM':
 	# rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
 	# if torch.cuda.is_available():
@@ -218,7 +218,6 @@ if args.model == 'extension':
 		loaded_model = loaded_model.cuda()
 	criterion = nn.CrossEntropyLoss()
 	print("VALIDATION SET")
-	pdb.set_trace()
 	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
 	print("Perplexity")
 	print(math.exp(loss))
