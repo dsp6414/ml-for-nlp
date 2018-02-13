@@ -16,6 +16,7 @@ class LSTMLM(nn.Module):
 		self.lstm = nn.LSTM(embedding_dim, hidden_size, self.num_layers, batch_first=False)
 		self.dropout = nn.Dropout(0.5)
 		self.linear = nn.Linear(hidden_size * n, vocab_size)
+		self.linear_two = nn.Linear(self.embedding_dim * n, vocab_size)
 		self.init_weights()
 		self.initial_hidden = None #autograd.Variable(torch.zeros(1, hidden_size))
 		self.is_eval = False
@@ -45,9 +46,12 @@ class LSTMLM(nn.Module):
 		# Get predictions and hidden state from LSTM  
 		# print(self.lstm(word_vectors, h)
 		print(word_vectors.t().size()) # Word vectors is: [640 x 3 x 100] -> [1 x 640 x 300]
-		reshaped = word_vectors.t().view(1, -1, self.n * self.embedding_dim)
+		reshaped = word_vectors.t().contiguous().view(1, -1, self.n * self.embedding_dim)
+		print(reshaped.size())
 
-		out, h = self.lstm(reshaped, h) # out is [n, 1, hidden_size]
+		out = self.linear_two(reshaped)
+
+		## out, h = self.lstm(reshaped, h) # out is [n, 1, hidden_size]
 		out = self.dropout(out)	
 		#print(out.size())
 		#out = out.view(-1, self.hidden_size * self.n)
