@@ -1,20 +1,15 @@
-import argparse
 import torch
 import torch.autograd as autograd
 from torch.autograd import Variable
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
 import torchtext
 from torchtext.vocab import Vectors, GloVe
-import math
-import random
 import pdb
 
 torch.manual_seed(1)
 
-def get_batch(batch, n=20):
-    # n will be used later on to get smaller segments of text
+def get_batch(batch):
     text = batch.text[:-1,:]
     target = batch.text[1:,:].view(-1)
     if torch.cuda.is_available():
@@ -31,14 +26,10 @@ def reset_hidden(h):
 def train_batch(model, text, target, hidden, criterion, optimizer, grad_norm):
     # initialize hidden vectors
     hidden = reset_hidden(hidden) # This includes (hidden, cell)
-    # clear gradients
     model.zero_grad()
-    # calculate forward pass
-    output, hidden = model(text, hidden)
-    # calculate loss
+    output, hidden = model(text, hidden) # output: [bptt_len-1 x batch x vocab_size]
     output_flat = output.view(-1, model.vocab_size)
-    loss = criterion(output_flat, target) # output: [bptt_len-1 x batch x vocab_size]
-    # target: [bptt_len-1 x batch]
+    loss = criterion(output_flat, target) # target: [bptt_len-1 x batch]
     loss.backward()
     nn.utils.clip_grad_norm(model.parameters(), max_norm=grad_norm)
     optimizer.step()
@@ -69,18 +60,11 @@ def evaluate(model, iter_data, criterion):
     h = model.init_hidden()
     for batch in iter_data:
         text, target = get_batch(batch)
-        pdb.set_trace()
         probs, h = model(text, h)
-        pdb.set_trace()
         probs_flat = probs.view(-1, model.vocab_size)
         total_loss += len(text) * criterion(probs_flat, target).data
         total_len += len(text)
         h = reset_hidden(h)
-        # _, preds = torch.max(probs, 1)
-        # print(probs, target)
-        # correct += sum(preds.view(-1, len(TEXT.vocab)) == target.data)
-        # total += 1
-        # num_zeros += sum(torch.zeros_like(target.data) == target.data)
     print("Total Loss ", total_loss[0])
     print("Total Len ", total_len)
     print(total_loss[0] / total_len)
