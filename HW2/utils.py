@@ -29,7 +29,7 @@ def process_batch(batch, n):
 	# Return batch horizontally (each row is obs, last column is label)
 	return(torch.cat((xs, ys), dim=1))
 
-def validate_trigrams(model, val_iter, criterion, hidden=False):
+def validate_trigrams(model, val_iter, criterion, max_iters= None, hidden=False):
 	correct = 0.0
 	total  = 0.0
 	num_zeros = 0.0
@@ -38,7 +38,7 @@ def validate_trigrams(model, val_iter, criterion, hidden=False):
 	n_iters = 0
 	for batch in val_iter:
 		n_iters += 1
-		if n_iters > 100:
+		if max_iters is not None and n_iters > max_iters:
 			print(loss_total, total)
 			mean_loss = loss_total /float(total)
 			return( 2.0 ** mean_loss)
@@ -69,9 +69,9 @@ def validate_trigrams(model, val_iter, criterion, hidden=False):
 		loss = criterion(autograd.Variable(probs), y)
 		total += y.size()[0]
 		loss_total += loss.data[0] * y.size()[0]
-		print(loss.data[0], loss_total)
+		# print(loss.data[0], loss_total)
 		# total += batch.text.size()[1] - 1
-		print(y.size()[0])
+		#print(y.size()[0])
 		num_zeros += sum(torch.zeros_like(y) == y)
 		# print(preds, y)
 

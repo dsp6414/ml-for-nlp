@@ -107,15 +107,27 @@ def kaggle_trigrams(model, file):
 		print('id,word', file=out)
 		for i, line in enumerate(lines):
 			text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
-			print(text.size())
+			print("text", text, text.size) # [10 x 1]
 			if torch.cuda.is_available():
 				text = text.cuda()
-			probs = model(text) # probs: [10 x vocab_size]
-			print(probs)
+			probs = Variable(model(text.t())) # probs: [10 x vocab_size]
 			values, indices = torch.sort(probs[-1], descending=True)
 			print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
 
-
+def ensembled_kaggle(model_lstm, model_trigrams, file):
+	f = open(file)
+	lines = f.readlines()
+	with open('ensembeld.txt', 'w') as out:
+		print('id,word', file=out)
+		for i, line in enumerate(lines):
+			text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
+			print("text", text, text.size) # [10 x 1]
+			if torch.cuda.is_available():
+				text = text.cuda()
+			probs = Variable(model(text.t())) # probs: [10 x vocab_size]
+			values, indices = torch.sort(probs[-1], descending=True)
+			print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
+				
 if args.model == 'NNLM':
 	if args.path is not None:
 		NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 5)
@@ -144,7 +156,7 @@ elif args.model == 'Trigrams':
 	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=1, lambdas=[.1, .4, .5])
 	criterion = nn.CrossEntropyLoss()
 	trigrams_lm.train(train_iter, n_iters=None)
-	print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
+	#print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
 	kaggle_trigrams(trigrams_lm, "input.txt")
 	print("KAGGLE TRIGRAMS")
 elif args.model == 'Ensemble':
