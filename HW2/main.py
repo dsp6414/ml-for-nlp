@@ -147,7 +147,10 @@ elif args.model == 'Trigrams':
 	print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
 	print("KAGGLE TRIGRAMS")
 	kaggle_trigrams(trigrams_lm, "input.txt")
-
+elif args.model == 'Ensemble':
+	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=1, lambdas=[.1, .4, .5])
+	criterion = nn.CrossEntropyLoss()
+	trigrams_lm.train(train_iter, n_iters=None)
 elif args.model == 'LSTM':
 	# rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
 	# if torch.cuda.is_available():

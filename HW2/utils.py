@@ -59,7 +59,8 @@ def validate_trigrams(model, val_iter, criterion, hidden=False):
 			# Probs is 1-d if you go vector by vector
 		_, preds = torch.max(probs, 1)
 
-		print(probs.size(),y.size())
+		if torch.cuda.is_available():
+			probs = probs.cuda()
 
 		loss = criterion(autograd.Variable(probs), y)
 		total += y.size()[0]
