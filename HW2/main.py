@@ -207,31 +207,31 @@ elif args.model == 'LSTM':
 	kaggle(loaded_model, 'input.txt')
 
 if args.model == 'extension':
-	rnn = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
-	if torch.cuda.is_available():
-		print("USING CUDA")
-		rnn = rnn.cuda()
-	criterion = nn.CrossEntropyLoss()
-	optimizer = optim.Adadelta(rnn.parameters(), lr=0.5)
-
-	print("TRAINING DATA")
-	utilslstm.train(rnn, train_iter, 50, criterion, optimizer, grad_norm=0.25) #change grad norm
-
-	print("SAVING MODEL")
-	filename = 'lstm_extension_new.sav'
-	torch.save(rnn.state_dict(), filename)
-
-	# filename = 'lstm_extension45.sav'
-	# print("LOADING MODEL")
-	# loaded_model = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
-	# loaded_model.load_state_dict(torch.load(filename))
+	# rnn = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
 	# if torch.cuda.is_available():
 	# 	print("USING CUDA")
-	# 	loaded_model = loaded_model.cuda()
+	# 	rnn = rnn.cuda()
 	# criterion = nn.CrossEntropyLoss()
-	# print("VALIDATION SET")
-	# loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
-	# print("Perplexity")
-	# print(math.exp(loss))
-	# print("KAGGLE")
-	# kaggle(loaded_model, 'input.txt')
+	# optimizer = optim.Adadelta(rnn.parameters(), lr=0.5)
+
+	# print("TRAINING DATA")
+	# utilslstm.train(rnn, train_iter, 50, criterion, optimizer, grad_norm=0.25) #change grad norm
+
+	# print("SAVING MODEL")
+	# filename = 'lstm_extension_new.sav'
+	# torch.save(rnn.state_dict(), filename)
+
+	filename = 'lstm_extension_new.sav'
+	print("LOADING MODEL")
+	loaded_model = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
+	loaded_model.load_state_dict(torch.load(filename))
+	if torch.cuda.is_available():
+		print("USING CUDA")
+		loaded_model = loaded_model.cuda()
+	criterion = nn.CrossEntropyLoss()
+	print("VALIDATION SET")
+	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
+	print("Perplexity")
+	print(math.exp(loss))
+	print("KAGGLE")
+	kaggle(loaded_model, 'input.txt')
