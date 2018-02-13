@@ -145,10 +145,10 @@ if args.model == 'NNLM':
 
 		criterion = nn.CrossEntropyLoss()
 		optimizer = optim.Adadelta(NNLM.parameters(), lr=0.3)
-		utils.train(NNLM, train_iter, 50, criterion, optimizer, hidden=True)
+		utils.train(NNLM, train_iter, 10, criterion, optimizer, hidden=True)
 
 		print("SAVING MODEL")
-		filename = 'nnlm_50_iter.sav'
+		filename = 'nnlm_two_layers_ten_iter.sav'
 		# torch.save(NNLM.state_dict(), filename)
 
 		print("perplex",utils.validate(NNLM, val_iter, criterion, hidden=True))
