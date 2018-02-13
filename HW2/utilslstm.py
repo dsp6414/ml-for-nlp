@@ -70,7 +70,7 @@ def evaluate(model, iter_data, criterion):
     print(total_loss[0] / total_len)
     return total_loss[0] / total_len
 
-def evaluate(model_lstm, trigrams_model, iter_data, criterion):
+def evaluate2(model_lstm, trigrams_model, iter_data, criterion):
     model_lstm.eval()
     total_loss = 0.0
     total_len = 0.0

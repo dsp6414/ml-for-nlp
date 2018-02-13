@@ -174,7 +174,7 @@ elif args.model == 'Ensemble':
 	loaded_model.load_state_dict(torch.load(filename))
 	criterion = nn.CrossEntropyLoss()
 	print("VALIDATION SET")
-	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
+	loss = utilslstm.evaluate2(loaded_model, val_iter, criterion)
 elif args.model == 'LSTM':
 	# rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
 	# if torch.cuda.is_available():
@@ -233,9 +233,5 @@ if args.model == 'extension':
 	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
 	print("Perplexity")
 	print(math.exp(loss))
-	print("TEST SET")
-	loss = utilslstm.evaluate(loaded_model, test_iter, criterion)
-	print("Perplexity")
-	print(math.exp(loss))
-	print("KAGGLE")
-	kaggle(loaded_model, 'input.txt')
+	# print("KAGGLE")
+	# kaggle(loaded_model, 'input.txt')
