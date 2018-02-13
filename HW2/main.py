@@ -138,7 +138,7 @@ if args.model == 'NNLM':
 		criterion = nn.CrossEntropyLoss()
 		print("perplexity", utils.validate(model, val_iter, criterion, hidden=True))
 	else:
-		NNLM = nnlm.LSTMLM(len(TEXT.vocab), 100, 3)
+		NNLM = nnlm.LSTMLM(len(TEXT.vocab), 60, 3)
 		if torch.cuda.is_available():
 			print("converting NNLM to cuda")
 			NNLM.cuda()
@@ -148,7 +148,7 @@ if args.model == 'NNLM':
 		utils.train(NNLM, train_iter, 10, criterion, optimizer, hidden=True)
 
 		print("SAVING MODEL")
-		filename = 'nnlm_two_layers_ten_iter.sav'
+		filename = 'nnlm_two_layers_ten_iter_sixtyembed.sav'
 		# torch.save(NNLM.state_dict(), filename)
 
 		print("perplex",utils.validate(NNLM, val_iter, criterion, hidden=True))
