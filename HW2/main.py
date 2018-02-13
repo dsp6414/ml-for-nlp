@@ -218,6 +218,7 @@ if args.model == 'extension':
 		loaded_model = loaded_model.cuda()
 	criterion = nn.CrossEntropyLoss()
 	print("VALIDATION SET")
+	pdb.set_trace()
 	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
 	print("Perplexity")
 	print(math.exp(loss))
