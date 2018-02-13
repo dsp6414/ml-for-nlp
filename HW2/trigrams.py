@@ -18,6 +18,10 @@ class TrigramsLM(nn.Module):
 	def forward(self, input_data):
 		def p_ngram(ngram_dict, ngram, n):
 			if ngram in ngram_dict:
+				# Ignore unigrams with really high counts
+				if n == 1:
+					if ngram < 7:
+						return 0
 				return ngram_dict[ngram]
 			else:
 				if self.alpha == 0:
@@ -40,8 +44,8 @@ class TrigramsLM(nn.Module):
 		last_unigrams = input_data[-1, :] # size = batch_size
 		last_bigrams = input_data[-2:, :] # size = 2 x batch_size
 		batch_size = last_unigrams.size()[0]
-		print(batch_size)
-		print(last_unigrams, last_bigrams)
+		# print(batch_size)
+		# print(last_unigrams, last_bigrams)
 		# Unigram probabilities
 
 		def p_i(i, prev_unigram, prev_bigram):
