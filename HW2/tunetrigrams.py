@@ -20,7 +20,7 @@ def kaggle_trigrams(model, file, output):
 		print('id,word', file=out)
 		for i, line in enumerate(lines):
 			text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
-			# print("text", text, text.size) # [10 x 1]
+			# print("text", text, text.size) # [10 x 1] -> text.t is [1 x 10]
 			if torch.cuda.is_available():
 				text = text.cuda()
 			probs = Variable(model(text.t())) # probs: [10 x vocab_size]
@@ -40,14 +40,20 @@ else:
 	TEXT.build_vocab(train)
 print('len(TEXT.vocab)', len(TEXT.vocab))
 
+
+bad_unigrams = [TEXT.vocab.stoi[word] for word in ['<unk>', '<eos>']]
+
+print(bad_unigrams)
+
 train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
 	(train, val, test), batch_size=10, device=-1, bptt_len=32, repeat=False)
 
 trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=1)
 trigrams_lm.train(train_iter, n_iters=None)
 criterion = nn.CrossEntropyLoss()
-while(1):
-	l_1 = random.uniform(0,.1)
+
+while True:
+	l_1 = random.uniform(0,.01)
 	l_2 = random.uniform(0,1)
 	while l_1 + l_2 > .99:
 		l_1 = random.uniform(0,1)
@@ -55,11 +61,12 @@ while(1):
 	l_3 = 1 - l_1 - l_2
 
 	lambdas = [l_1, l_2, l_3] 
+	lambdas = [.2, .5, .3]
 	trigrams_lm.set_lambdas(lambdas)
 
 	print('lambdas = ', lambdas)
-	str_to_append = str(round(l_1,2)) + '_' + str(round(l_2,2)) + '_' + str(round(l_3,2))
-	file_name = "trigrams" + str_to_append + ".txt"
+	str_to_append = str(round(l_1,5)) + '_' + str(round(l_2,5)) + '_' + str(round(l_3,5))
+	file_name = "trigrams_capped_" + str_to_append + ".txt"
 	kaggle_trigrams(trigrams_lm, "input.txt", file_name)
 	print("KAGGLE TRIGRAMS")
 	# print("VALIDATION SCORE", utils.validate_trigrams(trigrams_lm, val_iter, criterion, max_iters = 10))

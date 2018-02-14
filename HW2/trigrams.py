@@ -18,6 +18,9 @@ class TrigramsLM(nn.Module):
 	def p_ngram(self, ngram_dict, ngram, n):
 		if ngram in ngram_dict:
 			# Ignore unigrams with really high counts
+			if n == 1:
+				if ngram == 0 or ngram == 3:
+					return 0.0
 			return ngram_dict[ngram]
 		else:
 			if self.alpha == 0:
@@ -42,6 +45,7 @@ class TrigramsLM(nn.Module):
 		last_unigrams = input_data[-1, :] # size = batch_size
 		last_bigrams = input_data[-2:, :] # size = 2 x batch_size
 		batch_size = last_unigrams.size()[0]
+		assert(batch_size == 1)
 		# print(batch_size)
 		# print(batch_size)
 		# print(last_unigrams, last_bigrams)
