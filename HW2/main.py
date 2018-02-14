@@ -13,7 +13,7 @@ from torchtext.vocab import Vectors, GloVe
 import trigrams, nnlm, lstm
 import utils, utilslstm
 
-torch.manual_seed(1)
+torch.manual_seed(287)
 
 BATCH_SIZE = 20
 BPTT = 35
@@ -192,8 +192,8 @@ elif args.model == 'LSTM':
 	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
 	print("Perplexity")
 	print(math.exp(loss))
-	print("Calculate Kaggle")
-	kaggle(loaded_model, 'input.txt')
+	# print("Calculate Kaggle")
+	# kaggle(loaded_model, 'input.txt')
 
 elif args.model == 'extension':
 	rnn = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
