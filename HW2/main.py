@@ -130,7 +130,7 @@ if args.model == 'NNLM':
 			NNLM = NNLM.cuda()
 		NNLM.load_state_dict(torch.load('nnlm_two_layers_ten_iter_sixtyembed_with_vectors.sav'))
 
-		kaggle(NNLM, 'input.txt', 'NNLM_preds.txt')
+		kaggle_nnlmgrams(NNLM, 'input.txt', 'NNLM_preds.txt')
 	else:
 		url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
 		TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
