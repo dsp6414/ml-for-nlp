@@ -105,11 +105,11 @@ def kaggle(model, file, outputfile=None):
 def kaggle_trigrams(model, file, output):
 	f = open(file)
 	lines = f.readlines()
-	with open('trigrams.txt', 'w') as out:
+	with open(output, 'w') as out:
 		print('id,word', file=out)
 		for i, line in enumerate(lines):
 			text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
-			print("text", text, text.size) # [10 x 1]
+			# print("text", text, text.size) # [10 x 1]
 			if torch.cuda.is_available():
 				text = text.cuda()
 			probs = Variable(model(text.t())) # probs: [10 x vocab_size]
@@ -158,11 +158,11 @@ if args.model == 'NNLM':
 
 		print("perplex",utils.validate(NNLM, val_iter, criterion, hidden=True))
 elif args.model == 'Trigrams':
-	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=1, lambdas=[.1, .4, .5])
+	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=0, lambdas=[.1, .4, .5])
 	criterion = nn.CrossEntropyLoss()
 	trigrams_lm.train(train_iter, n_iters=None)
-	#print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
-	kaggle_trigrams(trigrams_lm, "input.txt")
+	print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
+	kaggle_trigrams(trigrams_lm, "input.txt", "trigramsagain.txt")
 	print("KAGGLE TRIGRAMS")
 elif args.model == 'Ensemble':
 	print("TRAINING TRIGRAMS MODEL")

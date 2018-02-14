@@ -42,7 +42,8 @@ def validate_trigrams(model, val_iter, criterion, max_iters= None, hidden=False)
 			print(loss_total, total)
 			mean_loss = loss_total /float(total)
 			return( 2.0 ** mean_loss)
-		processed_batch = autograd.Variable(process_batch(batch, 3))
+		processed_batch = autograd.Variable(process_batch(batch, 4))
+		# processed_batch = (batch.text.t())
 		if torch.cuda.is_available():
 			processed_batch = processed_batch.cuda()
 		if hidden:
@@ -69,7 +70,8 @@ def validate_trigrams(model, val_iter, criterion, max_iters= None, hidden=False)
 		loss = criterion(autograd.Variable(probs), y)
 		total += y.size()[0]
 		loss_total += loss.data[0] * y.size()[0]
-		# print(loss.data[0], loss_total)
+		print(y.size())
+		print(loss.data[0], loss_total, total)
 		# total += batch.text.size()[1] - 1
 		#print(y.size()[0])
 		num_zeros += sum(torch.zeros_like(y) == y)
