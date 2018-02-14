@@ -33,7 +33,7 @@ class LSTMLM(nn.Module):
 		self.linear_two.bias.data.fill_(0)
 		self.linear_two.weight.data.uniform_(-0.1, 0.1)
 		
-	def forward(self, batch):
+	def forward(self, batch, h):
 		# Embed word ids to vectors
 		word_vectors = (self.embedding(batch)) # [n x embedding_dim]
 
@@ -52,4 +52,4 @@ class LSTMLM(nn.Module):
 		out = self.tanh(out)
 		out = self.linear_two(out)
 		out = self.dropout(out)	
-		return out.squeeze()
+		return h, out.squeeze()
