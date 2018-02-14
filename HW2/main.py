@@ -189,11 +189,11 @@ elif args.model == 'LSTM':
 	loaded_model.load_state_dict(torch.load(filename))
 	criterion = nn.CrossEntropyLoss()
 	print("VALIDATION SET")
-	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
-	print("Perplexity")
-	print(math.exp(loss))
-	# print("Calculate Kaggle")
-	# kaggle(loaded_model, 'input.txt')
+	# loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
+	# print("Perplexity")
+	# print(math.exp(loss))
+	print("Calculate Kaggle")
+	kaggle(loaded_model, 'input.txt')
 
 elif args.model == 'extension':
 	rnn = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
