@@ -115,7 +115,7 @@ if args.model == 'NNLM':
 		if CUDA:
 			print("converting NNLM to cuda")
 			NNLM = NNLM.cuda()
-		NNLM.load_state_dict(torch.load(args.path))
+		NNLM.load_state_dict(torch.load('nnlm_two_layers_ten_iter_sixtyembed_with_vectors.sav'))
 		criterion = nn.CrossEntropyLoss()
 		print("perplexity", utils.validate(model, val_iter, criterion, hidden=False))
 	else:
