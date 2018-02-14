@@ -70,7 +70,7 @@ def kaggle(model, file, outputfile=None):
 	lines = f.readlines()
 	hidden = model.init_hidden()
 	if outputfile is None:
-		outpufile = 'sample.txt'
+		outputfile = 'sample.txt'
 	with open(outputfile, 'w') as out:
 		print('id,word', file=out)
 		for i, line in enumerate(lines):
