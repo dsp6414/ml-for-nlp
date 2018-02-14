@@ -95,6 +95,19 @@ def kaggle_trigrams(model, file, output):
 			values, indices = torch.sort(probs[-1], descending=True)
 			print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
 
+def kaggle_nnlmgrams(model, file, output):
+	f = open(file)
+	lines = f.readlines()
+	with open(output, 'w') as out:
+		print('id,word', file=out)
+		for i, line in enumerate(lines):
+			text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
+			if CUDA:
+				text = text.cuda()
+			probs = Variable(model(text)) # probs: [10 x vocab_size]
+			values, indices = torch.sort(probs[-1], descending=True)
+			print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
+
 def ensembled_kaggle(model_lstm, model_trigrams, file):
 	f = open(file)
 	lines = f.readlines()
@@ -116,8 +129,8 @@ if args.model == 'NNLM':
 			print("converting NNLM to cuda")
 			NNLM = NNLM.cuda()
 		NNLM.load_state_dict(torch.load('nnlm_two_layers_ten_iter_sixtyembed_with_vectors.sav'))
-		criterion = nn.CrossEntropyLoss()
-		print("perplexity", utils.validate(NNLM, val_iter, criterion, hidden=False))
+
+		kaggle(NNLM, 'input.txt', 'NNLM_preds.txt')
 	else:
 		url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
 		TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
