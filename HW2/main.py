@@ -117,7 +117,7 @@ if args.model == 'NNLM':
 			NNLM = NNLM.cuda()
 		NNLM.load_state_dict(torch.load(args.path))
 		criterion = nn.CrossEntropyLoss()
-		print("perplexity", utils.validate(model, val_iter, criterion, hidden=True))
+		print("perplexity", utils.validate(model, val_iter, criterion, hidden=False))
 	else:
 		url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
 		TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
@@ -127,15 +127,15 @@ if args.model == 'NNLM':
 			NNLM.cuda()
 
 		criterion = nn.CrossEntropyLoss()
-		optimizer = optim.SGD(NNLM.parameters(), lr=0.001)
-		utils.train(NNLM, train_iter, 10, criterion, optimizer, hidden=True)
+		optimizer = optim.SGD(NNLM.parameters(), lr=0.3)
+		utils.train(NNLM, train_iter, 10, criterion, optimizer, hidden=False)
 
 		# Saving Model
 		filename = 'nnlm_two_layers_ten_iter_sixtyembed_with_vectors.sav'
 		torch.save(NNLM.state_dict(), filename)
-		kaggle(NNLM, 'input.txt', 'NNLM_preds.txt')
+		# kaggle(NNLM, 'input.txt', 'NNLM_preds.txt')
 
-		print("perplex",utils.validate(NNLM, val_iter, criterion, hidden=True))
+		print("perplex",utils.validate(NNLM, val_iter, criterion, hidden=False))
 
 elif args.model == 'Trigrams':
 	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=0, lambdas=[.2, .5, .3])

@@ -66,6 +66,7 @@ while True:
 
 	print('lambdas = ', lambdas)
 	str_to_append = str(round(l_1,5)) + '_' + str(round(l_2,5)) + '_' + str(round(l_3,5))
+	str_to_append = 'elbert'
 	file_name = "trigrams_capped_" + str_to_append + ".txt"
 	kaggle_trigrams(trigrams_lm, "input.txt", file_name)
 	print("KAGGLE TRIGRAMS")
