@@ -137,7 +137,7 @@ if args.model == 'NNLM':
 		print("perplex", utils.validate(NNLM, val_iter, criterion, hidden=True))
 
 elif args.model == 'Trigrams':
-	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=0.0001, lambdas=[.2, .5, .3])
+	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=0.01, lambdas=[.2, .5, .3])
 	criterion = nn.CrossEntropyLoss()
 	trigrams_lm.train(train_iter, n_iters=None)
 	print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
@@ -163,21 +163,21 @@ elif args.model == 'Ensemble':
 
 elif args.model == 'LSTM':
 	# Save Model
-	rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
-	if CUDA:
-		print("USING CUDA")
-		rnn = rnn.cuda()
-	criterion = nn.CrossEntropyLoss()
-	optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
-	milestones = list(range(TEMP_EPOCH, EPOCHS - 1))
-	scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
+	# rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
+	# if CUDA:
+	# 	print("USING CUDA")
+	# 	rnn = rnn.cuda()
+	# criterion = nn.CrossEntropyLoss()
+	# optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
+	# milestones = list(range(TEMP_EPOCH, EPOCHS - 1))
+	# scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
 	
-	# Train data
-	utilslstm.train(rnn, train_iter, EPOCHS, criterion, optimizer, scheduler=scheduler, grad_norm=10) #change grad norm
+	# # Train data
+	# utilslstm.train(rnn, train_iter, EPOCHS, criterion, optimizer, scheduler=scheduler, grad_norm=10) #change grad norm
 
-	# Save model
-	filename = 'lstm_large_hidden.sav'
-	torch.save(rnn.state_dict(), filename)
+	# # Save model
+	# filename = 'lstm_large_hidden.sav'
+	# torch.save(rnn.state_dict(), filename)
 
 	# Load Model
 	filename = 'lstm_large_hidden.sav'
