@@ -1,4 +1,6 @@
 import argparse
+import math
+import random
 import torch
 import torch.autograd as autograd
 from torch.autograd import Variable
@@ -7,29 +9,29 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torchtext
 from torchtext.vocab import Vectors, GloVe
-import math
-import random
 
 import trigrams, nnlm, lstm
-import utils
-import utilslstm
+import utils, utilslstm
 
-import pdb
+torch.manual_seed(1)
 
 BATCH_SIZE = 20
 BPTT = 35
 EMBEDDING_SIZE = 128
 NUM_LAYERS = 2
+
+# Medium LSTM
 # LR = 1 * 1.2 # decreased by 1.2 for each epoch after 6th
 # DECAY = 1.2
 # TEMP_EPOCH = 6
 # EPOCHS = 39
+# GRAD_NORM. = 5
 
 # Large LSTM
-EPOCHS = 55
 LR = 1 * 1.15 # decreased by 1.15 for each epoch after 14th
 DECAY = 1.15
 TEMP_EPOCH = 14
+EPOCHS = 55
 GRAD_NORM = 10
 
 parser = argparse.ArgumentParser(description='Language Modeling')
@@ -52,38 +54,16 @@ train, val, test = torchtext.datasets.LanguageModelingDataset.splits(
 	path=".", 
 	train=train_file, validation="valid.txt", test="valid.txt", text_field=TEXT)
 
-print('len(train)', len(train))
-
 if DEBUG:
 	TEXT.build_vocab(train, max_size=2000)
 else:
 	TEXT.build_vocab(train)
-print('len(TEXT.vocab)', len(TEXT.vocab))
 
 if args.model == 'extension':
 	BATCH_SIZE = 40
 
 train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
 	(train, val, test), batch_size=BATCH_SIZE, device=-1, bptt_len=BPTT, repeat=False)
-
-# coef_1 = 0.0
-# # lambdas = [.001, 0, .999]
-# values_for_l = [.00001, .0001, .001, .01, .1, .2, .3, .5, .7]
-# l_1 = random.choice(values_for_l)
-# while l_1 > .1:
-# 	l_1 = random.uniform(0,.1)
-# l_2 = random.choice(values_for_l)
-# while l_1 + l_2 > 1:
-# 	l_2 = random.choice(values_for_l)
-# l_3 = 1 - l_1 - l_2
-
-# lambdas = [l_1, l_2, l_3] 
-
-
-# print('lambdas = ', lambdas)
-# trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=1, lambdas=lambdas)
-# trigrams_lm.train(train_iter, n_iters=None)
-# print(utils.validate(trigrams_lm, val_iter))
 
 def kaggle(model, file, outputfile=None):
 	f = open(file)
@@ -95,7 +75,7 @@ def kaggle(model, file, outputfile=None):
 		print('id,word', file=out)
 		for i, line in enumerate(lines):
 			text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
-			if torch.cuda.is_available():
+			if CUDA:
 				text = text.cuda()
 			h = model.init_hidden(batch_size=1)
 			probs, h = model(text, h) # probs: [10 x vocab_size]
@@ -109,12 +89,10 @@ def kaggle_trigrams(model, file, output):
 		print('id,word', file=out)
 		for i, line in enumerate(lines):
 			text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
-			# print("text", text, text.size) # [10 x 1]
-			if torch.cuda.is_available():
+			if CUDA:
 				text = text.cuda()
 			probs = Variable(model(text.t())) # probs: [10 x vocab_size]
 			values, indices = torch.sort(probs[-1], descending=True)
-			pdb.set_trace()
 			print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
 
 def ensembled_kaggle(model_lstm, model_trigrams, file):
@@ -124,8 +102,8 @@ def ensembled_kaggle(model_lstm, model_trigrams, file):
 		print('id,word', file=out)
 		for i, line in enumerate(lines):
 			text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
-			print("text", text, text.size) # [10 x 1]
-			if torch.cuda.is_available():
+			print("text", text, text.size)
+			if CUDA:
 				text = text.cuda()
 			probs = Variable(model(text.t())) # probs: [10 x vocab_size]
 			values, indices = torch.sort(probs[-1], descending=True)
@@ -134,7 +112,7 @@ def ensembled_kaggle(model_lstm, model_trigrams, file):
 if args.model == 'NNLM':
 	if args.path is not None:
 		NNLM = nnlm.LSTMLM(len(TEXT.vocab), 60, 3)
-		if torch.cuda.is_available():
+		if CUDA:
 			print("converting NNLM to cuda")
 			NNLM = NNLM.cuda()
 		NNLM.load_state_dict(torch.load(args.path))
@@ -144,7 +122,7 @@ if args.model == 'NNLM':
 		url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
 		TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
 		NNLM = nnlm.LSTMLM(len(TEXT.vocab), 60, 3)
-		if torch.cuda.is_available():
+		if CUDA:
 			print("converting NNLM to cuda")
 			NNLM.cuda()
 
@@ -152,9 +130,9 @@ if args.model == 'NNLM':
 		optimizer = optim.SGD(NNLM.parameters(), lr=0.001)
 		utils.train(NNLM, train_iter, 10, criterion, optimizer, hidden=True)
 
-		print("SAVING MODEL")
+		# Saving Model
 		filename = 'nnlm_two_layers_ten_iter_sixtyembed_with_vectors.sav'
-		#torch.save(NNLM.state_dict(), filename)
+		torch.save(NNLM.state_dict(), filename)
 		kaggle(NNLM, 'input.txt', 'NNLM_preds.txt')
 
 		print("perplex",utils.validate(NNLM, val_iter, criterion, hidden=True))
@@ -163,7 +141,7 @@ elif args.model == 'Trigrams':
 	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=0, lambdas=[.2, .5, .3])
 	criterion = nn.CrossEntropyLoss()
 	trigrams_lm.train(train_iter, n_iters=None)
-	# print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
+	print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
 	kaggle_trigrams(trigrams_lm, "input.txt", "trigramsagain.txt")
 	print("KAGGLE TRIGRAMS")
 
@@ -176,33 +154,37 @@ elif args.model == 'Ensemble':
 	filename = 'lstm_large_hidden45.sav'
 	print("LOADING LSTM MODEL")
 	loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
-	if torch.cuda.is_available():
+	if CUDA:
 		print("USING CUDA")
 		loaded_model = loaded_model.cuda()
 	loaded_model.load_state_dict(torch.load(filename))
 	criterion = nn.CrossEntropyLoss()
 	print("VALIDATION SET")
 	loss = utilslstm.evaluate2(loaded_model, val_iter, criterion)
+
 elif args.model == 'LSTM':
-	# rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
-	# if torch.cuda.is_available():
-	# 	print("USING CUDA")
-	# 	rnn = rnn.cuda()
-	# criterion = nn.CrossEntropyLoss()
-	# optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
-	# milestones = list(range(TEMP_EPOCH, EPOCHS - 1))
-	# scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
-	# print("TRAINING DATA")
-	# utilslstm.train(rnn, train_iter, EPOCHS, criterion, optimizer, scheduler=scheduler, grad_norm=10) #change grad norm
+	# Save Model
+	rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
+	if CUDA:
+		print("USING CUDA")
+		rnn = rnn.cuda()
+	criterion = nn.CrossEntropyLoss()
+	optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
+	milestones = list(range(TEMP_EPOCH, EPOCHS - 1))
+	scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
+	
+	# Train data
+	utilslstm.train(rnn, train_iter, EPOCHS, criterion, optimizer, scheduler=scheduler, grad_norm=10) #change grad norm
 
-	# print("SAVING MODEL")
-	# filename = 'lstm_large_hidden.sav'
-	# torch.save(rnn.state_dict(), filename)
+	# Save model
+	filename = 'lstm_large_hidden.sav'
+	torch.save(rnn.state_dict(), filename)
 
+	# Load Model
 	filename = 'lstm_large.sav'
 	print("LOADING MODEL")
 	loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
-	if torch.cuda.is_available():
+	if CUDA:
 		print("USING CUDA")
 		loaded_model = loaded_model.cuda()
 	loaded_model.load_state_dict(torch.load(filename))
@@ -215,25 +197,26 @@ elif args.model == 'LSTM':
 	kaggle(loaded_model, 'input.txt')
 
 elif args.model == 'extension':
-	# rnn = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
-	# if torch.cuda.is_available():
-	# 	print("USING CUDA")
-	# 	rnn = rnn.cuda()
-	# criterion = nn.CrossEntropyLoss()
-	# optimizer = optim.Adadelta(rnn.parameters(), lr=0.5)
+	rnn = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
+	if CUDA:
+		print("USING CUDA")
+		rnn = rnn.cuda()
+	criterion = nn.CrossEntropyLoss()
+	optimizer = optim.Adadelta(rnn.parameters(), lr=0.5)
 
-	# print("TRAINING DATA")
-	# utilslstm.train(rnn, train_iter, 50, criterion, optimizer, grad_norm=0.25) #change grad norm
+	# Train data
+	utilslstm.train(rnn, train_iter, 50, criterion, optimizer, grad_norm=0.25) #change grad norm
 
-	# print("SAVING MODEL")
-	# filename = 'lstm_extension_new.sav'
-	# torch.save(rnn.state_dict(), filename)
+	# Save Model
+	filename = 'lstm_extension_new.sav'
+	torch.save(rnn.state_dict(), filename)
 
+	# Load Model
 	filename = 'lstm_extension_new.sav'
 	print("LOADING MODEL")
 	loaded_model = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
 	loaded_model.load_state_dict(torch.load(filename))
-	if torch.cuda.is_available():
+	if CUDA:
 		print("USING CUDA")
 		loaded_model = loaded_model.cuda()
 	criterion = nn.CrossEntropyLoss()

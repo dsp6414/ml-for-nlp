@@ -49,9 +49,6 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, g
             scheduler.step()
             print("learning rate: " + str(scheduler.get_lr()))
         print("Epoch " + str(epoch) + " Loss: " + str(total_loss))
-        if epoch % 5 == 0:
-            print("SAVING MODEL #" + str(epoch))
-            torch.save(model.state_dict(), filename + str(epoch) + ".sav")
 
 def evaluate(model, iter_data, criterion):
     model.eval()
@@ -79,12 +76,8 @@ def evaluate2(model_lstm, trigrams_model, iter_data, criterion):
         text, target = get_batch(batch)
         probs, h = model_lstm(text, h)
         probs_flat = probs.view(-1, model.vocab_size)
-        print(probs_flat.size())
-
         processed_batch = autograd.Variable(process_batch(batch, 3))
-
         trigrams_probs = trigrams_model(processed_batch)
-        print(trigrams_probs.size())
         total_loss += len(text) * criterion(probs_flat, target).data
         total_len += len(text)
         h = reset_hidden(h)

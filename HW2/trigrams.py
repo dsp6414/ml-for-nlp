@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import pdb
 
+torch.manual_seed(1)
+
 class TrigramsLM(nn.Module):
 	def __init__(self, vocab_size, lambdas = [1./100.,39./100.,6./10.], alpha=0):
 		super(TrigramsLM, self).__init__()
@@ -21,7 +23,7 @@ class TrigramsLM(nn.Module):
 			# Ignore unigrams with really high counts
 			if n == 1:
 				if ngram == 0 or ngram == 3:
-					return 0.0
+					return 0.001
 			return ngram_dict[ngram]
 		else:
 			if self.alpha == 0:
@@ -30,7 +32,10 @@ class TrigramsLM(nn.Module):
 				denom = self.vocab_size * self.alpha + self.sum_unigrams
 			elif n == 2:
 				prev_unigram, i = ngram
-				denom = self.vocab_size * self.alpha + self.unigram_counts[prev_unigram]
+				if prev_unigram not in self.unigram_counts:
+					denom = self.alpha * self.vocab_size
+				else:
+					denom = self.vocab_size * self.alpha + self.unigram_counts[prev_unigram]
 			elif n == 3:
 				b1, b2, i = ngram
 				if (b1, b2) not in self.bigram_counts:
