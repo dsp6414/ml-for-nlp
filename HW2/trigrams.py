@@ -130,8 +130,6 @@ class TrigramsLM(nn.Module):
 		# Normalize unigram counts with laplace smoothing
 		self.sum_unigrams = sum(self.unigram_counts.values())
 		for unigram, count in self.unigram_counts.items():
-			# self.bigram_probs['missing'] = 
-			# print((self.sum_unigrams + float(self.vocab_size * self.alpha)))
 			self.unigram_probs[unigram] = (count + self.alpha) / (self.sum_unigrams + float(self.vocab_size * self.alpha))
 		print("done training")
 

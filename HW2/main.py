@@ -163,7 +163,7 @@ elif args.model == 'Trigrams':
 	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=0, lambdas=[.2, .5, .3])
 	criterion = nn.CrossEntropyLoss()
 	trigrams_lm.train(train_iter, n_iters=None)
-	print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
+	# print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
 	kaggle_trigrams(trigrams_lm, "input.txt", "trigramsagain.txt")
 	print("KAGGLE TRIGRAMS")
 
