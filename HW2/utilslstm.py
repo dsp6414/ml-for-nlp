@@ -7,6 +7,7 @@ import torchtext
 from torchtext.vocab import Vectors, GloVe
 import pdb
 import utils
+
 torch.manual_seed(1)
 
 def get_batch(batch):

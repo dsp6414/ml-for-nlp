@@ -3,7 +3,6 @@ import torchtext
 import torch
 import torch.autograd as autograd
 import torch.nn as nn
-import pdb
 
 torch.manual_seed(1)
 NNLM_GRAD_NORM = 5
@@ -57,10 +56,9 @@ def validate_trigrams(model, val_iter, criterion, max_iters= None):
 		loss = 0
 		for row in processed_batch:
 			try:
-				print(model.p_i(row.data[2],row.data[1],(row.data[1],row.data[0])))
-				loss += np.log2(model.p_i(row.data[2],row.data[1],(row.data[1],row.data[0])))
+				loss += np.log2(model.p_i(row.data[2],row.data[1],row.data[0]))
 			except:
-				print("exception occured")
+				print("Exception Occured")
 				loss += float('-inf')
 		return loss
 
@@ -118,7 +116,6 @@ def validate(model, val_iter, criterion, hidden=False):
 		else:
 			probs = model(x)
 			# Probs is 1-d if you go vector by vector
-		_, preds = torch.max(probs, 1)
 
 		loss = criterion(probs, autograd.Variable(y))
 		total += y.size()[0]
@@ -127,7 +124,7 @@ def validate(model, val_iter, criterion, hidden=False):
 
 	print(loss_total, total)
 	mean_loss = loss_total / float(total)
-	return( np.exp(mean_loss) )
+	return np.exp(mean_loss)
 
 def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, hidden=False):
 	model.train()
@@ -156,7 +153,6 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 			else:
 				probs = model.forward(x)
 
-			# probs = probs.view(1, -1)
 			loss = criterion(probs, y)
 			n_obs += processed_batch.size()[0]
 			loss_total += loss.data[0] * processed_batch.size()[0]
@@ -164,10 +160,6 @@ def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, h
 			nn.utils.clip_grad_norm(model.parameters(), max_norm=NNLM_GRAD_NORM)
 			optimizer.step()
 
-		# take avg of losses
 		loss_avg = loss_total / float(n_obs)
-		print("perplexity", 2.0 ** loss_avg)
-
-	print("done training")
-
-
+		print("Perplexity", 2.0 ** loss_avg)
+	print("Done Training")

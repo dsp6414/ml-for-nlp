@@ -70,7 +70,7 @@ def kaggle(model, file, outputfile=None):
 	lines = f.readlines()
 	hidden = model.init_hidden()
 	if outputfile is None:
-		outpufile = 'sample.txt'
+		outputfile = 'sample.txt'
 	with open(outputfile, 'w') as out:
 		print('id,word', file=out)
 		for i, line in enumerate(lines):
@@ -133,17 +133,16 @@ if args.model == 'NNLM':
 		# Saving Model
 		filename = 'nnlm_two_layers_ten_iter_sixtyembed_with_vectors.sav'
 		torch.save(NNLM.state_dict(), filename)
-		# kaggle(NNLM, 'input.txt', 'NNLM_preds.txt')
-
-		print("perplex",utils.validate(NNLM, val_iter, criterion, hidden=False))
+		kaggle(NNLM, 'input.txt', 'NNLM_preds.txt')
+		print("perplex", utils.validate(NNLM, val_iter, criterion, hidden=True))
 
 elif args.model == 'Trigrams':
-	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=0, lambdas=[.2, .5, .3])
+	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=0.01, lambdas=[.2, .5, .3])
 	criterion = nn.CrossEntropyLoss()
 	trigrams_lm.train(train_iter, n_iters=None)
 	print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
+	print("Calculate Kaggle")
 	kaggle_trigrams(trigrams_lm, "input.txt", "trigramsagain.txt")
-	print("KAGGLE TRIGRAMS")
 
 elif args.model == 'Ensemble':
 	print("TRAINING TRIGRAMS MODEL")
@@ -164,24 +163,24 @@ elif args.model == 'Ensemble':
 
 elif args.model == 'LSTM':
 	# Save Model
-	rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
-	if CUDA:
-		print("USING CUDA")
-		rnn = rnn.cuda()
-	criterion = nn.CrossEntropyLoss()
-	optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
-	milestones = list(range(TEMP_EPOCH, EPOCHS - 1))
-	scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
+	# rnn = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
+	# if CUDA:
+	# 	print("USING CUDA")
+	# 	rnn = rnn.cuda()
+	# criterion = nn.CrossEntropyLoss()
+	# optimizer = optim.Adadelta(rnn.parameters(), lr=LR/DECAY)
+	# milestones = list(range(TEMP_EPOCH, EPOCHS - 1))
+	# scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
 	
-	# Train data
-	utilslstm.train(rnn, train_iter, EPOCHS, criterion, optimizer, scheduler=scheduler, grad_norm=10) #change grad norm
+	# # Train data
+	# utilslstm.train(rnn, train_iter, EPOCHS, criterion, optimizer, scheduler=scheduler, grad_norm=10) #change grad norm
 
-	# Save model
-	filename = 'lstm_large_hidden.sav'
-	torch.save(rnn.state_dict(), filename)
+	# # Save model
+	# filename = 'lstm_large_hidden.sav'
+	# torch.save(rnn.state_dict(), filename)
 
 	# Load Model
-	filename = 'lstm_large.sav'
+	filename = 'lstm_large_hidden.sav'
 	print("LOADING MODEL")
 	loaded_model = lstm.LSTM(embedding_size=EMBEDDING_SIZE, vocab_size=len(TEXT.vocab), num_layers=NUM_LAYERS, lstm_type='large')
 	if CUDA:
@@ -193,7 +192,7 @@ elif args.model == 'LSTM':
 	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
 	print("Perplexity")
 	print(math.exp(loss))
-	print("KAGGLE")
+	print("Calculate Kaggle")
 	kaggle(loaded_model, 'input.txt')
 
 elif args.model == 'extension':
@@ -224,5 +223,5 @@ elif args.model == 'extension':
 	loss = utilslstm.evaluate(loaded_model, val_iter, criterion)
 	print("Perplexity")
 	print(math.exp(loss))
-	print("KAGGLE")
+	print("Calculate Kaggle")
 	kaggle(loaded_model, 'input.txt')
