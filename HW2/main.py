@@ -117,7 +117,7 @@ if args.model == 'NNLM':
 			NNLM = NNLM.cuda()
 		NNLM.load_state_dict(torch.load('nnlm_two_layers_ten_iter_sixtyembed_with_vectors.sav'))
 		criterion = nn.CrossEntropyLoss()
-		print("perplexity", utils.validate(model, val_iter, criterion, hidden=False))
+		print("perplexity", utils.validate(NNLM, val_iter, criterion, hidden=False))
 	else:
 		url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
 		TEXT.vocab.load_vectors(vectors=Vectors('wiki.simple.vec', url=url))
