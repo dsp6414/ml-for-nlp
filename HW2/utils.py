@@ -3,6 +3,7 @@ import torchtext
 import torch
 import torch.autograd as autograd
 import torch.nn as nn
+import pdb
 
 torch.manual_seed(1)
 NNLM_GRAD_NORM = 5
@@ -29,7 +30,20 @@ def process_batch(batch, n):
 	# Return batch horizontally (each row is obs, last column is label)
 	return(torch.cat((xs, ys), dim=1))
 
-def validate_trigrams(model, val_iter, criterion, max_iters= None, hidden=False):
+def validate_trigrams(model, val_iter, criterion, max_iters= None):
+	#####
+	# Anna Starts Experimenting
+	def calculate_trigram_loss(model, processed_batch):
+		loss = 0
+		for row in processed_batch:
+			try:
+				loss += np.log2(model.p_i(row.data[2],row.data[1],(row.data[1],row.data[0])))
+			except:
+				print("exception occured")
+				loss += float('-inf')
+		return loss
+	######
+
 	correct = 0.0
 	total  = 0.0
 	num_zeros = 0.0
@@ -42,17 +56,10 @@ def validate_trigrams(model, val_iter, criterion, max_iters= None, hidden=False)
 			print(loss_total, total)
 			mean_loss = loss_total /float(total)
 			return( 2.0 ** mean_loss)
-		processed_batch = autograd.Variable(process_batch(batch, 4))
+		processed_batch = autograd.Variable(process_batch(batch, 2))
 		# processed_batch = (batch.text.t())
 		if torch.cuda.is_available():
 			processed_batch = processed_batch.cuda()
-		if hidden:
-			h_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
-			c_0 = autograd.Variable(torch.zeros(model.num_layers * 1, processed_batch.size()[0], model.hidden_size))
-			h = (h_0, c_0)
-			if torch.cuda.is_available():
-				h = (h_0.cuda(), c_0.cuda())
-
 		x = processed_batch[:, :-1]
 		y = processed_batch[:, -1]
 
@@ -60,26 +67,29 @@ def validate_trigrams(model, val_iter, criterion, max_iters= None, hidden=False)
 			x = x.cuda()
 			y = y.cuda()
 
-		probs = model(x)
-			# Probs is 1-d if you go vector by vector
-		_, preds = torch.max(probs, 1)
+		# probs = model(x)
+		# Probs is 1-d if you go vector by vector
+		# _, preds = torch.max(probs, 1)
 
-		if torch.cuda.is_available():
-			probs = probs.cuda()
+		# if torch.cuda.is_available():
+			# probs = probs.cuda()
 
-		loss = criterion(autograd.Variable(probs), y)
-		total += y.size()[0]
-		loss_total += loss.data[0] * y.size()[0]
-		print(y.size())
-		print(loss.data[0], loss_total, total)
+		loss_total += calculate_trigram_loss(model, processed_batch)
+
+		# loss = criterion(probs, y)
+		# total += y.size()[0]
+		# loss_total += loss.data[0] * y.size()[0]
+		# print(y.size())
+		# print(loss.data[0], loss_total, total)
 		# total += batch.text.size()[1] - 1
+		total += len(processed_batch)
 		#print(y.size()[0])
-		num_zeros += sum(torch.zeros_like(y) == y)
+		# num_zeros += sum(torch.zeros_like(y) == y)
 		# print(preds, y)
 
 	print(loss_total, total)
-	mean_loss = loss_total /float(total)
-	return( 2.0 ** mean_loss)
+	# mean_loss = loss_total / float(total)
+	return np.power(2, - loss_total / float(total))
 
 
 def validate(model, val_iter, criterion, hidden=False):
@@ -122,8 +132,8 @@ def validate(model, val_iter, criterion, hidden=False):
 		# print(preds, y)
 
 	print(loss_total, total)
-	mean_loss = loss_total /float(total)
-	return( 2.0 ** mean_loss)
+	mean_loss = loss_total / float(total)
+	return( np.exp(mean_loss) )
 
 def train(model, train_iter, num_epochs, criterion, optimizer, scheduler=None, hidden=False):
 	print("TRAINING")

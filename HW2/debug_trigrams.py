@@ -13,7 +13,7 @@ import utilslstm
 toy_text = autograd.Variable(torch.Tensor([[range(1, 11), range(11, 21)], [range(11,21), [22] + list(range(22, 31))]]))
 
 print(toy_text)
-trigrams_lm = trigrams.TrigramsLM(vocab_size = 100, alpha=1, lambdas=[.1, .4, .5])
+trigrams_lm = trigrams.TrigramsLM(vocab_size=100, alpha=1, lambdas=[.1, .4, .5])
 # criterion = nn.CrossEntropyLoss()
 trigrams_lm.train(toy_text, n_iters=None)
 print("UNIGRAMS", trigrams_lm.unigram_counts, "\n")

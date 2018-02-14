@@ -114,6 +114,7 @@ def kaggle_trigrams(model, file, output):
 				text = text.cuda()
 			probs = Variable(model(text.t())) # probs: [10 x vocab_size]
 			values, indices = torch.sort(probs[-1], descending=True)
+			pdb.set_trace()
 			print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
 
 def ensembled_kaggle(model_lstm, model_trigrams, file):
@@ -157,13 +158,15 @@ if args.model == 'NNLM':
 		kaggle(NNLM, 'input.txt', 'NNLM_preds.txt')
 
 		print("perplex",utils.validate(NNLM, val_iter, criterion, hidden=True))
+
 elif args.model == 'Trigrams':
-	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=0, lambdas=[.1, .4, .5])
+	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=0, lambdas=[.2, .5, .3])
 	criterion = nn.CrossEntropyLoss()
 	trigrams_lm.train(train_iter, n_iters=None)
 	print(utils.validate_trigrams(trigrams_lm, val_iter, criterion))
 	kaggle_trigrams(trigrams_lm, "input.txt", "trigramsagain.txt")
 	print("KAGGLE TRIGRAMS")
+
 elif args.model == 'Ensemble':
 	print("TRAINING TRIGRAMS MODEL")
 	trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=1, lambdas=[.1, .4, .5])
@@ -211,7 +214,7 @@ elif args.model == 'LSTM':
 	print("KAGGLE")
 	kaggle(loaded_model, 'input.txt')
 
-if args.model == 'extension':
+elif args.model == 'extension':
 	# rnn = lstm.LSTMExtension(embedding_size=400, vocab_size=len(TEXT.vocab), num_layers=2)
 	# if torch.cuda.is_available():
 	# 	print("USING CUDA")
