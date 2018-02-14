@@ -42,7 +42,7 @@ class TrigramsLM(nn.Module):
 		last_unigrams = input_data[-1, :] # size = batch_size
 		last_bigrams = input_data[-2:, :] # size = 2 x batch_size
 		batch_size = last_unigrams.size()[0]
-		print(batch_size)
+		# print(batch_size)
 		# print(batch_size)
 		# print(last_unigrams, last_bigrams)
 		# Unigram probabilities
@@ -86,8 +86,8 @@ class TrigramsLM(nn.Module):
 		for batch in train_iter:
 			if n_iters is not None and batch_num > n_iters:
 				break
-			# x = batch.text
-			x = batch
+			x = batch.text
+			# x = batch
 			# Update unigram counts
 			for row in x:
 				for word in row:
@@ -126,8 +126,6 @@ class TrigramsLM(nn.Module):
 		# Normalize unigram counts with laplace smoothing
 		self.sum_unigrams = sum(self.unigram_counts.values())
 		for unigram, count in self.unigram_counts.items():
-			# self.bigram_probs['missing'] = 
-			print((self.sum_unigrams + float(self.vocab_size * self.alpha)))
 			self.unigram_probs[unigram] = (count + self.alpha) / (self.sum_unigrams + float(self.vocab_size * self.alpha))
 		print("done training")
 

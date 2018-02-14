@@ -5,6 +5,7 @@ import torch.optim as optim
 import trigrams, nnlm
 import utils
 import random
+from torch.autograd import Variable as Variable
 
 import torch
 CUDA = False
@@ -12,7 +13,19 @@ CUDA = False
 DEBUG = False
 train_file = "train.5k.txt" if DEBUG else "train.txt"
 
-
+def kaggle_trigrams(model, file, output):
+	f = open(file)
+	lines = f.readlines()
+	with open(output, 'w') as out:
+		print('id,word', file=out)
+		for i, line in enumerate(lines):
+			text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
+			# print("text", text, text.size) # [10 x 1]
+			if torch.cuda.is_available():
+				text = text.cuda()
+			probs = Variable(model(text.t())) # probs: [10 x vocab_size]
+			values, indices = torch.sort(probs[-1], descending=True)
+			print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
 # Our input $x$
 TEXT = torchtext.data.Field()
 
@@ -34,9 +47,9 @@ trigrams_lm = trigrams.TrigramsLM(vocab_size = len(TEXT.vocab), alpha=1)
 trigrams_lm.train(train_iter, n_iters=None)
 criterion = nn.CrossEntropyLoss()
 while(1):
-	l_1 = random.uniform(0,.5)
+	l_1 = random.uniform(0,.1)
 	l_2 = random.uniform(0,1)
-	while l_1 + l_2 > 1:
+	while l_1 + l_2 > .99:
 		l_1 = random.uniform(0,1)
 		l_2 = random.uniform(0,1)
 	l_3 = 1 - l_1 - l_2
@@ -45,4 +58,8 @@ while(1):
 	trigrams_lm.set_lambdas(lambdas)
 
 	print('lambdas = ', lambdas)
-	print("VALIDATION SCORE", utils.validate_trigrams(trigrams_lm, val_iter, criterion, max_iters = 10))
+	str_to_append = str(round(l_1,2)) + '_' + str(round(l_2,2)) + '_' + str(round(l_3,2))
+	file_name = "trigrams" + str_to_append + ".txt"
+	kaggle_trigrams(trigrams_lm, "input.txt", file_name)
+	print("KAGGLE TRIGRAMS")
+	# print("VALIDATION SCORE", utils.validate_trigrams(trigrams_lm, val_iter, criterion, max_iters = 10))

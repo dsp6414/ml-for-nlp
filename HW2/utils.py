@@ -7,6 +7,27 @@ import torch.nn as nn
 torch.manual_seed(1)
 NNLM_GRAD_NORM = 5
 
+# Batch will have the observations vertically.
+def process_nonbatch(batch, n):
+	n_rows = batch.size()[1]
+
+	xs = []
+	ys = []
+	# Iterate through the batch observations
+	for row_num, row in enumerate(batch.t()):
+		print(len(row))
+		# Get words n at a time
+		for i in range(len(row) - n):
+			# get ith through i +2nd words (inclusive)
+			x = row[i: i+n].data
+			y = row[i+n].data
+			xs.append(x)
+			ys.append(y)
+	xs = torch.stack([x_i for x_i in xs])
+	ys = torch.stack([y_i for y_i in ys])
+
+	# Return batch horizontally (each row is obs, last column is label)
+	return(torch.cat((xs, ys), dim=1))
 
 # Batch will have the observations vertically.
 def process_batch(batch, n):
