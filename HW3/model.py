@@ -22,9 +22,15 @@ class EncoderRNN(nn.Module):
         self.hidden_size = hidden_size
         self.n_layers = n_layers
         self.dropout_p = 0.5 # need to check if this is a thing
+        self.init_param = 0.08
 
         self.embedding = nn.Embedding(input_size, hidden_size)
         self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers, dropout=self.dropout_p)
+
+    def init_weights(self):
+        self.embedding.weight.data.uniform_(-self.init_param, self.init_param)
+        self.rnn.weight.data.uniform_(-self.init_param, self.init_param)
+        # self.linear.weight.data.uniform_(-self.init_param, self.init_param)
 
     def init_hidden(self):
         h = Variable(torch.zeros(self.n_layers, 1, self.hidden_size))
@@ -33,6 +39,7 @@ class EncoderRNN(nn.Module):
         return h
 
     def forward(self, inputs, hidden):
+        self.init_weights()
         seq_len = len(inputs)
         embedded = self.embedding(inputs).view(seq_len, 1, -1)
         output, hidden = self.gru(embedded, hidden)
