@@ -66,47 +66,47 @@ def train(x, y, encoder, decoder, encoder_optm, decoder_optm, criterion): # do I
 
     return loss.data[0] / target_length
 
-def evaluate(s, encoder, decoder, max_length): # need max_length?
-    input_var = # somehow get input far from s
+# def evaluate(s, encoder, decoder, max_length): # need max_length?
+#     input_var = s # somehow get input far from s
 
-    encoder_hidden = encoder.init_hidden()
-    encoder_output, encoder_hidden = encoder(input_var, encoder_hidden)
+#     encoder_hidden = encoder.init_hidden()
+#     encoder_output, encoder_hidden = encoder(input_var, encoder_hidden)
 
-    decoder_input = Variable(torch.LongTensor([[BOS_WORD]])) # SOS
-    decoder_context = Variable(torch.zeros(1, decoder.hidden_size))
-    if USE_CUDA:
-        decoder_input = decoder_input.cuda()
-        decoder_context = decoder_context.cuda()
+#     decoder_input = Variable(torch.LongTensor([[BOS_WORD]])) # SOS
+#     decoder_context = Variable(torch.zeros(1, decoder.hidden_size))
+#     if USE_CUDA:
+#         decoder_input = decoder_input.cuda()
+#         decoder_context = decoder_context.cuda()
 
-    decoder_hidden = encoder_hidden
-    decoder_attn = torch.zeros(max_length, max_length) # this is where I need max_length?
-    decoded = []
+#     decoder_hidden = encoder_hidden
+#     decoder_attn = torch.zeros(max_length, max_length) # this is where I need max_length?
+#     decoded = []
 
-    for i in range(max_length):
-        decoder_output, decoder_context, decoder_hidden, decoder_attn = \
-            decoder(decoder_input, decoder_context, decoder_hidden, encoder_output)
+#     for i in range(max_length):
+#         decoder_output, decoder_context, decoder_hidden, decoder_attn = \
+#             decoder(decoder_input, decoder_context, decoder_hidden, encoder_output)
 
-        decoder_attn[i, :decoder_attn.size(2)] += decoder_attn.squeeze(0).squeeze(0).data # unsure what this does
+#         decoder_attn[i, :decoder_attn.size(2)] += decoder_attn.squeeze(0).squeeze(0).data # unsure what this does
 
-        # Figure out how to use decoder
+#         # Figure out how to use decoder
 
 
-def plot_attention(s, encoder, decoder, max_length):
-    output_words, attn = evaluate(s, encoder, decoder, max_length)
-    print('input =', s)
-    print('output =', ' '.join(output_words))
+# def plot_attention(s, encoder, decoder, max_length):
+#     output_words, attn = evaluate(s, encoder, decoder, max_length)
+#     print('input =', s)
+#     print('output =', ' '.join(output_words))
 
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    cax = ax.matshow(attentions.numpy(), cmap='bone')
-    fig.colorbar(cax)
+#     fig = plt.figure()
+#     ax = fig.add_subplot(111)
+#     cax = ax.matshow(attentions.numpy(), cmap='bone')
+#     fig.colorbar(cax)
 
-    ax.set_xticklabels([''] + s.split(' ') + [EOS_WORD], rotation=90)
-    ax.set_yticklabels([''] + output_words)
+#     ax.set_xticklabels([''] + s.split(' ') + [EOS_WORD], rotation=90)
+#     ax.set_yticklabels([''] + output_words)
 
-    ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
-    ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+#     ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
+#     ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
 
-    plt.show()
-    plt.close()
+#     plt.show()
+#     plt.close()
 
