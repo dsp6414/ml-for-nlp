@@ -43,16 +43,16 @@ print(batch.trg)
 #encoder = EncoderRNN(input_lang.n_words, hidden_size, n_layers)
 #decoder = AttnDecoderRNN(attn_model, hidden_size, output_lang.n_words, n_layers, dropout_p=dropout_p)
 
-for epoch in range(EPOCHS):
-    loss = utils.train(x, y, encoder, decoder, encoder_optm, decoder_optm, criterion)
-    print(str(epoch) + "EPOCH LOSS: " + str(loss))
+# for epoch in range(EPOCHS):
+#     loss = utils.train(x, y, encoder, decoder, encoder_optm, decoder_optm, criterion)
+#     print(str(epoch) + "EPOCH LOSS: " + str(loss))
 
-    plot_losses += loss
+#     plot_losses += loss
 
-    if epoch % 5  == 0:
-        plot_loss_avg = plot_losses / 5.
-        plot_losses.append(plot_loss_avg)
-        plot_losses = 0
+#     if epoch % 5  == 0:
+#         plot_loss_avg = plot_losses / 5.
+#         plot_losses.append(plot_loss_avg)
+#         plot_losses = 0
 
 
 
