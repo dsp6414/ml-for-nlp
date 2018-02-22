@@ -11,8 +11,8 @@ MAX_LEN = 20
 BATCH_SIZE = 32
 EPOCHS = 1
 
-DE = data.Field(tokenize=tokenize_de)
-EN = data.Field(tokenize=tokenize_en, init_token = BOS_WORD, eos_token = EOS_WORD) # only target needs BOS/EOS
+DE = data.Field(tokenize=utils.tokenize_de)
+EN = data.Field(tokenize=utils.tokenize_en, init_token = BOS_WORD, eos_token = EOS_WORD) # only target needs BOS/EOS
 
 train, val, test = datasets.IWSLT.splits(exts=('.de', '.en'), fields=(DE, EN), 
 										 filter_pred=lambda x: len(vars(x)['src']) <= MAX_LEN and 
