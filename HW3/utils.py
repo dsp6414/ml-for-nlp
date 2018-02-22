@@ -67,7 +67,7 @@ def train(x, y, encoder, decoder, encoder_optm, decoder_optm, criterion): # do I
     return loss.data[0] / target_length
 
 # def evaluate(s, encoder, decoder, max_length): # need max_length?
-#     input_var = s # somehow get input far from s
+#     input_var = s #somehow get input far from s
 
 #     encoder_hidden = encoder.init_hidden()
 #     encoder_output, encoder_hidden = encoder(input_var, encoder_hidden)
