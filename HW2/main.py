@@ -13,7 +13,7 @@ from torchtext.vocab import Vectors, GloVe
 import trigrams, nnlm, lstm
 import utils, utilslstm
 
-torch.manual_seed(287)
+torch.manual_seed(1)
 
 BATCH_SIZE = 20
 BPTT = 35
