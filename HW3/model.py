@@ -8,6 +8,8 @@ import utils
 import math
 import pdb
 
+import utils
+
 torch.manual_seed(1)
 
 USE_CUDA = True if torch.cuda.is_available() else False
@@ -74,4 +76,4 @@ class AttentionNetwork(nn.Module):
 
 
 
-        
+

@@ -12,6 +12,10 @@ import numpy
 import pdb
 import spacy
 
+import model
+
+torch.manual_seed(1)
+
 BOS_WORD = '<s>'
 EOS_WORD = '</s>'
 CLIP = 5
@@ -46,7 +50,7 @@ def train(x, y, encoder, decoder, encoder_optm, decoder_optm, criterion): # do I
         decoder_context = decoder_context.cuda()
 
     for i in range(y_length):
-        decoder_output, decoder_context, decoder_hidden, decoder_attn =
+        decoder_output, decoder_context, decoder_hidden, decoder_attn = \
             decoder(decoder_input, decoder_context, decoder_hidden, encoder_output)
 
 
@@ -79,7 +83,7 @@ def evaluate(s, encoder, decoder, max_length): # need max_length?
     decoded = []
 
     for i in range(max_length):
-        decoder_output, decoder_context, decoder_hidden, decoder_attn =
+        decoder_output, decoder_context, decoder_hidden, decoder_attn = \
             decoder(decoder_input, decoder_context, decoder_hidden, encoder_output)
 
         decoder_attn[i, :decoder_attn.size(2)] += decoder_attn.squeeze(0).squeeze(0).data # unsure what this does

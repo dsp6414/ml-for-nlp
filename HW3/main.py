@@ -1,7 +1,9 @@
 from torchtext import data
 from torchtext import datasets
 import spacy
-import utils
+import utils, model
+
+torch.manual_seed(1)
 
 spacy_de = spacy.load('de')
 spacy_en = spacy.load('en')
