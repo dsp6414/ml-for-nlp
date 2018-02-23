@@ -57,6 +57,7 @@ def train_batch(model, source, target, optimizer, criterion):
 def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do I need a max_length=MAX_LENGTH?
     model.train()
     plot_losses = []
+    counter = 0
 
     for epoch in range(epochs):
         total_loss = 0
@@ -64,38 +65,31 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do
             source, target = process_batch(batch)
             batch_loss = train_batch(model, source, target, optimizer, criterion)
             total_loss += batch_loss
+
+            if counter % 50 == 0:
+                print(str(counter) + " counter: " + str(total_loss))
+            counter += 1
+
         print(str(epoch) + "EPOCH LOSS: " + str(total_loss))
 
         if scheduler:
             scheduler.step()
         plot_losses.append(total_loss)
+
+        filename = 'seq2seq'
+        torch.save(model.state_dict(), filename + str(epoch) + '.sav')
         # plot_losses_graph.append(plot_loss_avg)
     return plot_losses
 
-def evaluate(model, val_iter, max_length): # need max_length?
-    input_var = s #somehow get input far from s
-
-    encoder_hidden = encoder.init_hidden()
-    encoder_output, encoder_hidden = encoder(input_var, encoder_hidden)
-
-    decoder_input = Variable(torch.LongTensor([[BOS_WORD]])) # SOS
-    decoder_context = Variable(torch.zeros(1, decoder.hidden_size))
-    if USE_CUDA:
-        decoder_input = decoder_input.cuda()
-        decoder_context = decoder_context.cuda()
-
-    decoder_hidden = encoder_hidden
-    decoder_attn = torch.zeros(max_length, max_length) # this is where I need max_length?
-    decoded = []
-
-    for i in range(max_length):
-        decoder_output, decoder_context, decoder_hidden, decoder_attn = \
-            decoder(decoder_input, decoder_context, decoder_hidden, encoder_output)
-
-        decoder_attn[i, :decoder_attn.size(2)] += decoder_attn.squeeze(0).squeeze(0).data # unsure what this does
-
-        # Figure out how to use decoder
-
+def evaluate(model, val_iter, criterion, max_length): # need max_length?
+    model.eval()
+    total_loss = 0
+    for batch in val_iter:
+        source, target = process_batch(batch)
+        output = model(source, target)
+        loss = criterion(output, target)
+        total_loss += loss
+    return total_loss / len(val_iter)
 
 # def plot_attention(s, encoder, decoder, max_length):
 #     output_words, attn = evaluate(s, encoder, decoder, max_length)

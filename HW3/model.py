@@ -12,7 +12,7 @@ import utils
 
 torch.manual_seed(1)
 
-BATCH_SIZE = 10
+BATCH_SIZE = 128
 USE_CUDA = True if torch.cuda.is_available() else False
 
 class EncoderRNN(nn.Module):

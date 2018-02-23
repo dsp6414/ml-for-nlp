@@ -16,7 +16,7 @@ torch.manual_seed(1)
 BOS_WORD = '<s>'
 EOS_WORD = '</s>'
 MAX_LEN = 20
-BATCH_SIZE = 10
+BATCH_SIZE = 128
 TEMP_EPOCH = 5
 # EPOCHS = 7.5
 EPOCHS = 5
@@ -62,8 +62,8 @@ train, val, test = datasets.IWSLT.splits(exts=('.de', '.en'), fields=(DE, EN),
                                          filter_pred=lambda x: len(vars(x)['src']) <= MAX_LEN and 
                                          len(vars(x)['trg']) <= MAX_LEN)
 MIN_FREQ = 5
-DE.build_vocab(train.src, min_freq=MIN_FREQ, max_size=5000) # REMOVE THE MAX_SIZE 5000
-EN.build_vocab(train.trg, min_freq=MIN_FREQ, max_size=5000) # REMOVE THE MAX_SIZE 5000
+DE.build_vocab(train.src, min_freq=MIN_FREQ)
+EN.build_vocab(train.trg, min_freq=MIN_FREQ)
 
 print("Finish build vocab")
 
@@ -88,4 +88,10 @@ criterion = nn.CrossEntropyLoss()
 # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
 
 plot_losses = utils.train(model, train_iter, EPOCHS, optimizer, criterion)
+filename = 'seq2seq.sav'
+torch.save(model.state_dict(), filename)
+
 print(plot_losses)
+
+print("EVALUATE")
+print(utils.evaluate(model, val_iter, criterion))
