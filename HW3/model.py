@@ -40,7 +40,6 @@ class EncoderRNN(nn.Module):
         # seq_len = len(inputs)
         # embedding = self.embedding(inputs).view(seq_len, 1, -1) # check sizes here
         embedding = self.embedding(inputs) # [len x B x E]
-        pdb.set_trace()
         output, hidden = self.rnn(embedding, hidden) # [num_layers x batch x hidden]
         return output, hidden
 
@@ -60,7 +59,6 @@ class DecoderRNN(nn.Module):
         self.out = nn.Linear(hidden_size, output_size)
 
     def forward(self, inputs, last_hidden, encoder_output):
-        pdb.set_trace()
         word_embedding = self.embedding(inputs).unsqueeze(0) # [1 x B x N]
         # word_embedding = self.dropout(word_embedding)
 
@@ -74,6 +72,8 @@ class DecoderRNN(nn.Module):
         # output = self.out(torch.cat((output, context), 1))
 
         output, hidden = self.rnn(word_embedding, last_hidden)
+        # output: [1 x batch x hidden]
+        # hidden: [num_layer x batch x hidden], [num_layer x batch x hidden]
         output = output.squeeze(0) # check dim
         output = self.out(output)
 
@@ -101,14 +101,12 @@ class Seq2Seq(nn.Module):
             self.decoder = self.decoder.cuda()
 
     def forward(self, source, target, use_target=False):
-        max_length = len(source)
+        max_length = len(target)
 
         encoder_hidden = self.encoder.init_hidden() # can insert batch size here
-        pdb.set_trace()
         encoder_output, encoder_hidden = self.encoder(source, encoder_hidden)
         # encoder_output: [source_len x batch x hidden]
         # encoder_hidden: # [num_layers x batch x hidden]
-        pdb.set_trace()
         decoder_outputs = Variable(torch.zeros(max_length, BATCH_SIZE, self.output_size))
         if USE_CUDA:
             decoder_outputs = decoder_outputs.cuda()
@@ -129,7 +127,7 @@ class Seq2Seq(nn.Module):
             else:
                 decoder_output = decoder_output.max(1)[1]
         # decoder_output, hidden = self.decoder(decoder_input, decoder_context, decoder_hidden, encoder_output)
-
+        pdb.set_trace()
         return decoder_outputs
 
 
