@@ -112,7 +112,6 @@ class Seq2Seq(nn.Module):
 
     def forward(self, source, target, use_target=False):
         max_length = len(target)
-        pdb.set_trace()
         batch_size = len(source[1])
         encoder_hidden = self.encoder.init_hidden(batch_size=batch_size) # can insert batch size here
         encoder_output, encoder_hidden = self.encoder(source, encoder_hidden)
