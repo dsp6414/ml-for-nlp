@@ -87,7 +87,8 @@ def evaluate(model, val_iter, criterion):
     for batch in val_iter:
         source, target = process_batch(batch)
         output, hidden = model(source, target)
-        loss = criterion(output, target)
+        output_flat = output.view(-1, model.output_size)
+        loss = criterion(output_flat, target)
         total_loss += loss
     return total_loss / len(val_iter)
 
