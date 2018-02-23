@@ -47,6 +47,8 @@ class EncoderRNN(nn.Module):
             print(embedding)
             print("HIDDEN")
             print(hidden)
+            print("RNN")
+            print(self.rnn.parameters())
         return output, hidden
 
 class DecoderRNN(nn.Module):
