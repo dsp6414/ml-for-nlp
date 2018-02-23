@@ -89,7 +89,7 @@ def evaluate(model, val_iter, criterion):
         pdb.set_trace()
         output, hidden = model(source, target)
         output_flat = output.view(-1, model.output_size)
-        loss = criterion(output_flat, target)
+        loss = criterion(output_flat, target.view(-1))
         total_loss += loss
     return total_loss / len(val_iter)
 
