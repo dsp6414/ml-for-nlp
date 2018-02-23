@@ -72,29 +72,29 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do
         # plot_losses_graph.append(plot_loss_avg)
     return plot_losses
 
-# def evaluate(s, encoder, decoder, max_length): # need max_length?
-#     input_var = s #somehow get input far from s
+def evaluate(model, val_iter, max_length): # need max_length?
+    input_var = s #somehow get input far from s
 
-#     encoder_hidden = encoder.init_hidden()
-#     encoder_output, encoder_hidden = encoder(input_var, encoder_hidden)
+    encoder_hidden = encoder.init_hidden()
+    encoder_output, encoder_hidden = encoder(input_var, encoder_hidden)
 
-#     decoder_input = Variable(torch.LongTensor([[BOS_WORD]])) # SOS
-#     decoder_context = Variable(torch.zeros(1, decoder.hidden_size))
-#     if USE_CUDA:
-#         decoder_input = decoder_input.cuda()
-#         decoder_context = decoder_context.cuda()
+    decoder_input = Variable(torch.LongTensor([[BOS_WORD]])) # SOS
+    decoder_context = Variable(torch.zeros(1, decoder.hidden_size))
+    if USE_CUDA:
+        decoder_input = decoder_input.cuda()
+        decoder_context = decoder_context.cuda()
 
-#     decoder_hidden = encoder_hidden
-#     decoder_attn = torch.zeros(max_length, max_length) # this is where I need max_length?
-#     decoded = []
+    decoder_hidden = encoder_hidden
+    decoder_attn = torch.zeros(max_length, max_length) # this is where I need max_length?
+    decoded = []
 
-#     for i in range(max_length):
-#         decoder_output, decoder_context, decoder_hidden, decoder_attn = \
-#             decoder(decoder_input, decoder_context, decoder_hidden, encoder_output)
+    for i in range(max_length):
+        decoder_output, decoder_context, decoder_hidden, decoder_attn = \
+            decoder(decoder_input, decoder_context, decoder_hidden, encoder_output)
 
-#         decoder_attn[i, :decoder_attn.size(2)] += decoder_attn.squeeze(0).squeeze(0).data # unsure what this does
+        decoder_attn[i, :decoder_attn.size(2)] += decoder_attn.squeeze(0).squeeze(0).data # unsure what this does
 
-#         # Figure out how to use decoder
+        # Figure out how to use decoder
 
 
 # def plot_attention(s, encoder, decoder, max_length):

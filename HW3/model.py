@@ -127,5 +127,4 @@ class Seq2Seq(nn.Module):
             else:
                 decoder_output = decoder_output.max(1)[1]
         # decoder_output, hidden = self.decoder(decoder_input, decoder_context, decoder_hidden, encoder_output)
-        pdb.set_trace()
         return decoder_outputs, decoder_hidden # decoder_output [target_len x batch x en_vocab_sz]
