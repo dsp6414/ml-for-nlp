@@ -16,6 +16,9 @@ import model
 
 torch.manual_seed(1)
 
+spacy_de = spacy.load('de')
+spacy_en = spacy.load('en')
+
 BOS_WORD = '<s>'
 EOS_WORD = '</s>'
 CLIP = 10
@@ -36,62 +39,40 @@ def process_batch(batch):
         x, y = x.cuda(), y.cuda()
     return x, y
 
-def train_batch(x, y, encoder, decoder, hidden, criterion, encoder_optm, decoder_optm):
+def train_batch(model, source, target, optimizer, criterion):
     loss = 0
-    # encoder_optm.zero_grad()
-    # decoder_optm.zero_grad()
-    x_length = x.size()[0]
-    y_length = y.size()[0]
-    encoder_output, encoder_hidden = encoder(x, encoder_hidden)
-
-    decoder_input = Variable(torch.LongTensor([[BOS_WORD]]))
-    decoder_context = Variable(torch.zeros(1, decoder.hidden_size))
-    decoder_hidden = encoder_hidden # last hidden state from encoder for start of decoder
-    if USE_CUDA:
-        decoder_input = decoder_input.cuda()
-        decoder_context = decoder_context.cuda()
-
-    for i in range(y_length):
-        decoder_output, decoder_context, decoder_hidden, decoder_attn = \
-            decoder(decoder_input, decoder_context, decoder_hidden, encoder_output)
-
-        # not sure whether to use ground truth target or network's prediction
-        loss += criterion(decoder_output[0], y[i]) # why is this true. what's decoder output
-        decoder_input = y[i]
-
+    model.zero_grad()
+    output, hidden = model(source)
+    output_flat = output.view(-1, model.output_size) # check this
+    # not sure whether to use ground truth target or network's prediction
+    pdb.set_trace()
+    loss = criterion(output_flat, target) # why is this true. what's decoder output
     loss.backward()
+
     # figure out how to do this
     # if L2 Norm of Gradient / 128 > 5, then g = 5g/s
-    nn.utils.clip_grad_norm(encoder.parameters(), CLIP)
-    nn.utils.clip_grad_norm(decoder.parameters(), CLIP)
-    encoder_optm.step()
-    decoder_optm.step()
-    return loss.data[0] / target_length
+    nn.utils.clip_grad_norm(model.parameters(), CLIP)
+    optimizer.step()
+    return loss.data[0] / len(target)
 
-def train(train_iter, encoder, decoder, epochs, encoder_optm, decoder_optm, criterion, scheduler=None): # do I need a max_length=MAX_LENGTH?
-    encoder.train()
-    decoder.train()
-
-    encoder_hidden = encoder.init_hidden()
-    # plot_losses_graph = []
+def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do I need a max_length=MAX_LENGTH?
+    model.train()
+    plot_losses = []
 
     for epoch in range(epochs):
         total_loss = 0
-        plot_losses = []
         for batch in train_iter:
             source, target = process_batch(batch)
-            batch_loss, hidden = train_batch(source, target, encoder, decoder, encoder_hidden,
-                                            criterion, encoder_optm, decoder_optm)
+            pdb.set_trace()
+            batch_loss = train_batch(model, source, target, optimizer, criterion)
             total_loss += batch_loss
-
         print(str(epoch) + "EPOCH LOSS: " + str(total_loss))
 
         if scheduler:
             scheduler.step()
-        plot_losses += total_loss
-        plot_loss_avg = plot_losses / 5.
+        plot_losses.append(total_loss)
         # plot_losses_graph.append(plot_loss_avg)
-        plot_losses = 0
+    return plot_losses
 
 # def evaluate(s, encoder, decoder, max_length): # need max_length?
 #     input_var = s #somehow get input far from s
