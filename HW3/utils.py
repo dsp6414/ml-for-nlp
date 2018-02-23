@@ -81,7 +81,7 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do
         # plot_losses_graph.append(plot_loss_avg)
     return plot_losses
 
-def evaluate(model, val_iter, criterion, max_length): # need max_length?
+def evaluate(model, val_iter, criterion):
     model.eval()
     total_loss = 0
     for batch in val_iter:

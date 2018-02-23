@@ -87,11 +87,13 @@ criterion = nn.CrossEntropyLoss()
 # milestones = list(range(TEMP_EPOCH, EPOCHS - 1, 0.5))
 # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
 
-plot_losses = utils.train(model, train_iter, EPOCHS, optimizer, criterion)
 filename = 'seq2seq.sav'
-torch.save(model.state_dict(), filename)
-
-print(plot_losses)
+if os.path.exists(filename):
+    model.load_state_dict(torch.load(filename))
+else:
+    plot_losses = utils.train(model, train_iter, EPOCHS, optimizer, criterion)
+    print(plot_losses)
+    torch.save(model.state_dict(), filename)
 
 print("EVALUATE")
 print(utils.evaluate(model, val_iter, criterion))
