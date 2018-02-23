@@ -86,6 +86,7 @@ def evaluate(model, val_iter, criterion):
     total_loss = 0
     for batch in val_iter:
         source, target = process_batch(batch)
+        pdb.set_trace()
         output, hidden = model(source, target)
         output_flat = output.view(-1, model.output_size)
         loss = criterion(output_flat, target)
