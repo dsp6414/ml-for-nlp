@@ -28,7 +28,7 @@ class EncoderRNN(nn.Module):
         self.embedding = nn.Embedding(input_size, embedding_size)
         self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers, dropout=dropout_p)
 
-    def init_hidden(self, batch_size=128):
+    def init_hidden(self, batch_size=BATCH_SIZE):
         if USE_CUDA:
             return (Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)).cuda(),
             Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)).cuda())
@@ -102,7 +102,8 @@ class Seq2Seq(nn.Module):
     def forward(self, source, target, use_target=False):
         max_length = len(source)
 
-        encoder_hidden = (self.encoder.init_hidden(), self.encoder.init_hidden()) # can insert batch size here
+        encoder_hidden = self.encoder.init_hidden() # can insert batch size here
+        pdb.set_trace()
         encoder_output, encoder_hidden = self.encoder(source, encoder_hidden)
         pdb.set_trace()
         decoder_outputs = Variable(torch.zeros(max_length, BATCH_SIZE, self.output_size))
