@@ -90,7 +90,7 @@ def evaluate(model, val_iter, criterion):
         output_flat = output.view(-1, model.output_size)
         loss = criterion(output_flat, target.view(-1))
         total_loss += loss
-    return total_loss / len(val_iter)
+    return total_loss / len(val_iter), output
 
 # def plot_attention(s, encoder, decoder, max_length):
 #     output_words, attn = evaluate(s, encoder, decoder, max_length)

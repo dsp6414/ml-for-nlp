@@ -96,4 +96,7 @@ else:
     torch.save(model.state_dict(), filename)
 
 print("EVALUATE")
-print(utils.evaluate(model, val_iter, criterion))
+loss, output = utils.evaluate(model, val_iter, criterion)
+pdb.set_trace()
+for row in output.data:
+    " ".join([EN.vocab.itos[i] for i in row])
