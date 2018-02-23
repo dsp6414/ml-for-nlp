@@ -43,6 +43,8 @@ class EncoderRNN(nn.Module):
         try:
             output, hidden = self.rnn(embedding, hidden) # [num_layers x batch x hidden]
         except:
+            print("INPUTS")
+            print(inputs)
             print("EMBEDDING")
             print(embedding)
             print("HIDDEN")
@@ -110,8 +112,9 @@ class Seq2Seq(nn.Module):
 
     def forward(self, source, target, use_target=False):
         max_length = len(target)
-
-        encoder_hidden = self.encoder.init_hidden() # can insert batch size here
+        pdb.set_trace()
+        batch_size = len(source[1])
+        encoder_hidden = self.encoder.init_hidden(batch_size=) # can insert batch size here
         encoder_output, encoder_hidden = self.encoder(source, encoder_hidden)
         # encoder_output: [source_len x batch x hidden]
         # encoder_hidden: # [num_layers x batch x hidden]
