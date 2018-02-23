@@ -40,7 +40,13 @@ class EncoderRNN(nn.Module):
         # seq_len = len(inputs)
         # embedding = self.embedding(inputs).view(seq_len, 1, -1) # check sizes here
         embedding = self.embedding(inputs) # [len x B x E]
-        output, hidden = self.rnn(embedding, hidden) # [num_layers x batch x hidden]
+        try:
+            output, hidden = self.rnn(embedding, hidden) # [num_layers x batch x hidden]
+        except:
+            print("EMBEDDING")
+            print(embedding)
+            print("HIDDEN")
+            print(hidden)
         return output, hidden
 
 class DecoderRNN(nn.Module):
