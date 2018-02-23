@@ -63,7 +63,7 @@ train, val, test = datasets.IWSLT.splits(exts=('.de', '.en'), fields=(DE, EN),
                                          len(vars(x)['trg']) <= MAX_LEN)
 MIN_FREQ = 5
 DE.build_vocab(train.src, min_freq=MIN_FREQ, max_size=5000) # REMOVE THE MAX_SIZE 5000
-EN.build_vocab(train.trg, min_freq=MIN_FREQ, max_Size=5000) # REMOVE THE MAX_SIZE 5000
+EN.build_vocab(train.trg, min_freq=MIN_FREQ, max_size=5000) # REMOVE THE MAX_SIZE 5000
 
 print("Finish build vocab")
 
