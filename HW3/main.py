@@ -61,10 +61,9 @@ EN = data.Field(tokenize=utils.tokenize_en, init_token = BOS_WORD, eos_token = E
 train, val, test = datasets.IWSLT.splits(exts=('.de', '.en'), fields=(DE, EN), 
                                          filter_pred=lambda x: len(vars(x)['src']) <= MAX_LEN and 
                                          len(vars(x)['trg']) <= MAX_LEN)
-train, val = train[:500], val[:100]
 MIN_FREQ = 5
-DE.build_vocab(train.src, min_freq=MIN_FREQ)
-EN.build_vocab(train.trg, min_freq=MIN_FREQ)
+DE.build_vocab(train.src, min_freq=MIN_FREQ, max_size=5000) # REMOVE THE MAX_SIZE 5000
+EN.build_vocab(train.trg, min_freq=MIN_FREQ, max_Size=5000) # REMOVE THE MAX_SIZE 5000
 
 print("Finish build vocab")
 
