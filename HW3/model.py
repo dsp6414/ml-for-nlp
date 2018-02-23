@@ -18,7 +18,6 @@ USE_CUDA = True if torch.cuda.is_available() else False
 class EncoderRNN(nn.Module):
     def __init__(self, input_size, embedding_size, hidden_size, n_layers=1, dropout_p=0.5):
         super(EncoderRNN, self).__init__()
-
         self.input_size = input_size
         self.embedding_size = embedding_size
         self.hidden_size = hidden_size
@@ -41,6 +40,7 @@ class EncoderRNN(nn.Module):
         # seq_len = len(inputs)
         # embedding = self.embedding(inputs).view(seq_len, 1, -1) # check sizes here
         embedding = self.embedding(inputs)
+        pdb.set_trace()
         output, hidden = self.rnn(embedding, hidden)
         return output, hidden
 
@@ -95,6 +95,9 @@ class Seq2Seq(nn.Module):
 
         self.encoder = EncoderRNN(input_size, embedding_size, hidden_size, n_layers, dropout)
         self.decoder = DecoderRNN(embedding_size, hidden_size, output_size, n_layers, dropout)
+        if USE_CUDA:
+            self.encoder = self.encoder.cuda()
+            self.decoder = self.decoder.cuda()
 
     def forward(self, source, target, use_target=False):
         max_length = len(source)
