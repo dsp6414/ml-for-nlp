@@ -42,7 +42,7 @@ def process_batch(batch):
 def train_batch(model, source, target, optimizer, criterion):
     loss = 0
     model.zero_grad()
-    output, hidden = model(source)
+    output, hidden = model(source, target)
     output_flat = output.view(-1, model.output_size) # check this
     # not sure whether to use ground truth target or network's prediction
     pdb.set_trace()

@@ -12,6 +12,7 @@ import utils
 
 torch.manual_seed(1)
 
+BATCH_SIZE = 10
 USE_CUDA = True if torch.cuda.is_available() else False
 
 class EncoderRNN(nn.Module):
@@ -95,30 +96,31 @@ class Seq2Seq(nn.Module):
         self.encoder = EncoderRNN(input_size, embedding_size, hidden_size, n_layers, dropout)
         self.decoder = DecoderRNN(embedding_size, hidden_size, output_size, n_layers, dropout)
 
-    def init_weights(self):
-        self.embedding.weight.data.uniform_(-self.init_param, self.init_param)
-
-    def forward(self, inputs):
-        self.init_weights()
-        max_length = len(inputs)
+    def forward(self, source, target, use_target=False):
+        max_length = len(source)
 
         encoder_hidden = (self.encoder.init_hidden(), self.encoder.init_hidden()) # can insert batch size here
-        encoder_output, encoder_hidden = self.encoder(embedding, encoder_hidden)
+        encoder_output, encoder_hidden = self.encoder(source, encoder_hidden)
         pdb.set_trace()
         decoder_outputs = Variable(torch.zeros(max_length, BATCH_SIZE, self.output_size))
         if USE_CUDA:
             decoder_outputs = decoder_outputs.cuda()
 
-        decoder_input = Variable(torch.LongTensor([[BOS_WORD]]))
+        # decoder_input = Variable(torch.LongTensor([[BOS_WORD]]))
+        decoder_output = Variable(target[0:]) # should all be BOS_WORD
         decoder_hidden = encoder_hidden
         # decoder_context = Variable(torch.zeros(1, self.decoder.hidden_size))
         if USE_CUDA:
-            decoder_input = decoder_input.cuda()
+            decoder_output = decoder_output.cuda()
             # decoder_context = decoder_context.cuda()
 
         for t in range(1, max_length):
-            decoder_output, decoder_hidden = self.decoder(decoder_input, decoder_hidden, encoder_output)
+            decoder_output, decoder_hidden = self.decoder(decoder_output, decoder_hidden, encoder_output)
             decoder_outputs[t] = decoder_output
+            if use_target:
+                decoder_output = Variable(target[t]).cuda() if USE_CUDA else Variable(target[t])
+            else:
+                decoder_output = decoder_output.max(1)[1]
         # decoder_output, hidden = self.decoder(decoder_input, decoder_context, decoder_hidden, encoder_output)
 
         return decoder_outputs

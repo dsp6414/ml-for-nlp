@@ -16,7 +16,7 @@ torch.manual_seed(1)
 BOS_WORD = '<s>'
 EOS_WORD = '</s>'
 MAX_LEN = 20
-BATCH_SIZE = 128
+BATCH_SIZE = 10
 TEMP_EPOCH = 5
 # EPOCHS = 7.5
 EPOCHS = 1
