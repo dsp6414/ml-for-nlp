@@ -41,7 +41,7 @@ class EncoderRNN(nn.Module):
         # embedding = self.embedding(inputs).view(seq_len, 1, -1) # check sizes here
         embedding = self.embedding(inputs) # [len x B x E]
         pdb.set_trace()
-        output, hidden = self.rnn(embedding, hidden)
+        output, hidden = self.rnn(embedding, hidden) # [num_layers x batch x hidden]
         return output, hidden
 
 class DecoderRNN(nn.Module):
@@ -53,14 +53,15 @@ class DecoderRNN(nn.Module):
         self.n_layers = n_layers
         self.dropout_p = dropout_p # need to check if this is a thing
 
-        # self.embedding = nn.Embedding(output_size, hidden_size)
+        self.embedding = nn.Embedding(output_size, hidden_size)
         # self.attn = AttnNetwork(hidden_size)
         self.dropout = nn.Dropout(self.dropout_p)
         self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers, dropout=dropout_p)
         self.out = nn.Linear(hidden_size, output_size)
 
     def forward(self, inputs, last_hidden, encoder_output):
-        # word_embedding = self.embedding(inputs).view(1, 1, -1) # [1 x B x N]
+        pdb.set_trace()
+        word_embedding = self.embedding(inputs).unsqueeze(0) # [1 x B x N]
         # word_embedding = self.dropout(word_embedding)
 
         # attn_weights = self.attn(last_hidden[-1], encoder_output)
@@ -72,7 +73,7 @@ class DecoderRNN(nn.Module):
         # output = output.squeeze(0) # B x N (check dimensions)
         # output = self.out(torch.cat((output, context), 1))
 
-        output, hidden = self.rnn(inputs, last_hidden)
+        output, hidden = self.rnn(word_embedding, last_hidden)
         output = output.squeeze(0) # check dim
         output = self.out(output)
 
@@ -105,14 +106,16 @@ class Seq2Seq(nn.Module):
         encoder_hidden = self.encoder.init_hidden() # can insert batch size here
         pdb.set_trace()
         encoder_output, encoder_hidden = self.encoder(source, encoder_hidden)
+        # encoder_output: [source_len x batch x hidden]
+        # encoder_hidden: # [num_layers x batch x hidden]
         pdb.set_trace()
         decoder_outputs = Variable(torch.zeros(max_length, BATCH_SIZE, self.output_size))
         if USE_CUDA:
             decoder_outputs = decoder_outputs.cuda()
 
         # decoder_input = Variable(torch.LongTensor([[BOS_WORD]]))
-        decoder_output = Variable(target[0:]) # should all be BOS_WORD
-        decoder_hidden = encoder_hidden
+        decoder_output = Variable(target[0].data) # [1 x batch]
+        decoder_hidden = encoder_hidden # [num_layers x batch x hidden]
         # decoder_context = Variable(torch.zeros(1, self.decoder.hidden_size))
         if USE_CUDA:
             decoder_output = decoder_output.cuda()
