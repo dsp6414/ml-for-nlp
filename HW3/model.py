@@ -15,20 +15,18 @@ torch.manual_seed(1)
 USE_CUDA = True if torch.cuda.is_available() else False
 
 class EncoderRNN(nn.Module):
-    def __init__(self, input_size, hidden_size, n_layers=1, dropout_p=0.5):
+    def __init__(self, input_size, embedding_size, hidden_size, n_layers=1, dropout_p=0.5):
         super(EncoderRNN, self).__init__()
 
         self.input_size = input_size
+        self.embedding_size = embedding_size
         self.hidden_size = hidden_size
         self.n_layers = n_layers
         self.dropout_p = dropout_p # need to check if this is a thing
         self.init_param = 0.08
 
-        self.rnn = nn.LSTM(input_size, hidden_size, n_layers, dropout=dropout_p)
-
-    def init_weights(self):
-        self.rnn.weight.data.uniform_(-self.init_param, self.init_param)
-        # self.linear.weight.data.uniform_(-self.init_param, self.init_param)
+        self.embedding = nn.Embedding(input_size, embedding_size)
+        self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers, dropout=dropout_p)
 
     def init_hidden(self, batch_size=128):
         if USE_CUDA:
@@ -39,8 +37,10 @@ class EncoderRNN(nn.Module):
                     Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)))
 
     def forward(self, inputs, hidden):
-        self.init_weights()
-        output, hidden = self.rnn(inputs, hidden)
+        # seq_len = len(inputs)
+        # embedding = self.embedding(inputs).view(seq_len, 1, -1) # check sizes here
+        embedding = self.embedding(inputs)
+        output, hidden = self.rnn(embedding, hidden)
         return output, hidden
 
 class DecoderRNN(nn.Module):
@@ -90,35 +90,37 @@ class Seq2Seq(nn.Module):
         self.output_size = output_size
         self.hidden_size = hidden_size
         self.embedding_size = embedding_size
-        self.embedding = nn.Embedding(input_size, embedding_size)
+        self.init_param = 0.08
 
-        self.encoder = EncoderRNN(embedding_size, hidden_size, n_layers, dropout)
+        self.encoder = EncoderRNN(input_size, embedding_size, hidden_size, n_layers, dropout)
         self.decoder = DecoderRNN(embedding_size, hidden_size, output_size, n_layers, dropout)
 
     def init_weights(self):
         self.embedding.weight.data.uniform_(-self.init_param, self.init_param)
-        self.encoder.weight.data.uniform_(-self.init_param, self.init_param)
-        self.decoder.weight.data.uniform_(-self.init_param, self.init_param)
 
     def forward(self, inputs):
-
-        # seq_len = len(inputs)
-        # embedding = self.embedding(inputs).view(seq_len, 1, -1) # check sizes here
-        embedding = self.embedding(inputs)
+        self.init_weights()
+        max_length = len(inputs)
 
         encoder_hidden = (self.encoder.init_hidden(), self.encoder.init_hidden()) # can insert batch size here
         encoder_output, encoder_hidden = self.encoder(embedding, encoder_hidden)
+        pdb.set_trace()
+        decoder_outputs = Variable(torch.zeros(max_length, BATCH_SIZE, self.output_size))
+        if USE_CUDA:
+            decoder_outputs = decoder_outputs.cuda()
 
         decoder_input = Variable(torch.LongTensor([[BOS_WORD]]))
-        # decoder_context = Variable(torch.zeros(1, self.decoder.hidden_size))
         decoder_hidden = encoder_hidden
+        # decoder_context = Variable(torch.zeros(1, self.decoder.hidden_size))
         if USE_CUDA:
             decoder_input = decoder_input.cuda()
             # decoder_context = decoder_context.cuda()
 
-        decoder_output, decoder_hidden = self.decoder(decoder_input, decoder_hidden, encoder_output)
+        for t in range(1, max_length):
+            decoder_output, decoder_hidden = self.decoder(decoder_input, decoder_hidden, encoder_output)
+            decoder_outputs[t] = decoder_output
         # decoder_output, hidden = self.decoder(decoder_input, decoder_context, decoder_hidden, encoder_output)
 
-        return decoder_output, decoder_hidden
+        return decoder_outputs
 
 
