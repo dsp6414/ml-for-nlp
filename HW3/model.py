@@ -128,7 +128,6 @@ class Seq2Seq(nn.Module):
             # decoder_context = decoder_context.cuda()
 
         for t in range(1, max_length):
-            if t == max_length - 1:
             decoder_output, decoder_hidden = self.decoder(decoder_output, decoder_hidden, encoder_output)
             decoder_outputs[t] = decoder_output
             if use_target:
