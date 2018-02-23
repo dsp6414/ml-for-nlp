@@ -30,7 +30,7 @@ class EncoderRNN(nn.Module):
 
     def init_hidden(self, batch_size=128):
         if USE_CUDA:
-            return (Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)).cuda,
+            return (Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)).cuda(),
             Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)).cuda())
         else:
             return (Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)),
@@ -39,7 +39,7 @@ class EncoderRNN(nn.Module):
     def forward(self, inputs, hidden):
         # seq_len = len(inputs)
         # embedding = self.embedding(inputs).view(seq_len, 1, -1) # check sizes here
-        embedding = self.embedding(inputs)
+        embedding = self.embedding(inputs) # [len x B x E]
         pdb.set_trace()
         output, hidden = self.rnn(embedding, hidden)
         return output, hidden
