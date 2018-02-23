@@ -43,18 +43,16 @@ def train_batch(model, source, target, optimizer, criterion):
     loss = 0
     model.zero_grad()
     output, hidden = model(source, target)
-    pdb.set_trace()
-    output_flat = output.view(-1, model.output_size) # check this
+    output_flat = output.view(-1, model.output_size) # [(tg_len x batch) x en_vocab_sz]
     # not sure whether to use ground truth target or network's prediction
-    pdb.set_trace()
-    loss = criterion(output_flat, target) # why is this true. what's decoder output
+    loss = criterion(output_flat, target.view(-1)) # why is this true. what's decoder output
     loss.backward()
 
     # figure out how to do this
     # if L2 Norm of Gradient / 128 > 5, then g = 5g/s
     nn.utils.clip_grad_norm(model.parameters(), CLIP)
     optimizer.step()
-    return loss.data[0] / len(target)
+    return loss.data[0]
 
 def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do I need a max_length=MAX_LENGTH?
     model.train()
@@ -64,7 +62,6 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do
         total_loss = 0
         for batch in train_iter:
             source, target = process_batch(batch)
-            pdb.set_trace()
             batch_loss = train_batch(model, source, target, optimizer, criterion)
             total_loss += batch_loss
         print(str(epoch) + "EPOCH LOSS: " + str(total_loss))
