@@ -98,6 +98,5 @@ else:
 
 print("EVALUATE")
 loss, output = utils.evaluate(model, val_iter, criterion)
-pdb.set_trace()
 for row in output.data:
-    " ".join([EN.vocab.itos[i] for i in row])
+    print(" ".join([EN.vocab.itos[i] for i in row.max(1)[1]])) # check this later
