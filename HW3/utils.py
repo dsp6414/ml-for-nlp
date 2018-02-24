@@ -42,7 +42,8 @@ def process_batch(batch):
 def train_batch(model, source, target, optimizer, criterion):
     loss = 0
     model.zero_grad()
-    output, hidden = model(source, target)
+    output, hidden = model(source, target, use_target=True)
+    pdb.set_trace()
     output_flat = output.view(-1, model.output_size) # [(tg_len x batch) x en_vocab_sz]
     # not sure whether to use ground truth target or network's prediction
     loss = criterion(output_flat, target.view(-1)) # why is this true. what's decoder output

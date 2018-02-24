@@ -122,7 +122,6 @@ class Seq2Seq(nn.Module):
         self.embedding_size = embedding_size
         self.init_param = 0.08
         self.attn = attn
-
         self.encoder = EncoderRNN(input_size, embedding_size, hidden_size, n_layers, dropout)
 
         if attn:
@@ -152,12 +151,16 @@ class Seq2Seq(nn.Module):
             decoder_output = decoder_output.cuda()
             # decoder_context = decoder_context.cuda()
 
-        for t in range(1, max_length):
+        for i in range(0, max_length):
             decoder_output, decoder_hidden = self.decoder(decoder_output, decoder_hidden, encoder_output)
-            decoder_outputs[t] = decoder_output
+            # decoder_output: [batch x len(EN)]
+            # target: [target_len x batch]
+            decoder_outputs[i] = decoder_output
             if use_target:
-                decoder_output = Variable(target[t]).cuda() if USE_CUDA else Variable(target[t])
+                decoder_output = target[i].cuda() if USE_CUDA else target[i]
             else:
                 decoder_output = decoder_output.max(1)[1]
         # decoder_output, hidden = self.decoder(decoder_input, decoder_context, decoder_hidden, encoder_output)
         return decoder_outputs, decoder_hidden # decoder_output [target_len x batch x en_vocab_sz]
+
+
