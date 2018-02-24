@@ -61,7 +61,38 @@ class DecoderRNN(nn.Module):
         self.hidden_size = hidden_size
         self.n_layers = n_layers
         self.dropout_p = dropout_p # need to check if this is a thing
+        self.embedding = nn.Embedding(output_size, hidden_size)
+        self.dropout = nn.Dropout(self.dropout_p)
+        self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers, dropout=dropout_p)
+        self.out = nn.Linear(hidden_size, output_size)
 
+    def forward(self, inputs, last_hidden, encoder_output):
+        word_embedding = self.embedding(inputs).unsqueeze(0) # [1 x B x N]
+        output, hidden = self.rnn(word_embedding, last_hidden)
+        # output: [1 x batch x hidden]
+        # hidden: [num_layer x batch x hidden], [num_layer x batch x hidden]
+        output = output.squeeze(0) # check dim
+        output = self.out(output)
+        return output, hidden
+
+class AttnNetwork(nn.Module):
+    def __init__(self, hidden_size):
+        super(AttnNetwork, self).__init__()
+        self.hidden_size = hidden_size
+        self.attn = nn.Linear(self.hidden_size, self.hidden_size) # do I need first variable to be hidden_size * 2??
+
+    def forward(self, hidden, encoder_output):
+        h = hidden.repeat(timestep, 1, 1) # .transpose(0, 1) maybe don't need transpose
+        attn_energies = torch.bmm(h, encoder_output)
+        energy = hidden.dot(self.attn(encoder_output))
+
+class AttnDecoderRNN(nn.Module):
+    def __init__(self, embedding_size, hidden_size, output_size, n_layers=1, dropout_p=0.5):
+        super(AttnDecoderRNN, self).__init__()
+        self.output_size = output_size
+        self.hidden_size = hidden_size
+        self.n_layers = n_layers
+        self.dropout_p = dropout_p # need to check if this is a thing
         self.embedding = nn.Embedding(output_size, hidden_size)
         # self.attn = AttnNetwork(hidden_size)
         self.dropout = nn.Dropout(self.dropout_p)
@@ -69,43 +100,35 @@ class DecoderRNN(nn.Module):
         self.out = nn.Linear(hidden_size, output_size)
 
     def forward(self, inputs, last_hidden, encoder_output):
-        word_embedding = self.embedding(inputs).unsqueeze(0) # [1 x B x N]
-        # word_embedding = self.dropout(word_embedding)
+        word_embedding = self.dropout(self.embedding(inputs).unsqueeze(0)) # [1 x B x N]
 
-        # attn_weights = self.attn(last_hidden[-1], encoder_output)
-        # context = attn_weights.bmm(encoder_output.transpose(0, 1)) # [B x 1 x N]
+        attn_weights = self.attn(last_hidden[-1], encoder_output)
+        context = attn_weights.bmm(encoder_output.transpose(0, 1)) # [B x 1 x N]
 
-        # combined = torch.cat((word_embedding, context), 2) # check this dimension
-        # output, hidden = self.rnn(combined, last_hidden)
+        combined = torch.cat((word_embedding, context), 2) # check this dimension
+        output, hidden = self.rnn(combined, last_hidden)
+        output = output.squeeze(0) # B x N (check dimensions)
+        output = self.out(torch.cat((output, context), 1))
 
-        # output = output.squeeze(0) # B x N (check dimensions)
-        # output = self.out(torch.cat((output, context), 1))
-
-        output, hidden = self.rnn(word_embedding, last_hidden)
-        # output: [1 x batch x hidden]
-        # hidden: [num_layer x batch x hidden], [num_layer x batch x hidden]
-        output = output.squeeze(0) # check dim
-        output = self.out(output)
-
-        return output, hidden
-        # return output, hidden, attn_weights
-
-# class AttentionNetwork(nn.Module):
-#     def __init__(self, method, hidden_size, max_length=MAX_LENGTH): # check why we need max_length
-#         super(AttentionNetwork, self).__init__()
+        return output, hidden, attn_weights
 
 
 class Seq2Seq(nn.Module):
-    def __init__(self, input_size, output_size, embedding_size, hidden_size, n_layers=1, dropout=0.0):
+    def __init__(self, input_size, output_size, embedding_size, hidden_size, n_layers=1, dropout=0.0, attn=False):
         super(Seq2Seq, self).__init__()
         self.input_size = input_size
         self.output_size = output_size
         self.hidden_size = hidden_size
         self.embedding_size = embedding_size
         self.init_param = 0.08
+        self.attn = attn
 
         self.encoder = EncoderRNN(input_size, embedding_size, hidden_size, n_layers, dropout)
-        self.decoder = DecoderRNN(embedding_size, hidden_size, output_size, n_layers, dropout)
+
+        if attn:
+            self.decoder = AttnDecoderRNN(embedding_size, hidden_size, output_size, n_layers, dropout)
+        else:
+            self.decoder = DecoderRNN(embedding_size, hidden_size, output_size, n_layers, dropout)
         if USE_CUDA:
             self.encoder = self.encoder.cuda()
             self.decoder = self.decoder.cuda()
