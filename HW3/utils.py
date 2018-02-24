@@ -8,7 +8,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import utils
 import math
-import numpy
+import numpy as np
 import pdb
 import spacy
 
@@ -83,14 +83,20 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do
 
 def evaluate(model, val_iter, criterion):
     model.eval()
-    total_loss = 0
+    total_loss = 0.
+    total_len = 0.
     for batch in val_iter:
         source, target = process_batch(batch)
         output, hidden = model(source, target)
         output_flat = output.view(-1, model.output_size)
         loss = criterion(output_flat, target.view(-1))
-        total_loss += loss
-    return total_loss / len(val_iter), output
+        total_loss += len(source) * loss.data
+        total_len += len(source)
+
+    print("Total Loss ", total_loss[0])
+    print("Total Len ", total_len)
+    print(total_loss[0] / total_len)
+    return np.exp(total_loss / total_len), output
 
 # def plot_attention(s, encoder, decoder, max_length):
 #     output_words, attn = evaluate(s, encoder, decoder, max_length)
