@@ -40,8 +40,8 @@ class EncoderRNN(nn.Module):
         # seq_len = len(inputs)
         # embedding = self.embedding(inputs).view(seq_len, 1, -1) # check sizes here
         pdb.set_trace()
-        inverse_inputs = utils.flip(inputs, 1)
-        embedding = self.embedding(inverse_inputs) # [len x B x E]
+        # inverse_inputs = utils.flip(inputs, 1)
+        embedding = self.embedding(inputs) # [len x B x E]
         try:
             output, hidden = self.rnn(embedding, hidden) # [num_layers x batch x hidden]
         except:
@@ -162,6 +162,10 @@ class Seq2Seq(nn.Module):
                 # For each word, keep the "k" best guesses
                 pdb.set_trace()
                 values, indices = torch.sort(decoder_output, dim = 1, descending=True)
+                for k in range(batch_size):
+                    preds_for_k = decoder_output[:, k] # Should get the kth column.
+                    values, indices = torch.sort(decoder_output, dim = 1, descending=True)
+                
                 
             return decoder_output, decoder_hidden
 
