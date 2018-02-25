@@ -165,7 +165,7 @@ class Seq2Seq(nn.Module):
                 
             return decoder_output, decoder_hidden
 
-        return beam_search(5)
+        # return beam_search(5)
 
 
         for i in range(0, max_length):
