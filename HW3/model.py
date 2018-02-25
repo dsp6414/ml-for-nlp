@@ -75,6 +75,19 @@ class DecoderRNN(nn.Module):
         output = self.out(output)
         return output, hidden
 
+class DecoderBeam(nn.Module):
+    def __init__(self, decoder, k):
+        super(DecoderRNN, self).__init__()
+        self.decoder = decoder
+        self.k = k 
+
+    def forward(self, inputs, last_hidden, encoder_output, max_length):
+        for i in range(max_length):
+            decoder_output, decoder_hidden = self.decoder(decoder_output, decoder_hidden, encoder_output)
+            # Get the k best predictions for each 
+            for j in range()
+        return decoder_output, decoder_hidden
+
 class AttnNetwork(nn.Module):
     def __init__(self, hidden_size):
         super(AttnNetwork, self).__init__()
@@ -151,11 +164,26 @@ class Seq2Seq(nn.Module):
             decoder_output = decoder_output.cuda()
             # decoder_context = decoder_context.cuda()
 
+        def beam_search(k):
+            for i in range(0, max_length):
+                decoder_output, decoder_hidden = self.decoder(decoder_output, decoder_hidden, encoder_output)
+                # decoder_output: [batch x len(EN)]
+                # target: [target_len x batch]
+                # For each word, keep the "k" best guesses
+                pdb.set_trace()
+                values, indices = torch.sort(decoder_output, dim = 1, descending=True)
+                
+            return decoder_output, decoder_hidden
+
+        return beam_search(5)
+
+
         for i in range(0, max_length):
             decoder_output, decoder_hidden = self.decoder(decoder_output, decoder_hidden, encoder_output)
             # decoder_output: [batch x len(EN)]
             # target: [target_len x batch]
             decoder_outputs[i] = decoder_output
+            pdb.set_trace()
             if use_target:
                 decoder_output = target[i].cuda() if USE_CUDA else target[i]
             else:
