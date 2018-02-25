@@ -39,14 +39,19 @@ def process_batch(batch):
         x, y = x.cuda(), y.cuda()
     return x, y
 
+def flip(x, dim):
+    dim = x.dim() + dim if dim < 0 else dim
+    return x[tuple(slice(None, None) if i != dim
+             else torch.arange(x.size(i)-1, -1, -1).long()
+             for i in range(x.dim()))]
+
 def train_batch(model, source, target, optimizer, criterion):
     loss = 0
     model.zero_grad()
     output, hidden = model(source, target, use_target=True)
-    pdb.set_trace()
     output_flat = output.view(-1, model.output_size) # [(tg_len x batch) x en_vocab_sz]
     # not sure whether to use ground truth target or network's prediction
-    loss = criterion(output_flat, target.view(-1)) # why is this true. what's decoder output
+    loss = criterion(output_flat, target.view(-1))
     loss.backward()
 
     # figure out how to do this
