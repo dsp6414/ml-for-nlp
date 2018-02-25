@@ -101,3 +101,6 @@ print("EVALUATE")
 loss, output = utils.evaluate(model, val_iter, criterion)
 for row in output.data:
     print(" ".join([EN.vocab.itos[i] for i in row.max(1)[1]])) # check this later
+
+print("KAGGLE")
+utils.kaggle(model, output_file="seq2seq_preds.txt", input_file="source_test.txt")
