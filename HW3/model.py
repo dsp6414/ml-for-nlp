@@ -15,6 +15,8 @@ torch.manual_seed(1)
 BATCH_SIZE = 128
 USE_CUDA = True if torch.cuda.is_available() else False
 
+BOS_WORD = '<s>'
+EOS_WORD = '</s>'
 class EncoderRNN(nn.Module):
     def __init__(self, input_size, embedding_size, hidden_size, n_layers=1, dropout_p=0.5):
         super(EncoderRNN, self).__init__()
@@ -115,9 +117,23 @@ class AttnDecoderRNN(nn.Module):
 
         return output, hidden, attn_weights
 
+def _inflate(tensor, times, dim):
+        """
+        Given a tensor, 'inflates' it along the given dimension by replicating each slice specified number of times (in-place)
+        Args:
+            tensor: A :class:`Tensor` to inflate
+            times: number of repetitions
+            dim: axis for inflation (default=0)
+        Returns:
+            A :class:`Tensor`
+        """
+        repeat_dims = [1] * tensor.dim()
+        repeat_dims[dim] = times
+        return tensor.repeat(*repeat_dims)
+
 
 class Seq2Seq(nn.Module):
-    def __init__(self, input_size, output_size, embedding_size, hidden_size, n_layers=1, dropout=0.0, attn=False):
+    def __init__(self, input_size, output_size, embedding_size, hidden_size, n_layers=1, dropout=0.0, attn=False, k=1):
         super(Seq2Seq, self).__init__()
         self.input_size = input_size
         self.output_size = output_size
@@ -135,9 +151,10 @@ class Seq2Seq(nn.Module):
             self.encoder = self.encoder.cuda()
             self.decoder = self.decoder.cuda()
 
-    def forward(self, source, target, use_target=False):
+    def forward(self, source, target, use_target=False, k=1):
         max_length = len(target)
         batch_size = len(source[1])
+
         encoder_hidden = self.encoder.init_hidden(batch_size=batch_size) # can insert batch size here
         encoder_output, encoder_hidden = self.encoder(source, encoder_hidden)
         # encoder_output: [source_len x batch x hidden]
@@ -148,13 +165,18 @@ class Seq2Seq(nn.Module):
 
         # decoder_input = Variable(torch.LongTensor([[BOS_WORD]]))
         decoder_output = Variable(target[0].data) # [1 x batch]
+        decoder_output = Variable(torch.LongTensor([[BOS_WORD]]))
         decoder_hidden = encoder_hidden # [num_layers x batch x hidden]
         # decoder_context = Variable(torch.zeros(1, self.decoder.hidden_size))
         if USE_CUDA:
             decoder_output = decoder_output.cuda()
             # decoder_context = decoder_context.cuda()
 
+
+        # Performs beam search for one single
         def beam_search(k):
+            big_hidden_state = self.encoder.init_hidden(batch_size=batch_size * k)
+            # Copy the decoder thing beam_size times.
             for i in range(0, max_length):
                 decoder_output, decoder_hidden = self.decoder(decoder_output, decoder_hidden, encoder_output)
                 # decoder_output: [batch x len(EN)]
