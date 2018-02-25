@@ -77,18 +77,6 @@ class DecoderRNN(nn.Module):
         output = self.out(output)
         return output, hidden
 
-class DecoderBeam(nn.Module):
-    def __init__(self, decoder, k):
-        super(DecoderRNN, self).__init__()
-        self.decoder = decoder
-        self.k = k 
-
-    def forward(self, inputs, last_hidden, encoder_output, max_length):
-        for i in range(max_length):
-            decoder_output, decoder_hidden = self.decoder(decoder_output, decoder_hidden, encoder_output)
-            # Get the k best predictions for each 
-            for j in range()
-        return decoder_output, decoder_hidden
 
 class AttnNetwork(nn.Module):
     def __init__(self, hidden_size):
