@@ -51,13 +51,7 @@ def train_batch(model, source, target, optimizer, criterion):
     output, hidden = model(source, target, use_target=True)
     output_flat = output.view(-1, model.output_size) # [(tg_len x batch) x en_vocab_sz]
     # not sure whether to use ground truth target or network's prediction
-<<<<<<< HEAD
     loss = criterion(output_flat, target.view(-1))
-=======
-
-    loss = criterion(output_flat, target.view(-1)) # why is this true. what's decoder output
-
->>>>>>> 6accd81ca99219e5854ea216b061d5d82c0448be
     loss.backward()
 
     # figure out how to do this
