@@ -39,7 +39,9 @@ class EncoderRNN(nn.Module):
     def forward(self, inputs, hidden):
         # seq_len = len(inputs)
         # embedding = self.embedding(inputs).view(seq_len, 1, -1) # check sizes here
-        embedding = self.embedding(inputs) # [len x B x E]
+        pdb.set_trace()
+        inverse_inputs = utils.flip(inputs, 1)
+        embedding = self.embedding(inverse_inputs) # [len x B x E]
         try:
             output, hidden = self.rnn(embedding, hidden) # [num_layers x batch x hidden]
         except:

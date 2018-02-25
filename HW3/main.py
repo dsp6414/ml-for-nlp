@@ -89,7 +89,7 @@ criterion = nn.CrossEntropyLoss()
 # milestones = list(range(TEMP_EPOCH, EPOCHS - 1, 0.5))
 # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
 
-filename = 'seq2seq.sav'
+filename = 'seq2seq_2_25_.sav'
 if os.path.exists(filename):
     model.load_state_dict(torch.load(filename))
 else:
