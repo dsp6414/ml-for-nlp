@@ -240,6 +240,7 @@ class TopKDecoder(torch.nn.Module):
 
         if USE_CUDA:
             sequence_scores = sequence_scores.cuda()
+            self.pos_index = self.pos_index.cuda()
 
         # Initialize the input vector
         # input_var = Variable(torch.transpose(torch.LongTensor([[self.SOS] * batch_size * self.k]), 0, 1)) WHY TRANSPOSED?
@@ -268,6 +269,7 @@ class TopKDecoder(torch.nn.Module):
 
             # To get the full sequence scores for the new candidates, add the local scores for t_i to the predecessor scores for t_(i-1)
             sequence_scores = _inflate(sequence_scores, self.V, 1)
+            # This is (bk,11560)
             pdb.set_trace()
 
             # Log_softmax_output shape is  1x (batchsize * k) x11560
