@@ -119,4 +119,4 @@ for row in output.data:
 
 print("KAGGLE")
 
-utils.kaggle(model, DE, EN, output_file="seq2seq_preds.txt", input_file="source_test.txt",)
+utils.kaggle(model, SRC_LANG=DE, TRG_LANG=EN, output_file="seq2seq_preds.txt", input_file="source_test.txt",)
