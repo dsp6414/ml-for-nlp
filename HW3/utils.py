@@ -23,7 +23,7 @@ BOS_WORD = '<s>'
 EOS_WORD = '</s>'
 CLIP = 10
 USE_CUDA = True if torch.cuda.is_available() else False
-
+MAX_LEN = 20
 def escape(l):
 	return l.replace("\"", "<quote>").replace(",", "<comma>")
 
@@ -61,10 +61,16 @@ def train_batch(model, source, target, optimizer, criterion):
     optimizer.step()
     return loss.data[0]
 
-def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do I need a max_length=MAX_LENGTH?
+def train(model, train_iter, epochs, optimizer, criterion, scheduler=None, filename=None): # do I need a max_length=MAX_LENGTH?
     model.train()
     plot_losses = []
     counter = 0
+
+    stop_after_one_batch = False
+    if epochs == 0:
+        epochs = 1
+        stop_after_one_batch = True
+
 
     for epoch in range(epochs):
         total_loss = 0
@@ -76,6 +82,8 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do
 
             if counter % 50 == 0:
                 print(str(counter) + " counter: " + str(total_loss))
+            if stop_after_one_batch:
+                return plot_losses
             counter += 1
 
         print(str(epoch) + "EPOCH LOSS: " + str(total_loss))
@@ -84,18 +92,19 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do
             scheduler.step()
         plot_losses.append(total_loss)
 
-        filename = 'seq2seq2_26_'
+        filename = 'seq2seq_2_25_' if filename is None else filename[:-4] 
         torch.save(model.state_dict(), filename + str(epoch) + '.sav')
         # plot_losses_graph.append(plot_loss_avg)
     return plot_losses
 
 def evaluate(model, val_iter, criterion):
     model.eval()
+    model.valid = True
     total_loss = 0.
     total_len = 0.
     for batch in val_iter:
         source, target = process_batch(batch)
-        output, hidden = model(source, target)
+        output, hidden, metadata = model(source, target)
         output_flat = output.view(-1, model.output_size)
         loss = criterion(output_flat, target.view(-1))
         total_loss += len(source) * loss.data
@@ -104,6 +113,8 @@ def evaluate(model, val_iter, criterion):
     print("Total Loss ", total_loss[0])
     print("Total Len ", total_len)
     print(total_loss[0] / total_len)
+    model.train()
+    model.valid = False
     return np.exp(total_loss / total_len), output
 
 # def plot_attention(s, encoder, decoder, max_length):
@@ -124,20 +135,34 @@ def evaluate(model, val_iter, criterion):
 
 #     plt.show()
 #     plt.close()
-
-def kaggle(model, output_file, input_file='source_test.txt'):
+def kaggle(model, SRC_LANG, TRG_LANG,  output_file, input_file='source_test.txt'):
+    pdb.set_trace()
+    model.eval()
+    model.valid = True
     f = open(input_file)
     lines = f.readlines()
-    hidden = model.init_hidden()
-    with open(outputfile, 'w') as out:
+    with open(output_file, 'w') as out:
         print('id,word', file=out)
         for i, line in enumerate(lines):
-            text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
-            if CUDA:
+            text = Variable(torch.LongTensor([SRC_LANG.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1) # Shape: [len x 1]
+            fake_target = Variable(torch.LongTensor([0] * MAX_LEN))
+            if USE_CUDA:
                 text = text.cuda()
-            h = model.init_hidden(batch_size=1)
-            probs, h = model(text, h) # probs: [10 x vocab_size]
+                fake_target = fake_target.cuda()
+            output, hidden, metadata = model(text, fake_target, k=100)
+            sequences = torch.stack(metadata['topk_sequence']).squeeze() # should be max_len x k
             pdb.set_trace()
-            values, indices = torch.sort(probs[-1], descending=True)
-            print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
+            # convert each seq to sentence
+            print("%d,", i, end='', file=out)
+            for l in range(100):
+                seq = sequences[:, l]
+                english_seq = [TRG_LANG.vocab.itos[j.data[0]] for j in seq]
 
+                # Only get first 3 ## DOUBLE CHECK thiS IS ACTUALLY FIRST NOT LAST LOL 
+                english_seq = english_seq[:3]
+                english_seq = escape("|".join(english_seq))
+                print(english_seq, end= ' ',file=out)
+            print(file=out)
+
+    model.train()
+    model.valid = False
