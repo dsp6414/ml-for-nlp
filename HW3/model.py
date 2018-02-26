@@ -268,6 +268,7 @@ class TopKDecoder(torch.nn.Module):
 
             # To get the full sequence scores for the new candidates, add the local scores for t_i to the predecessor scores for t_(i-1)
             sequence_scores = _inflate(sequence_scores, self.V, 1)
+            pdb.set_trace()
             sequence_scores += log_softmax_output.squeeze(1)
             scores, candidates = sequence_scores.view(batch_size, -1).topk(self.k, dim=1)
 
