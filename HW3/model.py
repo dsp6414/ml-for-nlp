@@ -92,6 +92,7 @@ class DecoderRNN(nn.Module):
         batch_size = input_var.size(0)
         output_size = input_var.size(1)
         pdb.set_trace()
+        input_var = input_var.t() # Needed to get [1 x b *k  * n]
         embedded = self.embedding(input_var)
         # embedded = self.dropout(embedded)
 
@@ -243,8 +244,8 @@ class TopKDecoder(torch.nn.Module):
             self.pos_index = self.pos_index.cuda()
 
         # Initialize the input vector
-        # input_var = Variable(torch.transpose(torch.LongTensor([[self.SOS] * batch_size * self.k]), 0, 1)) WHY TRANSPOSED?
-        input_var = Variable(torch.LongTensor([[self.SOS] * batch_size * self.k]))
+        input_var = Variable(torch.transpose(torch.LongTensor([[self.SOS] * batch_size * self.k]), 0, 1))
+        # input_var = Variable(torch.LongTensor([[self.SOS] * batch_size * self.k])) # [1 x 640]
 
         if USE_CUDA:
             input_var = input_var.cuda()
@@ -282,8 +283,8 @@ class TopKDecoder(torch.nn.Module):
             # Reshaped to be (bk, 1)
             sequence_scores = scores.view(batch_size * self.k, 1)
 
-            # Update fields for next timestep
-            predecessors = (candidates / self.V + self.pos_index.expand_as(candidates)).view(batch_size * self.k, 1)
+            # Update fields for next timestep # THIS IS (bk, 1)
+            predecessors = (candidates / self.V + self.pos_index.expand_as(candidates)).view(batch_size * self.k, 1).t()
             if isinstance(hidden, tuple):
                 hidden = tuple([h.index_select(1, predecessors.squeeze()) for h in hidden])
             else:
