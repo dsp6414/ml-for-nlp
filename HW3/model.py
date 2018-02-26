@@ -15,8 +15,8 @@ torch.manual_seed(1)
 BATCH_SIZE = 128
 USE_CUDA = True if torch.cuda.is_available() else False
 
-BOS_WORD = '<s>'
-EOS_WORD = '</s>'
+BOS_EMBED = 2
+EOS_EMBED = 3
 class EncoderRNN(nn.Module):
     def __init__(self, input_size, embedding_size, hidden_size, n_layers=1, dropout_p=0.5):
         super(EncoderRNN, self).__init__()
@@ -182,8 +182,8 @@ class TopKDecoder(torch.nn.Module):
         self.k = k
         self.hidden_size = self.rnn.hidden_size
         self.V = self.rnn.output_size
-        self.SOS = BOS_WORD
-        self.EOS = EOS_WORD
+        self.SOS = 2
+        self.EOS = 3
 
     def forward(self, source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
                     teacher_forcing_ratio=0, retain_output_probs=True):
@@ -202,9 +202,8 @@ class TopKDecoder(torch.nn.Module):
         if USE_CUDA:
             decoder_outputs = decoder_outputs.cuda()
 
-        # decoder_input = Variable(torch.LongTensor([[BOS_WORD]]))
         decoder_output = Variable(target[0].data) # [1 x batch]
-        decoder_output = Variable(torch.LongTensor([[BOS_WORD]]))
+        decoder_output = Variable(torch.LongTensor([[BOS_EMBED] * batch_size]))# [1 x batch]
         decoder_hidden = encoder_hidden # [num_layers x batch x hidden]
         self.pos_index = Variable(torch.LongTensor(range(batch_size)) * self.k).view(-1, 1)
 
@@ -489,9 +488,9 @@ class Seq2Seq(nn.Module):
         if USE_CUDA:
             decoder_outputs = decoder_outputs.cuda()
 
-        # decoder_input = Variable(torch.LongTensor([[BOS_WORD]]))
-        decoder_output = Variable(target[0].data) # [1 x batch]
-        decoder_output = Variable(torch.LongTensor([BOS_WORD * batch_size]))
+        # decoder_input = Variable(torch.LongTensor([[BOS_EMBED]]))
+        # decoder_output = Variable(target[0].data) # [1 x batch]
+        decoder_output = Variable(torch.LongTensor([[BOS_EMBED] * batch_size]))# [1 x batch]
         pdb.set_trace()
         decoder_hidden = encoder_hidden # [num_layers x batch x hidden]
         # decoder_context = Variable(torch.zeros(1, self.decoder.hidden_size))
