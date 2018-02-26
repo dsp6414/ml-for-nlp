@@ -181,7 +181,10 @@ class Seq2Seq(nn.Module):
 
 
         for i in range(0, max_length):
-            decoder_output, decoder_hidden = self.decoder(decoder_output, decoder_hidden, encoder_outputs)
+            if self.attn:
+                decoder_output, decoder_hidden, attn_weights = self.decoder(decoder_output, decoder_hidden, encoder_outputs)
+            else:
+                decoder_output, decoder_hidden = self.decoder(decoder_output, decoder_hidden, encoder_outputs)
             # decoder_output: [batch x len(EN)]
             # target: [target_len x batch]
             decoder_outputs[i] = decoder_output
