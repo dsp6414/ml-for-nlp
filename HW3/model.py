@@ -83,6 +83,7 @@ class DecoderRNN(nn.Module):
     def forward_step(self, input_var, last_hidden, encoder_outputs, function=F.log_softmax):
         batch_size = input_var.size(0)
         output_size = input_var.size(1)
+        pdb.set_trace()
         embedded = self.embedding(input_var)
         # embedded = self.dropout(embedded)
 
@@ -234,10 +235,9 @@ class TopKDecoder(torch.nn.Module):
 
         # Initialize the input vector
         input_var = Variable(torch.transpose(torch.LongTensor([[self.SOS] * batch_size * self.k]), 0, 1))
-        pdb.set_trace()
 
         if USE_CUDA:
-            input_var.cuda()
+            input_var = input_var.cuda()
 
         # Store decisions for backtracking
         stored_outputs = list()
@@ -245,6 +245,7 @@ class TopKDecoder(torch.nn.Module):
         stored_predecessors = list()
         stored_emitted_symbols = list()
         stored_hidden = list()
+        pdb.set_trace()
 
         for _ in range(0, max_length):
             # Run the RNN one step forward
