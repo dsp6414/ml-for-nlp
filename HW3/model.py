@@ -71,6 +71,14 @@ class DecoderRNN(nn.Module):
         self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers, dropout=dropout_p)
         self.out = nn.Linear(hidden_size, output_size)
 
+    def init_hidden(self, batch_size=BATCH_SIZE):
+        if USE_CUDA:
+            return (Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)).cuda(),
+            Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)).cuda())
+        else:
+            return (Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)),
+                    Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)))
+
     def forward(self, inputs, last_hidden, encoder_outputs):
         word_embedding = self.embedding(inputs).unsqueeze(0) # [1 x B x N]
         output, hidden = self.rnn(word_embedding, last_hidden)
@@ -234,7 +242,8 @@ class TopKDecoder(torch.nn.Module):
             sequence_scores = sequence_scores.cuda()
 
         # Initialize the input vector
-        input_var = Variable(torch.transpose(torch.LongTensor([[self.SOS] * batch_size * self.k]), 0, 1))
+        # input_var = Variable(torch.transpose(torch.LongTensor([[self.SOS] * batch_size * self.k]), 0, 1)) WHY TRANSPOSED?
+        input_var = Variable(torch.LongTensor([[self.SOS] * batch_size * self.k]))
 
         if USE_CUDA:
             input_var = input_var.cuda()
