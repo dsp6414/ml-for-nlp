@@ -40,8 +40,9 @@ class EncoderRNN(nn.Module):
         # seq_len = len(inputs)
         # embedding = self.embedding(inputs).view(seq_len, 1, -1) # check sizes here
         # inputs: [seq_len x batch_sz]
-        inverse_inputs = utils.flip(inputs, 0)
-        embedding = self.embedding(inverse_inputs) # [len x B x E]
+        # inverse_inputs = utils.flip(inputs, 0)
+        # embedding = self.embedding(inverse_inputs) # [len x B x E]
+        embedding = self.embedding(inputs)
         try:
             output, hidden = self.rnn(embedding, hidden) # [num_layers x batch x hidden]
         except:
@@ -178,7 +179,6 @@ class Seq2Seq(nn.Module):
             return decoder_output, decoder_hidden
 
         # return beam_search(5)
-
 
         for i in range(0, max_length):
             if self.attn:
