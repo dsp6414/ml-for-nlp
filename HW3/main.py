@@ -112,7 +112,8 @@ else:
     torch.save(model.state_dict(), filename)
 
 print("EVALUATE") # I think criterion should be NLL Loss for these if u use beam search
-criterion = nn.NLLLoss(ignore_index=1) 
+if args.beam:
+	criterion = nn.NLLLoss(ignore_index=1) 
 loss, output = utils.evaluate(model, val_iter, criterion)
 print("VALIDATION LOSS: ", loss)
 for row in output.data:

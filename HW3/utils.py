@@ -115,7 +115,6 @@ def evaluate(model, val_iter, criterion):
     print(total_loss[0] / total_len)
     model.train()
     model.valid = False
-    print(metadata)
     return np.exp(total_loss / total_len), output
 
 # def plot_attention(s, encoder, decoder, max_length):
