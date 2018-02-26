@@ -89,6 +89,7 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do
     return plot_losses
 
 def evaluate(model, val_iter, criterion):
+    pdb.set_trace()
     model.eval()
     model.valid = True
     total_loss = 0.
