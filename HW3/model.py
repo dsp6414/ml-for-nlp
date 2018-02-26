@@ -468,10 +468,14 @@ class Seq2Seq(nn.Module):
 
         self.beam = beam
         if self.beam:
-            self.decoder = TopKDecoder(self.decoder, k)
+            self.beam_decoder = TopKDecoder(self.decoder, k)
         if USE_CUDA:
             self.encoder = self.encoder.cuda()
             self.decoder = self.decoder.cuda()
+            if self.beam:
+                self.beam_decoder.cuda()
+
+        self.valid = False
 
     def forward(self, source, target, use_target=False):
         max_length = len(target)
@@ -494,10 +498,8 @@ class Seq2Seq(nn.Module):
             decoder_output = decoder_output.cuda()
             # decoder_context = decoder_context.cuda()
 
-
-        # Performs beam search for one single
-        if self.beam:
-            decoder_outputs, decoder_hidden, metadata = self.decoder(source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
+        if self.beam and self.valid:
+            decoder_outputs, decoder_hidden, metadata = self.beam_decoder(source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
                     teacher_forcing_ratio=0, retain_output_probs=True)
             pdb.set_trace()
             return decoder_outputs, decoder_hidden

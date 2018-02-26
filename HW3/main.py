@@ -20,7 +20,7 @@ MAX_LEN = 20
 BATCH_SIZE = 128
 TEMP_EPOCH = 5
 # EPOCHS = 7.5
-EPOCHS = 5
+# EPOCHS = 5 (ADDED THIS AS ARUGMENT)
 
 N_LAYERS = 1
 # N_LAYERS = 4
@@ -36,8 +36,10 @@ parser = argparse.ArgumentParser(description='Translation')
 parser.add_argument('--beam', type=bool, default=False, help='use beam search')
 parser.add_argument('--attn', type=bool, default=False, help='use attention')
 parser.add_argument('--modelpath', type=str, default=None, help='load a model')
+parser.add_argument('--epochs', type=int, default=5, help='num epochs, default 5')
 args = parser.parse_args()
 
+EPOCHS = args.epochs
 
 # Try to save the files
 # train_file = 'train.sav'

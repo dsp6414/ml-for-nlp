@@ -90,6 +90,7 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do
 
 def evaluate(model, val_iter, criterion):
     model.eval()
+    model.valid = True
     total_loss = 0.
     total_len = 0.
     for batch in val_iter:
