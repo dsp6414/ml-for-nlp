@@ -68,7 +68,7 @@ class DecoderRNN(nn.Module):
         self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers, dropout=dropout_p)
         self.out = nn.Linear(hidden_size, output_size)
 
-    def forward(self, inputs, last_hidden, encoder_output):
+    def forward(self, inputs, last_hidden, encoder_outputs):
         word_embedding = self.embedding(inputs).unsqueeze(0) # [1 x B x N]
         output, hidden = self.rnn(word_embedding, last_hidden)
         # output: [1 x batch x hidden]
@@ -77,44 +77,56 @@ class DecoderRNN(nn.Module):
         output = self.out(output)
         return output, hidden
 
-
-class AttnNetwork(nn.Module):
+class Attn(nn.Module):
     def __init__(self, hidden_size):
-        super(AttnNetwork, self).__init__()
+        super(Attn, self).__init__()
         self.hidden_size = hidden_size
-        self.attn = nn.Linear(self.hidden_size, self.hidden_size) # do I need first variable to be hidden_size * 2??
+        self.attn = nn.Linear(self.hidden_size, hidden_size)
 
-    def forward(self, hidden, encoder_output):
-        h = hidden.repeat(timestep, 1, 1) # .transpose(0, 1) maybe don't need transpose
-        attn_energies = torch.bmm(h, encoder_output)
-        energy = hidden.dot(self.attn(encoder_output))
+    def forward(self, hidden, encoder_outputs):
+        attn_energies = Variable(torch.zeros(seq_len)) # B x 1 x S
+        if USE_CUDA:
+            attn_energies = attn_energies.cuda()
+
+        # Calculate energies for each encoder output
+        # for i in range(seq_len):
+        #     attn_energies[i] = hidden.dot(self.attn(encoder_outputs[i]))
+
+        attn_energies = torch.bmm(hidden.transpose(0, 1), encoder_outputs.transpose(0, 1).transpose(1, 2))
+
+        # Normalize energies to weights in range 0 to 1, resize to 1 x 1 x seq_len
+        return F.softmax(attn_energies, dim=2)
 
 class AttnDecoderRNN(nn.Module):
     def __init__(self, embedding_size, hidden_size, output_size, n_layers=1, dropout_p=0.5):
         super(AttnDecoderRNN, self).__init__()
+        self.embedding_size = embedding_size
         self.output_size = output_size
         self.hidden_size = hidden_size
         self.n_layers = n_layers
         self.dropout_p = dropout_p # need to check if this is a thing
         self.embedding = nn.Embedding(output_size, hidden_size)
-        # self.attn = AttnNetwork(hidden_size)
+        self.attn = Attn(hidden_size)
         self.dropout = nn.Dropout(self.dropout_p)
-        self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers, dropout=dropout_p)
-        self.out = nn.Linear(hidden_size, output_size)
+        self.rnn = nn.LSTM(embedding_size * 2, hidden_size, n_layers, dropout=dropout_p)
+        self.out = nn.Linear(hidden_size * 2, output_size)
 
-    def forward(self, inputs, last_hidden, encoder_output):
-        word_embedding = self.dropout(self.embedding(inputs).unsqueeze(0)) # [1 x B x N]
-
-        attn_weights = self.attn(last_hidden[-1], encoder_output)
-        context = attn_weights.bmm(encoder_output.transpose(0, 1)) # [B x 1 x N]
-
-        combined = torch.cat((word_embedding, context), 2) # check this dimension
-        output, hidden = self.rnn(combined, last_hidden)
+        # inputs is the true values for the target sentence from previous time step
+        # last_hidden is the bottleneck hidden from processing all of encoder
+        # encoder_outputs is
+    def forward(self, inputs, last_hidden, encoder_outputs):
+        word_embedding = self.dropout(self.embedding(inputs)) # [1 x B x Embedding]
+        attn_weights = torch.bmm(last_hidden[0].transpose(0, 1), encoder_outputs.transpose(0, 1).transpose(1, 2))
+        context = torch.bmm(attn_weights, encoder_outputs.transpose(0, 1))
+        context = context.squeeze(1)
+        combined = torch.cat((word_embedding, context), 1)
+        #########################
+        #  works up until here
+        output, hidden = self.rnn(combined.unsqueeze(0), last_hidden)
         output = output.squeeze(0) # B x N (check dimensions)
         output = self.out(torch.cat((output, context), 1))
 
         return output, hidden, attn_weights
-
 
 class Seq2Seq(nn.Module):
     def __init__(self, input_size, output_size, embedding_size, hidden_size, n_layers=1, dropout=0.0, attn=False):
@@ -139,8 +151,8 @@ class Seq2Seq(nn.Module):
         max_length = len(target)
         batch_size = len(source[1])
         encoder_hidden = self.encoder.init_hidden(batch_size=batch_size) # can insert batch size here
-        encoder_output, encoder_hidden = self.encoder(source, encoder_hidden)
-        # encoder_output: [source_len x batch x hidden]
+        encoder_outputs, encoder_hidden = self.encoder(source, encoder_hidden)
+        # encoder_outputs: [source_len x batch x hidden]
         # encoder_hidden: # [num_layers x batch x hidden]
         decoder_outputs = Variable(torch.zeros(max_length, batch_size, self.output_size))
         if USE_CUDA:
@@ -156,7 +168,7 @@ class Seq2Seq(nn.Module):
 
         def beam_search(k):
             for i in range(0, max_length):
-                decoder_output, decoder_hidden = self.decoder(decoder_output, decoder_hidden, encoder_output)
+                decoder_output, decoder_hidden = self.decoder(decoder_output, decoder_hidden, encoder_outputs)
                 # decoder_output: [batch x len(EN)]
                 # target: [target_len x batch]
                 # For each word, keep the "k" best guesses
@@ -169,16 +181,15 @@ class Seq2Seq(nn.Module):
 
 
         for i in range(0, max_length):
-            decoder_output, decoder_hidden = self.decoder(decoder_output, decoder_hidden, encoder_output)
+            decoder_output, decoder_hidden = self.decoder(decoder_output, decoder_hidden, encoder_outputs)
             # decoder_output: [batch x len(EN)]
             # target: [target_len x batch]
             decoder_outputs[i] = decoder_output
-            pdb.set_trace()
             if use_target:
                 decoder_output = target[i].cuda() if USE_CUDA else target[i]
             else:
                 decoder_output = decoder_output.max(1)[1]
-        # decoder_output, hidden = self.decoder(decoder_input, decoder_context, decoder_hidden, encoder_output)
+        # decoder_output, hidden = self.decoder(decoder_input, decoder_context, decoder_hidden, encoder_outputs)
         return decoder_outputs, decoder_hidden # decoder_output [target_len x batch x en_vocab_sz]
 
 

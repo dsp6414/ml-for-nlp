@@ -80,7 +80,7 @@ train_iter, val_iter = data.BucketIterator.splits((train, val), batch_size=BATCH
 print("Done bucketing data")
 
 # Fix these!!
-model = Seq2Seq(len(DE.vocab), len(EN.vocab), EMBEDDING, HIDDEN, N_LAYERS)
+model = Seq2Seq(len(DE.vocab), len(EN.vocab), EMBEDDING, HIDDEN, N_LAYERS, attn=True)
 if USE_CUDA:
     model.cuda()
 
