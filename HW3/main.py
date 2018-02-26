@@ -35,7 +35,7 @@ USE_CUDA = True if torch.cuda.is_available() else False
 DE = data.Field(tokenize=utils.tokenize_de)
 EN = data.Field(tokenize=utils.tokenize_en, init_token = BOS_WORD, eos_token = EOS_WORD) # only target needs BOS/EOS
 parser = argparse.ArgumentParser(description='Translation')
-parser.add_argument('--beam', type=bool, default=True, help='use beam search')
+parser.add_argument('--beam', type=bool, default=False, help='use beam search')
 parser.add_argument('--attn', type=bool, default=False, help='use attention')
 parser.add_argument('--model_path', type=str, default=None, help='load a model')
 parser.add_argument('--epochs', type=int, default=5, help='num epochs, default 5')
