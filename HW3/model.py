@@ -98,8 +98,6 @@ class DecoderRNN(nn.Module):
         output, hidden = self.rnn(embedded, last_hidden) 
         # output: [1 x batch x hidden]
 
-        pdb.set_trace()
-
         output = self.out(output.view(-1, self.hidden_size)) # Output is now  b*k x Vocab
 
         predicted_softmax = function(output, dim=1).view(batch_size, output_size, -1)
@@ -308,7 +306,6 @@ class TopKDecoder(torch.nn.Module):
             stored_hidden.append(hidden)
 
         # Do backtracking to return the optimal values
-        pdb.set_trace()
         output, h_t, h_n, s, l, p = self._backtrack(stored_outputs, stored_hidden,
                                                     stored_predecessors, stored_emitted_symbols,
                                                     stored_scores, batch_size, self.hidden_size)
