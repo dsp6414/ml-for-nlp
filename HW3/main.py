@@ -103,7 +103,7 @@ scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=list(range(8, E
 
 filename = args.model_path if args.model_path else 'seq2seq_2_25_.sav'
 if os.path.exists(filename):
-	print("LOADING MODEl", filename)
+    print("LOADING MODEl", filename)
     model.load_state_dict(torch.load(filename))
 else:
     plot_losses = utils.train(model, train_iter, EPOCHS, optimizer, criterion, scheduler, filename)
@@ -113,7 +113,7 @@ else:
 
 print("EVALUATE") # I think criterion should be NLL Loss for these if u use beam search
 if args.beam:
-	criterion = nn.NLLLoss(ignore_index=1) 
+    criterion = nn.NLLLoss(ignore_index=1) 
 loss, output = utils.evaluate(model, val_iter, criterion)
 print("VALIDATION LOSS: ", loss)
 for row in output.data:
