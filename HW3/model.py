@@ -297,6 +297,7 @@ class TopKDecoder(torch.nn.Module):
             # Cache results for backtracking
             stored_predecessors.append(predecessors)
             stored_emitted_symbols.append(input_var)
+            pdb.set_trace()
             stored_hidden.append(hidden)
 
         pdb.set_trace()
