@@ -109,7 +109,7 @@ else:
     plot_losses = utils.train(model, train_iter, EPOCHS, optimizer, criterion, scheduler, filename)
     print(plot_losses)
     torch.save(model.state_dict(), filename)
-    print("SAVING MODEL TO," filename)
+    print("SAVING MODEL TO", filename)
 
 print("EVALUATE") # I think criterion should be NLL Loss for these if u use beam search
 if args.beam:
