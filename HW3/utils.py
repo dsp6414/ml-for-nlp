@@ -155,7 +155,7 @@ def kaggle(model, SRC_LANG, TRG_LANG,  output_file, input_file='source_test.txt'
             pdb.set_trace()
             # convert each seq to sentence
             print("%d,", i, end='', file=out)
-            for l in range(k):
+            for l in range(100):
                 seq = sequences[:, l]
                 english_seq = [TRG_LANG.vocab.itos[j.data[0]] for j in seq]
 
