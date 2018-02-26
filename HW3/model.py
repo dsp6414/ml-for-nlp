@@ -297,10 +297,8 @@ class TopKDecoder(torch.nn.Module):
             # Cache results for backtracking
             stored_predecessors.append(predecessors)
             stored_emitted_symbols.append(input_var)
-            pdb.set_trace()
-            stored_hidden.append(hidden)
 
-        pdb.set_trace()
+            stored_hidden.append(hidden)
 
         # Do backtracking to return the optimal values
         output, h_t, h_n, s, l, p = self._backtrack(stored_outputs, stored_hidden,
@@ -377,6 +375,7 @@ class TopKDecoder(torch.nn.Module):
         # add self.pos_index for indexing variable with b*k as the first dimension.
         t_predecessors = (sorted_idx + self.pos_index.expand_as(sorted_idx)).view(b * self.k)
         while t >= 0:
+
             # Re-order the variables with the back pointer
             current_output = nw_output[t].index_select(0, t_predecessors)
             if lstm:
@@ -386,7 +385,8 @@ class TopKDecoder(torch.nn.Module):
             current_symbol = symbols[t].index_select(0, t_predecessors)
             # Re-order the back pointer of the previous step with the back pointer of
             # the current step
-            t_predecessors = predecessors[t].index_select(0, t_predecessors).squeeze()
+
+            t_predecessors = predecessors[t].index_select(1, t_predecessors).squeeze() # CHANGED THIS TO a 1
 
             # This tricky block handles dropped sequences that see EOS earlier.
             # The basic idea is summarized below:
@@ -405,7 +405,7 @@ class TopKDecoder(torch.nn.Module):
             #       2. Otherwise, replace the ended sequence with the lowest sequence
             #       score with the new ended sequence
             #
-            pdb.set_trace()
+
             eos_indices = symbols[t].data.squeeze(1).eq(self.EOS).nonzero()
             if eos_indices.dim() > 0:
                 for i in range(eos_indices.size(0)-1, -1, -1):
@@ -524,6 +524,9 @@ class Seq2Seq(nn.Module):
             decoder_outputs, decoder_hidden, metadata = self.beam_decoder(source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
                     teacher_forcing_ratio=0, retain_output_probs=True)
             pdb.set_trace()
+            # Make decoder_outputs into a tensor: [target_len x batch x en_vocab_sz]
+            # Current shape: a list of [batch x en_vocab_sz] tensors.
+            decoder_outputs = torch.stack(decoder_outputs, dim = 0)
             return decoder_outputs, decoder_hidden
 
 
