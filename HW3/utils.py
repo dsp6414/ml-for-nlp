@@ -76,6 +76,7 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do
         total_loss = 0
         for batch in train_iter:
             source, target = process_batch(batch) # Source is 11x28, target is 21x28
+            pdb.set_trace()
             batch_loss = train_batch(model, source, target, optimizer, criterion)
             total_loss += batch_loss
 
@@ -113,6 +114,8 @@ def evaluate(model, val_iter, criterion):
     print("Total Loss ", total_loss[0])
     print("Total Len ", total_len)
     print(total_loss[0] / total_len)
+    model.train()
+    model.valid = False
     return np.exp(total_loss / total_len), output
 
 # def plot_attention(s, encoder, decoder, max_length):

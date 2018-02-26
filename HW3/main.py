@@ -81,6 +81,7 @@ print("Finish build vocab")
 train_iter, val_iter = data.BucketIterator.splits((train, val), batch_size=BATCH_SIZE, device=-1,
                                                   repeat=False, sort_key=lambda x: len(x.src))
 
+pdb.set_trace()
 # batch = next(iter(train_iter))
 # print("Source")
 # print(batch.src)
@@ -94,7 +95,7 @@ if USE_CUDA:
     model.cuda()
 
 optimizer = optim.SGD(model.parameters(), lr=LR)
-criterion = nn.CrossEntropyLoss()
+criterion = nn.CrossEntropyLoss(ignore_index=1) # IGNORE PADDING!!!!!!
 # milestones = list(range(TEMP_EPOCH, EPOCHS - 1, 0.5))
 # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
 
