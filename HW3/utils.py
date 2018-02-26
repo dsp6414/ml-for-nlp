@@ -143,7 +143,7 @@ def kaggle(model, output_file, input_file='source_test.txt'):
     model.valid = True
     f = open(input_file)
     lines = f.readlines()
-    with open(outputfile, 'w') as out:
+    with open(output_file, 'w') as out:
         print('id,word', file=out)
         for i, line in enumerate(lines):
             text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
