@@ -404,6 +404,7 @@ class TopKDecoder(torch.nn.Module):
             #       2. Otherwise, replace the ended sequence with the lowest sequence
             #       score with the new ended sequence
             #
+            pdb.set_trace()
             eos_indices = symbols[t].data.squeeze(1).eq(self.EOS).nonzero()
             if eos_indices.dim() > 0:
                 for i in range(eos_indices.size(0)-1, -1, -1):
