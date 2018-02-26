@@ -395,8 +395,10 @@ class TopKDecoder(torch.nn.Module):
             # Re-order the back pointer of the previous step with the back pointer of
             # the current step
 
-            t_predecessors = predecessors[t].index_select(1, t_predecessors).squeeze() # CHANGED THIS TO a 1
+            # CHECK SHAPE
 
+            # t_predecessors = predecessors[t].index_select(1, t_predecessors).squeeze() # CHANGED THIS TO a 1
+            t_predecessors = predecessors[t].squeeze().index_select(0, t_predecessors)
             # This tricky block handles dropped sequences that see EOS earlier.
             # The basic idea is summarized below:
             #

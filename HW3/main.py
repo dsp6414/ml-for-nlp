@@ -42,8 +42,6 @@ parser.add_argument('--epochs', type=int, default=5, help='num epochs, default 5
 args = parser.parse_args()
 
 EPOCHS = args.epochs
-print(EPOCHS)
-print(args.attn)
 
 # Try to save the files
 # train_file = 'train.sav'
@@ -105,11 +103,13 @@ scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=list(range(8, E
 
 filename = args.model_path if args.model_path else 'seq2seq_2_25_.sav'
 if os.path.exists(filename):
+	print("LOADING MODEl", filename)
     model.load_state_dict(torch.load(filename))
 else:
     plot_losses = utils.train(model, train_iter, EPOCHS, optimizer, criterion, scheduler, filename)
     print(plot_losses)
     torch.save(model.state_dict(), filename)
+    print("SAVING MODEL TO," filename)
 
 print("EVALUATE") # I think criterion should be NLL Loss for these if u use beam search
 if args.beam:
