@@ -136,8 +136,7 @@ def evaluate(model, val_iter, criterion):
 
 #     plt.show()
 #     plt.close()
-
-def kaggle(model, output_file, input_file='source_test.txt'):
+def kaggle(model, output_file, SRC_LANG, TRG_LANG, input_file='source_test.txt'):
     pdb.set_trace()
     model.eval()
     model.valid = True
@@ -146,14 +145,13 @@ def kaggle(model, output_file, input_file='source_test.txt'):
     with open(output_file, 'w') as out:
         print('id,word', file=out)
         for i, line in enumerate(lines):
-            text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
+            text = Variable(torch.LongTensor([SRC_LANG.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
             if CUDA:
                 text = text.cuda()
             fake_target = Variable(torch.LongTensor([0] * 20))
             output, hidden, metadata = model(source, target)
             pdb.set_trace()
-            print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
+            print("%d,%s"%(i+1, " ".join([TRG.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
 
     model.train()
     model.valid = False
-

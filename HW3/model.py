@@ -510,7 +510,7 @@ class Seq2Seq(nn.Module):
         self.valid = False
         print(self.attn)
 
-    def forward(self, source, target, use_target=False):
+    def forward(self, source, target, use_target=False, k=None):
         max_length = len(target)
         batch_size = len(source[1])
 
@@ -531,6 +531,10 @@ class Seq2Seq(nn.Module):
             # decoder_context = decoder_context.cuda()
 
         if self.beam and self.valid:
+            # Override k, if necessary
+            if k is not None:
+                self.beam_decoder.k = k
+
             decoder_outputs, decoder_hidden, metadata = self.beam_decoder(source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
                     teacher_forcing_ratio=0, retain_output_probs=True)
             # Make decoder_outputs into a tensor: [target_len x batch x en_vocab_sz]
