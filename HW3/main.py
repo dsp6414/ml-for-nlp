@@ -32,6 +32,13 @@ USE_CUDA = True if torch.cuda.is_available() else False
 
 DE = data.Field(tokenize=utils.tokenize_de)
 EN = data.Field(tokenize=utils.tokenize_en, init_token = BOS_WORD, eos_token = EOS_WORD) # only target needs BOS/EOS
+p
+arser = argparse.ArgumentParser(description='Translation')
+parser.add_argument('--beam', type=bool, default=False, help='use beam search')
+parser.add_argument('--attn', type=bool, default=False, help='use attention')
+parser.add_argument('--modelpath', type=str, default=None, help='load a model')
+args = parser.parse_args()
+
 
 # Try to save the files
 # train_file = 'train.sav'
@@ -80,7 +87,7 @@ train_iter, val_iter = data.BucketIterator.splits((train, val), batch_size=BATCH
 print("Done bucketing data")
 
 # Fix these!!
-model = Seq2Seq(len(DE.vocab), len(EN.vocab), EMBEDDING, HIDDEN, N_LAYERS, attn=True)
+model = Seq2Seq(len(DE.vocab), len(EN.vocab), EMBEDDING, HIDDEN, N_LAYERS, attn=args.attn, beam=args.beam)
 if USE_CUDA:
     model.cuda()
 
@@ -89,7 +96,7 @@ criterion = nn.CrossEntropyLoss()
 # milestones = list(range(TEMP_EPOCH, EPOCHS - 1, 0.5))
 # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
 
-filename = 'seq2seq_2_25_.sav'
+filename = args.model_path if args.model_path else 'seq2seq_2_25_.sav'
 if os.path.exists(filename):
     model.load_state_dict(torch.load(filename))
 else:

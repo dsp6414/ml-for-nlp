@@ -451,7 +451,7 @@ class TopKDecoder(torch.nn.Module):
             tensor.index_fill_(dim, indices, masking_score)
 
 class Seq2Seq(nn.Module):
-    def __init__(self, input_size, output_size, embedding_size, hidden_size, n_layers=1, dropout=0.0, attn=False, k=1):
+    def __init__(self, input_size, output_size, embedding_size, hidden_size, n_layers=1, dropout=0.0, attn=False, beam=False, k=5):
         super(Seq2Seq, self).__init__()
         self.input_size = input_size
         self.output_size = output_size
@@ -465,6 +465,10 @@ class Seq2Seq(nn.Module):
             self.decoder = AttnDecoderRNN(embedding_size, hidden_size, output_size, n_layers, dropout)
         else:
             self.decoder = DecoderRNN(embedding_size, hidden_size, output_size, n_layers, dropout)
+
+        self.beam = beam
+        if self.beam:
+            self.decoder = TopKDecoder(self.decoder, k)
         if USE_CUDA:
             self.encoder = self.encoder.cuda()
             self.decoder = self.decoder.cuda()
@@ -492,26 +496,14 @@ class Seq2Seq(nn.Module):
 
 
         # Performs beam search for one single
-        def beam_search(k):
-            big_hidden_state = self.encoder.init_hidden(batch_size=batch_size * k)
-            # Copy the decoder thing beam_size times.
-            for i in range(0, max_length):
-                decoder_output, decoder_hidden = self.decoder(decoder_output, decoder_hidden, encoder_outputs)
-                # decoder_output: [batch x len(EN)]
-                # target: [target_len x batch]
-                # For each word, keep the "k" best guesses
-                pdb.set_trace()
-                values, indices = torch.sort(decoder_output, dim = 1, descending=True)
-                for k in range(batch_size):
-                    preds_for_k = decoder_output[:, k] # Should get the kth column.
-                    values, indices = torch.sort(decoder_output, dim = 1, descending=True)
-                
-                
-            return decoder_output, decoder_hidden
-
-        # return beam_search(5)
+        if self.beam:
+            decoder_outputs, decoder_hidden, metadata = self.decoder(source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
+                    teacher_forcing_ratio=0, retain_output_probs=True)
+            pdb.set_trace()
+            return decoder_outputs, decoder_hidden
 
 
+        # Greedy search
         for i in range(0, max_length):
             if self.attn:
                 decoder_output, decoder_hidden, attn_weights = self.decoder(decoder_output, decoder_hidden, encoder_outputs)
