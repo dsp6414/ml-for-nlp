@@ -82,7 +82,6 @@ print("Finish build vocab")
 train_iter, val_iter = data.BucketIterator.splits((train, val), batch_size=BATCH_SIZE, device=-1,
                                                   repeat=False, sort_key=lambda x: len(x.src))
 
-pdb.set_trace()
 # batch = next(iter(train_iter))
 # print("Source")
 # print(batch.src)

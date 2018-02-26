@@ -76,7 +76,6 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None, filen
         total_loss = 0
         for batch in train_iter:
             source, target = process_batch(batch) # Source is 11x28, target is 21x28
-            pdb.set_trace()
             batch_loss = train_batch(model, source, target, optimizer, criterion)
             total_loss += batch_loss
 
@@ -99,7 +98,6 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None, filen
     return plot_losses
 
 def evaluate(model, val_iter, criterion):
-    pdb.set_trace()
     model.eval()
     model.valid = True
     total_loss = 0.

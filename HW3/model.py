@@ -523,7 +523,6 @@ class Seq2Seq(nn.Module):
         if self.beam and self.valid:
             decoder_outputs, decoder_hidden, metadata = self.beam_decoder(source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
                     teacher_forcing_ratio=0, retain_output_probs=True)
-            pdb.set_trace()
             # Make decoder_outputs into a tensor: [target_len x batch x en_vocab_sz]
             # Current shape: a list of [batch x en_vocab_sz] tensors.
             decoder_outputs = torch.stack(decoder_outputs, dim = 0)
