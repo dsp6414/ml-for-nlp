@@ -43,6 +43,7 @@ args = parser.parse_args()
 
 EPOCHS = args.epochs
 print(EPOCHS)
+print(args.attn)
 
 # Try to save the files
 # train_file = 'train.sav'

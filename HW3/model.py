@@ -499,6 +499,7 @@ class Seq2Seq(nn.Module):
                 self.beam_decoder.cuda()
 
         self.valid = False
+        print(self.attn)
 
     def forward(self, source, target, use_target=False):
         max_length = len(target)
