@@ -92,9 +92,8 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None, filen
             scheduler.step()
         plot_losses.append(total_loss)
 
-        if not filename: 
-            filename = 'seq2seq_2_25_.sav'
-        
+        filename = 'seq2seq_2_25_' if filename is None else filename[:-4] 
+
         torch.save(model.state_dict(), filename + str(epoch) + '.sav')
         # plot_losses_graph.append(plot_loss_avg)
     return plot_losses
