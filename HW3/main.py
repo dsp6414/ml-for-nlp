@@ -97,8 +97,8 @@ if USE_CUDA:
     model.cuda()
 
 optimizer = optim.SGD(model.parameters(), lr=LR)
-# criterion = nn.CrossEntropyLoss(ignore_index=1) # IGNORE PADDING!!!!!!
-criterion = nn.CrossEntropyLoss() 
+criterion = nn.CrossEntropyLoss(ignore_index=1) # IGNORE PADDING!!!!!!
+# criterion = nn.CrossEntropyLoss() 
 # milestones = list(range(TEMP_EPOCH, EPOCHS - 1, 0.5))
 # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
 scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=list(range(8, EPOCHS)), gamma=.5)
@@ -114,6 +114,7 @@ else:
 print("EVALUATE") # I think criterion should be NLL Loss for these if u use beam search
 criterion = nn.NLLLoss(ignore_index=1) 
 loss, output = utils.evaluate(model, val_iter, criterion)
+print("VALIDATION LOSS: ", loss)
 for row in output.data:
     print(" ".join([EN.vocab.itos[i] for i in row.max(1)[1]])) # check this later
 
