@@ -80,10 +80,10 @@ class DecoderRNN(nn.Module):
         output = self.out(output)
         return output, hidden
 
-    def forward_step(self, inputs, last_hidden, encoder_outputs, function=F.log_softmax):
+    def forward_step(self, input_var, last_hidden, encoder_outputs, function=F.log_softmax):
         batch_size = input_var.size(0)
         output_size = input_var.size(1)
-        embedded = self.embedding(input_var).unsqueeze(0)
+        embedded = self.embedding(input_var)
         # embedded = self.dropout(embedded)
 
         output, hidden = self.rnn(embedded, hidden)
@@ -231,6 +231,7 @@ class TopKDecoder(torch.nn.Module):
 
         # Initialize the input vector
         input_var = Variable(torch.transpose(torch.LongTensor([[self.SOS] * batch_size * self.k]), 0, 1))
+        pdb.set_trace()
 
         # Store decisions for backtracking
         stored_outputs = list()
@@ -240,11 +241,10 @@ class TopKDecoder(torch.nn.Module):
         stored_hidden = list()
 
         for _ in range(0, max_length):
-
             # Run the RNN one step forward
             pdb.set_trace()
-            log_softmax_output, hidden = self.rnn.forward_step(input_var, hidden,
-                                                                  inflated_encoder_outputs, function=function)
+            log_softmax_output, hidden = self.rnn.forward_step(input_var, hidden, 
+                inflated_encoder_outputs, function=function)
 
             # If doing local backprop (e.g. supervised training), retain the output layer
             if retain_output_probs:
