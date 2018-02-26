@@ -150,7 +150,7 @@ def kaggle(model, SRC_LANG, TRG_LANG,  output_file, input_file='source_test.txt'
             if USE_CUDA:
                 text = text.cuda()
                 fake_target = fake_target.cuda()
-            output, hidden, metadata = model(text, fake_target)
+            output, hidden, metadata = model(text, fake_target, k=100)
             sequences = torch.stack(metadata['topk_sequence']).squeeze() # should be max_len x k
             pdb.set_trace()
             # convert each seq to sentence
@@ -161,7 +161,7 @@ def kaggle(model, SRC_LANG, TRG_LANG,  output_file, input_file='source_test.txt'
 
                 # Only get first 3 ## DOUBLE CHECK thiS IS ACTUALLY FIRST NOT LAST LOL 
                 english_seq = english_seq[:3]
-                english_seq = "|".join(escape(english_seq))
+                english_seq = escape("|".join(english_seq))
                 print(english_seq, end= ' ',file=out)
             print(file=out)
 
