@@ -23,7 +23,7 @@ BOS_WORD = '<s>'
 EOS_WORD = '</s>'
 CLIP = 10
 USE_CUDA = True if torch.cuda.is_available() else False
-
+MAX_LEN = 20
 def escape(l):
 	return l.replace("\"", "<quote>").replace(",", "<comma>")
 
@@ -145,10 +145,11 @@ def kaggle(model, SRC_LANG, TRG_LANG,  output_file, input_file='source_test.txt'
     with open(output_file, 'w') as out:
         print('id,word', file=out)
         for i, line in enumerate(lines):
-            text = Variable(torch.LongTensor([SRC_LANG.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
-            if CUDA:
+            text = Variable(torch.LongTensor([SRC_LANG.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1) # Shape: [len x 1]
+            fake_target = Variable(torch.LongTensor([0] * MAX_LEN))
+            if USE_CUDA:
                 text = text.cuda()
-            fake_target = Variable(torch.LongTensor([0] * 20))
+                fake_target = fake_target.cuda()
             output, hidden, metadata = model(source, target)
             pdb.set_trace()
             print("%d,%s"%(i+1, " ".join([TRG.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
