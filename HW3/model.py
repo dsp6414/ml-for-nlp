@@ -91,7 +91,6 @@ class DecoderRNN(nn.Module):
     def forward_step(self, input_var, last_hidden, encoder_outputs, function=F.log_softmax):
         batch_size = input_var.size(0)
         output_size = input_var.size(1)
-        pdb.set_trace()
         input_var = input_var.t() # Needed to get [1 x b *k  * n]
         embedded = self.embedding(input_var)
         # embedded = self.dropout(embedded)
@@ -256,13 +255,11 @@ class TopKDecoder(torch.nn.Module):
         stored_predecessors = list()
         stored_emitted_symbols = list()
         stored_hidden = list()
-        pdb.set_trace()
 
         self.max_length = max_length
 
         for _ in range(0, max_length):
             # Run the RNN one step forward
-            pdb.set_trace()
             log_softmax_output, hidden = self.rnn.forward_step(input_var, hidden, inflated_encoder_outputs, function=function)
 
             # If doing local backprop (e.g. supervised training), retain the output layer
@@ -272,7 +269,6 @@ class TopKDecoder(torch.nn.Module):
             # To get the full sequence scores for the new candidates, add the local scores for t_i to the predecessor scores for t_(i-1)
             sequence_scores = _inflate(sequence_scores, self.V, 1)
             # This is (bk,11560)
-            pdb.set_trace()
 
             # Log_softmax_output shape is  1x (batchsize * k) x11560
             # Sequence_scores shape is (batchsize * k) x11560
@@ -302,6 +298,8 @@ class TopKDecoder(torch.nn.Module):
             stored_predecessors.append(predecessors)
             stored_emitted_symbols.append(input_var)
             stored_hidden.append(hidden)
+
+        pdb.set_trace()
 
         # Do backtracking to return the optimal values
         output, h_t, h_n, s, l, p = self._backtrack(stored_outputs, stored_hidden,
