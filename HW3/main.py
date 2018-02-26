@@ -113,6 +113,7 @@ else:
 
 print("EVALUATE") # I think criterion should be NLL Loss for these if u use beam search
 criterion = nn.NLLLoss(ignore_index=1) 
+pdb.set_trace()
 loss, output = utils.evaluate(model, val_iter, criterion)
 for row in output.data:
     print(" ".join([EN.vocab.itos[i] for i in row.max(1)[1]])) # check this later
