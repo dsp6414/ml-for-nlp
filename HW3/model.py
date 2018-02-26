@@ -72,7 +72,7 @@ class DecoderRNN(nn.Module):
         self.out = nn.Linear(hidden_size, output_size)
 
     def forward(self, inputs, last_hidden, encoder_outputs):
-        word_embedding = self.embedding(inputs) # [1 x B x N]
+        word_embedding = self.embedding(inputs).unsqueeze(0) # [1 x B x N]
         output, hidden = self.rnn(word_embedding, last_hidden)
         # output: [1 x batch x hidden]
         # hidden: [num_layer x batch x hidden], [num_layer x batch x hidden]
@@ -202,7 +202,7 @@ class TopKDecoder(torch.nn.Module):
         if USE_CUDA:
             decoder_outputs = decoder_outputs.cuda()
 
-        decoder_output = Variable(torch.LongTensor([[BOS_EMBED] * batch_size]))# [1 x batch]
+        decoder_output = Variable(torch.LongTensor([BOS_EMBED] * batch_size))# [1 x batch]
         decoder_hidden = encoder_hidden # [num_layers x batch x hidden]
         self.pos_index = Variable(torch.LongTensor(range(batch_size)) * self.k).view(-1, 1)
 
