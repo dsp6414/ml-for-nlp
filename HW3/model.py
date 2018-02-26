@@ -487,9 +487,8 @@ class Seq2Seq(nn.Module):
         if USE_CUDA:
             decoder_outputs = decoder_outputs.cuda()
 
-        # decoder_input = Variable(torch.LongTensor([[BOS_EMBED]]))
         # decoder_output = Variable(target[0].data) # [1 x batch]
-        decoder_output = Variable(torch.LongTensor([[BOS_EMBED] * batch_size]))# [1 x batch]
+        decoder_output = Variable(torch.LongTensor([BOS_EMBED] * batch_size))# [1 x batch]
         pdb.set_trace()
         decoder_hidden = encoder_hidden # [num_layers x batch x hidden]
         # decoder_context = Variable(torch.zeros(1, self.decoder.hidden_size))
