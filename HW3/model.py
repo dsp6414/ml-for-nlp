@@ -274,7 +274,7 @@ class TopKDecoder(torch.nn.Module):
 
             # Log_softmax_output shape is  1x (batchsize * k) x11560
             # Sequence_scores shape is (batchsize * k) x11560
-            sequence_scores += log_softmax_output.squeeze(0) # might need to change this back to 1
+            sequence_scores += log_softmax_output.squeeze(1) # might need to change this back to 1
             scores, candidates = sequence_scores.view(batch_size, -1).topk(self.k, dim=1)
             # Each of scores, candidates are [batchsize x k]
 
