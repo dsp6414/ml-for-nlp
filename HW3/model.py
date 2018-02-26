@@ -43,8 +43,9 @@ class EncoderRNN(nn.Module):
         # embedding = self.embedding(inputs).view(seq_len, 1, -1) # check sizes here
 
         # inputs: [seq_len x batch_sz]
-        inverse_inputs = utils.flip(inputs, 0)
-        embedding = self.embedding(inverse_inputs) # [len x B x E]
+        # inverse_inputs = utils.flip(inputs, 0)
+        # embedding = self.embedding(inverse_inputs) # [len x B x E]
+        embedding = self.embedding(inputs)
         try:
             output, hidden = self.rnn(embedding, hidden) # [num_layers x batch x hidden]
         except:
@@ -543,7 +544,6 @@ class Seq2Seq(nn.Module):
             # Current shape: a list of [batch x en_vocab_sz] tensors.
             decoder_outputs = torch.stack(decoder_outputs, dim = 0)
             return decoder_outputs, decoder_hidden, metadata
-
 
         # Greedy search
         for i in range(0, max_length):

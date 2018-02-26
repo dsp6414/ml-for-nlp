@@ -74,6 +74,7 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None, filen
 
     for epoch in range(epochs):
         total_loss = 0
+        counter = 0
         for batch in train_iter:
             source, target = process_batch(batch) # Source is 11x28, target is 21x28
             batch_loss = train_batch(model, source, target, optimizer, criterion)
@@ -92,7 +93,6 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None, filen
         plot_losses.append(total_loss)
 
         filename = 'seq2seq_2_25_' if filename is None else filename[:-4] 
-
         torch.save(model.state_dict(), filename + str(epoch) + '.sav')
         # plot_losses_graph.append(plot_loss_avg)
     return plot_losses
