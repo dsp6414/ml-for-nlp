@@ -191,7 +191,8 @@ class TopKDecoder(torch.nn.Module):
         Forward rnn for MAX_LENGTH steps.  Look at :func:`seq2seq.models.DecoderRNN.DecoderRNN.forward_rnn` for details.
         """
 
-        inputs = source
+        inputs = source # Size: 7 x 128
+        # Targets: 14 x 128
         max_length = len(target)
         batch_size = len(source[1])
 
@@ -199,8 +200,6 @@ class TopKDecoder(torch.nn.Module):
         # encoder_outputs: [source_len x batch x hidden]
         # encoder_hidden: # [num_layers x batch x hidden]
         # decoder_outputs = Variable(torch.zeros(max_length, batch_size, self.output_size))
-        if USE_CUDA:
-            decoder_outputs = decoder_outputs.cuda()
 
         decoder_output = Variable(torch.LongTensor([BOS_EMBED] * batch_size))# [1 x batch]
         decoder_hidden = encoder_hidden # [num_layers x batch x hidden]

@@ -66,6 +66,12 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do
     plot_losses = []
     counter = 0
 
+    stop_after_one_batch = False
+    if epochs == 0:
+        epochs = 1
+        stop_after_one_batch = True
+
+
     for epoch in range(epochs):
         total_loss = 0
         for batch in train_iter:
@@ -75,6 +81,8 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do
 
             if counter % 50 == 0:
                 print(str(counter) + " counter: " + str(total_loss))
+                if stop_after_one_batch:
+                    return plot_losses
             counter += 1
 
         print(str(epoch) + "EPOCH LOSS: " + str(total_loss))
