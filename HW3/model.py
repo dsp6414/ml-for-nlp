@@ -87,7 +87,7 @@ class DecoderRNN(nn.Module):
         embedded = self.embedding(input_var)
         # embedded = self.dropout(embedded)
 
-        output, hidden = self.rnn(embedded, hidden)
+        output, hidden = self.rnn(embedded, last_hidden)
 
         predicted_softmax = function(self.out(output.view(-1, self.hidden_size))).view(batch_size, output_size, -1)
         return predicted_softmax, hidden
