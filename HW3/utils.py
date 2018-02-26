@@ -115,6 +115,7 @@ def evaluate(model, val_iter, criterion):
     print(total_loss[0] / total_len)
     model.train()
     model.valid = False
+    print(metadata)
     return np.exp(total_loss / total_len), output
 
 # def plot_attention(s, encoder, decoder, max_length):
@@ -137,11 +138,11 @@ def evaluate(model, val_iter, criterion):
 #     plt.close()
 
 def kaggle(model, output_file, input_file='source_test.txt'):
+    pdb.set_trace()
     model.eval()
     model.valid = True
     f = open(input_file)
     lines = f.readlines()
-    hidden = model.init_hidden()
     with open(outputfile, 'w') as out:
         print('id,word', file=out)
         for i, line in enumerate(lines):
