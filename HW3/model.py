@@ -80,7 +80,7 @@ class DecoderRNN(nn.Module):
         output = self.out(output)
         return output, hidden
 
-    def forward_step(self, inputs, last_hidden, encoder_outputs):
+    def forward_step(self, inputs, last_hidden, encoder_outputs, function=F.log_softmax):
         batch_size = input_var.size(0)
         output_size = input_var.size(1)
         embedded = self.embedding(input_var).unsqueeze(0)
