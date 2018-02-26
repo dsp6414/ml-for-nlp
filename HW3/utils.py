@@ -150,9 +150,20 @@ def kaggle(model, SRC_LANG, TRG_LANG,  output_file, input_file='source_test.txt'
             if USE_CUDA:
                 text = text.cuda()
                 fake_target = fake_target.cuda()
-            output, hidden, metadata = model(source, target)
+            output, hidden, metadata = model(text, fake_target)
+            sequences = torch.stack(metadata['topk_sequence']).squeeze() # should be max_len x k
             pdb.set_trace()
-            print("%d,%s"%(i+1, " ".join([TRG.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
+            # convert each seq to sentence
+            print("%d,", i, end='', file=out)
+            for l in range(k):
+                seq = sequences[:, l]
+                english_seq = [TRG_LANG.vocab.itos[j.data[0]] for j in seq]
+
+                # Only get first 3 ## DOUBLE CHECK thiS IS ACTUALLY FIRST NOT LAST LOL 
+                english_seq = english_seq[:3]
+                english_seq = "|".join(escape(english_seq))
+                print(english_seq, end= ' ',file=out)
+            print(file=out)
 
     model.train()
     model.valid = False

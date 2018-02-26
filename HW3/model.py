@@ -322,7 +322,7 @@ class TopKDecoder(torch.nn.Module):
         metadata['h_t'] = h_t
         metadata['score'] = s
         metadata['topk_length'] = l
-        metadata['topk_sequence'] = p
+        metadata['topk_sequence'] = p # p is not a tensor.
         metadata['length'] = [seq_len[0] for seq_len in l]
         metadata['sequence'] = [seq[0] for seq in p]
         return decoder_outputs, decoder_hidden, metadata
