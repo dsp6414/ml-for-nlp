@@ -527,7 +527,7 @@ class Seq2Seq(nn.Module):
             # Make decoder_outputs into a tensor: [target_len x batch x en_vocab_sz]
             # Current shape: a list of [batch x en_vocab_sz] tensors.
             decoder_outputs = torch.stack(decoder_outputs, dim = 0)
-            return decoder_outputs, decoder_hidden
+            return decoder_outputs, decoder_hidden, metadata
 
 
         # Greedy search

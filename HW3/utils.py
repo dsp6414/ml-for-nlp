@@ -61,7 +61,7 @@ def train_batch(model, source, target, optimizer, criterion):
     optimizer.step()
     return loss.data[0]
 
-def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do I need a max_length=MAX_LENGTH?
+def train(model, train_iter, epochs, optimizer, criterion, scheduler=None, filename=None): # do I need a max_length=MAX_LENGTH?
     model.train()
     plot_losses = []
     counter = 0
@@ -92,7 +92,9 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None): # do
             scheduler.step()
         plot_losses.append(total_loss)
 
-        filename = 'seq2seq2_25_'
+        if not filename: 
+            filename = 'seq2seq_2_25_.sav'
+        
         torch.save(model.state_dict(), filename + str(epoch) + '.sav')
         # plot_losses_graph.append(plot_loss_avg)
     return plot_losses
@@ -105,7 +107,7 @@ def evaluate(model, val_iter, criterion):
     total_len = 0.
     for batch in val_iter:
         source, target = process_batch(batch)
-        output, hidden = model(source, target)
+        output, hidden, metadata = model(source, target)
         output_flat = output.view(-1, model.output_size)
         loss = criterion(output_flat, target.view(-1))
         total_loss += len(source) * loss.data
@@ -138,6 +140,8 @@ def evaluate(model, val_iter, criterion):
 #     plt.close()
 
 def kaggle(model, output_file, input_file='source_test.txt'):
+    model.eval()
+    model.valid = True
     f = open(input_file)
     lines = f.readlines()
     hidden = model.init_hidden()
@@ -147,9 +151,11 @@ def kaggle(model, output_file, input_file='source_test.txt'):
             text = Variable(torch.LongTensor([TEXT.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1)
             if CUDA:
                 text = text.cuda()
-            h = model.init_hidden(batch_size=1)
-            probs, h = model(text, h) # probs: [10 x vocab_size]
+            fake_target = Variable(torch.LongTensor([0] * 20))
+            output, hidden, metadata = model(source, target)
             pdb.set_trace()
-            values, indices = torch.sort(probs[-1], descending=True)
             print("%d,%s"%(i+1, " ".join([TEXT.vocab.itos[i.data[0]] for i in indices[:20]])), file=out)
+
+    model.train()
+    model.valid = False
 

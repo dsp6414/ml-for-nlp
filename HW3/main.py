@@ -23,19 +23,20 @@ TEMP_EPOCH = 5
 # EPOCHS = 7.5
 # EPOCHS = 5 (ADDED THIS AS ARUGMENT)
 
-N_LAYERS = 1
+N_LAYERS = 2
 # N_LAYERS = 4
-HIDDEN = 1000
-EMBEDDING = 1000
-LR = 0.7
+HIDDEN = 200
+EMBEDDING = 200
+LR = 1
+DROPOUT = 0.7
 
 USE_CUDA = True if torch.cuda.is_available() else False
 
 DE = data.Field(tokenize=utils.tokenize_de)
 EN = data.Field(tokenize=utils.tokenize_en, init_token = BOS_WORD, eos_token = EOS_WORD) # only target needs BOS/EOS
 parser = argparse.ArgumentParser(description='Translation')
-parser.add_argument('--beam', type=bool, default=False, help='use beam search')
-parser.add_argument('--attn', type=bool, default=False, help='use attention')
+parser.add_argument('--beam', type=bool, default=True, help='use beam search')
+parser.add_argument('--attn', type=bool, default=True, help='use attention')
 parser.add_argument('--model_path', type=str, default=None, help='load a model')
 parser.add_argument('--epochs', type=int, default=5, help='num epochs, default 5')
 args = parser.parse_args()
@@ -90,7 +91,7 @@ pdb.set_trace()
 print("Done bucketing data")
 
 # Fix these!!
-model = Seq2Seq(len(DE.vocab), len(EN.vocab), EMBEDDING, HIDDEN, N_LAYERS, attn=args.attn, beam=args.beam)
+model = Seq2Seq(len(DE.vocab), len(EN.vocab), EMBEDDING, HIDDEN, N_LAYERS, attn=args.attn, beam=args.beam, dropout=DROPOUT)
 if USE_CUDA:
     model.cuda()
 
@@ -98,12 +99,13 @@ optimizer = optim.SGD(model.parameters(), lr=LR)
 criterion = nn.CrossEntropyLoss(ignore_index=1) # IGNORE PADDING!!!!!!
 # milestones = list(range(TEMP_EPOCH, EPOCHS - 1, 0.5))
 # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
+scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[range(8, EPOCHS)], gamma=.5)
 
 filename = args.model_path if args.model_path else 'seq2seq_2_25_.sav'
 if os.path.exists(filename):
     model.load_state_dict(torch.load(filename))
 else:
-    plot_losses = utils.train(model, train_iter, EPOCHS, optimizer, criterion)
+    plot_losses = utils.train(model, train_iter, EPOCHS, optimizer, criterion, scheduler, filename)
     print(plot_losses)
     torch.save(model.state_dict(), filename)
 
