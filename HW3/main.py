@@ -100,7 +100,7 @@ optimizer = optim.SGD(model.parameters(), lr=LR)
 criterion = nn.CrossEntropyLoss() 
 # milestones = list(range(TEMP_EPOCH, EPOCHS - 1, 0.5))
 # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
-scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[range(8, EPOCHS)], gamma=.5)
+scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=list(range(8, EPOCHS)), gamma=.5)
 
 filename = args.model_path if args.model_path else 'seq2seq_2_25_.sav'
 if os.path.exists(filename):
