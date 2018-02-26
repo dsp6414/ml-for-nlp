@@ -28,7 +28,7 @@ N_LAYERS = 2
 HIDDEN = 200
 EMBEDDING = 200
 LR = 1
-DROPOUT = 0.7
+DROPOUT = 0.3
 
 USE_CUDA = True if torch.cuda.is_available() else False
 
