@@ -258,6 +258,8 @@ class TopKDecoder(torch.nn.Module):
         stored_hidden = list()
         pdb.set_trace()
 
+        self.max_length = max_length
+
         for _ in range(0, max_length):
             # Run the RNN one step forward
             pdb.set_trace()
@@ -359,7 +361,7 @@ class TopKDecoder(torch.nn.Module):
             h_n = tuple([torch.zeros(state_size), torch.zeros(state_size)])
         else:
             h_n = torch.zeros(nw_hidden[0].size())
-        l = [[self.rnn.max_length] * self.k for _ in range(b)]  # Placeholder for lengths of top-k sequences
+        l = [[self.max_length] * self.k for _ in range(b)]  # Placeholder for lengths of top-k sequences
                                                                 # Similar to `h_n`
 
         # the last step output of the beams are not sorted
@@ -371,7 +373,7 @@ class TopKDecoder(torch.nn.Module):
         batch_eos_found = [0] * b   # the number of EOS found
                                     # in the backward loop below for each batch
 
-        t = self.rnn.max_length - 1
+        t = self.max_length - 1
         # initialize the back pointer with the sorted order of the last step beams.
         # add self.pos_index for indexing variable with b*k as the first dimension.
         t_predecessors = (sorted_idx + self.pos_index.expand_as(sorted_idx)).view(b * self.k)
