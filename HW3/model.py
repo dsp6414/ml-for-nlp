@@ -182,7 +182,7 @@ class TopKDecoder(torch.nn.Module):
         self.k = k
         self.hidden_size = self.rnn.hidden_size
         self.V = self.rnn.output_size
-        self.SOS = SOS_WORD
+        self.SOS = BOS_WORD
         self.EOS = EOS_WORD
 
     def forward(self, source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
