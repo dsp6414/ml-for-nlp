@@ -168,11 +168,11 @@ class AttnDecoderRNN(nn.Module):
         output = self.out(torch.cat((output, context), 1))
         return output, hidden, attn_weights
 
-        decoder_word_vecs = Embedding(target) # batch x target_length x word_dim
-        decoder_hidden, _ = dec_rnn(decoder_word_vecs) # batch x target_len x h_dim (decoder hidden state at each time step)
-        enc_hidden which is encoder_outputs # batch x source_length x h_dim
-        torch.bmm(enco_hidden, dec_hdiden.transpose(1, 2))
-        and then get the context vectors by another hidden
+        # decoder_word_vecs = Embedding(target) # batch x target_length x word_dim
+        # decoder_hidden, _ = dec_rnn(decoder_word_vecs) # batch x target_len x h_dim (decoder hidden state at each time step)
+        # enc_hidden which is encoder_outputs # batch x source_length x h_dim
+        # torch.bmm(enco_hidden, dec_hdiden.transpose(1, 2))
+        # and then get the context vectors by another hidden
 
 
 def _inflate(tensor, times, dim):
