@@ -95,7 +95,7 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
         counter = 0
         for batch in train_iter:
             source, target = process_batch(batch) # Source is 11x28, target is 21x28
-            batch_loss, nonpadding = train_batch(model, source, target, optimizer, criterion)
+            batch_loss, non_padding = train_batch(model, source, target, optimizer, criterion)
             total_loss += batch_loss * non_padding
             total_observations += nonpadding
 
