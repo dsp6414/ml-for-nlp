@@ -111,7 +111,7 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
             scheduler.step()
         plot_losses.append(total_loss)
 
-        print("Validate:", evaluate(model, val_iter, criterion))
+        print("Validate:", evaluate(model, val_iter, criterion)[0])
 
         filename = 'seq2seq_2_25_' if filename is None else filename[:-4] 
         torch.save(model.state_dict(), filename + str(epoch) + '.sav')
