@@ -549,7 +549,7 @@ class Seq2Seq(nn.Module):
             decoder_outputs = torch.stack(decoder_outputs, dim = 0)
             return decoder_outputs, decoder_hidden, metadata
 
-        # vvvvv THIS IS ONE BY ONE. WE ARE GOING TO DO IT ALL AT ONCE
+        # vvvvv THIS IS ONE BY ONE. WE ARE GOING TO DO IT ALL AT ONCE < BOLD MOVE
         # Greedy search. USE_TARGET = TRUE FOR BOTH TRAINING AND VALIDATION!!!!!!!!!!!!
         # for i in range(0, max_length):
         #     if self.attn:
