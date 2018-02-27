@@ -231,7 +231,6 @@ class TopKDecoder(torch.nn.Module):
         max_length = len(target)
         batch_size = len(source[1])
 
-
         # encoder_outputs: [source_len x batch x hidden]
         # encoder_hidden: # [num_layers x batch x hidden]
         # decoder_outputs = Variable(torch.zeros(max_length, batch_size, self.output_size))
