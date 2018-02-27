@@ -116,7 +116,7 @@ class AttnDecoderRNN(nn.Module):
         self.dropout_p = dropout_p # need to check if this is a thing
         self.embedding = nn.Embedding(output_size, hidden_size)
         self.dropout = nn.Dropout(self.dropout_p)
-        self.rnn = nn.LSTM(embedding_size + hidden_size, hidden_size, n_layers, dropout=dropout_p)
+        self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers, dropout=dropout_p)
         self.out = nn.Linear(hidden_size * 2, output_size)
 
         # inputs is the true values for the target sentence from previous time step
@@ -124,7 +124,7 @@ class AttnDecoderRNN(nn.Module):
         # encoder_outputs is
     def forward(self, target, last_hidden, encoder_outputs):
         pdb.set_trace()
-        word_embeddings = self.dropout(self.embedding(target)) # [1 x B x Embedding]
+        word_embeddings = self.dropout(self.embedding(target)) # [seq_len x B x Embedding]
         decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden)
         scores = torch.bmm(encoder_outputs, decoder_outputs.transpose(1, 2))
         attn_weights = F.softmax(scores, dim=1)
