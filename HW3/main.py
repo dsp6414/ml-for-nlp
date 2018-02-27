@@ -23,7 +23,7 @@ TEMP_EPOCH = 5
 # EPOCHS = 7.5
 # EPOCHS = 5 (ADDED THIS AS ARUGMENT)
 
-N_LAYERS = 2
+N_LAYERS = 1
 # N_LAYERS = 4
 HIDDEN = 200
 EMBEDDING = 200
@@ -113,7 +113,7 @@ else:
 
 print("EVALUATE") # I think criterion should be NLL Loss for these if u use beam search
 if args.beam:
-    criterion = nn.NLLLoss(ignore_index=1) 
+    criterion = nn.NLLLoss(ignore_index=1)
 loss, output = utils.evaluate(model, val_iter, criterion)
 print("VALIDATION LOSS: ", loss)
 for row in output.data:

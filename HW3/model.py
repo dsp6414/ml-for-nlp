@@ -149,6 +149,7 @@ class AttnDecoderRNN(nn.Module):
         context = torch.bmm(attn_weights, encoder_outputs.transpose(0, 1))
         context = context.squeeze(1)
         combined = torch.cat((word_embedding, context), 1)
+        pdb.set_trace()
         #########################
         #  works up until here
         output, hidden = self.rnn(combined.unsqueeze(0), last_hidden)
