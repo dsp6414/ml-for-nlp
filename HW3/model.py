@@ -123,7 +123,6 @@ class AttnDecoderRNN(nn.Module):
         # last_hidden is the bottleneck hidden from processing all of encoder
         # encoder_outputs is
     def forward(self, target, last_hidden, encoder_outputs):
-        pdb.set_trace()
         word_embeddings = self.dropout(self.embedding(target)) # [seq_len x B x E]
         decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden) # [seq_len x B x H] , [L x B x H]
         scores = torch.bmm(encoder_outputs.transpose(0, 1), decoder_outputs.transpose(1, 2).transpose(0, 2)) 
@@ -582,6 +581,5 @@ class Seq2Seq(nn.Module):
             decoder_outputs, decoder_hidden = self.decoder(target, decoder_hidden, encoder_outputs)
 
         # decoder_output, hidden = self.decoder(decoder_input, decoder_context, decoder_hidden, encoder_outputs)
-        pdb.set_trace()
         return decoder_outputs, decoder_hidden # decoder_output [target_len x batch x en_vocab_sz]
 
