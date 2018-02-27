@@ -55,6 +55,12 @@ def train_batch(model, source, target, optimizer, criterion):
     # because then I'd be literally trying to match words up. I need to shift ground truth to be target[1:] and compare this to
     # output[:-1] <- output minus the last character
 
+    # Take output minus the last character
+    output = output[:-1, :, :]
+
+    # Take target without the first character
+    target = target[1:, :]
+
     output_flat = output.view(-1, model.output_size) # [(tg_len x batch) x en_vocab_sz]
     # not sure whether to use ground truth target or network's prediction
     loss = criterion(output_flat, target.view(-1))
