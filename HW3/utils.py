@@ -126,10 +126,7 @@ def evaluate(model, val_iter, criterion):
     for batch in val_iter:
         source, target = process_batch(batch)
         # output, hidden, metadata = model(source, target)
-        if model.beam:
-            output, hidden, metadata = model(source, target)
-        else:
-            output, hidden = model(source, target)
+        output, hidden = model(source, target)
         output_flat = output.view(-1, model.output_size)
         loss = criterion(output_flat, target.view(-1))
 
