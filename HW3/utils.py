@@ -126,13 +126,14 @@ def evaluate(model, val_iter, criterion):
         source, target = process_batch(batch)
         # output, hidden, metadata = model(source, target)
         output, hidden = model(source, target)
-        output_flat = output.view(-1, model.output_size)
 
         # Take output minus the last character
         output = output[:-1, :, :]
 
         # Take target without the first character
         target = target[1:, :]
+
+        output_flat = output.view(-1, model.output_size)
         loss = criterion(output_flat, target.view(-1))
 
         # - 1 hack for nonzero
