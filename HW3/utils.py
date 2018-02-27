@@ -56,6 +56,7 @@ def train_batch(model, source, target, optimizer, criterion):
     # output[:-1] <- output minus the last character
 
     # Take output minus the last character
+    pdb.set_trace()
     output = output[:-1, :, :]
 
     # Take target without the first character
