@@ -112,7 +112,7 @@ class AttnDecoderRNN(nn.Module):
         self.embedding_size = embedding_size
         self.output_size = output_size
         self.hidden_size = hidden_size
-        self.n_layers = n_layers
+        self.n_layers = n_layers 
         self.dropout_p = dropout_p # need to check if this is a thing
         self.embedding = nn.Embedding(output_size, hidden_size)
         self.dropout = nn.Dropout(self.dropout_p)
