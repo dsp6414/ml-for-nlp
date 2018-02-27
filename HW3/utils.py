@@ -113,7 +113,10 @@ def evaluate(model, val_iter, criterion):
     for batch in val_iter:
         source, target = process_batch(batch)
         # output, hidden, metadata = model(source, target)
-        output, hidden = model(source, target)
+        if model.beam:
+            output, hidden, metadata = model(source, target)
+        else:
+            output, hidden = model(source, target)
         output_flat = output.view(-1, model.output_size)
         loss = criterion(output_flat, target.view(-1))
         total_loss += len(source) * loss.data
@@ -124,7 +127,7 @@ def evaluate(model, val_iter, criterion):
     print(total_loss[0] / total_len)
     model.train()
     model.valid = False
-    return np.exp(total_loss / total_len), output
+    return np.exp(total_loss[0] / total_len), output
 
 # def plot_attention(s, encoder, decoder, max_length):
 #     output_words, attn = evaluate(s, encoder, decoder, max_length)
@@ -158,9 +161,8 @@ def kaggle(model, SRC_LANG, TRG_LANG,  output_file, input_file='source_test.txt'
             if USE_CUDA:
                 text = text.cuda()
                 fake_target = fake_target.cuda()
-            output, hidden, metadata = model(text, fake_target, k=100)
+            output, hidden, metadata = model(text, fake_target, k=100, use_target=False) # THE ONLY TIME USE_TARGET = FALSE
             sequences = torch.stack(metadata['topk_sequence']).squeeze() # should be max_len x k
-            pdb.set_trace()
             # convert each seq to sentence
             print("%d,", i, end='', file=out)
             for l in range(100):

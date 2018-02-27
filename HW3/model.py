@@ -416,10 +416,11 @@ class TopKDecoder(torch.nn.Module):
             # the current step
 
             # CHECK SHAPE
-            pdb.set_trace()
+            # pdb.set_trace()
             # t_predecessors = predecessors[t].index_select(1, t_predecessors).squeeze() # CHANGED THIS TO a 1
             
             t_predecessors = predecessors[t].squeeze().index_select(0, t_predecessors)
+            # t_predecessors is currently 1 x (batch x block)
             # This tricky block handles dropped sequences that see EOS earlier.
             # The basic idea is summarized below:
             #
@@ -454,7 +455,8 @@ class TopKDecoder(torch.nn.Module):
 
                     # Replace the old information in return variables
                     # with the new ended sequence information
-                    t_predecessors[res_idx] = predecessors[t][idx[0]]
+                    # pdb.set_trace()
+                    t_predecessors[res_idx] = predecessors[t].squeeze()[idx[0]] # PLEASE WORK
                     current_output[res_idx, :] = nw_output[t][idx[0], :]
                     if lstm:
                         current_hidden[0][:, res_idx, :] = nw_hidden[t][0][:, idx[0], :]
@@ -533,7 +535,7 @@ class Seq2Seq(nn.Module):
         self.valid = False
         print(self.attn)
 
-    def forward(self, source, target, use_target=False, k=None):
+    def forward(self, source, target, use_target=True, k=None):
         max_length = len(target)
         batch_size = len(source[1])
 
@@ -553,7 +555,8 @@ class Seq2Seq(nn.Module):
             decoder_output = decoder_output.cuda()
             # decoder_context = decoder_context.cuda()
 
-        if self.beam and self.valid:
+        # THIS IS ONLY USED FOR THE KAGGLE!!!!!! NOTHING ELSE!!!
+        if self.beam and self.valid and not use_target:
             # Override k, if necessary
             if k is not None:
                 self.beam_decoder.k = k
@@ -565,7 +568,7 @@ class Seq2Seq(nn.Module):
             decoder_outputs = torch.stack(decoder_outputs, dim = 0)
             return decoder_outputs, decoder_hidden, metadata
 
-        # Greedy search
+        # Greedy search. USE_TARGET = TRUE FOR BOTH TRAINING AND VALIDATION!!!!!!!!!!!!
         for i in range(0, max_length):
             if self.attn:
                 decoder_output, decoder_hidden, attn_weights = self.decoder(decoder_output, decoder_hidden, encoder_outputs)
