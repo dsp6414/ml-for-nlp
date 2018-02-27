@@ -127,7 +127,7 @@ def evaluate(model, val_iter, criterion):
     print(total_loss[0] / total_len)
     model.train()
     model.valid = False
-    return np.exp(total_loss / total_len), output
+    return np.exp(total_loss[0] / total_len), output
 
 # def plot_attention(s, encoder, decoder, max_length):
 #     output_words, attn = evaluate(s, encoder, decoder, max_length)
@@ -163,7 +163,6 @@ def kaggle(model, SRC_LANG, TRG_LANG,  output_file, input_file='source_test.txt'
                 fake_target = fake_target.cuda()
             output, hidden, metadata = model(text, fake_target, k=100)
             sequences = torch.stack(metadata['topk_sequence']).squeeze() # should be max_len x k
-            pdb.set_trace()
             # convert each seq to sentence
             print("%d,", i, end='', file=out)
             for l in range(100):

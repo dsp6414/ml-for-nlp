@@ -455,6 +455,7 @@ class TopKDecoder(torch.nn.Module):
 
                     # Replace the old information in return variables
                     # with the new ended sequence information
+                    pdb.set_trace()
                     t_predecessors[res_idx] = predecessors[t][idx[0]]
                     current_output[res_idx, :] = nw_output[t][idx[0], :]
                     if lstm:
