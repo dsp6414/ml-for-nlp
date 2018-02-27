@@ -81,7 +81,7 @@ class DecoderRNN(nn.Module):
                     Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)))
 
     def forward(self, target, last_hidden, encoder_outputs):
-        word_embeddings = self.embedding(target).unsqueeze(0) # [1 x B x N]
+        word_embeddings = self.embedding(target)# [1 x B x N] seq_len, batch, input_size
         output, hidden = self.rnn(word_embeddings, last_hidden)
         # output: [1 x batch x hidden]
         # hidden: [num_layer x batch x hidden], [num_layer x batch x hidden]
