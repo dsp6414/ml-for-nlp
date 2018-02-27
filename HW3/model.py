@@ -144,6 +144,7 @@ class AttnDecoderRNN(nn.Module):
         # last_hidden is the bottleneck hidden from processing all of encoder
         # encoder_outputs is
     def forward(self, inputs, last_hidden, encoder_outputs):
+        pdb.set_trace()
         word_embedding = self.dropout(self.embedding(inputs)) # [1 x B x Embedding]
         decoder_outputs, hidden = self.rnn(word_embedding, last_hidden)
         scores = torch.bmm(encoder_outputs, decoder_outputs.transpose(1, 2))
@@ -152,22 +153,22 @@ class AttnDecoderRNN(nn.Module):
         output = self.out(torch.cat((decoder_output, context), 1))
         return output, hidden, attn_weights
 
-        attn_weights = torch.bmm(last_hidden[0].transpose(0, 1), encoder_outputs.transpose(0, 1).transpose(1, 2))
-        context = torch.bmm(attn_weights, encoder_outputs.transpose(0, 1))
-        context = context.squeeze(1)
-        combined = torch.cat((word_embedding, context), 1) # [B x 2*H]
+        # attn_weights = torch.bmm(last_hidden[0].transpose(0, 1), encoder_outputs.transpose(0, 1).transpose(1, 2))
+        # context = torch.bmm(attn_weights, encoder_outputs.transpose(0, 1))
+        # context = context.squeeze(1)
+        # combined = torch.cat((word_embedding, context), 1) # [B x 2*H]
         # pdb.set_trace()
         #########################
         #  works up until here
 
         # last_hidden: [1 x B x H]
         # combined: [1 x B x 2*H]
-        output, hidden = self.rnn(combined.unsqueeze(0), last_hidden)
+        # output, hidden = self.rnn(combined.unsqueeze(0), last_hidden)
         # output: [1 x B x H]
 
-        output = output.squeeze(0) # B x N (check dimensions)
-        output = self.out(torch.cat((output, context), 1))
-        return output, hidden, attn_weights
+        # output = output.squeeze(0) # B x N (check dimensions)
+        # output = self.out(torch.cat((output, context), 1))
+        # return output, hidden, attn_weights
 
         # decoder_word_vecs = Embedding(target) # batch x target_length x word_dim
         # decoder_hidden, _ = dec_rnn(decoder_word_vecs) # batch x target_len x h_dim (decoder hidden state at each time step)

@@ -63,7 +63,7 @@ def train_batch(model, source, target, optimizer, criterion):
 
     # keep track of number of non-padding tokens in each batch, and divide by that number
 
-def train(model, train_iter, epochs, optimizer, criterion, scheduler=None, filename=None): # do I need a max_length=MAX_LENGTH?
+def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=None, filename=None):
     model.train()
     plot_losses = []
     counter = 0
@@ -72,7 +72,6 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None, filen
     if epochs == 0:
         epochs = 1
         stop_after_one_batch = True
-
 
     for epoch in range(epochs):
         total_loss = 0
@@ -94,7 +93,7 @@ def train(model, train_iter, epochs, optimizer, criterion, scheduler=None, filen
             scheduler.step()
         plot_losses.append(total_loss)
 
-        # print("Validate:" evaluate(model, val_iter))
+        print("Validate:" evaluate(model, val_iter, criterion))
 
         filename = 'seq2seq_2_25_' if filename is None else filename[:-4] 
         torch.save(model.state_dict(), filename + str(epoch) + '.sav')
