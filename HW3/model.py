@@ -518,6 +518,8 @@ class Seq2Seq(nn.Module):
         max_length = len(target)
         batch_size = len(source[1])
 
+
+        ## TRY this
         encoder_hidden = self.encoder.init_hidden(batch_size=batch_size) # can insert batch size here
         encoder_outputs, encoder_hidden = self.encoder(source, encoder_hidden)
         # encoder_outputs: [source_len x batch x hidden]
@@ -531,6 +533,11 @@ class Seq2Seq(nn.Module):
 
         pdb.set_trace()
         decoder_hidden = encoder_hidden # [num_layers x batch x hidden]
+
+        # NOT SURE IF WE SHOULD DO IT LIKE THIS
+        # decoder_hidden = self.decoder.init_hidden(batch_size = batch_size * max_length)
+
+
         # decoder_context = Variable(torch.zeros(1, self.decoder.hidden_size))
         if USE_CUDA:
             decoder_output = decoder_output.cuda()
@@ -564,6 +571,11 @@ class Seq2Seq(nn.Module):
         #     else:
         #         decoder_output = decoder_output.max(1)[1]
 
+        # Decoder_output (used to be passed in place of target was [1x batch], so i think we need to flatten)
+
+
+        # NOT SURE IF WE SHOULD DO IT LIKE THIS
+        # target = target.view(-1)
         if self.attn:
             decoder_outputs, decoder_hidden, attn_weights = self.decoder(target, decoder_hidden, encoder_outputs)
         else:
