@@ -80,9 +80,9 @@ class DecoderRNN(nn.Module):
             return (Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)),
                     Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)))
 
-    def forward(self, inputs, last_hidden, encoder_outputs):
-        word_embedding = self.embedding(inputs).unsqueeze(0) # [1 x B x N]
-        output, hidden = self.rnn(word_embedding, last_hidden)
+    def forward(self, target, last_hidden, encoder_outputs):
+        word_embeddings = self.embedding(target).unsqueeze(0) # [1 x B x N]
+        output, hidden = self.rnn(word_embeddings, last_hidden)
         # output: [1 x batch x hidden]
         # hidden: [num_layer x batch x hidden], [num_layer x batch x hidden]
         output = output.squeeze(0) # check dim
@@ -106,26 +106,6 @@ class DecoderRNN(nn.Module):
         # Resulting size is (b *k) x 1 x 11560
         return predicted_softmax, hidden
 
-class Attn(nn.Module):
-    def __init__(self, hidden_size):
-        super(Attn, self).__init__()
-        self.hidden_size = hidden_size
-        self.attn = nn.Linear(self.hidden_size, hidden_size)
-
-    def forward(self, hidden, encoder_outputs):
-        attn_energies = Variable(torch.zeros(seq_len)) # B x 1 x S
-        if USE_CUDA:
-            attn_energies = attn_energies.cuda()
-
-        # Calculate energies for each encoder output
-        # for i in range(seq_len):
-        #     attn_energies[i] = hidden.dot(self.attn(encoder_outputs[i]))
-
-        attn_energies = torch.bmm(hidden.transpose(0, 1), encoder_outputs.transpose(0, 1).transpose(1, 2))
-
-        # Normalize energies to weights in range 0 to 1, resize to 1 x 1 x seq_len
-        return F.softmax(attn_energies, dim=2)
-
 class AttnDecoderRNN(nn.Module):
     def __init__(self, embedding_size, hidden_size, output_size, n_layers=1, dropout_p=0.5):
         super(AttnDecoderRNN, self).__init__()
@@ -135,7 +115,6 @@ class AttnDecoderRNN(nn.Module):
         self.n_layers = n_layers
         self.dropout_p = dropout_p # need to check if this is a thing
         self.embedding = nn.Embedding(output_size, hidden_size)
-        self.attn = Attn(hidden_size)
         self.dropout = nn.Dropout(self.dropout_p)
         self.rnn = nn.LSTM(embedding_size + hidden_size, hidden_size, n_layers, dropout=dropout_p)
         self.out = nn.Linear(hidden_size * 2, output_size)
@@ -145,8 +124,8 @@ class AttnDecoderRNN(nn.Module):
         # encoder_outputs is
     def forward(self, target, last_hidden, encoder_outputs):
         pdb.set_trace()
-        word_embedding = self.dropout(self.embedding(target)) # [1 x B x Embedding]
-        decoder_outputs, hidden = self.rnn(word_embedding, last_hidden)
+        word_embeddings = self.dropout(self.embedding(target)) # [1 x B x Embedding]
+        decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden)
         scores = torch.bmm(encoder_outputs, decoder_outputs.transpose(1, 2))
         attn_weights = F.softmax(scores, dim=1)
         context = torch.bmm(attn_weights, encoder_outputs.transpose(0, 1))
@@ -570,19 +549,25 @@ class Seq2Seq(nn.Module):
             decoder_outputs = torch.stack(decoder_outputs, dim = 0)
             return decoder_outputs, decoder_hidden, metadata
 
+        # vvvvv THIS IS ONE BY ONE. WE ARE GOING TO DO IT ALL AT ONCE
         # Greedy search. USE_TARGET = TRUE FOR BOTH TRAINING AND VALIDATION!!!!!!!!!!!!
-        for i in range(0, max_length):
-            if self.attn:
-                decoder_output, decoder_hidden, attn_weights = self.decoder(target, decoder_hidden, encoder_outputs)
-            else:
-                decoder_output, decoder_hidden = self.decoder(target, decoder_hidden, encoder_outputs)
-            # decoder_output: [batch x len(EN)]
-            # target: [target_len x batch]
-            decoder_outputs[i] = decoder_output
-            if use_target:
-                decoder_output = target[i].cuda() if USE_CUDA else target[i]
-            else:
-                decoder_output = decoder_output.max(1)[1]
+        # for i in range(0, max_length):
+        #     if self.attn:
+        #         decoder_output, decoder_hidden, attn_weights = self.decoder(target, decoder_hidden, encoder_outputs)
+        #     else:
+        #         decoder_output, decoder_hidden = self.decoder(target, decoder_hidden, encoder_outputs)
+        #     # decoder_output: [batch x len(EN)]
+        #     # target: [target_len x batch]
+        #     decoder_outputs[i] = decoder_output
+        #     if use_target:
+        #         decoder_output = target[i].cuda() if USE_CUDA else target[i]
+        #     else:
+        #         decoder_output = decoder_output.max(1)[1]
+
+        if self.attn:
+            decoder_outputs, decoder_hidden, attn_weights = self.decoder(target, decoder_hidden, encoder_outputs)
+        else:
+            decoder_outputs, decoder_hidden = self.decoder(target, decoder_hidden, encoder_outputs)
 
         # decoder_output, hidden = self.decoder(decoder_input, decoder_context, decoder_hidden, encoder_outputs)
         pdb.set_trace()
