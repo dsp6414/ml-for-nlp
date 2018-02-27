@@ -96,6 +96,9 @@ if USE_CUDA:
 
 optimizer = optim.SGD(model.parameters(), lr=LR)
 criterion = nn.CrossEntropyLoss(ignore_index=1) # IGNORE PADDING!!!!!!
+# size average false, divide loss by batch size
+
+
 # criterion = nn.CrossEntropyLoss() 
 # milestones = list(range(TEMP_EPOCH, EPOCHS - 1, 0.5))
 # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
