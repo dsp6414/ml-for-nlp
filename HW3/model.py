@@ -134,7 +134,7 @@ class AttnDecoderRNN(nn.Module):
 
         # Currently output is B x seq_len x EN_vocab. Do we want this? 
         # gonna transpose it to match the other Decoder
-        output = output.transpose(0, 1) # [Seq_len x B x en_vocab]
+        output = output.transpose(0, 1).contiguous() # [Seq_len x B x en_vocab]
         return output, hidden, attn_weights
 
         # attn_weights = torch.bmm(last_hidden[0].transpose(0, 1), encoder_outputs.transpose(0, 1).transpose(1, 2))
