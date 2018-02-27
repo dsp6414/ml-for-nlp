@@ -161,7 +161,7 @@ def kaggle(model, SRC_LANG, TRG_LANG,  output_file, input_file='source_test.txt'
             if USE_CUDA:
                 text = text.cuda()
                 fake_target = fake_target.cuda()
-            output, hidden, metadata = model(text, fake_target, k=100)
+            output, hidden, metadata = model(text, fake_target, k=100, use_target=False) # THE ONLY TIME USE_TARGET = FALSE
             sequences = torch.stack(metadata['topk_sequence']).squeeze() # should be max_len x k
             # convert each seq to sentence
             print("%d,", i, end='', file=out)

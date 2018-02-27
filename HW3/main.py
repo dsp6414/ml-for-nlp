@@ -114,14 +114,12 @@ else:
     torch.save(model.state_dict(), filename)
     print("SAVING MODEL TO", filename)
 
-print("EVALUATE") # I think criterion should be NLL Loss for these if u use beam search
-if args.beam:
-    criterion = nn.NLLLoss(ignore_index=1)
+print("EVALUATE") 
 loss, output = utils.evaluate(model, val_iter, criterion)
 print("VALIDATION LOSS: ", loss)
 for row in output.data:
     print(" ".join([EN.vocab.itos[i] for i in row.max(1)[1]])) # check this later
 
 print("KAGGLE")
-
+# can use beam here
 utils.kaggle(model, SRC_LANG=DE, TRG_LANG=EN, output_file="seq2seq_preds.txt", input_file="source_test.txt",)
