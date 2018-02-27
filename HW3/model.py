@@ -86,6 +86,7 @@ class DecoderRNN(nn.Module):
         # output: [1 x batch x hidden]
         # hidden: [num_layer x batch x hidden], [num_layer x batch x hidden]
         output = output.squeeze(0) # check dim
+        output = self.dropout(out)
         output = self.out(output)
         return output, hidden
 

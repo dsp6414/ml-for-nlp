@@ -23,7 +23,7 @@ TEMP_EPOCH = 5
 # EPOCHS = 7.5
 # EPOCHS = 5 (ADDED THIS AS ARUGMENT)
 
-N_LAYERS = 1
+# N_LAYERS = 2(ADDED THIS AS ARGUMENT, DEFAULT 1)
 # N_LAYERS = 4
 HIDDEN = 200
 EMBEDDING = 200
@@ -39,10 +39,11 @@ parser.add_argument('--beam', type=bool, default=False, help='use beam search')
 parser.add_argument('--attn', type=bool, default=False, help='use attention')
 parser.add_argument('--model_path', type=str, default=None, help='load a model')
 parser.add_argument('--epochs', type=int, default=5, help='num epochs, default 5')
+parser.add_argument('--n_layers', type=int, default=1, help='num layers, default 1')
 args = parser.parse_args()
 
 EPOCHS = args.epochs
-
+N_LAYERS = args.n_layers
 # Try to save the files
 # train_file = 'train.sav'
 # val_file = 'val.sav'
