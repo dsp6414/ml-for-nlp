@@ -70,17 +70,17 @@ EPOCHS = args.epochs
 # print("Size of English vocab", len(EN.vocab)) # 11560
 # print(EN.vocab.stoi["<s>"], EN.vocab.stoi["</s>"]) #vocab index for <s> (2), </s> (3)
 
-    train, val, test = datasets.IWSLT.splits(exts=('.de', '.en'), fields=(DE, EN), 
-                                             filter_pred=lambda x: len(vars(x)['src']) <= MAX_LEN and 
-                                             len(vars(x)['trg']) <= MAX_LEN)
-    MIN_FREQ = 5
-    DE.build_vocab(train.src, min_freq=MIN_FREQ)
-    EN.build_vocab(train.trg, min_freq=MIN_FREQ)
+train, val, test = datasets.IWSLT.splits(exts=('.de', '.en'), fields=(DE, EN), 
+                                         filter_pred=lambda x: len(vars(x)['src']) <= MAX_LEN and 
+                                         len(vars(x)['trg']) <= MAX_LEN)
+MIN_FREQ = 5
+DE.build_vocab(train.src, min_freq=MIN_FREQ)
+EN.build_vocab(train.trg, min_freq=MIN_FREQ)
 
-    print("Finish build vocab")
+print("Finish build vocab")
 
-    train_iter, val_iter = data.BucketIterator.splits((train, val), batch_size=BATCH_SIZE, device=-1,
-                                                      repeat=False, sort_key=lambda x: len(x.src))
+train_iter, val_iter = data.BucketIterator.splits((train, val), batch_size=BATCH_SIZE, device=-1,
+                                                  repeat=False, sort_key=lambda x: len(x.src))
 
 # batch = next(iter(train_iter))
 # print("Source")
