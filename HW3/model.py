@@ -149,7 +149,8 @@ class AttnDecoderRNN(nn.Module):
         scores = torch.bmm(encoder_outputs, decoder_outputs.transpose(1, 2))
         attn_weights = F.softmax(scores, dim=1)
         context = torch.bmm(attn_weights, encoder_outputs.transpose(0, 1))
-        
+        output = self.out(torch.cat((decoder_output, context), 1))
+        return output, hidden, attn_weights
 
         attn_weights = torch.bmm(last_hidden[0].transpose(0, 1), encoder_outputs.transpose(0, 1).transpose(1, 2))
         context = torch.bmm(attn_weights, encoder_outputs.transpose(0, 1))
