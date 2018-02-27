@@ -50,6 +50,11 @@ def train_batch(model, source, target, optimizer, criterion):
     loss = 0
     model.zero_grad()
     output, hidden = model(source, target, use_target=True)
+
+    # here, I need to make sure that I'm not comparing the batch ground truch with <s> ... </s> with the predicted output
+    # because then I'd be literally trying to match words up. I need to shift ground truth to be target[1:] and compare this to
+    # output[:-1] <- output minus the last character
+
     output_flat = output.view(-1, model.output_size) # [(tg_len x batch) x en_vocab_sz]
     # not sure whether to use ground truth target or network's prediction
     loss = criterion(output_flat, target.view(-1))
@@ -93,7 +98,7 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
             scheduler.step()
         plot_losses.append(total_loss)
 
-        print("Validate:" evaluate(model, val_iter, criterion))
+        print("Validate:", evaluate(model, val_iter, criterion))
 
         filename = 'seq2seq_2_25_' if filename is None else filename[:-4] 
         torch.save(model.state_dict(), filename + str(epoch) + '.sav')
