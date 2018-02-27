@@ -124,12 +124,12 @@ class AttnDecoderRNN(nn.Module):
         # encoder_outputs is
     def forward(self, target, last_hidden, encoder_outputs):
         pdb.set_trace()
-        word_embeddings = self.dropout(self.embedding(target)) # [seq_len x B x Embedding]
-        decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden)
-        scores = torch.bmm(encoder_outputs, decoder_outputs.transpose(1, 2))
-        attn_weights = F.softmax(scores, dim=1)
-        context = torch.bmm(attn_weights, encoder_outputs.transpose(0, 1))
-        output = self.out(torch.cat((decoder_output, context), 1))
+        word_embeddings = self.dropout(self.embedding(target)) # [seq_len x B x E]
+        decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden) # [seq_len x B x H] , [L x B x H]
+        scores = torch.bmm(encoder_outputs.transpose(0, 1), decoder_outputs.transpose(1, 2).transpose(0, 2)) 
+        attn_weights = F.softmax(scores, dim=1) # [B x source_len x target_len]
+        context = torch.bmm(attn_weights.transpose(1, 2), encoder_outputs.transpose(0, 1))
+        output = self.out(torch.cat((decoder_outputs.transpose(0, 1), context), 2))
         return output, hidden, attn_weights
 
         # attn_weights = torch.bmm(last_hidden[0].transpose(0, 1), encoder_outputs.transpose(0, 1).transpose(1, 2))
