@@ -97,7 +97,7 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
             source, target = process_batch(batch) # Source is 11x28, target is 21x28
             batch_loss, non_padding = train_batch(model, source, target, optimizer, criterion)
             total_loss += batch_loss * non_padding
-            total_observations += nonpadding
+            total_observations += non_padding
 
             if counter % 50 == 0:
                 print("batch", str(counter), " : perplexity = ", np.exp((total_loss/total_observations)))
