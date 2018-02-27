@@ -83,8 +83,6 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
     plot_losses = []
     counter = 0
 
-    total_observations = 0
-
     stop_after_one_batch = False
     if epochs == 0:
         epochs = 1
@@ -93,6 +91,7 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
     for epoch in range(epochs):
         total_loss = 0
         counter = 0
+        total_observations = 0
         for batch in train_iter:
             source, target = process_batch(batch) # Source is 11x28, target is 21x28
             batch_loss, non_padding = train_batch(model, source, target, optimizer, criterion)
