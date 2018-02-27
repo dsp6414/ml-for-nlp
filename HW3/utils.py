@@ -64,7 +64,11 @@ def train_batch(model, source, target, optimizer, criterion):
     # if L2 Norm of Gradient / 128 > 5, then g = 5g/s
     nn.utils.clip_grad_norm(model.parameters(), CLIP)
     optimizer.step()
-    return loss.data[0]
+
+    # Subtract one so that the padding count becomes zero. Count number of nonpadding in output
+    non_padding = (target.view(-1) - 1.0).nonzero().size(0)
+
+    return loss.data[0], non_padding
 
     # keep track of number of non-padding tokens in each batch, and divide by that number
 
@@ -72,6 +76,8 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
     model.train()
     plot_losses = []
     counter = 0
+
+    total_observations = 0
 
     stop_after_one_batch = False
     if epochs == 0:
@@ -83,8 +89,9 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
         counter = 0
         for batch in train_iter:
             source, target = process_batch(batch) # Source is 11x28, target is 21x28
-            batch_loss = train_batch(model, source, target, optimizer, criterion)
+            batch_loss, nonpadding = train_batch(model, source, target, optimizer, criterion)
             total_loss += batch_loss
+            total_observations += nonpadding
 
             if counter % 50 == 0:
                 print(str(counter) + " counter: " + str(total_loss))
@@ -92,7 +99,7 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
                 return plot_losses
             counter += 1
 
-        print(str(epoch) + "EPOCH LOSS: " + str(total_loss))
+        print(str(epoch) + "EPOCH LOSS: " + str(total_loss), "PERPLEXITY:", np.exp((total_loss/total_observations)))
 
         if scheduler:
             scheduler.step()
@@ -119,15 +126,20 @@ def evaluate(model, val_iter, criterion):
             output, hidden = model(source, target)
         output_flat = output.view(-1, model.output_size)
         loss = criterion(output_flat, target.view(-1))
-        total_loss += len(source) * loss.data
-        total_len += len(source)
+
+        # - 1 hack for nonzero
+        non_padding = (target.view(-1) - 1.0).nonzero().size(0)
+
+        # Remove n
+        total_loss += non_padding * loss.data
+        total_len += non_padding
 
     print("Total Loss ", total_loss[0])
     print("Total Len ", total_len)
     print(total_loss[0] / total_len)
     model.train()
     model.valid = False
-    return np.exp(total_loss[0] / total_len), output
+    return np.exp(total_loss / total_len), output
 
 # def plot_attention(s, encoder, decoder, max_length):
 #     output_words, attn = evaluate(s, encoder, decoder, max_length)
