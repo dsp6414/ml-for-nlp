@@ -143,9 +143,9 @@ class AttnDecoderRNN(nn.Module):
         # inputs is the true values for the target sentence from previous time step
         # last_hidden is the bottleneck hidden from processing all of encoder
         # encoder_outputs is
-    def forward(self, inputs, last_hidden, encoder_outputs):
+    def forward(self, target, last_hidden, encoder_outputs):
         pdb.set_trace()
-        word_embedding = self.dropout(self.embedding(inputs)) # [1 x B x Embedding]
+        word_embedding = self.dropout(self.embedding(target)) # [1 x B x Embedding]
         decoder_outputs, hidden = self.rnn(word_embedding, last_hidden)
         scores = torch.bmm(encoder_outputs, decoder_outputs.transpose(1, 2))
         attn_weights = F.softmax(scores, dim=1)
@@ -573,9 +573,9 @@ class Seq2Seq(nn.Module):
         # Greedy search. USE_TARGET = TRUE FOR BOTH TRAINING AND VALIDATION!!!!!!!!!!!!
         for i in range(0, max_length):
             if self.attn:
-                decoder_output, decoder_hidden, attn_weights = self.decoder(decoder_output, decoder_hidden, encoder_outputs)
+                decoder_output, decoder_hidden, attn_weights = self.decoder(target, decoder_hidden, encoder_outputs)
             else:
-                decoder_output, decoder_hidden = self.decoder(decoder_output, decoder_hidden, encoder_outputs)
+                decoder_output, decoder_hidden = self.decoder(target, decoder_hidden, encoder_outputs)
             # decoder_output: [batch x len(EN)]
             # target: [target_len x batch]
             decoder_outputs[i] = decoder_output
