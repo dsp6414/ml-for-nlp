@@ -104,7 +104,8 @@ def evaluate(model, val_iter, criterion):
     total_len = 0.
     for batch in val_iter:
         source, target = process_batch(batch)
-        output, hidden, metadata = model(source, target)
+        # output, hidden, metadata = model(source, target)
+        output, hidden = model(source, target)
         output_flat = output.view(-1, model.output_size)
         loss = criterion(output_flat, target.view(-1))
         total_loss += len(source) * loss.data

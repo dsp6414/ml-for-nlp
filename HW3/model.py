@@ -137,7 +137,7 @@ class AttnDecoderRNN(nn.Module):
         self.embedding = nn.Embedding(output_size, hidden_size)
         self.attn = Attn(hidden_size)
         self.dropout = nn.Dropout(self.dropout_p)
-        self.rnn = nn.LSTM(embedding_size * 2, hidden_size, n_layers, dropout=dropout_p)
+        self.rnn = nn.LSTM(embedding_size + hidden_size, hidden_size, n_layers, dropout=dropout_p)
         self.out = nn.Linear(hidden_size * 2, output_size)
 
         # inputs is the true values for the target sentence from previous time step
@@ -148,14 +148,18 @@ class AttnDecoderRNN(nn.Module):
         attn_weights = torch.bmm(last_hidden[0].transpose(0, 1), encoder_outputs.transpose(0, 1).transpose(1, 2))
         context = torch.bmm(attn_weights, encoder_outputs.transpose(0, 1))
         context = context.squeeze(1)
-        combined = torch.cat((word_embedding, context), 1)
+        combined = torch.cat((word_embedding, context), 1) # [B x 2*H]
         pdb.set_trace()
         #########################
         #  works up until here
+
+        # last_hidden: [1 x B x H]
+        # combined: [1 x B x 2*H]
         output, hidden = self.rnn(combined.unsqueeze(0), last_hidden)
+        # output: [1 x B x H]
+
         output = output.squeeze(0) # B x N (check dimensions)
         output = self.out(torch.cat((output, context), 1))
-
         return output, hidden, attn_weights
 
 def _inflate(tensor, times, dim):
@@ -562,5 +566,4 @@ class Seq2Seq(nn.Module):
                 decoder_output = decoder_output.max(1)[1]
         # decoder_output, hidden = self.decoder(decoder_input, decoder_context, decoder_hidden, encoder_outputs)
         return decoder_outputs, decoder_hidden # decoder_output [target_len x batch x en_vocab_sz]
-
 

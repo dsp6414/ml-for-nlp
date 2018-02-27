@@ -18,7 +18,7 @@ torch.manual_seed(1)
 BOS_WORD = '<s>'
 EOS_WORD = '</s>'
 MAX_LEN = 20
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 TEMP_EPOCH = 5
 # EPOCHS = 7.5
 # EPOCHS = 5 (ADDED THIS AS ARUGMENT)
@@ -106,7 +106,7 @@ if os.path.exists(filename):
     print("LOADING MODEl", filename)
     model.load_state_dict(torch.load(filename))
 else:
-    plot_losses = utils.train(model, train_iter, EPOCHS, optimizer, criterion, scheduler, filename)
+    plot_losses = utils.train(model, train_iter, EPOCHS, optimizer, criterion, scheduler, filename, attn=args.attn)
     print(plot_losses)
     torch.save(model.state_dict(), filename)
     print("SAVING MODEL TO", filename)
