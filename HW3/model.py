@@ -12,7 +12,7 @@ import utils
 
 torch.manual_seed(1)
 
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 USE_CUDA = True if torch.cuda.is_available() else False
 
 BOS_EMBED = 2
@@ -81,13 +81,15 @@ class DecoderRNN(nn.Module):
                     Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)))
 
     def forward(self, target, last_hidden, encoder_outputs):
+
+        # ENCODER OUTPUT NOT USED HERE. 
         word_embeddings = self.embedding(target)# [seq_len x B x N]
         word_embeddings = self.dropout(word_embeddings)
         output, hidden = self.rnn(word_embeddings, last_hidden)
         # output: [seq_len x batch x hidden]
         # hidden: [num_layer x batch x hidden]
-        pdb.set_trace()
-        output = output.squeeze(0) # check dim
+
+        # output = output.squeeze(0) # check dim 
         output = self.dropout(output)
         output = self.out(output)
         return output, hidden
@@ -127,11 +129,28 @@ class AttnDecoderRNN(nn.Module):
         # encoder_outputs is
     def forward(self, target, last_hidden, encoder_outputs):
         # check: target is (seq_len, batch, input_size)
+
+        # encoder_outputs is [source_len x batch x hidden]
         word_embeddings = self.dropout(self.embedding(target)) # [seq_len x B x E]
         decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden) # [seq_len x B x H] , [L x B x H]
+        pdb.set_trace()
+
+        # encoder_outputs is [source_len x batch x hidden] -> [batch x source_len x hidden]
+        #  last_hiden is:  [Layers x Batch x Hidden] -> [batch x hidden x layers]
+        # decoder_outputs is [target_len x batch x hidden]
+        #last_layer_hidden = last_hidden[-1, :, :]
+        #scores = torch.bmm(encoder_outputs.transpose(0, 1), last_layer_hidden.tranpose(1, 2).transpose(0, 2))
+        # Result is [batch x source_len x 1]
+        # Weights will be [batch x source_len x 1]
+        #attn_weights = F.softmax(scores, dim=1)
+
+        # Context = []
+        #context = torch.bmm(attn_weights.transpose(1,2), encoder_outputs.transpose(0, 1)) 
+       
+
         scores = torch.bmm(encoder_outputs.transpose(0, 1), decoder_outputs.transpose(1, 2).transpose(0, 2)) 
-        attn_weights = F.softmax(scores, dim=1) # [B x source_len x target_len]
-        context = torch.bmm(attn_weights.transpose(1, 2), encoder_outputs.transpose(0, 1))
+        attn_weights = F.softmax(scores, dim=1) # [B x source_len x target_len] 
+        context = torch.bmm(attn_weights.transpose(1, 2), encoder_outputs.transpose(0, 1)) #b x t x s, b x s x h -> b x t x h
         output = self.out(torch.cat((decoder_outputs.transpose(0, 1), context), 2))
 
         # Currently output is B x seq_len x EN_vocab. Do we want this? 
@@ -531,10 +550,9 @@ class Seq2Seq(nn.Module):
         ## TRY this
         encoder_hidden = self.encoder.init_hidden(batch_size=batch_size) # can insert batch size here
         encoder_outputs, encoder_hidden = self.encoder(source, encoder_hidden)
-        # encoder_outputs: [source_len x batch x hidden]
-        # encoder_hidden: # [num_layers x batch x hidden]
+        # encoder_outputs: [source_len x batch x hidden * num_dir]
+        # encoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
 
-        pdb.set_trace()
 
         decoder_hidden = encoder_hidden # [num_layers x batch x hidden]. 
         # Decoder_hidden now contains the output hidden states for every time step for all batches
