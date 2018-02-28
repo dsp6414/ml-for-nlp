@@ -134,7 +134,6 @@ class AttnDecoderRNN(nn.Module):
         # encoder_outputs is [source_len x batch x hidden]
         word_embeddings = self.dropout(self.embedding(target)) # [seq_len x B x E]
         decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden) # [seq_len x B x H] , [L x B x H]
-        pdb.set_trace()
 
         # encoder_outputs is [source_len x batch x hidden] -> [batch x source_len x hidden]
         #  last_hiden is:  [Layers x Batch x Hidden] -> [batch x hidden x layers]
