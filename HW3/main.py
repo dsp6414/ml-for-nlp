@@ -119,7 +119,7 @@ else:
 print("EVALUATE") 
 loss, output = utils.evaluate(model, val_iter, criterion)
 print("VALIDATION LOSS: ", loss)
-for row in output.data.t():
+for row in output.data.transpose(0, 1):
     print(" ".join([EN.vocab.itos[i] for i in row.max(1)[1]])) # check this later
 
 print("KAGGLE")
