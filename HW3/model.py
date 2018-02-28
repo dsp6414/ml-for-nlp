@@ -261,7 +261,7 @@ class TopKDecoder(torch.nn.Module):
                 hidden = _inflate(encoder_hidden, self.k, 1)
 
         # ... same idea for encoder_outputs and decoder_outputs
-        if self.rnn.use_attention:
+        if self.rnn.attn:
             inflated_encoder_outputs = _inflate(encoder_outputs, self.k, 0)
         else:
             inflated_encoder_outputs = None
