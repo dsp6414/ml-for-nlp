@@ -261,11 +261,11 @@ class TopKDecoder(torch.nn.Module):
                 hidden = _inflate(encoder_hidden, self.k, 1)
 
         # ... same idea for encoder_outputs and decoder_outputs
-        #if self.rnn.use_attention:
-        #    inflated_encoder_outputs = _inflate(encoder_outputs, self.k, 0)
-        # else:
-        #    inflated_encoder_outputs = None
-        inflated_encoder_outputs = None
+        if self.rnn.use_attention:
+            inflated_encoder_outputs = _inflate(encoder_outputs, self.k, 0)
+        else:
+            inflated_encoder_outputs = None
+        # inflated_encoder_outputs = None
 
         # Initialize the scores; for the first step,
         # ignore the inflated copies to avoid duplicate entries in the top k
@@ -566,6 +566,7 @@ class Seq2Seq(nn.Module):
             if k is not None:
                 self.beam_decoder.k = k
 
+            pdb.set_trace()
             decoder_outputs, decoder_hidden, metadata = self.beam_decoder(source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
                     teacher_forcing_ratio=0, retain_output_probs=True)
             # Make decoder_outputs into a tensor: [target_len x batch x en_vocab_sz]
