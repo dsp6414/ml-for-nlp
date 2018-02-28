@@ -124,6 +124,7 @@ class AttnDecoderRNN(nn.Module):
         self.dropout = nn.Dropout(self.dropout_p)
         self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers, dropout=dropout_p)
         self.out = nn.Linear(hidden_size * 2, output_size)
+        self.attn = True
 
         # inputs is the true values for the target sentence from previous time step
         # last_hidden is the bottleneck hidden from processing all of encoder
