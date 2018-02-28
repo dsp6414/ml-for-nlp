@@ -90,7 +90,7 @@ class DecoderRNN(nn.Module):
         # hidden: [num_layer x batch x hidden]
 
         # output = output.squeeze(0) # check dim 
-        output = self.dropout(output)
+        # output = self.dropout(output)
         output = self.out(output)
         return output, hidden
 
@@ -140,8 +140,6 @@ class AttnDecoderRNN(nn.Module):
         # gonna transpose it to match the other Decoder
         output = output.transpose(0, 1).contiguous() # [Seq_len x B x en_vocab]
 
-        # Throw in a dropout.
-        output = self.dropout(output)
         return output, hidden, attn_weights
         # attn_weights = torch.bmm(last_hidden[0].transpose(0, 1), encoder_outputs.transpose(0, 1).transpose(1, 2))
         # context = torch.bmm(attn_weights, encoder_outputs.transpose(0, 1))
