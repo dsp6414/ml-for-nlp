@@ -123,49 +123,26 @@ class AttnDecoderRNN(nn.Module):
         self.dropout = nn.Dropout(self.dropout_p)
         self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers, dropout=dropout_p)
         self.out = nn.Linear(hidden_size * 2, output_size)
-        self.out2 = nn.Linear(hidden_size, output_size)
 
         # inputs is the true values for the target sentence from previous time step
         # last_hidden is the bottleneck hidden from processing all of encoder
         # encoder_outputs is
     def forward(self, target, last_hidden, encoder_outputs):
         # check: target is (seq_len, batch, input_size)
-
-        # encoder_outputs is [source_len x batch x hidden]
         word_embeddings = self.dropout(self.embedding(target)) # [seq_len x B x E]
         decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden) # [seq_len x B x H] , [L x B x H]
-
-        # encoder_outputs is [source_len x batch x hidden] -> [batch x source_len x hidden]
-        #  last_hiden is:  [Layers x Batch x Hidden] -> [batch x hidden x layers]
-        # decoder_outputs is [target_len x batch x hidden]
-        #last_layer_hidden = last_hidden[-1, :, :]
-        #scores = torch.bmm(encoder_outputs.transpose(0, 1), last_layer_hidden.tranpose(1, 2).transpose(0, 2))
-        # Result is [batch x source_len x 1]
-        # Weights will be [batch x source_len x 1]
-        #attn_weights = F.softmax(scores, dim=1)
-
-        # Context = []
-        #context = torch.bmm(attn_weights.transpose(1,2), encoder_outputs.transpose(0, 1)) 
-       
-
         scores = torch.bmm(encoder_outputs.transpose(0, 1), decoder_outputs.transpose(1, 2).transpose(0, 2)) 
-        attn_weights = F.softmax(scores, dim=1) # [B x source_len x target_len] 
-        context = torch.bmm(attn_weights.transpose(1, 2), encoder_outputs.transpose(0, 1)) #b x t x s, b x s x h -> b x t x h
+        attn_weights = F.softmax(scores, dim=1) # [B x source_len x target_len]
+        context = torch.bmm(attn_weights.transpose(1, 2), encoder_outputs.transpose(0, 1))
         output = self.out(torch.cat((decoder_outputs.transpose(0, 1), context), 2))
 
         # Currently output is B x seq_len x EN_vocab. Do we want this? 
         # gonna transpose it to match the other Decoder
         output = output.transpose(0, 1).contiguous() # [Seq_len x B x en_vocab]
 
-        #output = F.tanh(output)
-
-        # Another linear
-        #output = self.out2(output)
-
         # Throw in a dropout.
         output = self.dropout(output)
         return output, hidden, attn_weights
-
         # attn_weights = torch.bmm(last_hidden[0].transpose(0, 1), encoder_outputs.transpose(0, 1).transpose(1, 2))
         # context = torch.bmm(attn_weights, encoder_outputs.transpose(0, 1))
         # context = context.squeeze(1)
