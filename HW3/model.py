@@ -89,8 +89,6 @@ class DecoderRNN(nn.Module):
         # output: [seq_len x batch x hidden]
         # hidden: [num_layer x batch x hidden]
 
-        # output = output.squeeze(0) # check dim 
-        # output = self.dropout(output)
         output = self.out(output)
         return output, hidden
 
@@ -98,11 +96,14 @@ class DecoderRNN(nn.Module):
         batch_size = input_var.size(0)
         output_size = input_var.size(1)
         input_var = input_var.t() # Needed to get [1 x b *k  * n]
-        embedded = self.embedding(input_var)
-        # embedded = self.dropout(embedded)
+        # ENCODER OUTPUT NOT USED HERE. 
+        word_embeddings = self.embedding(target)# [seq_len x B x N]
+        word_embeddings = self.dropout(word_embeddings)
+        output, hidden = self.rnn(word_embeddings, last_hidden)
+        # output: [seq_len x batch x hidden]
+        # hidden: [num_layer x batch x hidden]
 
-        output, hidden = self.rnn(embedded, last_hidden) 
-        # output: [1 x batch x hidden]
+        # output = self.out(output)
 
         output = self.out(output.view(-1, self.hidden_size)) # Output is now  b*k x Vocab
 
@@ -163,6 +164,26 @@ class AttnDecoderRNN(nn.Module):
         # enc_hidden which is encoder_outputs # batch x source_length x h_dim
         # torch.bmm(enco_hidden, dec_hdiden.transpose(1, 2))
         # and then get the context vectors by another hidden
+
+    def forward_step(self, input_var, last_hidden, encoder_outputs, function=F.log_softmax):
+        pdb.set_trace()
+        batch_size = input_var.size(0)
+        output_size = input_var.size(1)
+
+        word_embeddings = self.dropout(self.embedding(input_var)) # [seq_len x B x E]
+        decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden) # [seq_len x B x H] , [L x B x H]
+        scores = torch.bmm(encoder_outputs.transpose(0, 1), decoder_outputs.transpose(1, 2).transpose(0, 2)) 
+        attn_weights = F.softmax(scores, dim=1) # [B x source_len x target_len]
+        context = torch.bmm(attn_weights.transpose(1, 2), encoder_outputs.transpose(0, 1))
+        input_to_linear = torch.cat((decoder_outputs.transpose(0, 1), context), 2)
+        input_to_linear = input_to_linear.view(-1, self.hidden_size)
+
+        output = self.out(input_to_linear) # Output is now  b*k x Vocab
+
+        predicted_softmax = function(output, dim=1).view(batch_size, output_size, -1)
+
+        # Resulting size is (b *k) x 1 x 11560
+        return predicted_softmax, hidden   
 
 
 def _inflate(tensor, times, dim):
