@@ -81,7 +81,7 @@ class DecoderRNN(nn.Module):
                     Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)))
 
     def forward(self, target, last_hidden, encoder_outputs):
-        word_embeddings = self.embedding(target)# [1 x B x N] seq_len, batch, input_size
+        word_embeddings = self.embedding(target)# [seq_len x B x N]
         output, hidden = self.rnn(word_embeddings, last_hidden)
         # output: [1 x batch x hidden]
         # hidden: [num_layer x batch x hidden], [num_layer x batch x hidden]
@@ -135,6 +135,9 @@ class AttnDecoderRNN(nn.Module):
         # Currently output is B x seq_len x EN_vocab. Do we want this? 
         # gonna transpose it to match the other Decoder
         output = output.transpose(0, 1).contiguous() # [Seq_len x B x en_vocab]
+
+        # Throw in a dropout.
+        output = self.dropout(output)
         return output, hidden, attn_weights
 
         # attn_weights = torch.bmm(last_hidden[0].transpose(0, 1), encoder_outputs.transpose(0, 1).transpose(1, 2))
@@ -523,29 +526,13 @@ class Seq2Seq(nn.Module):
         max_length = len(target)
         batch_size = len(source[1])
 
-
         ## TRY this
         encoder_hidden = self.encoder.init_hidden(batch_size=batch_size) # can insert batch size here
         encoder_outputs, encoder_hidden = self.encoder(source, encoder_hidden)
         # encoder_outputs: [source_len x batch x hidden]
         # encoder_hidden: # [num_layers x batch x hidden]
-        decoder_outputs = Variable(torch.zeros(max_length, batch_size, self.output_size))
-        if USE_CUDA:
-            decoder_outputs = decoder_outputs.cuda()
 
-        # decoder_output = Variable(target[0].data) # [1 x batch]
-        decoder_output = Variable(torch.LongTensor([BOS_EMBED] * batch_size)) # [1 x batch]
-
-        decoder_hidden = encoder_hidden # [num_layers x batch x hidden]
-
-        # NOT SURE IF WE SHOULD DO IT LIKE THIS
-        # decoder_hidden = self.decoder.init_hidden(batch_size = batch_size * max_length)
-
-
-        # decoder_context = Variable(torch.zeros(1, self.decoder.hidden_size))
-        if USE_CUDA:
-            decoder_output = decoder_output.cuda()
-            # decoder_context = decoder_context.cuda()
+        decoder_hidden = encoder_hidden # [num_layers x batch x hidden]. Contains the output hidden states for every time step for all batches
 
         # THIS IS ONLY USED FOR THE KAGGLE!!!!!! NOTHING ELSE!!!
         if self.beam and self.valid and not use_target:
@@ -560,26 +547,7 @@ class Seq2Seq(nn.Module):
             decoder_outputs = torch.stack(decoder_outputs, dim = 0)
             return decoder_outputs, decoder_hidden, metadata
 
-        # vvvvv THIS IS ONE BY ONE. WE ARE GOING TO DO IT ALL AT ONCE < BOLD MOVE
-        # Greedy search. USE_TARGET = TRUE FOR BOTH TRAINING AND VALIDATION!!!!!!!!!!!!
-        # for i in range(0, max_length):
-        #     if self.attn:
-        #         decoder_output, decoder_hidden, attn_weights = self.decoder(target, decoder_hidden, encoder_outputs)
-        #     else:
-        #         decoder_output, decoder_hidden = self.decoder(target, decoder_hidden, encoder_outputs)
-        #     # decoder_output: [batch x len(EN)]
-        #     # target: [target_len x batch]
-        #     decoder_outputs[i] = decoder_output
-        #     if use_target:
-        #         decoder_output = target[i].cuda() if USE_CUDA else target[i]
-        #     else:
-        #         decoder_output = decoder_output.max(1)[1]
-
-        # Decoder_output (used to be passed in place of target was [1x batch], so i think we need to flatten)
-
-
-        # NOT SURE IF WE SHOULD DO IT LIKE THIS
-        # target = target.view(-1)
+        # TRAINING AND VALIDATION: 
         if self.attn:
             decoder_outputs, decoder_hidden, attn_weights = self.decoder(target, decoder_hidden, encoder_outputs)
         else:
