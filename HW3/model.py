@@ -122,7 +122,7 @@ class AttnDecoderRNN(nn.Module):
         self.embedding = nn.Embedding(output_size, hidden_size)
         self.dropout = nn.Dropout(self.dropout_p)
         self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers, dropout=dropout_p)
-        self.out = nn.Linear(hidden_size * 2, hidden_size)
+        self.out = nn.Linear(hidden_size * 2, output_size)
         self.out2 = nn.Linear(hidden_size, output_size)
 
         # inputs is the true values for the target sentence from previous time step
@@ -157,10 +157,10 @@ class AttnDecoderRNN(nn.Module):
         # gonna transpose it to match the other Decoder
         output = output.transpose(0, 1).contiguous() # [Seq_len x B x en_vocab]
 
-        output = F.tanh(output)
+        #output = F.tanh(output)
 
         # Another linear
-        output = self.out2(output)
+        #output = self.out2(output)
 
         # Throw in a dropout.
         output = self.dropout(output)
