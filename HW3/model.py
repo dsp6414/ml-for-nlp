@@ -158,7 +158,7 @@ class AttnDecoderRNN(nn.Module):
         # gonna transpose it to match the other Decoder
         output = output.transpose(0, 1).contiguous() # [Seq_len x B x en_vocab]
 
-        output = F.tanh(output, dim=2)
+        output = F.tanh(output)
 
         # Another linear
         output = self.out2(output)
