@@ -82,9 +82,11 @@ class DecoderRNN(nn.Module):
 
     def forward(self, target, last_hidden, encoder_outputs):
         word_embeddings = self.embedding(target)# [seq_len x B x N]
+        word_embeddings = self.dropout(word_embeddings)
         output, hidden = self.rnn(word_embeddings, last_hidden)
-        # output: [1 x batch x hidden]
-        # hidden: [num_layer x batch x hidden], [num_layer x batch x hidden]
+        # output: [seq_len x batch x hidden]
+        # hidden: [num_layer x batch x hidden]
+        pdb.set_trace()
         output = output.squeeze(0) # check dim
         output = self.dropout(output)
         output = self.out(output)
@@ -532,7 +534,10 @@ class Seq2Seq(nn.Module):
         # encoder_outputs: [source_len x batch x hidden]
         # encoder_hidden: # [num_layers x batch x hidden]
 
-        decoder_hidden = encoder_hidden # [num_layers x batch x hidden]. Contains the output hidden states for every time step for all batches
+        pdb.set_trace()
+
+        decoder_hidden = encoder_hidden # [num_layers x batch x hidden]. 
+        # Decoder_hidden now contains the output hidden states for every time step for all batches
 
         # THIS IS ONLY USED FOR THE KAGGLE!!!!!! NOTHING ELSE!!!
         if self.beam and self.valid and not use_target:

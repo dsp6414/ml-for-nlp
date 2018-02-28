@@ -138,6 +138,7 @@ def evaluate(model, val_iter, criterion):
 
         # - 1 hack for nonzero
         non_padding = (target.view(-1) - 1.0).nonzero().size(0)
+        non_padding = (target.view(-1)).ne(1).int.sum()
 
         # Remove n
         total_loss += non_padding * loss.data
