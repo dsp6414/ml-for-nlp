@@ -96,7 +96,7 @@ if USE_CUDA:
     model.cuda()
 
 # optimizer = optim.SGD(model.parameters(), lr=LR)
-LR = 0.0005
+LR = 0.001
 # Using beta2 = 0.98 from https://arxiv.org/pdf/1706.03762.pdf
 optimizer = optim.Adam(model.parameters(), betas=(0.9, 0.98), lr=LR)
 criterion = nn.CrossEntropyLoss(ignore_index=1) # IGNORE PADDING!!!!!!
@@ -109,7 +109,7 @@ criterion = nn.CrossEntropyLoss(ignore_index=1) # IGNORE PADDING!!!!!!
 # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=list(range(8, EPOCHS)), gamma=.5)
 scheduler = None 
 
-filename = args.model_path if args.model_path else 'seq2seq_3_1_.sav'
+filename = args.model_path if args.model_path else 'seq2seq_3_1_beam.sav'
 if os.path.exists(filename):
     print("LOADING MODEl", filename)
     model.load_state_dict(torch.load(filename))
