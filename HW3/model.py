@@ -175,6 +175,7 @@ class AttnDecoderRNN(nn.Module):
 
         input_var = input_var.t()
 
+        pdb.set_trace()
         word_embeddings = self.dropout(self.embedding(input_var)) # [seq_len x B x E]
         decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden) # [seq_len x B x H] , [L x B x H]
         scores = torch.bmm(encoder_outputs.transpose(0, 1), decoder_outputs.transpose(1, 2).transpose(0, 2)) 
