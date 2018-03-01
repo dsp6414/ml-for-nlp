@@ -19,7 +19,7 @@ BOS_WORD = '<s>'
 EOS_WORD = '</s>'
 MAX_LEN = 20
 BATCH_SIZE = 32
-TEMP_EPOCH = 13
+TEMP_EPOCH = 15
 # EPOCHS = 7.5
 # EPOCHS = 5 (ADDED THIS AS ARUGMENT)
 
@@ -96,7 +96,7 @@ if USE_CUDA:
     model.cuda()
 
 # optimizer = optim.SGD(model.parameters(), lr=LR)
-LR = 0.2
+LR = 0.0005
 # Using beta2 = 0.98 from https://arxiv.org/pdf/1706.03762.pdf
 optimizer = optim.Adam(model.parameters(), betas=(0.9, 0.98), lr=LR)
 criterion = nn.CrossEntropyLoss(ignore_index=1) # IGNORE PADDING!!!!!!
