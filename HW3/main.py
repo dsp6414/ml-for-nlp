@@ -18,12 +18,12 @@ torch.manual_seed(1)
 BOS_WORD = '<s>'
 EOS_WORD = '</s>'
 MAX_LEN = 20
-BATCH_SIZE = 64
+BATCH_SIZE = 32
 TEMP_EPOCH = 13
 # EPOCHS = 7.5
 # EPOCHS = 5 (ADDED THIS AS ARUGMENT)
 
-N_LAYERS = 2
+N_LAYERS = 3
 # N_LAYERS = 4
 HIDDEN = 200
 EMBEDDING = 200
@@ -95,7 +95,9 @@ model = Seq2Seq(len(DE.vocab), len(EN.vocab), EMBEDDING, HIDDEN, N_LAYERS, attn=
 if USE_CUDA:
     model.cuda()
 
-optimizer = optim.SGD(model.parameters(), lr=LR)
+# optimizer = optim.SGD(model.parameters(), lr=LR)
+LR = 0.001
+optimizer = optim.Adam(model.parameters(), lr=LR)
 criterion = nn.CrossEntropyLoss(ignore_index=1) # IGNORE PADDING!!!!!!
 # size average false, divide loss by batch size
 

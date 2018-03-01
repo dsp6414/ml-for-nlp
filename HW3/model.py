@@ -141,7 +141,6 @@ class AttnDecoderRNN(nn.Module):
 
         # Currently output is B x seq_len x EN_vocab. Do we want this? 
         # gonna transpose it to match the other Decoder
-        pdb.set_trace()
         output = output.transpose(0, 1).contiguous() # [Seq_len x B x en_vocab]
 
         return output, hidden, attn_weights

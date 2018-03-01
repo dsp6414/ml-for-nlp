@@ -191,7 +191,7 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
                 seq = sequences[:, l]
                 english_seq = [TRG_LANG.vocab.itos[j.data[0]] for j in seq]
 
-                # Only get first 3 ## DOUBLE CHECK thiS IS ACTUALLY FIRST NOT LAST LOL 
+                # Only get first 3
                 english_seq = english_seq[:3]
                 english_seq = escape("|".join(english_seq))
                 print(english_seq, end= ' ',file=out)
