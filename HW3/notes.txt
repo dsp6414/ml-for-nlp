@@ -1,0 +1,23 @@
+nohup4.txt -
+
+BATCH_SIZE = 32
+TEMP_EPOCH = 13
+N_LAYERS = 3
+HIDDEN = 200
+EMBEDDING = 200
+DROPOUT = 0.3
+LR = 0.001
+optim = Adam
+CrossEntropyLoss
+
+nohup5.txt - 
+
+BATCH_SIZE = 32
+TEMP_EPOCH = 13
+N_LAYERS = 4
+HIDDEN = 200
+EMBEDDING = 200
+LR = 0.2
+DROPOUT = 0.3
+optim = Adam (Beta2=0.98)
+CrossEntropyLoss
