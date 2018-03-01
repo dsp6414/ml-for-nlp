@@ -23,8 +23,8 @@ TEMP_EPOCH = 13
 # EPOCHS = 7.5
 # EPOCHS = 5 (ADDED THIS AS ARUGMENT)
 
-N_LAYERS = 3
-# N_LAYERS = 4
+# N_LAYERS = 3
+N_LAYERS = 4
 HIDDEN = 200
 EMBEDDING = 200
 LR = 1
@@ -96,8 +96,9 @@ if USE_CUDA:
     model.cuda()
 
 # optimizer = optim.SGD(model.parameters(), lr=LR)
-LR = 0.001
-optimizer = optim.Adam(model.parameters(), lr=LR)
+LR = 0.2
+# Using beta2 = 0.98 from https://arxiv.org/pdf/1706.03762.pdf
+optimizer = optim.Adam(model.parameters(), betas=(0.9, 0.98), lr=LR)
 criterion = nn.CrossEntropyLoss(ignore_index=1) # IGNORE PADDING!!!!!!
 # size average false, divide loss by batch size
 
@@ -126,4 +127,4 @@ for row in output.data.transpose(0, 1):
 
 print("KAGGLE")
 # can use beam here
-utils.kaggle(model, SRC_LANG=DE, TRG_LANG=EN, output_file="seq2seq_preds.txt", input_file="source_test.txt",)
+utils.kaggle(model, SRC_LANG=DE, TRG_LANG=EN, output_file="seq2seq_preds.txt", input_file="source_test.txt")
