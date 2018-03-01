@@ -137,7 +137,7 @@ class AttnDecoderRNN(nn.Module):
         scores = torch.bmm(encoder_outputs.transpose(0, 1), decoder_outputs.transpose(1, 2).transpose(0, 2)) 
         attn_weights = F.softmax(scores, dim=1) # [B x source_len x target_len]
         context = torch.bmm(attn_weights.transpose(1, 2), encoder_outputs.transpose(0, 1))
-        output = self.out(self.dropout(torch.cat((decoder_outputs.transpose(0, 1), context), 2)))
+        output = self.out(torch.cat((decoder_outputs.transpose(0, 1), context), 2))
 
         # Currently output is B x seq_len x EN_vocab. Do we want this? 
         # gonna transpose it to match the other Decoder
