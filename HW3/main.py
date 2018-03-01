@@ -109,10 +109,11 @@ criterion = nn.CrossEntropyLoss(ignore_index=1) # IGNORE PADDING!!!!!!
 # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=list(range(8, EPOCHS)), gamma=.5)
 scheduler = None 
 
-filename = args.model_path if args.model_path else 'seq2seq_3_1.sav'
+filename = args.model_path if args.model_path else 'seq2seq_3_1_.sav'
 if os.path.exists(filename):
     print("LOADING MODEl", filename)
     model.load_state_dict(torch.load(filename))
+    plot_losses = utils.train(model, train_iter, val_iter, EPOCHS, optimizer, criterion, scheduler, filename)
 else:
     plot_losses = utils.train(model, train_iter, val_iter, EPOCHS, optimizer, criterion, scheduler, filename)
     print(plot_losses)
