@@ -131,7 +131,6 @@ class AttnDecoderRNN(nn.Module):
         # encoder_outputs is
     def forward(self, target, last_hidden, encoder_outputs):
         # check: target is (seq_len, batch, input_size)
-        pdb.set_trace()
         if len(target.size()) == 1:
             target = target.unsqueeze(0)
         word_embeddings = self.dropout(self.embedding(target)) # [seq_len x B x E]
@@ -171,7 +170,6 @@ class AttnDecoderRNN(nn.Module):
         # and then get the context vectors by another hidden
 
     def forward_step(self, input_var, last_hidden, encoder_outputs, function=F.log_softmax):
-        pdb.set_trace()
         batch_size = input_var.size(0)
         output_size = input_var.size(1)
 
@@ -571,7 +569,7 @@ class Seq2Seq(nn.Module):
             if k is not None:
                 self.beam_decoder.k = k
 
-            pdb.set_trace()
+            # pdb.set_trace()
             decoder_outputs, decoder_hidden, metadata = self.beam_decoder(source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
                     teacher_forcing_ratio=0, retain_output_probs=True)
             # Make decoder_outputs into a tensor: [target_len x batch x en_vocab_sz]

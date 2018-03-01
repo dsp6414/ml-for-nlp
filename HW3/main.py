@@ -107,7 +107,7 @@ criterion = nn.CrossEntropyLoss(ignore_index=1) # IGNORE PADDING!!!!!!
 # milestones = list(range(TEMP_EPOCH, EPOCHS - 1, 0.5))
 # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
 # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=list(range(8, EPOCHS)), gamma=.5)
-scheduler = None 
+scheduler = None
 
 filename = args.model_path if args.model_path else 'seq2seq_3_1_beam.sav'
 if os.path.exists(filename):
