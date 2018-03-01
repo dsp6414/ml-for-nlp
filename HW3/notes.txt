@@ -1,4 +1,4 @@
-nohup4.txt -
+nohup4.out -
 
 BATCH_SIZE = 32
 TEMP_EPOCH = 13
@@ -10,7 +10,23 @@ LR = 0.001
 optim = Adam
 CrossEntropyLoss
 
-nohup5.txt - 
+nohup5.out - 
+
+BATCH_SIZE = 32
+TEMP_EPOCH = 13
+N_LAYERS = 4
+HIDDEN = 200
+EMBEDDING = 200
+LR = 0.2
+DROPOUT = 0.3
+optim = Adam (Beta2=0.98)
+CrossEntropyLoss
+
+^ did not finish running because only ran for 5 epochs
+
+nohup6.out - 
+
+v starting from epoch 5 of nohup5.out
 
 BATCH_SIZE = 32
 TEMP_EPOCH = 13
