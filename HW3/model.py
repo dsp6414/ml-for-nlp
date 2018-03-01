@@ -131,6 +131,9 @@ class AttnDecoderRNN(nn.Module):
         # encoder_outputs is
     def forward(self, target, last_hidden, encoder_outputs):
         # check: target is (seq_len, batch, input_size)
+        pdb.set_trace()
+        if len(target.size()) == 1:
+            target = target.unsqueeze(0)
         word_embeddings = self.dropout(self.embedding(target)) # [seq_len x B x E]
         # word_embeddings = self.embedding(target) # [seq_len x B x E]
         decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden) # [seq_len x B x H] , [L x B x H]
@@ -576,7 +579,7 @@ class Seq2Seq(nn.Module):
             decoder_outputs = torch.stack(decoder_outputs, dim = 0)
             return decoder_outputs, decoder_hidden, metadata
 
-        # TRAINING AND VALIDATION: 
+        # TRAINING AND VALIDATION:
         if self.attn:
             decoder_outputs, decoder_hidden, attn_weights = self.decoder(target, decoder_hidden, encoder_outputs)
         else:
