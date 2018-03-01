@@ -170,8 +170,6 @@ def evaluate(model, val_iter, criterion):
 #     plt.show()
 #     plt.close()
 def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt'):
-    pdb.set_trace()
-
     model.eval()
     model.valid = True
     f = open(input_file, 'r')
