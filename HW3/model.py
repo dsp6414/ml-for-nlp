@@ -118,7 +118,7 @@ class AttnDecoderRNN(nn.Module):
         self.embedding_size = embedding_size
         self.output_size = output_size
         self.hidden_size = hidden_size
-        self.n_layers = n_layers 
+        self.n_layers = n_layers
         self.dropout_p = dropout_p # need to check if this is a thing
         self.embedding = nn.Embedding(output_size, hidden_size)
         self.dropout = nn.Dropout(self.dropout_p)
@@ -132,7 +132,7 @@ class AttnDecoderRNN(nn.Module):
     def forward(self, target, last_hidden, encoder_outputs):
         # check: target is (seq_len, batch, input_size)
         word_embeddings = self.dropout(self.embedding(target)) # [seq_len x B x E]
-        word_embeddings = self.embedding(target) # [seq_len x B x E]
+        # word_embeddings = self.embedding(target) # [seq_len x B x E]
         decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden) # [seq_len x B x H] , [L x B x H]
         scores = torch.bmm(encoder_outputs.transpose(0, 1), decoder_outputs.transpose(1, 2).transpose(0, 2)) 
         attn_weights = F.softmax(scores, dim=1) # [B x source_len x target_len]
@@ -141,7 +141,7 @@ class AttnDecoderRNN(nn.Module):
 
         # Currently output is B x seq_len x EN_vocab. Do we want this? 
         # gonna transpose it to match the other Decoder
-        output = output.transpose(0, 1).contiguous() # [Seq_len x B x en_vocab]
+        output = F.tanh(output.transpose(0, 1).contiguous()) # [Seq_len x B x en_vocab]
 
         return output, hidden, attn_weights
         # attn_weights = torch.bmm(last_hidden[0].transpose(0, 1), encoder_outputs.transpose(0, 1).transpose(1, 2))
