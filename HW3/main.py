@@ -113,7 +113,7 @@ filename = args.model_path if args.model_path else 'seq2seq_3_1_.sav'
 if os.path.exists(filename):
     print("LOADING MODEl", filename)
     model.load_state_dict(torch.load(filename))
-    plot_losses = utils.train(model, train_iter, val_iter, EPOCHS, optimizer, criterion, scheduler, filename)
+    # plot_losses = utils.train(model, train_iter, val_iter, EPOCHS, optimizer, criterion, scheduler, filename)
 else:
     plot_losses = utils.train(model, train_iter, val_iter, EPOCHS, optimizer, criterion, scheduler, filename)
     print(plot_losses)
