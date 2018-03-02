@@ -571,7 +571,10 @@ class Seq2Seq(nn.Module):
                     if last_word.squeeze().data[0] == 3: 
                         completed_guesses.append((F.log_softmax(log_prob), last_sequence, None))
                     else:
-                        decoder_outputs, decoder_hidden = self.decoder(last_word, decoder_hidden, encoder_outputs)
+                        if self.attn:
+                            decoder_outputs, decoder_hidden, attn_weights = self.decoder(last_word, decoder_hidden, encoder_outputs)
+                        else:
+                            decoder_outputs, decoder_hidden = self.decoder(last_word, decoder_hidden, encoder_outputs)
                         # Get k hypotheses for each 
                         # decoder outputs is [target_len x batch x en_vocab_sz]
                         n_probs, n_indices = torch.topk(decoder_outputs, k, dim=2)
