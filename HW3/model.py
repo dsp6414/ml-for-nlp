@@ -511,6 +511,7 @@ class Seq2Seq(nn.Module):
         self.embedding_size = embedding_size
         self.init_param = 0.08
         self.attn = attn
+        self.n_layers = n_layers
         self.encoder = EncoderRNN(input_size, embedding_size, hidden_size, n_layers, dropout)
 
         if attn:
@@ -540,7 +541,7 @@ class Seq2Seq(nn.Module):
         # encoder_outputs: [source_len x batch x hidden * num_dir]
         # encoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
 
-        decoder_hidden = tuple([e.view(1, e.size(1), -1) for e in encoder_hidden]) # [num_layers x batch x hidden]. 
+        decoder_hidden = tuple([e.view(self.n_layers, e.size(1), -1) for e in encoder_hidden]) # [num_layers x batch x hidden]. 
         # Decoder_hidden now contains the output hidden states for every time step for all batches
 
         # THE REAL KAGGLE THING
