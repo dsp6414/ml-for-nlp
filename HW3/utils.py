@@ -169,6 +169,27 @@ def evaluate(model, val_iter, criterion):
 
 #     plt.show()
 #     plt.close()
+
+def beam(model, source, k, output_length=MAX_LEN):
+    model.eval()
+    target = Variable(torch.LongTensor([0] * k))
+    solutions_so_far = Variable(torch.LongTensor([0] * k))
+    if USE_CUDA:
+        fake_target = fake_target.cuda()
+        solutions_so_far = solutions_so_far.cuda()
+
+    encoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
+
+    for i in range(output_length):
+        decoder_outputs, decoder_hidden = model(source, fake_target)
+        # decoder outputs is [target_len x batch x en_vocab_sz]
+        # Find k most likely 
+        n_probs, n_indices = torch.topk(decoder_outputs, dim=2)
+        # The input to the next iteration are these indices.
+
+
+
+
 def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt'):
     model.eval()
     model.valid = True

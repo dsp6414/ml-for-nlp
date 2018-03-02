@@ -7,8 +7,8 @@ import torch.optim as optim
 import utils
 import math
 import pdb
+import heapq
 
-import utils
 
 torch.manual_seed(1)
 
@@ -168,28 +168,6 @@ class AttnDecoderRNN(nn.Module):
         # enc_hidden which is encoder_outputs # batch x source_length x h_dim
         # torch.bmm(enco_hidden, dec_hdiden.transpose(1, 2))
         # and then get the context vectors by another hidden
-
-    def forward_step(self, input_var, last_hidden, encoder_outputs, function=F.log_softmax):
-        batch_size = input_var.size(0)
-        output_size = input_var.size(1)
-
-        input_var = input_var.t()
-
-        pdb.set_trace()
-        word_embeddings = self.dropout(self.embedding(input_var)) # [seq_len x B x E]
-        decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden) # [seq_len x B x H] , [L x B x H]
-        scores = torch.bmm(encoder_outputs.transpose(0, 1), decoder_outputs.transpose(1, 2).transpose(0, 2)) 
-        attn_weights = F.softmax(scores, dim=1) # [B x source_len x target_len]
-        context = torch.bmm(attn_weights.transpose(1, 2), encoder_outputs.transpose(0, 1))
-        input_to_linear = torch.cat((decoder_outputs.transpose(0, 1), context), 2)
-        input_to_linear = input_to_linear.view(-1, self.hidden_size)
-
-        output = self.out(input_to_linear) # Output is now  b*k x Vocab
-
-        predicted_softmax = function(output, dim=1).view(batch_size, output_size, -1)
-
-        # Resulting size is (b *k) x 1 x 11560
-        return predicted_softmax, hidden   
 
 
 def _inflate(tensor, times, dim):
@@ -551,8 +529,12 @@ class Seq2Seq(nn.Module):
         print(self.attn)
 
     def forward(self, source, target, use_target=True, k=None):
+        # target should be max_len x batch
         max_length = len(target)
         batch_size = len(source[1])
+
+        # make sure this works
+        batch_size = len(target[1])
 
         ## TRY this
         encoder_hidden = self.encoder.init_hidden(batch_size=batch_size) # can insert batch size here
@@ -564,19 +546,72 @@ class Seq2Seq(nn.Module):
         decoder_hidden = encoder_hidden # [num_layers x batch x hidden]. 
         # Decoder_hidden now contains the output hidden states for every time step for all batches
 
-        # THIS IS ONLY USED FOR THE KAGGLE!!!!!! NOTHING ELSE!!!
-        if self.beam and self.valid and not use_target:
-            # Override k, if necessary
-            if k is not None:
-                self.beam_decoder.k = k
 
-            # pdb.set_trace()
-            decoder_outputs, decoder_hidden, metadata = self.beam_decoder(source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
-                    teacher_forcing_ratio=0, retain_output_probs=True)
-            # Make decoder_outputs into a tensor: [target_len x batch x en_vocab_sz]
-            # Current shape: a list of [batch x en_vocab_sz] tensors.
-            decoder_outputs = torch.stack(decoder_outputs, dim = 0)
-            return decoder_outputs, decoder_hidden, metadata
+        # THE REAL KAGGLE THING
+        if self.valid:
+            previous_words = target.data # Make sure target is [1 x k x 1]
+            initial_guess = torch.LongTensor([0]).view(1, 1)
+            if USE_CUDA:
+                initial_guess = initial_guess.cuda()
+            current_hypotheses = [(0, initial_guess, decoder_hidden)]
+
+            completed_guesses = []
+
+            for i in range(output_length):
+                assert(batch_size == 1) # this will be way too complicated otherwise
+                # Find k most likely for each current hypothesis
+
+                # Start off with the already completed guesses we have.
+                guesses_for_this_length = completed_guesses
+
+                while (current_hypotheses):
+                    # Pop something off the current hypotheses
+                    log_prob, last_sequence_guess, decoder_hidden = heapq.heappop(current_hypotheses)
+                    last_word = last_sequence_guess[-1:, :]
+                    # EOS token:
+                    if last_word == 3: 
+                        completed_guesses.append((F.log_softmax(log_prob), last_sequence, None))
+                    else:
+                        decoder_outputs, decoder_hidden = self.decoder(last_word, decoder_hidden, encoder_outputs)
+                        # Get k hypotheses for each 
+                        # decoder outputs is [target_len x batch x en_vocab_sz]
+                        n_probs, n_indices = torch.topk(decoder_outputs, k, dim=2)
+                        new_probs = F.log_softmax(n_probs) + log_prob # this should be tensor of size k 
+                        new_sequences = [torch.concat(0,[n_index.view(1, 1), last_sequence_guess]) for n_index in n_indices] # check this
+                        new_hidden = [decoder_hidden] * k
+                        # decoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
+                        assert(len(new_sequences) = k)
+                        seq_w_probs = zip(new_probs, new_sequences, new_hidden)
+                        guesses_for_this_length = guesses_for_this_length + new_sequences
+
+                # Top k current hypotheses after this time step: 
+                guesses_for_this_length.sort(key= lambda tup: tup[0])[:k]
+
+                for x in guesses_for_this_length:
+                    heapq.heappush(current_hypotheses, x) 
+
+                # Modify completed guesses if it was tossed out
+                completed_guesses = [x for x in completed_guesses if x in guesses_for_this_length]
+
+            # Return top result
+            completed_guesses = completed_guesses + guesses_for_this_length
+
+            completed_guesses.sort(key= lambda tup: tup[0])
+            return completed_guesses[0]
+
+        # # THIS IS ONLY USED FOR THE KAGGLE!!!!!! NOTHING ELSE!!!
+        # if self.beam and self.valid and not use_target:
+        #     # Override k, if necessary
+        #     if k is not None:
+        #         self.beam_decoder.k = k
+
+        #     # pdb.set_trace()
+        #     decoder_outputs, decoder_hidden, metadata = self.beam_decoder(source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
+        #             teacher_forcing_ratio=0, retain_output_probs=True)
+        #     # Make decoder_outputs into a tensor: [target_len x batch x en_vocab_sz]
+        #     # Current shape: a list of [batch x en_vocab_sz] tensors.
+        #     decoder_outputs = torch.stack(decoder_outputs, dim = 0)
+        #     return decoder_outputs, decoder_hidden, metadata
 
         # TRAINING AND VALIDATION:
         if self.attn:
