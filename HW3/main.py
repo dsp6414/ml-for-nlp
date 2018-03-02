@@ -18,13 +18,13 @@ torch.manual_seed(1)
 BOS_WORD = '<s>'
 EOS_WORD = '</s>'
 MAX_LEN = 20
-BATCH_SIZE = 64
-TEMP_EPOCH = 13
+BATCH_SIZE = 32
+TEMP_EPOCH = 15
 # EPOCHS = 7.5
 # EPOCHS = 5 (ADDED THIS AS ARUGMENT)
 
-# N_LAYERS = 2(ADDED THIS AS ARGUMENT, DEFAULT 1)
-# N_LAYERS = 4
+# N_LAYERS = 3
+N_LAYERS = 4
 HIDDEN = 200
 EMBEDDING = 200
 LR = 1
@@ -95,7 +95,10 @@ model = Seq2Seq(len(DE.vocab), len(EN.vocab), EMBEDDING, HIDDEN, N_LAYERS, attn=
 if USE_CUDA:
     model.cuda()
 
-optimizer = optim.SGD(model.parameters(), lr=LR)
+# optimizer = optim.SGD(model.parameters(), lr=LR)
+LR = 0.001
+# Using beta2 = 0.98 from https://arxiv.org/pdf/1706.03762.pdf
+optimizer = optim.Adam(model.parameters(), betas=(0.9, 0.98), lr=LR)
 criterion = nn.CrossEntropyLoss(ignore_index=1) # IGNORE PADDING!!!!!!
 # size average false, divide loss by batch size
 
@@ -104,25 +107,26 @@ criterion = nn.CrossEntropyLoss(ignore_index=1) # IGNORE PADDING!!!!!!
 # milestones = list(range(TEMP_EPOCH, EPOCHS - 1, 0.5))
 # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
 # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=list(range(8, EPOCHS)), gamma=.5)
-scheduler = None 
+scheduler = None
 
-filename = args.model_path if args.model_path else 'seq2seq_2_25_1.sav'
+filename = args.model_path if args.model_path else 'seq2seq_3_1_beam.sav'
 if os.path.exists(filename):
     print("LOADING MODEl", filename)
     model.load_state_dict(torch.load(filename))
+    # plot_losses = utils.train(model, train_iter, val_iter, EPOCHS, optimizer, criterion, scheduler, filename)
 else:
     plot_losses = utils.train(model, train_iter, val_iter, EPOCHS, optimizer, criterion, scheduler, filename)
     print(plot_losses)
     torch.save(model.state_dict(), filename)
     print("SAVING MODEL TO", filename)
 
-print("EVALUATE") 
-loss, output = utils.evaluate(model, val_iter, criterion)
-print("VALIDATION LOSS: ", loss)
-for row in output.data.transpose(0, 1):
-    print(" ".join([EN.vocab.itos[i] for i in row.max(1)[1]])) # check this later
+# print("EVALUATE")
+# loss, output = utils.evaluate(model, val_iter, criterion)
+# print("VALIDATION LOSS: ", loss)
+# for row in output.data.transpose(0, 1):
+#     print(" ".join([EN.vocab.itos[i] for i in row.max(1)[1]])) # check this later
 
 print("KAGGLE")
 # can use beam here
 pdb.set_trace()
-utils.kaggle(model, SRC_LANG=DE, TRG_LANG=EN, output_file="seq2seq_preds.txt", input_file="source_test.txt",)
+utils.kaggle(model, SRC_LANG=DE, TRG_LANG=EN, output_file="seq2seq_preds.txt", input_file="source_test.txt")

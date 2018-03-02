@@ -118,7 +118,7 @@ class AttnDecoderRNN(nn.Module):
         self.embedding_size = embedding_size
         self.output_size = output_size
         self.hidden_size = hidden_size
-        self.n_layers = n_layers 
+        self.n_layers = n_layers
         self.dropout_p = dropout_p # need to check if this is a thing
         self.embedding = nn.Embedding(output_size, hidden_size)
         self.dropout = nn.Dropout(self.dropout_p)
@@ -131,7 +131,10 @@ class AttnDecoderRNN(nn.Module):
         # encoder_outputs is
     def forward(self, target, last_hidden, encoder_outputs):
         # check: target is (seq_len, batch, input_size)
+        if len(target.size()) == 1:
+            target = target.unsqueeze(0)
         word_embeddings = self.dropout(self.embedding(target)) # [seq_len x B x E]
+        # word_embeddings = self.embedding(target) # [seq_len x B x E]
         decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden) # [seq_len x B x H] , [L x B x H]
         scores = torch.bmm(encoder_outputs.transpose(0, 1), decoder_outputs.transpose(1, 2).transpose(0, 2)) 
         attn_weights = F.softmax(scores, dim=1) # [B x source_len x target_len]
@@ -167,12 +170,12 @@ class AttnDecoderRNN(nn.Module):
         # and then get the context vectors by another hidden
 
     def forward_step(self, input_var, last_hidden, encoder_outputs, function=F.log_softmax):
-        pdb.set_trace()
         batch_size = input_var.size(0)
         output_size = input_var.size(1)
 
         input_var = input_var.t()
 
+        pdb.set_trace()
         word_embeddings = self.dropout(self.embedding(input_var)) # [seq_len x B x E]
         decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden) # [seq_len x B x H] , [L x B x H]
         scores = torch.bmm(encoder_outputs.transpose(0, 1), decoder_outputs.transpose(1, 2).transpose(0, 2)) 
@@ -567,7 +570,7 @@ class Seq2Seq(nn.Module):
             if k is not None:
                 self.beam_decoder.k = k
 
-            pdb.set_trace()
+            # pdb.set_trace()
             decoder_outputs, decoder_hidden, metadata = self.beam_decoder(source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
                     teacher_forcing_ratio=0, retain_output_probs=True)
             # Make decoder_outputs into a tensor: [target_len x batch x en_vocab_sz]
@@ -575,7 +578,7 @@ class Seq2Seq(nn.Module):
             decoder_outputs = torch.stack(decoder_outputs, dim = 0)
             return decoder_outputs, decoder_hidden, metadata
 
-        # TRAINING AND VALIDATION: 
+        # TRAINING AND VALIDATION:
         if self.attn:
             decoder_outputs, decoder_hidden, attn_weights = self.decoder(target, decoder_hidden, encoder_outputs)
         else:

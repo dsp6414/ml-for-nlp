@@ -98,7 +98,7 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
             total_loss += batch_loss * non_padding
             total_observations += non_padding
 
-            if counter % 50 == 0:
+            if counter % 200 == 0:
                 print("batch", str(counter), " : perplexity = ", np.exp((total_loss/total_observations)))
             if stop_after_one_batch:
                 return plot_losses
@@ -112,7 +112,7 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
 
         print("Validate:", evaluate(model, val_iter, criterion)[0])
 
-        fname = 'seq2seq_2_25_' if filename is None else filename[:-4] 
+        fname = 'seq2seq_3_1_beam_' if filename is None else filename[:-4] 
         torch.save(model.state_dict(), fname + str(epoch) + '.sav')
         # plot_losses_graph.append(plot_loss_avg)
     return plot_losses
@@ -169,11 +169,10 @@ def evaluate(model, val_iter, criterion):
 
 #     plt.show()
 #     plt.close()
-def kaggle(model, SRC_LANG, TRG_LANG,  output_file, input_file='source_test.txt'):
-    pdb.set_trace()
+def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt'):
     model.eval()
     model.valid = True
-    f = open(input_file)
+    f = open(input_file, 'r')
     lines = f.readlines()
     with open(output_file, 'w') as out:
         print('id,word', file=out)
@@ -191,7 +190,7 @@ def kaggle(model, SRC_LANG, TRG_LANG,  output_file, input_file='source_test.txt'
                 seq = sequences[:, l]
                 english_seq = [TRG_LANG.vocab.itos[j.data[0]] for j in seq]
 
-                # Only get first 3 ## DOUBLE CHECK thiS IS ACTUALLY FIRST NOT LAST LOL 
+                # Only get first 3
                 english_seq = english_seq[:3]
                 english_seq = escape("|".join(english_seq))
                 print(english_seq, end= ' ',file=out)
