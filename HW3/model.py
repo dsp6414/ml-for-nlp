@@ -564,7 +564,7 @@ class Seq2Seq(nn.Module):
                 while (current_hypotheses != []):
                     print(len(current_hypotheses))
                     # Pop something off the current hypotheses
-                    hypothesis = heapq.heappop(current_hypotheses)
+                    hypothesis = current_hypotheses.pop(0)
                     log_prob, last_sequence_guess, decoder_hidden = hypothesis
                     
                     last_word = last_sequence_guess[-1:, :]
@@ -592,8 +592,9 @@ class Seq2Seq(nn.Module):
                 # Top k current hypotheses after this time step: 
                 guesses_for_this_length = sorted(guesses_for_this_length, key= lambda tup: tup[0])[:k]
 
-                for x in guesses_for_this_length:
-                    heapq.heappush(current_hypotheses, x) 
+                # for x in guesses_for_this_length:
+                #     current_hypotheses.append(x) 
+                current_hypotheses = current_hypotheses + guesses_for_this_length
 
                 # Modify completed guesses if it was tossed out
                 completed_guesses = [x for x in completed_guesses if x in guesses_for_this_length]
