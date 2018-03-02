@@ -194,7 +194,7 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
                 text = text.cuda()
             sequences = model(text, None, k=5, use_target=False) # THE ONLY TIME USE_TARGET = FALSE
             # convert each seq to sentence
-            print(f"{i}, ", end='', file=out)
+            print("{}, ".format(i), end='', file=out)
             for sequence in sequences:
                 sequence = sequence.squeeze()
                 english_seq = [TRG_LANG.vocab.itos[j.data[0]] for j in sequence]
