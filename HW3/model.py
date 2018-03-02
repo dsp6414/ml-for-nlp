@@ -578,6 +578,7 @@ class Seq2Seq(nn.Module):
                             decoder_outputs, decoder_hidden = self.decoder(last_word, decoder_hidden, encoder_outputs)
                         # Get k hypotheses for each 
                         # decoder outputs is [target_len x batch x en_vocab_sz]
+                        vocab_size = len(decoder_outputs[0][0])
                         n_probs, n_indices = torch.topk(decoder_outputs, k, dim=2)
                         new_probs = F.log_softmax(n_probs, dim=2) + log_prob# this should be tensor of size k 
                         new_probs = new_probs.squeeze().data
@@ -589,7 +590,7 @@ class Seq2Seq(nn.Module):
                         guesses_for_this_length = guesses_for_this_length + seq_w_probs
 
                 # Top k current hypotheses after this time step: 
-                guesses_for_this_length.sort(key= lambda tup: tup[0])[:k]
+                guesses_for_this_length = sorted(guesses_for_this_length, key= lambda tup: tup[0])[:k]
 
                 for x in guesses_for_this_length:
                     heapq.heappush(current_hypotheses, x) 
