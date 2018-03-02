@@ -580,7 +580,7 @@ class Seq2Seq(nn.Module):
                         new_sequences = [torch.concat(0,[n_index.view(1, 1), last_sequence_guess]) for n_index in n_indices] # check this
                         new_hidden = [decoder_hidden] * k
                         # decoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
-                        assert(len(new_sequences) = k)
+                        assert(len(new_sequences) == k)
                         seq_w_probs = zip(new_probs, new_sequences, new_hidden)
                         guesses_for_this_length = guesses_for_this_length + new_sequences
 
