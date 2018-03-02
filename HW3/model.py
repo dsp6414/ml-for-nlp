@@ -540,8 +540,7 @@ class Seq2Seq(nn.Module):
         # encoder_outputs: [source_len x batch x hidden * num_dir]
         # encoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
 
-
-        decoder_hidden = encoder_hidden # [num_layers x batch x hidden]. 
+        decoder_hidden = encoder_hidden.view(1, encoder_hidden.size(1), -1) # [num_layers x batch x hidden]. 
         # Decoder_hidden now contains the output hidden states for every time step for all batches
 
 
@@ -569,7 +568,7 @@ class Seq2Seq(nn.Module):
                     pdb.set_trace()
                     last_word = last_sequence_guess[-1:, :]
                     # EOS token:
-                    if last_word == 3: 
+                    if last_word.squeeze()[0] == 3: 
                         completed_guesses.append((F.log_softmax(log_prob), last_sequence, None))
                     else:
                         decoder_outputs, decoder_hidden = self.decoder(last_word, decoder_hidden, encoder_outputs)
