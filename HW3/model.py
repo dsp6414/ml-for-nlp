@@ -569,7 +569,7 @@ class Seq2Seq(nn.Module):
                     last_word = last_sequence_guess[-1:, :]
                     # EOS token:
                     if last_word.squeeze().data[0] == 3: 
-                        completed_guesses.append((F.log_softmax(log_prob), last_sequence, None))
+                        completed_guesses.append((F.log_softmax(log_prob), last_sequence_guess, None))
                     else:
                         if self.attn:
                             decoder_outputs, decoder_hidden, attn_weights = self.decoder(last_word, decoder_hidden, encoder_outputs)
@@ -579,7 +579,7 @@ class Seq2Seq(nn.Module):
                         # decoder outputs is [target_len x batch x en_vocab_sz]
                         n_probs, n_indices = torch.topk(decoder_outputs, k, dim=2)
                         new_probs = F.log_softmax(n_probs, dim=2) + log_prob # this should be tensor of size k 
-                        new_sequences = [torch.cat(0,[n_index.view(1, 1), last_sequence_guess]) for n_index in n_indices.squeeze()] # check this
+                        new_sequences = [torch.cat([last_sequence_guess, n_index.view(1, 1)],dim=0) for n_index in n_indices.squeeze()] # check this
                         new_hidden = [decoder_hidden] * k
                         # decoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
                         assert(len(new_sequences) == k)
