@@ -500,6 +500,12 @@ class TopKDecoder(torch.nn.Module):
             indices = idx[:, 0]
             tensor.index_fill_(dim, indices, masking_score)
 
+class Node:
+    def __init(self, log_prob, last_sequence_guess, decoder_hidden):
+        self.log_prob = log_prob
+        self.last_sequence_guess = last_sequence_guess
+        self.decoder_hidden = decoder_hidden
+
 class Seq2Seq(nn.Module):
     def __init__(self, input_size, output_size, embedding_size, hidden_size, n_layers=1, dropout=0.0, attn=False, beam=False, k=5):
         super(Seq2Seq, self).__init__()
@@ -509,6 +515,7 @@ class Seq2Seq(nn.Module):
         self.embedding_size = embedding_size
         self.init_param = 0.08
         self.attn = attn
+        self.beam = beam
         self.n_layers = n_layers
         self.encoder = EncoderRNN(input_size, embedding_size, hidden_size, n_layers, dropout)
 
@@ -516,15 +523,9 @@ class Seq2Seq(nn.Module):
             self.decoder = AttnDecoderRNN(embedding_size, hidden_size, output_size, n_layers, dropout)
         else:
             self.decoder = DecoderRNN(embedding_size, hidden_size, output_size, n_layers, dropout)
-
-        self.beam = beam
-        if self.beam:
-            self.beam_decoder = TopKDecoder(self.decoder, k)
         if USE_CUDA:
             self.encoder = self.encoder.cuda()
             self.decoder = self.decoder.cuda()
-            if self.beam:
-                self.beam_decoder.cuda()
 
         self.valid = False
         print(self.attn)
@@ -548,27 +549,28 @@ class Seq2Seq(nn.Module):
             initial_guess = Variable(torch.LongTensor([2]).view(1, 1))
             if USE_CUDA:
                 initial_guess = initial_guess.cuda()
-            current_hypotheses = [(0, initial_guess, decoder_hidden)]
+
+            current_hypotheses = (0, initial_guess, decoder_hidden)
+            node_list = [current_hypotheses]
 
             completed_guesses = []
-
             output_length = MAX_LEN
 
             for i in range(output_length):
                 assert(batch_size == 1) # this will be way too complicated otherwise
                 # Find k most likely for each current hypothesis
 
-                # Start off with the already completed guesses we have.
-                guesses_for_this_length = completed_guesses
+                while (node_list != []):
+                    # Generate new guesses for this length
+                    guesses_for_this_length = []
 
-                while (current_hypotheses != []):
-                    # Pop something off the current hypotheses
-                    hypothesis = current_hypotheses.pop(0)
+                    # Pop something off the current node list
+                    _, hypothesis = heapq.heappop(node_list)
                     log_prob, last_sequence_guess, decoder_hidden = hypothesis
-                    
+
                     last_word = last_sequence_guess[-1:, :]
                     # EOS token:
-                    if last_word.squeeze().data[0] == 3: 
+                    if last_word.squeeze().data[0] == 3:
                         completed_guesses.append((log_prob, last_sequence_guess, None))
                     else:
                         if self.attn:
@@ -579,44 +581,28 @@ class Seq2Seq(nn.Module):
                         # decoder outputs is [target_len x batch x en_vocab_sz] -> [1 x 1 x vocab]
                         vocab_size = len(decoder_outputs[0][0])
                         n_probs, n_indices = torch.topk(decoder_outputs, k, dim=2)
-                        new_probs = F.log_softmax(n_probs, dim=2) + log_prob# this should be tensor of size k 
+                        new_probs = F.log_softmax(n_probs, dim=2) + log_prob # this should be tensor of size k 
                         new_probs = new_probs.squeeze().data
                         new_sequences = [torch.cat([last_sequence_guess, n_index.view(1, 1)],dim=0) for n_index in n_indices.squeeze()] # check this
                         new_hidden = [decoder_hidden] * k
                         # decoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
                         assert(len(new_sequences) == k)
                         seq_w_probs = list(zip(new_probs, new_sequences, new_hidden))
-                        guesses_for_this_length = guesses_for_this_length + seq_w_probs
+                        for node in seq_w_probs:
+                            guesses_for_this_length = heapq.heappush(node_list, node)
 
                 # Top k current hypotheses after this time step:
-                guesses_for_this_length = sorted(guesses_for_this_length, key= lambda tup: tup[0])[:k]
-
-                # for x in guesses_for_this_length:
-                #     current_hypotheses.append(x) 
-                current_hypotheses = current_hypotheses + guesses_for_this_length
+                guesses_for_this_length = guesses_for_this_length[:k]
+                node_list = guesses_for_this_length
 
                 # Modify completed guesses if it was tossed out
                 completed_guesses = [x for x in completed_guesses if x in set(guesses_for_this_length)]
 
             # Return top result
-            completed_guesses = completed_guesses + guesses_for_this_length
+            completed_guesses += guesses_for_this_length
 
-            completed_guesses.sort(key= lambda tup: tup[0])
+            completed_guesses.sort(key = lambda tup: tup[0])
             return [x[1] for x in completed_guesses]
-
-        # # THIS IS ONLY USED FOR THE KAGGLE!!!!!! NOTHING ELSE!!!
-        # if self.beam and self.valid and not use_target:
-        #     # Override k, if necessary
-        #     if k is not None:
-        #         self.beam_decoder.k = k
-
-        #     # pdb.set_trace()
-        #     decoder_outputs, decoder_hidden, metadata = self.beam_decoder(source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
-        #             teacher_forcing_ratio=0, retain_output_probs=True)
-        #     # Make decoder_outputs into a tensor: [target_len x batch x en_vocab_sz]
-        #     # Current shape: a list of [batch x en_vocab_sz] tensors.
-        #     decoder_outputs = torch.stack(decoder_outputs, dim = 0)
-        #     return decoder_outputs, decoder_hidden, metadata
 
         # TRAINING AND VALIDATION:
         if self.attn:
