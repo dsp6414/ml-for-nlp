@@ -545,6 +545,7 @@ class Seq2Seq(nn.Module):
 
         # THE REAL KAGGLE THING
         if self.valid:
+            decoder_hidden = encoder_hidden # TEMPORARILY UNTIL BIDIRECTIONAL IS FIXED
             initial_guess = Variable(torch.LongTensor([0]).view(1, 1))
             if USE_CUDA:
                 initial_guess = initial_guess.cuda()
@@ -567,7 +568,7 @@ class Seq2Seq(nn.Module):
                     pdb.set_trace()
                     last_word = last_sequence_guess[-1:, :]
                     # EOS token:
-                    if last_word.squeeze()[0].data == 3: 
+                    if last_word.squeeze().data[0] == 3: 
                         completed_guesses.append((F.log_softmax(log_prob), last_sequence, None))
                     else:
                         decoder_outputs, decoder_hidden = self.decoder(last_word, decoder_hidden, encoder_outputs)

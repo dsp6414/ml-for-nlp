@@ -119,7 +119,7 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
 
 def evaluate(model, val_iter, criterion):
     model.eval()
-    model.valid = True
+    # model.valid = True
     total_loss = 0.
     total_len = 0.
     for batch in val_iter:
@@ -196,3 +196,6 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
 
     model.train()
     model.valid = False
+
+def visualize(attn_weights):
+    
