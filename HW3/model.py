@@ -14,7 +14,7 @@ torch.manual_seed(1)
 
 BATCH_SIZE = 32
 USE_CUDA = True if torch.cuda.is_available() else False
-
+MAX_LEN = 20
 BOS_EMBED = 2
 EOS_EMBED = 3
 class EncoderRNN(nn.Module):
@@ -27,16 +27,18 @@ class EncoderRNN(nn.Module):
         self.dropout_p = dropout_p # need to check if this is a thing
         self.init_param = 0.08
 
+        self.bidirectional = True
+        self.num_directions = 2 if self.bidirectional else 1
         self.embedding = nn.Embedding(input_size, embedding_size)
-        self.rnn = nn.LSTM(embedding_size, hidden_size, n_layers, dropout=dropout_p)
+        self.rnn = nn.LSTM(embedding_size, hidden_size // self.num_directions, n_layers, dropout=dropout_p, bidirectional=self.bidirectional)
 
     def init_hidden(self, batch_size=BATCH_SIZE):
         if USE_CUDA:
-            return (Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)).cuda(),
-            Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)).cuda())
+            return (Variable(torch.zeros(self.n_layers * self.num_directions, batch_size, self.hidden_size // self.num_directions)).cuda(),
+            Variable(torch.zeros(self.n_layers * self.num_directions, batch_size, self.hidden_size // self.num_directions)).cuda())
         else:
-            return (Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)),
-                    Variable(torch.zeros(self.n_layers, batch_size, self.hidden_size)))
+            return (Variable(torch.zeros(self.n_layers * self.num_directions, batch_size, self.hidden_size // self.num_directions)),
+                    Variable(torch.zeros(self.n_layers * self.num_directions, batch_size, self.hidden_size // self.num_directions)))
 
     def forward(self, inputs, hidden):
         # seq_len = len(inputs)
@@ -551,6 +553,8 @@ class Seq2Seq(nn.Module):
             current_hypotheses = [(0, initial_guess, decoder_hidden)]
 
             completed_guesses = []
+
+            output_length = MAX_LEN
 
             for i in range(output_length):
                 assert(batch_size == 1) # this will be way too complicated otherwise
