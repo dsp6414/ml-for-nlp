@@ -581,7 +581,7 @@ class Seq2Seq(nn.Module):
                         # n_probs, n_indices = torch.topk(decoder_outputs, k, dim=2)
                         # pdb.set_trace() # check what size this is
                         n_probs = decoder_outputs
-                        n_indices = torch.LongTensor(range(vocab_size)).view(1, 1, -1)
+                        n_indices = torch.LongTensor(list(range(vocab_size))).view(1, 1, -1)
                         new_probs = F.log_softmax(n_probs, dim=2) + log_prob# this should be tensor of size k 
                         new_probs = new_probs.squeeze().data
                         pdb.set_trace()
