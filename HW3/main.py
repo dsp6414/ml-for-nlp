@@ -124,4 +124,5 @@ for row in output.data.transpose(0, 1):
 
 print("KAGGLE")
 # can use beam here
+pdb.set_trace()
 utils.kaggle(model, SRC_LANG=DE, TRG_LANG=EN, output_file="seq2seq_preds.txt", input_file="source_test.txt",)
