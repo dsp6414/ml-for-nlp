@@ -547,7 +547,6 @@ class Seq2Seq(nn.Module):
 
         # THE REAL KAGGLE THING
         if self.valid:
-            previous_words = target.data # Make sure target is [1 x k x 1]
             initial_guess = torch.LongTensor([0]).view(1, 1)
             if USE_CUDA:
                 initial_guess = initial_guess.cuda()
