@@ -570,7 +570,7 @@ class Seq2Seq(nn.Module):
                     last_word = last_sequence_guess[-1:, :]
                     # EOS token:
                     if last_word.squeeze().data[0] == 3: 
-                        completed_guesses.append((F.log_softmax(log_prob), last_sequence_guess, None))
+                        completed_guesses.append((log_prob, last_sequence_guess, None))
                     else:
                         if self.attn:
                             decoder_outputs, decoder_hidden, attn_weights = self.decoder(last_word, decoder_hidden, encoder_outputs)
@@ -578,17 +578,19 @@ class Seq2Seq(nn.Module):
                             decoder_outputs, decoder_hidden = self.decoder(last_word, decoder_hidden, encoder_outputs)
                         # Get k hypotheses for each 
                         # decoder outputs is [target_len x batch x en_vocab_sz]
+                        vocab_size = len(decoder_outputs[0][0])
                         n_probs, n_indices = torch.topk(decoder_outputs, k, dim=2)
-                        new_probs = F.log_softmax(n_probs, dim=2) + log_prob # this should be tensor of size k 
+                        new_probs = F.log_softmax(n_probs, dim=2) + log_prob# this should be tensor of size k 
+                        new_probs = new_probs.squeeze().data
                         new_sequences = [torch.cat([last_sequence_guess, n_index.view(1, 1)],dim=0) for n_index in n_indices.squeeze()] # check this
                         new_hidden = [decoder_hidden] * k
                         # decoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
                         assert(len(new_sequences) == k)
-                        seq_w_probs = zip(new_probs, new_sequences, new_hidden)
-                        guesses_for_this_length = guesses_for_this_length + new_sequences
+                        seq_w_probs = list(zip(new_probs, new_sequences, new_hidden))
+                        guesses_for_this_length = guesses_for_this_length + seq_w_probs
 
                 # Top k current hypotheses after this time step: 
-                guesses_for_this_length.sort(key= lambda tup: tup[0])[:k]
+                guesses_for_this_length = sorted(guesses_for_this_length, key= lambda tup: tup[0])[:k]
 
                 for x in guesses_for_this_length:
                     heapq.heappush(current_hypotheses, x) 
@@ -600,7 +602,7 @@ class Seq2Seq(nn.Module):
             completed_guesses = completed_guesses + guesses_for_this_length
 
             completed_guesses.sort(key= lambda tup: tup[0])
-            return completed_guesses
+            return [x[1] for x in completed_guesses[:k]]
 
         # # THIS IS ONLY USED FOR THE KAGGLE!!!!!! NOTHING ELSE!!!
         # if self.beam and self.valid and not use_target:

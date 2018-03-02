@@ -192,11 +192,11 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
             text = Variable(torch.LongTensor([SRC_LANG.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1) # Shape: [len x 1]
             if USE_CUDA:
                 text = text.cuda()
-            output, hidden = model(text, None, k=5, use_target=False) # THE ONLY TIME USE_TARGET = FALSE
+            sequences = model(text, None, k=5, use_target=False) # THE ONLY TIME USE_TARGET = FALSE
             
             # convert each seq to sentence
             print("%d,", i, end='', file=out)
-            for log_prob, sequence, hidden in output:
+            for sequence in sequences:
                 sequence = sequence.squeeze()
                 english_seq = [TRG_LANG.vocab.itos[j.data[0]] for j in sequence]
                 # Only get first 3
