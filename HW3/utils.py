@@ -169,6 +169,7 @@ def evaluate(model, val_iter, criterion):
 
 #     plt.show()
 #     plt.close()
+
 def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt'):
     model.eval()
     model.valid = True
@@ -178,18 +179,15 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
         print('id,word', file=out)
         for i, line in enumerate(lines):
             text = Variable(torch.LongTensor([SRC_LANG.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1) # Shape: [len x 1]
-            fake_target = Variable(torch.LongTensor([0] * 3))
             if USE_CUDA:
                 text = text.cuda()
-                fake_target = fake_target.cuda()
-            output, hidden, metadata = model(text, fake_target, k=100, use_target=False) # THE ONLY TIME USE_TARGET = FALSE
-            sequences = torch.stack(metadata['topk_sequence']).squeeze() # should be max_len x k
+            output, hidden = model(text, k=5, use_target=False) # THE ONLY TIME USE_TARGET = FALSE
+            
             # convert each seq to sentence
             print("%d,", i, end='', file=out)
-            for l in range(100):
-                seq = sequences[:, l]
-                english_seq = [TRG_LANG.vocab.itos[j.data[0]] for j in seq]
-
+            for log_prob, sequence, hidden in output:
+                sequence = sequence.squeeze()
+                english_seq = [TRG_LANG.vocab.itos[j.data[0]] for j in sequence]
                 # Only get first 3
                 english_seq = english_seq[:3]
                 english_seq = escape("|".join(english_seq))
