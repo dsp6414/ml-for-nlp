@@ -563,6 +563,7 @@ class Seq2Seq(nn.Module):
 
                 while (current_hypotheses != []):
                     # Pop something off the current hypotheses
+                    pdb.set_trace()
                     hypothesis = current_hypotheses.pop(0)
                     log_prob, last_sequence_guess, decoder_hidden = hypothesis
                     
@@ -588,7 +589,7 @@ class Seq2Seq(nn.Module):
                         seq_w_probs = list(zip(new_probs, new_sequences, new_hidden))
                         guesses_for_this_length = guesses_for_this_length + seq_w_probs
 
-                # Top k current hypotheses after this time step: 
+                # Top k current hypotheses after this time step:
                 guesses_for_this_length = sorted(guesses_for_this_length, key= lambda tup: tup[0])[:k]
 
                 # for x in guesses_for_this_length:
@@ -596,7 +597,7 @@ class Seq2Seq(nn.Module):
                 current_hypotheses = current_hypotheses + guesses_for_this_length
 
                 # Modify completed guesses if it was tossed out
-                completed_guesses = [x for x in completed_guesses if x in guesses_for_this_length]
+                completed_guesses = [x for x in completed_guesses if x in set(guesses_for_this_length)]
 
             # Return top result
             completed_guesses = completed_guesses + guesses_for_this_length
