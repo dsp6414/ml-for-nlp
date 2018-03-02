@@ -128,5 +128,5 @@ else:
 
 print("KAGGLE")
 # can use beam here
-output_name = filename[:-4] + '_preds.torchtext'
-utils.kaggle(model, SRC_LANG=DE, TRG_LANG=EN, output_file="seq2seq_preds.txt", input_file="source_test.txt")
+output_name = filename[:-4] + '_preds.txt'
+utils.kaggle(model, SRC_LANG=DE, TRG_LANG=EN, output_file=output_name, input_file="source_test.txt")
