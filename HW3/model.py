@@ -27,7 +27,7 @@ class EncoderRNN(nn.Module):
         self.dropout_p = dropout_p # need to check if this is a thing
         self.init_param = 0.08
 
-        self.bidirectional = True
+        self.bidirectional = False
         self.num_directions = 2 if self.bidirectional else 1
         self.embedding = nn.Embedding(input_size, embedding_size)
         self.rnn = nn.LSTM(embedding_size, hidden_size // self.num_directions, n_layers, dropout=dropout_p, bidirectional=self.bidirectional)
