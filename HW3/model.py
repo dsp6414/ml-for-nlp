@@ -14,7 +14,7 @@ torch.manual_seed(1)
 
 BATCH_SIZE = 32
 USE_CUDA = True if torch.cuda.is_available() else False
-
+MAX_LEN = 20
 BOS_EMBED = 2
 EOS_EMBED = 3
 class EncoderRNN(nn.Module):
@@ -553,6 +553,8 @@ class Seq2Seq(nn.Module):
 
             completed_guesses = []
 
+            output_length = MAX_LEN
+
             for i in range(output_length):
                 assert(batch_size == 1) # this will be way too complicated otherwise
                 # Find k most likely for each current hypothesis
@@ -563,6 +565,7 @@ class Seq2Seq(nn.Module):
                 while (current_hypotheses):
                     # Pop something off the current hypotheses
                     log_prob, last_sequence_guess, decoder_hidden = heapq.heappop(current_hypotheses)
+                    pdb.set_trace()
                     last_word = last_sequence_guess[-1:, :]
                     # EOS token:
                     if last_word == 3: 
