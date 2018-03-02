@@ -579,7 +579,7 @@ class Seq2Seq(nn.Module):
                         # Get k hypotheses for each 
                         # decoder outputs is [target_len x batch x en_vocab_sz]
                         n_probs, n_indices = torch.topk(decoder_outputs, k, dim=2)
-                        new_probs = F.log_softmax(n_probs, dim=2) + log_prob # this should be tensor of size k 
+                        new_probs = [F.log_softmax(n_probs) + log_prob for prob in n_probs.squeeze()] # this should be tensor of size k 
                         new_sequences = [torch.cat([last_sequence_guess, n_index.view(1, 1)],dim=0) for n_index in n_indices.squeeze()] # check this
                         new_hidden = [decoder_hidden] * k
                         # decoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
