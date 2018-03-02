@@ -52,6 +52,7 @@ class EncoderRNN(nn.Module):
             inputs = inputs.unsqueeze(0)
 
         embedding = self.embedding(inputs)
+        pdb.set_trace()
         try:
             output, hidden = self.rnn(embedding, hidden) # [num_layers x batch x hidden]
         except:
