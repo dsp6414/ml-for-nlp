@@ -122,7 +122,7 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
         # plot_losses_graph.append(plot_loss_avg)
     return plot_losses
 
-def evaluate(model, val_iter, criterion, attn=False, vis=False):
+def evaluate(model, val_iter, criterion, attn=False):
     model.eval()
     # model.valid = True
     total_loss = 0.
@@ -151,9 +151,6 @@ def evaluate(model, val_iter, criterion, attn=False, vis=False):
         # Remove n
         total_loss += non_padding * loss.data
         total_len += non_padding
-
-        if attn and vis:
-            visualize(source, output, attention)
 
     print("Total Loss ", total_loss[0])
     print("Total Len ", total_len)
@@ -215,19 +212,18 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
     model.train()
     model.valid = False
 
-def visualize(sources, outputs, attention):
-    for source, output in zip(sources, outputs):
-        pdb.set_trace()
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        c_ax = ax.matshow(attention.numpy(), cmap='bone')
-        fig.colorbar(cax)
+def visualize(source_words, target_words, attention):
+    pdb.set_trace()
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    c_ax = ax.matshow(attention.numpy(), cmap='bone')
+    fig.colorbar(cax)
 
-        # Set up axes
-        ax.set_xticklabels([''] + source.split(' ') + ['<EOS>'], rotation=90)
-        ax.set_yticklabels([''] + output)
-        ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
-        ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+    # Set up axes
+    ax.set_xticklabels(source_words + ['<EOS>'], rotation=90)
+    ax.set_yticklabels(target_words)
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
+    ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
 
-        plt.show()
-        plt.close()
+    plt.show()
+    plt.close()

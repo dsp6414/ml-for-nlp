@@ -122,10 +122,19 @@ else:
     print("SAVING MODEL TO", filename)
 
 print("EVALUATE")
-loss, output = utils.evaluate(model, val_iter, criterion, attn=args.attn, vis=args.vis)
+loss, output = utils.evaluate(model, val_iter, criterion, attn=args.attn)
 print("VALIDATION LOSS: ", loss)
 for row in output.data.transpose(0, 1):
     print(" ".join([EN.vocab.itos[i] for i in row.max(1)[1]])) # check this later
+
+if args.vis:
+    for batch in val_iter:
+        text, target = utils.process_batch(batch)
+        for text_i, target_i, in zip(text, target):
+            output, hidden, attention = model(text_i, target_i)
+            source_words = [DE.vocab.itos[i.data[0]] for i in text_i]
+            target_words = [EN.vocab.itos[i] for i in output.max(1)[1]]
+            utils.visualize(source_words, target_words, attention)
 
 print("KAGGLE")
 # can use beam here
