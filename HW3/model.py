@@ -561,9 +561,11 @@ class Seq2Seq(nn.Module):
                 # Start off with the already completed guesses we have.
                 guesses_for_this_length = completed_guesses
 
-                while (current_hypotheses):
+                while (current_hypotheses is not None):
+                    print current_hypotheses
                     # Pop something off the current hypotheses
-                    log_prob, last_sequence_guess, decoder_hidden = heapq.heappop(current_hypotheses)
+                    hypothesis = heapq.heappop(current_hypotheses)
+                    log_prob, last_sequence_guess, decoder_hidden = hypothesis
                     
                     last_word = last_sequence_guess[-1:, :]
                     # EOS token:
