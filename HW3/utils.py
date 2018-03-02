@@ -177,7 +177,7 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
     with open(output_file, 'w') as out:
         print('id,word', file=out)
         for i, line in enumerate(lines):
-            text = Variable(torch.LongTensor([SRC_LANG.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1) # Shape: [len x 1]
+            text = Variable(torch.LongTensor([SRC_LANG.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(0) # Shape: [len x 1]
             fake_target = Variable(torch.LongTensor([0] * 3))
             if USE_CUDA:
                 text = text.cuda()

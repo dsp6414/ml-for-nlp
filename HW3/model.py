@@ -12,7 +12,7 @@ import utils
 
 torch.manual_seed(1)
 
-BATCH_SIZE = 64
+BATCH_SIZE = 32
 USE_CUDA = True if torch.cuda.is_available() else False
 
 BOS_EMBED = 2
@@ -97,7 +97,7 @@ class DecoderRNN(nn.Module):
         output_size = input_var.size(1)
         input_var = input_var.t() # Needed to get [1 x b *k  * n]
         # ENCODER OUTPUT NOT USED HERE. 
-        word_embeddings = self.embedding(target)# [seq_len x B x N]
+        word_embeddings = self.embedding(input_var)# [seq_len x B x N]
         word_embeddings = self.dropout(word_embeddings)
         output, hidden = self.rnn(word_embeddings, last_hidden)
         # output: [seq_len x batch x hidden]
@@ -173,11 +173,14 @@ class AttnDecoderRNN(nn.Module):
         batch_size = input_var.size(0)
         output_size = input_var.size(1)
 
-        input_var = input_var.t()
+        # input_var = input_var.t() # [1 x 100]
 
         pdb.set_trace()
-        word_embeddings = self.dropout(self.embedding(input_var)) # [seq_len x B x E]
+        word_embeddings = self.dropout(self.embedding(input_var)) # [seq_len x B x E] -> [1 x k x E]
         decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden) # [seq_len x B x H] , [L x B x H]
+        # hidden: [1 x k x H]
+        # encoder_outputs: [1200 x 1 x H]
+        # decoder_outputs: [1 x k x H]
         scores = torch.bmm(encoder_outputs.transpose(0, 1), decoder_outputs.transpose(1, 2).transpose(0, 2)) 
         attn_weights = F.softmax(scores, dim=1) # [B x source_len x target_len]
         context = torch.bmm(attn_weights.transpose(1, 2), encoder_outputs.transpose(0, 1))
@@ -235,7 +238,7 @@ class TopKDecoder(torch.nn.Module):
         self.SOS = 2
         self.EOS = 3
 
-    def forward(self, source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
+    def forward(self, source, target, encoder_outputs, decoder_hidden, use_target=False, function=F.log_softmax,
                     teacher_forcing_ratio=0, retain_output_probs=True):
         """
         Forward rnn for MAX_LENGTH steps.  Look at :func:`seq2seq.models.DecoderRNN.DecoderRNN.forward_rnn` for details.
@@ -246,23 +249,24 @@ class TopKDecoder(torch.nn.Module):
         max_length = len(target)
         batch_size = len(source[1])
 
+        pdb.set_trace()
+
         # encoder_outputs: [source_len x batch x hidden]
-        # encoder_hidden: # [num_layers x batch x hidden]
+        # decoder_hidden: [num_layers x batch x hidden]
         # decoder_outputs = Variable(torch.zeros(max_length, batch_size, self.output_size))
 
-        decoder_output = Variable(torch.LongTensor([BOS_EMBED] * batch_size))# [1 x batch]
-        decoder_hidden = encoder_hidden # [num_layers x batch x hidden]
+        decoder_output = Variable(torch.LongTensor([BOS_EMBED] * batch_size)) # [1 x batch]
         self.pos_index = Variable(torch.LongTensor(range(batch_size)) * self.k).view(-1, 1)
 
         # Inflate the initial hidden states to be of size: b*k x h
         # encoder_hidden = self.rnn.init_hidden(batch_size)
-        if encoder_hidden is None:
+        if decoder_hidden is None:
             hidden = None
         else:
-            if isinstance(encoder_hidden, tuple):
-                hidden = tuple([_inflate(h, self.k, 1) for h in encoder_hidden])
+            if isinstance(decoder_hidden, tuple):
+                hidden = tuple([_inflate(h, self.k, 1) for h in decoder_hidden])
             else:
-                hidden = _inflate(encoder_hidden, self.k, 1)
+                hidden = _inflate(decoder_hidden, self.k, 1)
 
         # ... same idea for encoder_outputs and decoder_outputs
         if self.rnn.attn:
@@ -571,7 +575,7 @@ class Seq2Seq(nn.Module):
                 self.beam_decoder.k = k
 
             # pdb.set_trace()
-            decoder_outputs, decoder_hidden, metadata = self.beam_decoder(source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
+            decoder_outputs, decoder_hidden, metadata = self.beam_decoder(source, target, encoder_outputs, decoder_hidden, use_target=False, function=F.log_softmax,
                     teacher_forcing_ratio=0, retain_output_probs=True)
             # Make decoder_outputs into a tensor: [target_len x batch x en_vocab_sz]
             # Current shape: a list of [batch x en_vocab_sz] tensors.
