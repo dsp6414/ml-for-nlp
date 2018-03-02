@@ -109,7 +109,7 @@ criterion = nn.CrossEntropyLoss(ignore_index=1) # IGNORE PADDING!!!!!!
 # scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=list(range(8, EPOCHS)), gamma=.5)
 scheduler = None
 
-filename = args.model_path if args.model_path else 'seq2seq_3_2_beam.sav'
+filename = args.model_path if args.model_path else 'seq2seq_3_2_1_beam.sav'
 if os.path.exists(filename):
     print("LOADING MODEl", filename)
     model.load_state_dict(torch.load(filename))
