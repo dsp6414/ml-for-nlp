@@ -14,7 +14,7 @@ torch.manual_seed(1)
 
 BATCH_SIZE = 32
 USE_CUDA = True if torch.cuda.is_available() else False
-
+MAX_LEN = 20
 BOS_EMBED = 2
 EOS_EMBED = 3
 class EncoderRNN(nn.Module):
@@ -551,6 +551,8 @@ class Seq2Seq(nn.Module):
             current_hypotheses = [(0, initial_guess, decoder_hidden)]
 
             completed_guesses = []
+
+            output_length = MAX_LEN
 
             for i in range(output_length):
                 assert(batch_size == 1) # this will be way too complicated otherwise
