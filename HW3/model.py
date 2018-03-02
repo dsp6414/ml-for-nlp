@@ -570,7 +570,7 @@ class Seq2Seq(nn.Module):
                     last_word = last_sequence_guess[-1:, :]
                     # EOS token:
                     if last_word.squeeze().data[0] == 3: 
-                        completed_guesses.append((F.log_softmax(log_prob), last_sequence_guess, None))
+                        completed_guesses.append((log_prob, last_sequence_guess, None))
                     else:
                         if self.attn:
                             decoder_outputs, decoder_hidden, attn_weights = self.decoder(last_word, decoder_hidden, encoder_outputs)
@@ -602,7 +602,7 @@ class Seq2Seq(nn.Module):
             completed_guesses = completed_guesses + guesses_for_this_length
 
             completed_guesses.sort(key= lambda tup: tup[0])
-            return completed_guesses[:k]
+            return [x[1] for x in completed_guesses[:k]]
 
         # # THIS IS ONLY USED FOR THE KAGGLE!!!!!! NOTHING ELSE!!!
         # if self.beam and self.valid and not use_target:
