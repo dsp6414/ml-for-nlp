@@ -115,7 +115,7 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
             scheduler.step()
         plot_losses.append(total_loss)
 
-        print("Validate:", evaluate(model, val_iter, criterion)[0])
+        print("Validate:", evaluate(model, val_iter, criterion, attn=attn)[0])
 
         fname = 'seq2seq_3_2_1_beam_' if filename is None else filename[:-4] 
         torch.save(model.state_dict(), fname + str(epoch) + '.sav')
@@ -216,8 +216,8 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
     model.valid = False
 
 def visualize(sources, outputs, attention):
-
     for source, output in zip(sources, outputs):
+        pdb.set_trace()
         fig = plt.figure()
         ax = fig.add_subplot(111)
         c_ax = ax.matshow(attention.numpy(), cmap='bone')

@@ -1,5 +1,6 @@
 nohup4.out -
 
+seq2seq_2_28.out <- GREAT PPL
 BATCH_SIZE = 32
 TEMP_EPOCH = 13
 N_LAYERS = 3
@@ -58,6 +59,20 @@ seq2seq_3_2_beam.sav
 Bidirectional Encoder
 BATCH_SIZE = 32
 TEMP_EPOCH = 15
+N_LAYERS = 1
+HIDDEN = 200
+EMBEDDING = 200
+LR = 0.001
+DROPOUT = 0.3
+optim = Adam (Beta2=0.98)
+CrossEntropyLoss
+
+
+nohup9.out - 
+
+Bidirectional Encoder
+BATCH_SIZE = 32
+TEMP_EPOCH = 10
 N_LAYERS = 1
 HIDDEN = 200
 EMBEDDING = 200
