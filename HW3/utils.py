@@ -192,7 +192,7 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
             text = Variable(torch.LongTensor([SRC_LANG.vocab.stoi[word] for word in line.split(' ')[:-1]])).unsqueeze(1) # Shape: [len x 1]
             if USE_CUDA:
                 text = text.cuda()
-            sequences = model(text, None, k=100, use_target=False) # THE ONLY TIME USE_TARGET = FALSE
+            sequences = model(text, None, k=5, use_target=False) # THE ONLY TIME USE_TARGET = FALSE
             # convert each seq to sentence
             print("{}, ".format(i), end='', file=out)
             for sequence in sequences:
