@@ -621,9 +621,8 @@ class Seq2Seq(nn.Module):
         # TRAINING AND VALIDATION:
         if self.attn:
             decoder_outputs, decoder_hidden, attn_weights = self.decoder(target, decoder_hidden, encoder_outputs)
+            return decoder_outputs, decoder_hidden, attn_weights
         else:
             decoder_outputs, decoder_hidden = self.decoder(target, decoder_hidden, encoder_outputs)
-
-        # decoder_output, hidden = self.decoder(decoder_input, decoder_context, decoder_hidden, encoder_outputs)
-        return decoder_outputs, decoder_hidden # decoder_output [target_len x batch x en_vocab_sz]
+            return decoder_outputs, decoder_hidden # decoder_output [target_len x batch x en_vocab_sz]
 

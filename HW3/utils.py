@@ -11,6 +11,8 @@ import math
 import numpy as np
 import pdb
 import spacy
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 
 import model
 
@@ -46,10 +48,13 @@ def flip(x, dim):
     x = x.view(x.size(0), x.size(1), -1)[:, getattr(torch.arange(x.size(1)-1,-1, -1), ('cpu','cuda')[x.is_cuda])().long(), :]
     return x.view(xsize)
 
-def train_batch(model, source, target, optimizer, criterion):
+def train_batch(model, source, target, optimizer, criterion, attn=False):
     loss = 0
     model.zero_grad()
-    output, hidden = model(source, target, use_target=True)
+    if attn:
+        output, hidden, attention = model(source, target, use_target=True)
+    else:
+        output, hidden = model(source, target, use_target=True)
 
     # here, I need to make sure that I'm not comparing the batch ground truch with <s> ... </s> with the predicted output
     # because then I'd be literally trying to match words up. I need to shift ground truth to be target[1:] and compare this to
@@ -78,7 +83,7 @@ def train_batch(model, source, target, optimizer, criterion):
 
     # keep track of number of non-padding tokens in each batch, and divide by that number
 
-def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=None, filename=None):
+def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=None, filename=None, attn=False):
     model.train()
     plot_losses = []
     counter = 0
@@ -94,7 +99,7 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
         total_observations = 0
         for batch in train_iter:
             source, target = process_batch(batch) # Source is 11x28, target is 21x28
-            batch_loss, non_padding = train_batch(model, source, target, optimizer, criterion)
+            batch_loss, non_padding = train_batch(model, source, target, optimizer, criterion, attn=attn)
             total_loss += batch_loss * non_padding
             total_observations += non_padding
 
@@ -117,7 +122,7 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
         # plot_losses_graph.append(plot_loss_avg)
     return plot_losses
 
-def evaluate(model, val_iter, criterion):
+def evaluate(model, val_iter, criterion, attn=False):
     model.eval()
     # model.valid = True
     total_loss = 0.
@@ -125,7 +130,10 @@ def evaluate(model, val_iter, criterion):
     for batch in val_iter:
         source, target = process_batch(batch)
         # output, hidden, metadata = model(source, target)
-        output, hidden = model(source, target)
+        if attn:
+            output, hidden, attention = model(source, target)
+        else:
+            output, hidden = model(source, target)
 
         # Take output minus the last character
         output = output[:-1, :, :]
@@ -143,6 +151,9 @@ def evaluate(model, val_iter, criterion):
         # Remove n
         total_loss += non_padding * loss.data
         total_len += non_padding
+
+        if attn:
+            visualize(source, output, attention)
 
     print("Total Loss ", total_loss[0])
     print("Total Len ", total_len)
@@ -182,7 +193,7 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
             if USE_CUDA:
                 text = text.cuda()
             sequences = model(text, None, k=5, use_target=False) # THE ONLY TIME USE_TARGET = FALSE
-            
+            print(sequences)
             # convert each seq to sentence
             print("%d,", i, end='', file=out)
             for sequence in sequences:
@@ -197,5 +208,19 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
     model.train()
     model.valid = False
 
-def visualize(attn_weights):
-    pass
+def visualize(sources, outputs, attention):
+
+    for source, output in zip(sources, outputs):
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        c_ax = ax.matshow(attention.numpy(), cmap='bone')
+        fig.colorbar(cax)
+
+        # Set up axes
+        ax.set_xticklabels([''] + source.split(' ') + ['<EOS>'], rotation=90)
+        ax.set_yticklabels([''] + output)
+        ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
+        ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
+
+        plt.show()
+        plt.close()
