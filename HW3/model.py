@@ -561,7 +561,7 @@ class Seq2Seq(nn.Module):
                 # Start off with the already completed guesses we have.
                 guesses_for_this_length = completed_guesses
 
-                while (current_hypotheses is not None):
+                while (current_hypotheses != []):
                     print(current_hypotheses)
                     # Pop something off the current hypotheses
                     hypothesis = heapq.heappop(current_hypotheses)
