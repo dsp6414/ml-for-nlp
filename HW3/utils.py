@@ -122,7 +122,7 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
         # plot_losses_graph.append(plot_loss_avg)
     return plot_losses
 
-def evaluate(model, val_iter, criterion, attn=False):
+def evaluate(model, val_iter, criterion, attn=False, vis=False):
     model.eval()
     # model.valid = True
     total_loss = 0.
@@ -152,7 +152,7 @@ def evaluate(model, val_iter, criterion, attn=False):
         total_loss += non_padding * loss.data
         total_len += non_padding
 
-        if attn:
+        if attn and vis:
             visualize(source, output, attention)
 
     print("Total Loss ", total_loss[0])

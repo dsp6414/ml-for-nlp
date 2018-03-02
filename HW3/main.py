@@ -40,6 +40,7 @@ parser.add_argument('--attn', type=bool, default=False, help='use attention')
 parser.add_argument('--model_path', type=str, default=None, help='load a model')
 parser.add_argument('--epochs', type=int, default=5, help='num epochs, default 5')
 parser.add_argument('--n_layers', type=int, default=1, help='num layers, default 1')
+parser.add_argument('--vis', type=bool, default=False, help='visualize eval')
 args = parser.parse_args()
 
 EPOCHS = args.epochs
@@ -121,7 +122,7 @@ else:
     print("SAVING MODEL TO", filename)
 
 print("EVALUATE")
-loss, output = utils.evaluate(model, val_iter, criterion, attn=args.attn)
+loss, output = utils.evaluate(model, val_iter, criterion, attn=args.attn, vis=args.vis)
 print("VALIDATION LOSS: ", loss)
 for row in output.data.transpose(0, 1):
     print(" ".join([EN.vocab.itos[i] for i in row.max(1)[1]])) # check this later
