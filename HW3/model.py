@@ -564,7 +564,7 @@ class Seq2Seq(nn.Module):
                 while (current_hypotheses):
                     # Pop something off the current hypotheses
                     log_prob, last_sequence_guess, decoder_hidden = heapq.heappop(current_hypotheses)
-                    pdb.set_trace()
+                    
                     last_word = last_sequence_guess[-1:, :]
                     # EOS token:
                     if last_word.squeeze().data[0] == 3: 
