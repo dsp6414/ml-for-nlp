@@ -562,7 +562,6 @@ class Seq2Seq(nn.Module):
                 guesses_for_this_length = completed_guesses
 
                 while (current_hypotheses != []):
-                    print(len(current_hypotheses))
                     # Pop something off the current hypotheses
                     hypothesis = current_hypotheses.pop(0)
                     log_prob, last_sequence_guess, decoder_hidden = hypothesis
