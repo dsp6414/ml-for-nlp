@@ -576,9 +576,12 @@ class Seq2Seq(nn.Module):
                         else:
                             decoder_outputs, decoder_hidden = self.decoder(last_word, decoder_hidden, encoder_outputs)
                         # Get k hypotheses for each 
-                        # decoder outputs is [target_len x batch x en_vocab_sz]
+                        # decoder outputs is [target_len x batch x en_vocab_sz] -> [1 x 1 x vocab]
                         vocab_size = len(decoder_outputs[0][0])
-                        n_probs, n_indices = torch.topk(decoder_outputs, k, dim=2)
+                        # n_probs, n_indices = torch.topk(decoder_outputs, k, dim=2)
+                        # pdb.set_trace() # check what size this is
+                        n_probs = decoder_outputs
+                        n_indices = torch.LongTensor(range(vocab_size)).view(1, 1, -1)
                         new_probs = F.log_softmax(n_probs, dim=2) + log_prob# this should be tensor of size k 
                         new_probs = new_probs.squeeze().data
                         new_sequences = [torch.cat([last_sequence_guess, n_index.view(1, 1)],dim=0) for n_index in n_indices.squeeze()] # check this
