@@ -546,7 +546,7 @@ class Seq2Seq(nn.Module):
 
         # THE REAL KAGGLE THING
         if self.valid:
-            initial_guess = torch.LongTensor([0]).view(1, 1)
+            initial_guess = Variable(torch.LongTensor([0]).view(1, 1))
             if USE_CUDA:
                 initial_guess = initial_guess.cuda()
             current_hypotheses = [(0, initial_guess, decoder_hidden)]
