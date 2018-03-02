@@ -552,7 +552,7 @@ class Seq2Seq(nn.Module):
 
             completed_guesses = []
 
-            output_length = MAX_LEN
+            output_length = 10
 
             for i in range(output_length):
                 assert(batch_size == 1) # this will be way too complicated otherwise
@@ -581,7 +581,6 @@ class Seq2Seq(nn.Module):
                         n_probs, n_indices = torch.topk(decoder_outputs, k, dim=2)
                         new_probs = F.log_softmax(n_probs, dim=2) + log_prob# this should be tensor of size k 
                         new_probs = new_probs.squeeze().data
-                        pdb.set_trace()
                         new_sequences = [torch.cat([last_sequence_guess, n_index.view(1, 1)],dim=0) for n_index in n_indices.squeeze()] # check this
                         new_hidden = [decoder_hidden] * k
                         # decoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
