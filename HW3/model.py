@@ -47,6 +47,10 @@ class EncoderRNN(nn.Module):
         # inputs: [seq_len x batch_sz]
         # inverse_inputs = utils.flip(inputs, 0)
         # embedding = self.embedding(inverse_inputs) # [len x B x E]
+
+        if len(inputs.size()) == 1:
+            inputs = inputs.unsqueeze(0)
+
         embedding = self.embedding(inputs)
         try:
             output, hidden = self.rnn(embedding, hidden) # [num_layers x batch x hidden]
