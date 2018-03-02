@@ -582,6 +582,8 @@ class Seq2Seq(nn.Module):
                         # pdb.set_trace() # check what size this is
                         n_probs = decoder_outputs
                         n_indices = Variable(torch.LongTensor(list(range(vocab_size))).view(1, 1, -1))
+                        if USE_CUDA:
+                            n_indices = n_indices.cuda()
                         new_probs = F.log_softmax(n_probs, dim=2) + log_prob# this should be tensor of size k 
                         new_probs = new_probs.squeeze().data
                         pdb.set_trace()
