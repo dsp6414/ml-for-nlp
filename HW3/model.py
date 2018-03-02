@@ -529,12 +529,8 @@ class Seq2Seq(nn.Module):
         print(self.attn)
 
     def forward(self, source, target, use_target=True, k=None):
-        # target should be max_len x batch
-        max_length = len(target)
-        batch_size = len(source[1])
-
         # make sure this works
-        batch_size = len(target[1])
+        batch_size = len(source[1])
 
         ## TRY this
         encoder_hidden = self.encoder.init_hidden(batch_size=batch_size) # can insert batch size here
