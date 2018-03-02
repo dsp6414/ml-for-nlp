@@ -584,7 +584,7 @@ class Seq2Seq(nn.Module):
                         new_hidden = [decoder_hidden] * k
                         # decoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
                         assert(len(new_sequences) == k)
-                        seq_w_probs = zip(new_probs, new_sequences, new_hidden)
+                        seq_w_probs = list(zip(new_probs, new_sequences, new_hidden))
                         guesses_for_this_length = guesses_for_this_length + seq_w_probs
 
                 # Top k current hypotheses after this time step: 
