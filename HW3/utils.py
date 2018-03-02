@@ -193,13 +193,12 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
             if USE_CUDA:
                 text = text.cuda()
             sequences = model(text, None, k=5, use_target=False) # THE ONLY TIME USE_TARGET = FALSE
-            pdb.set_trace()
-            print(i)
             # convert each seq to sentence
-            print("%d,", i, end='', file=out)
+            print(f"{i}, ", end='', file=out)
             for sequence in sequences:
                 sequence = sequence.squeeze()
                 english_seq = [TRG_LANG.vocab.itos[j.data[0]] for j in sequence]
+                print(english_seq)
                 # Only get first 3
                 english_seq = english_seq[:3]
                 english_seq = escape("|".join(english_seq))
