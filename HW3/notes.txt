@@ -28,12 +28,40 @@ nohup6.out -
 
 v starting from epoch 5 of nohup5.out
 
+seq2seq_3_1_beam.sav
 BATCH_SIZE = 32
 TEMP_EPOCH = 13
 N_LAYERS = 4
 HIDDEN = 200
 EMBEDDING = 200
 LR = 0.2
+DROPOUT = 0.3
+optim = Adam (Beta2=0.98)
+CrossEntropyLoss
+
+nohup7.out - 
+
+seq2seq_3_1_beam.sav
+BATCH_SIZE = 32
+TEMP_EPOCH = 5
+N_LAYERS = 1
+HIDDEN = 200
+EMBEDDING = 200
+LR = 0.001
+DROPOUT = 0.3
+optim = Adam (Beta2=0.98)
+CrossEntropyLoss
+
+nohup8.out - 
+
+seq2seq_3_2_beam.sav
+Bidirectional Encoder
+BATCH_SIZE = 32
+TEMP_EPOCH = 15
+N_LAYERS = 1
+HIDDEN = 200
+EMBEDDING = 200
+LR = 0.001
 DROPOUT = 0.3
 optim = Adam (Beta2=0.98)
 CrossEntropyLoss
