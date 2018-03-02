@@ -540,10 +540,8 @@ class Seq2Seq(nn.Module):
         # encoder_outputs: [source_len x batch x hidden * num_dir]
         # encoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
 
-        pdb.set_trace()
-        decoder_hidden = encoder_hidden.view(1, encoder_hidden.size(1), -1) # [num_layers x batch x hidden]. 
+        decoder_hidden = tuple([e.view(1, e.size(1), -1) for e in encoder_hidden]) # [num_layers x batch x hidden]. 
         # Decoder_hidden now contains the output hidden states for every time step for all batches
-
 
         # THE REAL KAGGLE THING
         if self.valid:
