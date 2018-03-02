@@ -602,7 +602,7 @@ class Seq2Seq(nn.Module):
             completed_guesses = completed_guesses + guesses_for_this_length
 
             completed_guesses.sort(key= lambda tup: tup[0])
-            return [x[1] for x in completed_guesses[:k]]
+            return [x[1] for x in completed_guesses]
 
         # # THIS IS ONLY USED FOR THE KAGGLE!!!!!! NOTHING ELSE!!!
         # if self.beam and self.valid and not use_target:
