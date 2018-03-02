@@ -198,4 +198,4 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
     model.valid = False
 
 def visualize(attn_weights):
-    
+    pass
