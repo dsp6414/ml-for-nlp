@@ -137,8 +137,6 @@ class AttnDecoderRNN(nn.Module):
             target = target.unsqueeze(0)
         word_embeddings = self.dropout(self.embedding(target)) # [seq_len x B x E]
         # word_embeddings = self.embedding(target) # [seq_len x B x E]
-
-        pdb.set_trace()
         decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden) # [seq_len x B x H] , [L x B x H]
         scores = torch.bmm(encoder_outputs.transpose(0, 1), decoder_outputs.transpose(1, 2).transpose(0, 2)) 
         attn_weights = F.softmax(scores, dim=1) # [B x source_len x target_len]
