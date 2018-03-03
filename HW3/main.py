@@ -135,10 +135,10 @@ if args.vis:
             text_i = text_i.unsqueeze(1)
             target_i = target_i.unsqueeze(1)
             output, hidden, attention = model(text_i, target_i)
-            pdb.set_trace()
             source_words = [DE.vocab.itos[i.data[0]] for i in text_i]
             target_words = [EN.vocab.itos[i.data[0]] for i in output.max(2)[1]]
-            utils.visualize(source_words, target_words, attention)
+            pdb.set_trace()
+            # utils.visualize(source_words, target_words, attention)
 
 print("KAGGLE")
 # can use beam here

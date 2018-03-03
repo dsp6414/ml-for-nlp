@@ -211,22 +211,3 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
 
     model.train()
     model.valid = False
-
-def visualize(source_words, target_words, attention):
-    pdb.set_trace()
-    print(source_words)
-    print(target_words)
-
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    c_ax = ax.matshow(attention.numpy(), cmap='bone')
-    fig.colorbar(cax)
-
-    # Set up axes
-    ax.set_xticklabels(source_words + ['<EOS>'], rotation=90)
-    ax.set_yticklabels(target_words)
-    ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
-    ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
-
-    plt.show()
-    plt.close()
