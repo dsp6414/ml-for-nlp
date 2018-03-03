@@ -501,7 +501,7 @@ class TopKDecoder(torch.nn.Module):
             tensor.index_fill_(dim, indices, masking_score)
 
 class Seq2Seq(nn.Module):
-    def __init__(self, input_size, output_size, embedding_size, hidden_size, n_layers=1, dropout=0.0, attn=False, beam=False, k=5):
+    def __init__(self, input_size, output_size, embedding_size, hidden_size, n_layers=1, dropout=0.0, attn=False, k=5):
         super(Seq2Seq, self).__init__()
         self.input_size = input_size
         self.output_size = output_size
@@ -517,14 +517,9 @@ class Seq2Seq(nn.Module):
         else:
             self.decoder = DecoderRNN(embedding_size, hidden_size, output_size, n_layers, dropout)
 
-        self.beam = beam
-        if self.beam:
-            self.beam_decoder = TopKDecoder(self.decoder, k)
         if USE_CUDA:
             self.encoder = self.encoder.cuda()
             self.decoder = self.decoder.cuda()
-            if self.beam:
-                self.beam_decoder.cuda()
 
         self.valid = False
         print(self.attn)
@@ -532,8 +527,6 @@ class Seq2Seq(nn.Module):
     def forward(self, source, target, use_target=True, k=None):
         # make sure this works
         batch_size = len(source[1])
-
-        ## TRY this
         encoder_hidden = self.encoder.init_hidden(batch_size=batch_size) # can insert batch size here
         encoder_outputs, encoder_hidden = self.encoder(source, encoder_hidden)
         # encoder_outputs: [source_len x batch x hidden * num_dir]
@@ -544,7 +537,6 @@ class Seq2Seq(nn.Module):
 
         # THE REAL KAGGLE THING
         if self.valid:
-            decoder_hidden = encoder_hidden # TEMPORARILY UNTIL BIDIRECTIONAL IS FIXED
             initial_guess = Variable(torch.LongTensor([2]).view(1, 1))
             if USE_CUDA:
                 initial_guess = initial_guess.cuda()
@@ -603,20 +595,6 @@ class Seq2Seq(nn.Module):
 
             completed_guesses.sort(key= lambda tup: tup[0])
             return [x[1] for x in completed_guesses]
-
-        # # THIS IS ONLY USED FOR THE KAGGLE!!!!!! NOTHING ELSE!!!
-        # if self.beam and self.valid and not use_target:
-        #     # Override k, if necessary
-        #     if k is not None:
-        #         self.beam_decoder.k = k
-
-        #     # pdb.set_trace()
-        #     decoder_outputs, decoder_hidden, metadata = self.beam_decoder(source, target, encoder_outputs, encoder_hidden, use_target=False, function=F.log_softmax,
-        #             teacher_forcing_ratio=0, retain_output_probs=True)
-        #     # Make decoder_outputs into a tensor: [target_len x batch x en_vocab_sz]
-        #     # Current shape: a list of [batch x en_vocab_sz] tensors.
-        #     decoder_outputs = torch.stack(decoder_outputs, dim = 0)
-        #     return decoder_outputs, decoder_hidden, metadata
 
         # TRAINING AND VALIDATION:
         if self.attn:

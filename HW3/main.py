@@ -25,7 +25,7 @@ TEMP_EPOCH = 15
 
 # N_LAYERS = 3
 N_LAYERS = 4
-HIDDEN = 200
+HIDDEN = 500
 EMBEDDING = 200
 LR = 1
 DROPOUT = 0.3
@@ -35,7 +35,6 @@ USE_CUDA = True if torch.cuda.is_available() else False
 DE = data.Field(tokenize=utils.tokenize_de)
 EN = data.Field(tokenize=utils.tokenize_en, init_token = BOS_WORD, eos_token = EOS_WORD) # only target needs BOS/EOS
 parser = argparse.ArgumentParser(description='Translation')
-parser.add_argument('--beam', type=bool, default=False, help='use beam search')
 parser.add_argument('--attn', type=bool, default=False, help='use attention')
 parser.add_argument('--model_path', type=str, default=None, help='load a model')
 parser.add_argument('--epochs', type=int, default=5, help='num epochs, default 5')
@@ -91,7 +90,7 @@ train_iter, val_iter = data.BucketIterator.splits((train, val), batch_size=BATCH
 print("Done bucketing data")
 
 # Fix these!!
-model = Seq2Seq(len(DE.vocab), len(EN.vocab), EMBEDDING, HIDDEN, N_LAYERS, attn=args.attn, beam=args.beam, dropout=DROPOUT)
+model = Seq2Seq(len(DE.vocab), len(EN.vocab), EMBEDDING, HIDDEN, N_LAYERS, attn=args.attn, dropout=DROPOUT)
 if USE_CUDA:
     model.cuda()
 
@@ -100,16 +99,9 @@ LR = 0.001
 # Using beta2 = 0.98 from https://arxiv.org/pdf/1706.03762.pdf
 optimizer = optim.Adam(model.parameters(), betas=(0.9, 0.98), lr=LR)
 criterion = nn.CrossEntropyLoss(ignore_index=1) # IGNORE PADDING!!!!!!
-# size average false, divide loss by batch size
-
-
-# criterion = nn.CrossEntropyLoss() 
-# milestones = list(range(TEMP_EPOCH, EPOCHS - 1, 0.5))
-# scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=milestones, gamma=1/DECAY)
-# scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=list(range(8, EPOCHS)), gamma=.5)
 scheduler = None
 
-filename = args.model_path if args.model_path else 'seq2seq_3_2_beam.sav'
+filename = args.model_path if args.model_path else 'seq2seq_3_3_beam.sav'
 if os.path.exists(filename):
     print("LOADING MODEl", filename)
     model.load_state_dict(torch.load(filename))

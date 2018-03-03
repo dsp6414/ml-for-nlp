@@ -1,5 +1,3 @@
-# import matplotlib.pyplot as plt
-# import matplotlib.ticker as ticker
 import torch
 import torch.autograd as autograd
 from torch.autograd import Variable
@@ -13,7 +11,6 @@ import pdb
 import spacy
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-
 import model
 
 torch.manual_seed(1)
@@ -56,10 +53,6 @@ def train_batch(model, source, target, optimizer, criterion, attn=False):
     else:
         output, hidden = model(source, target, use_target=True)
 
-    # here, I need to make sure that I'm not comparing the batch ground truch with <s> ... </s> with the predicted output
-    # because then I'd be literally trying to match words up. I need to shift ground truth to be target[1:] and compare this to
-    # output[:-1] <- output minus the last character
-
     # Take output minus the last character
     output = output[:-1, :, :]
 
@@ -78,10 +71,7 @@ def train_batch(model, source, target, optimizer, criterion, attn=False):
 
     # Subtract one so that the padding count becomes zero. Count number of nonpadding in output
     non_padding = (target.view(-1) - 1.0).nonzero().size(0)
-
     return loss.data[0], non_padding
-
-    # keep track of number of non-padding tokens in each batch, and divide by that number
 
 def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=None, filename=None, attn=False):
     model.train()
@@ -117,9 +107,8 @@ def train(model, train_iter, val_iter, epochs, optimizer, criterion, scheduler=N
 
         print("Validate:", evaluate(model, val_iter, criterion)[0])
 
-        fname = 'seq2seq_3_2_beam_' if filename is None else filename[:-4] 
+        fname = 'seq2seq_3_3_beam_' if filename is None else filename[:-4] 
         torch.save(model.state_dict(), fname + str(epoch) + '.sav')
-        # plot_losses_graph.append(plot_loss_avg)
     return plot_losses
 
 def evaluate(model, val_iter, criterion, attn=False):
@@ -162,25 +151,6 @@ def evaluate(model, val_iter, criterion, attn=False):
     model.valid = False
     return np.exp(total_loss / total_len), output
 
-# def plot_attention(s, encoder, decoder, max_length):
-#     output_words, attn = evaluate(s, encoder, decoder, max_length)
-#     print('input =', s)
-#     print('output =', ' '.join(output_words))
-
-#     fig = plt.figure()
-#     ax = fig.add_subplot(111)
-#     cax = ax.matshow(attentions.numpy(), cmap='bone')
-#     fig.colorbar(cax)
-
-#     ax.set_xticklabels([''] + s.split(' ') + [EOS_WORD], rotation=90)
-#     ax.set_yticklabels([''] + output_words)
-
-#     ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
-#     ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
-
-#     plt.show()
-#     plt.close()
-
 def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt'):
     model.eval()
     model.valid = True
@@ -210,7 +180,6 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
     model.valid = False
 
 def visualize(sources, outputs, attention):
-
     for source, output in zip(sources, outputs):
         fig = plt.figure()
         ax = fig.add_subplot(111)
