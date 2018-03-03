@@ -137,9 +137,9 @@ class AttnDecoderRNN(nn.Module):
         # last_hidden is the bottleneck hidden from processing all of encoder
         # encoder_outputs is
     def forward(self, target, last_hidden, encoder_outputs):
+        pdb.set_trace()
         # check: target is (seq_len, batch, input_size)
-        if len(target.size()) == 1:
-            target = target.unsqueeze(0)
+
         word_embeddings = self.dropout(self.embedding(target)) # [seq_len x B x E]
         # word_embeddings = self.embedding(target) # [seq_len x B x E]
         decoder_outputs, hidden = self.rnn(word_embeddings, last_hidden) # [seq_len x B x H] , [L x B x H]
@@ -504,12 +504,6 @@ class TopKDecoder(torch.nn.Module):
         if len(idx.size()) > 0:
             indices = idx[:, 0]
             tensor.index_fill_(dim, indices, masking_score)
-
-class Node:
-    def __init(self, log_prob, last_sequence_guess, decoder_hidden):
-        self.log_prob = log_prob
-        self.last_sequence_guess = last_sequence_guess
-        self.decoder_hidden = decoder_hidden
 
 class Seq2Seq(nn.Module):
     def __init__(self, input_size, output_size, embedding_size, hidden_size, n_layers=1, dropout=0.0, attn=False, beam=False, k=5):

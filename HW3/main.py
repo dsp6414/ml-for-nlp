@@ -133,6 +133,7 @@ if args.vis:
         for text_i, target_i, in zip(text, target):
             pdb.set_trace()
             text_i = text_i.unsqueeze(1)
+            target_i = target_i.unsqueeze(1)
             output, hidden, attention = model(text_i, target_i)
             source_words = [DE.vocab.itos[i.data[0]] for i in text_i]
             target_words = [EN.vocab.itos[i] for i in output.max(1)[1]]
