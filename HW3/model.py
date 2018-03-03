@@ -559,7 +559,7 @@ class Seq2Seq(nn.Module):
                 # Find k most likely for each current hypothesis
 
                 # Start off with the already completed guesses we have.
-                guesses_for_this_length = completed_guesses
+                guesses_for_this_length = []
 
                 while (current_hypotheses != []):
                     # Pop something off the current hypotheses
@@ -593,7 +593,6 @@ class Seq2Seq(nn.Module):
 
                 # for x in guesses_for_this_length:
                 #     current_hypotheses.append(x)
-                pdb.set_trace()
                 current_hypotheses = current_hypotheses + guesses_for_this_length
 
                 # Modify completed guesses if it was tossed out
