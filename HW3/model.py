@@ -596,7 +596,7 @@ class Seq2Seq(nn.Module):
                 current_hypotheses = current_hypotheses + guesses_for_this_length
 
                 # Modify completed guesses if it was tossed out
-                completed_guesses = [x for x in completed_guesses if x in set(guesses_for_this_length)]
+                # completed_guesses = [x for x in completed_guesses if x in set(guesses_for_this_length)]
 
             # Return top result
             completed_guesses = completed_guesses + guesses_for_this_length
