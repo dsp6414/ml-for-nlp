@@ -136,7 +136,7 @@ if args.vis:
             target_i = target_i.unsqueeze(1)
             output, hidden, attention = model(text_i, target_i)
             source_words = [DE.vocab.itos[i.data[0]] for i in text_i]
-            target_words = [EN.vocab.itos[i] for i in output.max(1)[1]]
+            target_words = [EN.vocab.itos[i.data[0]] for i in output.max(1)[1]]
             utils.visualize(source_words, target_words, attention)
 
 print("KAGGLE")

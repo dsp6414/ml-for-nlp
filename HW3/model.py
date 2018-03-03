@@ -52,7 +52,6 @@ class EncoderRNN(nn.Module):
             inputs = inputs.unsqueeze(0)
 
         embedding = self.embedding(inputs)
-        pdb.set_trace()
         try:
             output, hidden = self.rnn(embedding, hidden) # [num_layers x batch x hidden]
         except:
@@ -137,7 +136,6 @@ class AttnDecoderRNN(nn.Module):
         # last_hidden is the bottleneck hidden from processing all of encoder
         # encoder_outputs is
     def forward(self, target, last_hidden, encoder_outputs):
-        pdb.set_trace()
         # check: target is (seq_len, batch, input_size)
 
         word_embeddings = self.dropout(self.embedding(target)) # [seq_len x B x E]
@@ -531,7 +529,6 @@ class Seq2Seq(nn.Module):
 
     def forward(self, source, target, use_target=True, k=None):
         # make sure this works
-        pdb.set_trace()
         batch_size = len(source[1])
 
         ## TRY this
