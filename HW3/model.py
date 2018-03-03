@@ -559,8 +559,7 @@ class Seq2Seq(nn.Module):
                 # Find k most likely for each current hypothesis
 
                 # Start off with the already completed guesses we have.
-                guesses_for_this_length = completed_guesses
-
+                guesses_for_this_length = []
                 while (current_hypotheses != []):
                     # Pop something off the current hypotheses
                     hypothesis = current_hypotheses.pop(0)
@@ -579,7 +578,6 @@ class Seq2Seq(nn.Module):
                         # decoder outputs is [target_len x batch x en_vocab_sz] -> [1 x 1 x vocab]
                         vocab_size = len(decoder_outputs[0][0])
                         n_probs, n_indices = torch.topk(decoder_outputs, k, dim=2)
-                        pdb.set_trace()
                         new_probs = F.log_softmax(n_probs, dim=2) + log_prob# this should be tensor of size k 
                         new_probs = new_probs.squeeze().data
                         new_sequences = [torch.cat([last_sequence_guess, n_index.view(1, 1)],dim=0) for n_index in n_indices.squeeze()] # check this
@@ -595,9 +593,6 @@ class Seq2Seq(nn.Module):
                 # for x in guesses_for_this_length:
                 #     current_hypotheses.append(x) 
                 current_hypotheses = current_hypotheses + guesses_for_this_length
-
-                # Modify completed guesses if it was tossed out
-                completed_guesses = [x for x in completed_guesses if x in set(guesses_for_this_length)]
 
             # Return top result
             completed_guesses = completed_guesses + guesses_for_this_length
