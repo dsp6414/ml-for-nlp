@@ -592,7 +592,8 @@ class Seq2Seq(nn.Module):
                 guesses_for_this_length = sorted(guesses_for_this_length, key= lambda tup: tup[0], reverse=True)[:k]
 
                 # for x in guesses_for_this_length:
-                #     current_hypotheses.append(x) 
+                #     current_hypotheses.append(x)
+                pdb.set_trace()
                 current_hypotheses = current_hypotheses + guesses_for_this_length
 
                 # Modify completed guesses if it was tossed out
