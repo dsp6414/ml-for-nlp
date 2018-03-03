@@ -131,6 +131,8 @@ if args.vis:
     for batch in val_iter:
         text, target = utils.process_batch(batch)
         for text_i, target_i, in zip(text, target):
+            pdb.set_trace()
+            text_i = text_i.unsqueeze(0)
             output, hidden, attention = model(text_i, target_i)
             source_words = [DE.vocab.itos[i.data[0]] for i in text_i]
             target_words = [EN.vocab.itos[i] for i in output.max(1)[1]]
