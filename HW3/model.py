@@ -553,7 +553,7 @@ class Seq2Seq(nn.Module):
             completed_guesses = []
             output_length = MAX_LEN
 
-            for i in range(output_length):
+            for i in range(output_length):p
                 assert(batch_size == 1) # this will be way too complicated otherwise
                 # Find k most likely for each current hypothesis
 
@@ -562,7 +562,8 @@ class Seq2Seq(nn.Module):
                     guesses_for_this_length = []
 
                     # Pop something off the current node list
-                    _, hypothesis = heapq.heappop(node_list)
+                    pdb.set_trace()
+                    hypothesis = heapq.heappop(node_list)
                     log_prob, last_sequence_guess, decoder_hidden = hypothesis
 
                     last_word = last_sequence_guess[-1:, :]
