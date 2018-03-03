@@ -131,7 +131,7 @@ if args.vis:
     for batch in val_iter:
         text, target = utils.process_batch(batch)
         text, target = text.t(), target.t()
-        for text_i, target_i, in zip(text._t(), target._t()):
+        for text_i, target_i, in zip(text, target):
             text_i = text_i.unsqueeze(1)
             target_i = target_i.unsqueeze(1)
             output, hidden, attention = model(text_i, target_i)
