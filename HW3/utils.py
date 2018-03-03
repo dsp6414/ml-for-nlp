@@ -214,8 +214,6 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
 
 def visualize(source_words, target_words, attention):
     pdb.set_trace()
-    
-    torch.save(attention, 'attn1.txt')
     print(source_words)
     print(target_words)
 

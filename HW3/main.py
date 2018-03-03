@@ -137,7 +137,7 @@ if args.vis:
             output, hidden, attention = model(text_i, target_i)
             pdb.set_trace()
             source_words = [DE.vocab.itos[i.data[0]] for i in text_i]
-            target_words = [EN.vocab.itos[i.data[0]] for i in output.max(1)[1]]
+            target_words = [EN.vocab.itos[i.data[0]] for i in output.max(2)[1]]
             utils.visualize(source_words, target_words, attention)
 
 print("KAGGLE")
