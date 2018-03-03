@@ -194,7 +194,7 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
                 text = text.cuda()
             sequences = model(text, None, k=5, use_target=False) # THE ONLY TIME USE_TARGET = FALSE
             # convert each seq to sentence
-            print("{}, ".format(i), end='', file=out)
+            print("{}, ".format(i+1), end='', file=out)
 
             num_printed = 0
 
