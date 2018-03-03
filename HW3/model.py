@@ -568,7 +568,7 @@ class Seq2Seq(nn.Module):
                     
                     last_word = last_sequence_guess[-1:, :]
                     # EOS token:
-                    if last_word.squeeze().data[0] == 3: 
+                    if last_word.squeeze().data[0] == 3:
                         completed_guesses.append((log_prob, last_sequence_guess, None))
                     else:
                         if self.attn:
@@ -589,7 +589,7 @@ class Seq2Seq(nn.Module):
                         guesses_for_this_length = guesses_for_this_length + seq_w_probs
 
                 # Top k current hypotheses after this time step:
-                guesses_for_this_length = sorted(guesses_for_this_length, key= lambda tup: tup[0])[:k]
+                guesses_for_this_length = sorted(guesses_for_this_length, key= lambda tup: tup[0], reverse=True)[:k]
 
                 # for x in guesses_for_this_length:
                 #     current_hypotheses.append(x) 
