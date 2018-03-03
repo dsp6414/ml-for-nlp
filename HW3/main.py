@@ -130,11 +130,12 @@ else:
 if args.vis:
     for batch in val_iter:
         text, target = utils.process_batch(batch)
-        for text_i, target_i, in zip(text, target):
-            pdb.set_trace()
+        text, target = text.t(), target.t()
+        for text_i, target_i, in zip(text._t(), target._t()):
             text_i = text_i.unsqueeze(1)
             target_i = target_i.unsqueeze(1)
             output, hidden, attention = model(text_i, target_i)
+            pdb.set_trace()
             source_words = [DE.vocab.itos[i.data[0]] for i in text_i]
             target_words = [EN.vocab.itos[i.data[0]] for i in output.max(1)[1]]
             utils.visualize(source_words, target_words, attention)
