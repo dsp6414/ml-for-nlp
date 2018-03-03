@@ -128,5 +128,5 @@ else:
 
 print("KAGGLE")
 # can use beam here
-output_name = filename[:-4] + '_preds.txt'
+output_name = filename[:-4] + '_preds2.txt'
 utils.kaggle(model, SRC_LANG=DE, TRG_LANG=EN, output_file=output_name, input_file="source_test.txt")

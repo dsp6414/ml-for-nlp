@@ -197,7 +197,6 @@ def kaggle(model, SRC_LANG, TRG_LANG, output_file, input_file='source_test.txt')
             print("{}, ".format(i+1), end='', file=out)
 
             num_printed = 0
-
             while(num_printed < 100):
                 for sequence in sequences:
                     sequence = sequence.squeeze()
