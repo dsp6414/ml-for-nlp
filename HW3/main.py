@@ -121,18 +121,18 @@ else:
     torch.save(model.state_dict(), filename)
     print("SAVING MODEL TO", filename)
 
-print("EVALUATE")
-loss, output = utils.evaluate(model, val_iter, criterion, attn=args.attn)
-print("VALIDATION LOSS: ", loss)
-for row in output.data.transpose(0, 1):
-    print(" ".join([EN.vocab.itos[i] for i in row.max(1)[1]])) # check this later
+# print("EVALUATE")
+# loss, output = utils.evaluate(model, val_iter, criterion, attn=args.attn)
+# print("VALIDATION LOSS: ", loss)
+# for row in output.data.transpose(0, 1):
+#     print(" ".join([EN.vocab.itos[i] for i in row.max(1)[1]])) # check this later
 
 if args.vis:
     for batch in val_iter:
         text, target = utils.process_batch(batch)
         for text_i, target_i, in zip(text, target):
             pdb.set_trace()
-            text_i = text_i.unsqueeze(0)
+            text_i = text_i.unsqueeze(1)
             output, hidden, attention = model(text_i, target_i)
             source_words = [DE.vocab.itos[i.data[0]] for i in text_i]
             target_words = [EN.vocab.itos[i] for i in output.max(1)[1]]
