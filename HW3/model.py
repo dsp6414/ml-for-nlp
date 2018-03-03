@@ -553,7 +553,7 @@ class Seq2Seq(nn.Module):
             completed_guesses = []
             output_length = MAX_LEN
 
-            for i in range(output_length):p
+            for i in range(output_length):
                 assert(batch_size == 1) # this will be way too complicated otherwise
                 # Find k most likely for each current hypothesis
 
