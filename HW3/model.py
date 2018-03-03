@@ -590,7 +590,7 @@ class Seq2Seq(nn.Module):
                         guesses_for_this_length = guesses_for_this_length + seq_w_probs
 
                 # Top k current hypotheses after this time step:
-                guesses_for_this_length = sorted(guesses_for_this_length, key= lambda tup: tup[0])[:k]
+                guesses_for_this_length = sorted(guesses_for_this_length, key= lambda tup: -1*tup[0])[:k]
 
                 # for x in guesses_for_this_length:
                 #     current_hypotheses.append(x) 
@@ -602,7 +602,7 @@ class Seq2Seq(nn.Module):
             # Return top result
             completed_guesses = completed_guesses + guesses_for_this_length
 
-            completed_guesses.sort(key= lambda tup: tup[0])
+            completed_guesses.sort(key= lambda tup: -1*tup[0])
             return [x[1] for x in completed_guesses]
 
         # # THIS IS ONLY USED FOR THE KAGGLE!!!!!! NOTHING ELSE!!!
