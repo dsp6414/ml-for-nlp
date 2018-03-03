@@ -540,6 +540,7 @@ class Seq2Seq(nn.Module):
         batch_size = len(source[1])
 
         ## TRY this
+        pdb.set_trace()
         encoder_hidden = self.encoder.init_hidden(batch_size=batch_size) # can insert batch size here
         encoder_outputs, encoder_hidden = self.encoder(source, encoder_hidden)
         # encoder_outputs: [source_len x batch x hidden * num_dir]
