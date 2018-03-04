@@ -112,13 +112,12 @@ else:
     torch.save(model.state_dict(), filename)
     print("SAVING MODEL TO", filename)
 
-# print("EVALUATE")
-# loss, output = utils.evaluate(model, val_iter, criterion, attn=args.attn)
-# print("VALIDATION LOSS: ", loss)
-# for row in output.data.transpose(0, 1):
-#     print(" ".join([EN.vocab.itos[i] for i in row.max(1)[1]])) # check this later
+print("EVALUATE")
+loss, output = utils.evaluate(model, val_iter, criterion, attn=args.attn)
+print("VALIDATION LOSS: ", loss)
+for row in output.data.transpose(0, 1):
+    print(" ".join([EN.vocab.itos[i] for i in row.max(1)[1]])) # check this later
 
 print("KAGGLE")
-# can use beam here
-output_name = filename[:-4] + '_preds_anna.txt'
+output_name = filename[:-4] + '_preds.txt'
 utils.kaggle(model, SRC_LANG=DE, TRG_LANG=EN, output_file=output_name, input_file="source_test.txt")
