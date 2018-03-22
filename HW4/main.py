@@ -19,13 +19,6 @@ HIDDEN2 = 20
 LR = 1e-3
 SAMPLES = 64
 
-train_dataset = datasets.MNIST(root='./data/',
-                            train=True, 
-                            transform=transforms.ToTensor(),
-                            download=True)
-test_dataset = datasets.MNIST(root='./data/',
-                           train=False, 
-                           transform=transforms.ToTensor())
 
 parser = argparse.ArgumentParser(description='VAE MNIST')
 parser.add_argument('--model', help='which model to use. VAE or GAN')
@@ -41,34 +34,59 @@ parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                     help='how many batches to wait before logging training status')
 args = parser.parse_args()
 
+if args.model=='VAE':
+    train_dataset = datasets.MNIST(root='./data/',
+                            train=True, 
+                            transform=transforms.ToTensor(),
+                            download=True)
+    test_dataset = datasets.MNIST(root='./data/',train=False, 
+                           transform=transforms.ToTensor())
 
-print(len(train_dataset))
-print(len(test_dataset))
-train_dataset[0][0]
+    print(len(train_dataset))
+    print(len(test_dataset))
+    train_dataset[0][0]
 
-torch.manual_seed(args.seed)
-train_img = torch.stack([torch.bernoulli(d[0]) for d in train_dataset])
-train_label = torch.LongTensor([d[1] for d in train_dataset])
-test_img = torch.stack([torch.bernoulli(d[0]) for d in test_dataset])
-test_label = torch.LongTensor([d[1] for d in test_dataset])
-print(train_img[0])
-print(train_img.size(), train_label.size(), test_img.size(), test_label.size())
+    torch.manual_seed(args.seed)
+    train_img = torch.stack([torch.bernoulli(d[0]) for d in train_dataset])
+    train_label = torch.LongTensor([d[1] for d in train_dataset])
+    test_img = torch.stack([torch.bernoulli(d[0]) for d in test_dataset])
+    test_label = torch.LongTensor([d[1] for d in test_dataset])
+    # print(train_img[0])
+    print(train_img.size(), train_label.size(), test_img.size(), test_label.size())
 
-val_img = train_img[-10000:].clone()
-val_label = train_label[-10000:].clone()
-train_img = train_img[:10000]
-train_label = train_label[:10000]
+    val_img = train_img[-10000:].clone()
+    val_label = train_label[-10000:].clone()
+    train_img = train_img[:10000]
+    train_label = train_label[:10000]
 
-train = torch.utils.data.TensorDataset(train_img, train_label)
-val = torch.utils.data.TensorDataset(val_img, val_label)
-test = torch.utils.data.TensorDataset(test_img, test_label)
+    train = torch.utils.data.TensorDataset(train_img, train_label)
+    val = torch.utils.data.TensorDataset(val_img, val_label)
+    test = torch.utils.data.TensorDataset(test_img, test_label)
 
-train_loader = torch.utils.data.DataLoader(train, batch_size=args.batch_size, shuffle=True)
-val_loader = torch.utils.data.DataLoader(val, batch_size=args.batch_size, shuffle=True)
-test_loader = torch.utils.data.DataLoader(test, batch_size=args.batch_size, shuffle=True)
+    train_loader = torch.utils.data.DataLoader(train, batch_size=args.batch_size, shuffle=True)
+    val_loader = torch.utils.data.DataLoader(val, batch_size=args.batch_size, shuffle=True)
+    test_loader = torch.utils.data.DataLoader(test, batch_size=args.batch_size, shuffle=True)
 
-img_width = train_img.size()[2]
-img_height = train_img.size()[3]
+    img_width = train_img.size()[2]
+    img_height = train_img.size()[3]
+elif args.model=='GAN':
+    gan_transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
+        ])
+
+    train_dataset = datasets.MNIST(root='./data/',
+                            train=True, 
+                            transform=gan_transform,
+                            download=True)
+    test_dataset = datasets.MNIST(root='./data/',train=False, 
+                           transform=gan_transform)
+
+    pdb.set_trace()
+    val_dataset = train_dataset[-10000:].clone()
+
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
+
 
 if args.model == 'VAE':
     model = model.VAE(img_width * img_height, HIDDEN1, HIDDEN2)
