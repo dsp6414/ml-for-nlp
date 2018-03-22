@@ -97,7 +97,8 @@ elif args.model=='GAN':
     train_loader = torch.utils.data.DataLoader(train, batch_size=args.batch_size, shuffle=True)
     val_loader = torch.utils.data.DataLoader(val, batch_size=args.batch_size, shuffle=True)
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.batch_size, shuffle=True)
-
+    img_width = train_img.size()[2]
+    img_height = train_img.size()[3]
 
 if args.model == 'VAE':
     model = model.VAE(img_width * img_height, HIDDEN1, HIDDEN2)
