@@ -70,7 +70,8 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         fake_loss.backward()
 
         ## REAL DATA:
-        real_img = img
+        pdb.set_trace()
+        real_img = img.view(-1)
         real_decision = discriminator_model(real_img)
         desired_real_decision= Variable(torch.ones(batch_size))
         if USE_CUDA:
