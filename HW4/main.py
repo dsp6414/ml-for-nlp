@@ -28,6 +28,7 @@ test_dataset = datasets.MNIST(root='./data/',
                            transform=transforms.ToTensor())
 
 parser = argparse.ArgumentParser(description='VAE MNIST')
+parser.add_argument('--model', help='which model to use. VAE or GAN')
 parser.add_argument('--batch-size', type=int, default=100, metavar='N',
                     help='batch size for training (default: 100)')
 parser.add_argument('--epochs', type=int, default=10, metavar='N',
@@ -69,17 +70,34 @@ test_loader = torch.utils.data.DataLoader(test, batch_size=args.batch_size, shuf
 img_width = train_img.size()[2]
 img_height = train_img.size()[3]
 
-model = model.VAE(img_width * img_height, HIDDEN1, HIDDEN2)
-if USE_CUDA:
-    model.cuda()
-
-optimizer = optim.Adam(model.parameters(), lr=LR)
-
-for epoch in range(1, args.epochs + 1):
-    utils.train(model, train_loader, epoch, optimizer)
-    utils.eval(model, val_loader, epoch)
-    sample = Variable(torch.randn(SAMPLES, HIDDEN2))
+if args.model == 'VAE':
+    model = model.VAE(img_width * img_height, HIDDEN1, HIDDEN2)
     if USE_CUDA:
-        sample = sample.cuda()
-    sample = model.decode(sample).cpu()
-    save_image(sample.data.view(SAMPLES, 1, img_width, img_height), 'results/sample_' + str(epoch) + '.png')
+        model.cuda()
+
+    optimizer = optim.Adam(model.parameters(), lr=LR)
+
+    for epoch in range(1, args.epochs + 1):
+        utils.train(model, train_loader, epoch, optimizer)
+        utils.eval(model, val_loader, epoch)
+        sample = Variable(torch.randn(SAMPLES, HIDDEN2))
+        if USE_CUDA:
+            sample = sample.cuda()
+        sample = model.decode(sample).cpu()
+        save_image(sample.data.view(SAMPLES, 1, img_width, img_height), 'results/sample_' + str(epoch) + '.png')
+elif args.model == 'GAN':
+    # Model params
+    g_input_size = 1     # Random noise dimension coming into generator, per output vector
+    g_hidden_size = 50   # Generator complexity
+    g_output_size = img_width * img_height    # size of generated output vector
+    d_input_size = 100   # Minibatch size - cardinality of distributions ???? Or is this img_width * img_height
+    d_hidden_size = 50   # Discriminator complexity
+    d_output_size = 1    # Single dimension for 'real' vs. 'fake'
+    minibatch_size = d_input_size
+    G = model.Generator(input_size=g_input_size, output_size=g_output_size)
+    D = model.Discriminator(input_size=img_width * img_height, output_size = d_output_size)
+
+    G_optimizer = optim.Adam(G.parameters(), lr=LR)
+    D_optimizer = optim.Adam(D.parameters(), lr=LR)
+    for epoch in range(1, args.epochs + 1):
+        utils.train_minimax(D, G, train_loader, epoch, D_optimizer, G_optimizer, args.batch_size)

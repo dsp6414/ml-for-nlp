@@ -12,7 +12,7 @@ USE_CUDA = True if torch.cuda.is_available() else False
 
 def loss_func(recon_x, x, mu, logvar, img_sz):
     criterion = F.binary_cross_entropy(recon_x, x.view(-1, img_sz), size_average=False)
-    kl_div = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+    kl_div = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp()) # KL closed form
 
     return criterion + kl_div
 
@@ -38,6 +38,30 @@ def train(model, train_loader, epoch, optimizer):
 
     print('====> Epoch: {} Average loss: {:.4f}'.format(
           epoch, total_loss / len(train_loader.dataset)))
+
+def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_optimizer, G_optimizer, batch_size):
+
+    discriminator_model.train()
+    generative_model.train()
+
+    for batch_id, (img, label) in enumerate(train_loader):
+        img = Variable(img)
+        if USE_CUDA:
+            img = img.cuda()
+
+        # Train discriminator
+        D_optimizer.zero_grad()
+
+        # Generate some noise from normal dist
+        z = torch.randn((batch_size, 1)) # [batch_size x g_input_dim]
+        z = Variable(z)
+        if USE_CUDA: 
+            z = z.cuda()
+
+        # Pass into generator
+        fake_img = generative_model(z)
+
+
 
 def eval(model, data_loader, epoch, batch_sz=100): # maybe need to pass epoch
     model.eval()
