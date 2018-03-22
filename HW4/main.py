@@ -97,6 +97,9 @@ elif args.model == 'GAN':
     G = model.Generator(input_size=g_input_size, output_size=g_output_size)
     D = model.Discriminator(input_size=img_width * img_height, output_size = d_output_size)
 
+    if USE_CUDA:
+        G.cuda()
+        D.cuda()
     G_optimizer = optim.Adam(G.parameters(), lr=LR)
     D_optimizer = optim.Adam(D.parameters(), lr=LR)
     for epoch in range(1, args.epochs + 1):
