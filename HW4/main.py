@@ -83,9 +83,20 @@ elif args.model=='GAN':
                            transform=gan_transform)
 
     pdb.set_trace()
-    val_dataset = train_dataset[-10000:].clone()
+    train_img = torch.stack([torch.FloatTensor(d[0]) for d in train_dataset])
+    train_label = torch.LongTensor([d[1] for d in train_dataset])
 
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
+    val_img = train_img[-10000:].clone()
+    val_label = train_label[-10000:].clone()
+    train_img = train_img[:10000]
+    train_label = train_label[:10000]
+
+    train = torch.utils.data.TensorDataset(train_img, train_label)
+    val = torch.utils.data.TensorDataset(val_img, val_label)
+
+    train_loader = torch.utils.data.DataLoader(train, batch_size=args.batch_size, shuffle=True)
+    val_loader = torch.utils.data.DataLoader(val, batch_size=args.batch_size, shuffle=True)
+    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.batch_size, shuffle=True)
 
 
 if args.model == 'VAE':
