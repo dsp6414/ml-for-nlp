@@ -123,7 +123,7 @@ elif args.model == 'GAN':
     d_input_size = 100   # Minibatch size - cardinality of distributions ???? Or is this img_width * img_height
     d_hidden_size = 50   # Discriminator complexity
     d_output_size = 1    # Single dimension for 'real' vs. 'fake'
-    minibatch_size = d_input_size
+    minibatch_size = 10
     G = model.Generator(input_size=g_input_size, output_size=g_output_size)
     D = model.Discriminator(input_size=img_width * img_height, output_size = d_output_size)
 
@@ -133,4 +133,4 @@ elif args.model == 'GAN':
     G_optimizer = optim.Adam(G.parameters(), lr=LR)
     D_optimizer = optim.Adam(D.parameters(), lr=LR)
     for epoch in range(1, args.epochs + 1):
-        utils.train_minimax(D, G, train_loader, epoch, D_optimizer, G_optimizer, args.batch_size)
+        utils.train_minimax(D, G, train_loader, epoch, D_optimizer, G_optimizer, minibatch_size)
