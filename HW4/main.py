@@ -82,7 +82,6 @@ elif args.model=='GAN':
     test_dataset = datasets.MNIST(root='./data/',train=False, 
                            transform=gan_transform)
 
-    pdb.set_trace()
     train_img = torch.stack([torch.FloatTensor(d[0]) for d in train_dataset])
     train_label = torch.LongTensor([d[1] for d in train_dataset])
 
@@ -133,4 +132,4 @@ elif args.model == 'GAN':
     G_optimizer = optim.Adam(G.parameters(), lr=LR)
     D_optimizer = optim.Adam(D.parameters(), lr=LR)
     for epoch in range(1, args.epochs + 1):
-        utils.train_minimax(D, G, train_loader, epoch, D_optimizer, G_optimizer, minibatch_size)
+        utils.train_minimax(D, G, train_loader, epoch, D_optimizer, G_optimizer, args.batch_size)
