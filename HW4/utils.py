@@ -112,7 +112,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\t Generator Loss: {:.6f}, Disciminator Loss: {:.6f}'.format(
                 epoch, batch_id * len(img), len(train_loader.dataset),
                 100. * batch_id / len(train_loader),
-                g_loss/ number_generator_obs, d_avg_loss / number_discriminator_obs))
+                gen_loss.data[0] / float(generator_batch_size), .5 * (fake_loss.data[0] + real_loss.data[0])))
     print('====> Epoch: {} Generator loss: {:.4f}, Discr. Loss: {:.4f}'.format(
           epoch, g_loss/ number_generator_obs, d_avg_loss / number_discriminator_obs))
 
