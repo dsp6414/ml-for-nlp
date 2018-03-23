@@ -100,6 +100,7 @@ elif args.model=='GAN':
     img_height = train_img.size()[3]
 
 if args.model == 'VAE':
+    LR = 2e-4
     model = model.VAE(img_width * img_height, HIDDEN1, HIDDEN2)
     if USE_CUDA:
         model.cuda()

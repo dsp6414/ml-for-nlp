@@ -74,7 +74,6 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         fake_loss.backward()
 
         ## REAL DATA:
-        pdb.set_trace()
         real_img = img.view(batch_size, -1)
         real_decision = discriminator_model(real_img) # batch_size x 1
         desired_real_decision= Variable(torch.ones((batch_size,1)))
@@ -109,7 +108,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         g_loss += gen_loss.data[0]
         number_generator_obs += generator_batch_size
 
-        if batch_id % 10 == 0:
+        if batch_id % 100 == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\t Generator Loss: {:.6f}, Disciminator Loss: {:.6f}'.format(
                 epoch, batch_id * len(img), len(train_loader.dataset),
                 100. * batch_id / len(train_loader),
