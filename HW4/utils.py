@@ -41,6 +41,8 @@ def train(model, train_loader, epoch, optimizer):
 
 def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_optimizer, G_optimizer, batch_size):
     batch_size = int(batch_size)
+    d_steps = batch_size
+    g_steps = batch_size
     criterion = nn.BCELoss()
     discriminator_model.train()
     generative_model.train()
@@ -60,32 +62,38 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
 
         ## FAKE DATA
         # Generate some noise from normal dist
-        z = torch.randn(batch_size/2, 1) # [batch_size x g_input_dim]
+        z = torch.randn(batch_size, 1) # [batch_size x g_input_dim]
         z = Variable(z)
         if USE_CUDA: 
             z = z.cuda()
 
-        # Pass into generator
-        fake_img = generative_model(z).detach() # is .detach() necessary?
-        fake_decision = discriminator_model(fake_img)
-        desired_fake_decision = Variable(torch.zeros((batch_size/2, 1)))
-        if USE_CUDA:
-            desired_fake_decision = desired_fake_decision.cuda()
-        fake_loss = criterion(fake_decision, desired_fake_decision)
-        fake_loss.backward()
 
-        ## REAL DATA:
-        real_img = img.view(batch_size, -1)
-        real_decision = discriminator_model(real_img) # batch_size x 1
-        desired_real_decision= Variable(torch.ones((batch_size/2,1)))
-        if USE_CUDA:
-            desired_real_decision = desired_real_decision.cuda()
-        real_loss = criterion(real_decision, desired_real_decision)
-        real_loss.backward()
-        d_avg_loss += .5 * (fake_loss.data[0] + real_loss.data[0])
+        if batch_id % 2 == 0:
+
+	        # Pass into generator
+	        fake_img = generative_model(z).detach() # is .detach() necessary?
+	        fake_decision = discriminator_model(fake_img)
+	        desired_fake_decision = Variable(torch.zeros((batch_size, 1)))
+	        if USE_CUDA:
+	            desired_fake_decision = desired_fake_decision.cuda()
+	        fake_loss = criterion(fake_decision, desired_fake_decision)
+	        d_avg_loss = fake_loss.data[0]
+	        fake_loss.backward()
+	    else:
+
+	        ## REAL DATA:
+	        real_img = img.view(batch_size, -1)
+	        real_decision = discriminator_model(real_img) # batch_size x 1
+	        desired_real_decision= Variable(torch.ones((batch_size,1)))
+	        if USE_CUDA:
+	            desired_real_decision = desired_real_decision.cuda()
+	        real_loss = criterion(real_decision, desired_real_decision)
+        	# d_avg_loss += .5 * (fake_loss.data[0] + real_loss.data[0])
+        	d_avg_loss = real_loss.data[0]
+        	real_loss.backward()
         D_optimizer.step()
 
-        number_discriminator_obs += batch_size/2
+        number_discriminator_obs += batch_size
 
         ## TRAINING GENERATOR
         G_optimizer.zero_grad()
