@@ -75,7 +75,7 @@ class Discriminator(nn.Module):
         x = F.dropout(x, 0.3)
         x = F.leaky_relu(self.fc3(x), 0.2)
         x = F.dropout(x, 0.3)
-        # x = F.sigmoid(self.fc4(x))
+        x = F.sigmoid(self.fc4(x))
 
         return x
 
