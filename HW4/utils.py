@@ -54,7 +54,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         if USE_CUDA:
             img = img.cuda()
 
-        # TRAINING DISCRMINATOR
+        ##  TRAINING DISCRMINATOR #####################################
         D_optimizer.zero_grad()
 
         ## FAKE DATA
@@ -74,7 +74,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
             if USE_CUDA:
                 desired_fake_decision = desired_fake_decision.cuda()
             fake_loss = criterion(fake_decision, desired_fake_decision)
-            d_avg_loss = fake_loss.data[0]
+            d_batch_loss = fake_loss.data[0]
             fake_loss.backward()
             
         else:
@@ -86,15 +86,15 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
                 desired_real_decision = desired_real_decision.cuda()
             real_loss = criterion(real_decision, desired_real_decision)
             # d_avg_loss += .5 * (fake_loss.data[0] + real_loss.data[0])
-            d_avg_loss = real_loss.data[0]
+            d_batch_loss = real_loss.data[0]
             real_loss.backward()
 
-        if d_avg_loss > 0.5:
+        if d_batch_loss > 0.5:
             D_optimizer.step()
 
         number_discriminator_obs += d_steps
 
-        ## TRAINING GENERATOR
+        ## TRAINING GENERATOR ################################
         G_optimizer.zero_grad()
         # Some noise as input
 
@@ -112,14 +112,14 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         gen_loss.backward()
         G_optimizer.step()
 
-        g_loss += gen_loss.data[0]
+        batch_g_loss = gen_loss.data[0]
         number_generator_obs += g_steps
 
         if batch_id % 200 == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\t Generator Loss: {:.6f}, Disciminator Loss: {:.6f}'.format(
                 epoch, batch_id * len(img), len(train_loader.dataset),
                 100. * batch_id / len(train_loader),
-                gen_loss.data[0] / float(g_steps), d_avg_loss))
+                batch_g_loss, d_batch_loss))
     print('====> Epoch: {} Generator loss: {:.4f}, Discr. Loss: {:.4f}'.format(
           epoch, g_loss/ number_generator_obs, d_avg_loss / number_discriminator_obs))
 
