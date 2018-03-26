@@ -23,7 +23,9 @@ SAMPLES = 64
 parser = argparse.ArgumentParser(description='VAE MNIST')
 parser.add_argument('--model', help='which model to use. VAE or GAN')
 parser.add_argument('--batch-size', type=int, default=100, metavar='N',
-                    help='batch size for training (default: 100)')
+                    help='batch size for training (default: 100). For GAN: use d-steps, g-steps instead.')
+parser.add_argument('--g-steps', type=int, help='how many steps of generator for 1 step of discriminator')
+parser.add_argument('--d-steps', type=int, default=1, help='how many steps of discriminator')
 parser.add_argument('--epochs', type=int, default=10, metavar='N',
                     help='number of epochs to train (default: 10)')
 parser.add_argument('--no-cuda', action='store_true', default=False,
@@ -93,9 +95,9 @@ elif args.model=='GAN':
     train = torch.utils.data.TensorDataset(train_img, train_label)
     val = torch.utils.data.TensorDataset(val_img, val_label)
 
-    train_loader = torch.utils.data.DataLoader(train, batch_size=args.batch_size, shuffle=True)
-    val_loader = torch.utils.data.DataLoader(val, batch_size=args.batch_size, shuffle=True)
-    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.batch_size, shuffle=True)
+    train_loader = torch.utils.data.DataLoader(train, batch_size=args.d_steps, shuffle=True)
+    val_loader = torch.utils.data.DataLoader(val, batch_size=args.d_steps, shuffle=True)
+    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.d_steps, shuffle=True)
     img_width = train_img.size()[2]
     img_height = train_img.size()[3]
 
@@ -133,4 +135,4 @@ elif args.model == 'GAN':
     G_optimizer = optim.Adam(G.parameters(), lr=LR)
     D_optimizer = optim.Adam(D.parameters(), lr=LR)
     for epoch in range(1, args.epochs + 1):
-        utils.train_minimax(D, G, train_loader, epoch, D_optimizer, G_optimizer, args.batch_size)
+        utils.train_minimax(D, G, train_loader, epoch, D_optimizer, G_optimizer, args.d_steps, args.g_steps)
