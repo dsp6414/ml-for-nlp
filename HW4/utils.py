@@ -59,7 +59,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
 
         ## FAKE DATA
         # Generate some noise from normal dist
-        z = torch.randn(batch_size/2, 1)) # [batch_size x g_input_dim]
+        z = torch.randn(batch_size/2, 1) # [batch_size x g_input_dim]
         z = Variable(z)
         if USE_CUDA: 
             z = z.cuda()
@@ -67,7 +67,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         # Pass into generator
         fake_img = generative_model(z).detach() # is .detach() necessary?
         fake_decision = discriminator_model(fake_img)
-        desired_fake_decision = Variable(torch.zeros((batch_size/2, 1)))
+        desired_fake_decision = Variable(torch.zeros((batch_size/2, 1))
         if USE_CUDA:
             desired_fake_decision = desired_fake_decision.cuda()
         fake_loss = criterion(fake_decision, desired_fake_decision)
@@ -90,13 +90,13 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         G_optimizer.zero_grad()
         # Some noise as input
         generator_batch_size = 1
-        z = torch.randn(generator_batch_size, 1)) # [batch_size x g_input_dim]
+        z = torch.randn(generator_batch_size, 1) # [batch_size x g_input_dim]
         z = Variable(z)
         if USE_CUDA: 
             z = z.cuda()
 
         fake_imgs = generative_model(z)
-        desired_genuine = Variable(torch.ones(generator_batch_size, 1))
+        desired_genuine = Variable(torch.ones(generator_batch_size, 1)
         if USE_CUDA:
             desired_genuine = desired_genuine.cuda()
         discriminator_output = discriminator_model(fake_imgs)
