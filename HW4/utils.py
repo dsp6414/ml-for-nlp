@@ -79,8 +79,8 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
 	        fake_loss = criterion(fake_decision, desired_fake_decision)
 	        d_avg_loss = fake_loss.data[0]
 	        fake_loss.backward()
+	        
 	    else:
-
 	        ## REAL DATA:
 	        real_img = img.view(batch_size, -1)
 	        real_decision = discriminator_model(real_img) # batch_size x 1
