@@ -40,6 +40,7 @@ def train(model, train_loader, epoch, optimizer):
           epoch, total_loss / len(train_loader.dataset)))
 
 def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_optimizer, G_optimizer, batch_size):
+    batch_size = int(batch_size)
     criterion = nn.BCELoss()
     discriminator_model.train()
     generative_model.train()
