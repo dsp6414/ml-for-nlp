@@ -67,7 +67,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         # Pass into generator
         fake_img = generative_model(z).detach() # is .detach() necessary?
         fake_decision = discriminator_model(fake_img)
-        desired_fake_decision = Variable(torch.zeros((batch_size/2, 1))
+        desired_fake_decision = Variable(torch.zeros((batch_size/2, 1)))
         if USE_CUDA:
             desired_fake_decision = desired_fake_decision.cuda()
         fake_loss = criterion(fake_decision, desired_fake_decision)
