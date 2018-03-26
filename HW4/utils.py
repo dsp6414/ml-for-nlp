@@ -96,7 +96,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
             z = z.cuda()
 
         fake_imgs = generative_model(z)
-        desired_genuine = Variable(torch.ones(generator_batch_size, 1)
+        desired_genuine = Variable(torch.ones(generator_batch_size, 1))
         if USE_CUDA:
             desired_genuine = desired_genuine.cuda()
         discriminator_output = discriminator_model(fake_imgs)
