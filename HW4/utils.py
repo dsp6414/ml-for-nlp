@@ -59,7 +59,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
 
         ## FAKE DATA
         # Generate some noise from normal dist
-        z = torch.randn((batch_size/2, 1)) # [batch_size x g_input_dim]
+        z = torch.randn(batch_size/2, 1)) # [batch_size x g_input_dim]
         z = Variable(z)
         if USE_CUDA: 
             z = z.cuda()
@@ -90,7 +90,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         G_optimizer.zero_grad()
         # Some noise as input
         generator_batch_size = 1
-        z = torch.randn((generator_batch_size, 1)) # [batch_size x g_input_dim]
+        z = torch.randn(generator_batch_size, 1)) # [batch_size x g_input_dim]
         z = Variable(z)
         if USE_CUDA: 
             z = z.cuda()
