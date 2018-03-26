@@ -88,7 +88,9 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
             # d_avg_loss += .5 * (fake_loss.data[0] + real_loss.data[0])
             d_avg_loss = real_loss.data[0]
             real_loss.backward()
-        D_optimizer.step()
+
+        if d_avg_loss > 0.5:
+            D_optimizer.step()
 
         number_discriminator_obs += d_steps
 
