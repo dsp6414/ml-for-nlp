@@ -123,6 +123,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
             print("STEP", d_batch_loss)
             D_optimizer.step()
 
+        epoch_d_loss += d_batch_loss
         number_discriminator_obs += batch_size
 
         if batch_id % 500 == 0:
