@@ -68,7 +68,6 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         G_optimizer.step()
 
         batch_g_loss = gen_loss.data[0]
-        number_generator_obs += batch_size
         return batch_g_loss, batch_size
 
 
