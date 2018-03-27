@@ -95,9 +95,9 @@ elif args.model=='GAN':
     train = torch.utils.data.TensorDataset(train_img, train_label)
     val = torch.utils.data.TensorDataset(val_img, val_label)
 
-    train_loader = torch.utils.data.DataLoader(train, batch_size=args.d_steps, shuffle=True)
-    val_loader = torch.utils.data.DataLoader(val, batch_size=args.d_steps, shuffle=True)
-    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.d_steps, shuffle=True)
+    train_loader = torch.utils.data.DataLoader(train, batch_size=args.batch_size, shuffle=True)
+    val_loader = torch.utils.data.DataLoader(val, batch_size=args.batch_size, shuffle=True)
+    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.batch_size, shuffle=True)
     img_width = train_img.size()[2]
     img_height = train_img.size()[3]
 
@@ -135,4 +135,4 @@ elif args.model == 'GAN':
     G_optimizer = optim.Adam(G.parameters(), lr=LR)
     D_optimizer = optim.Adam(D.parameters(), lr=LR)
     for epoch in range(1, args.epochs + 1):
-        utils.train_minimax(D, G, train_loader, epoch, D_optimizer, G_optimizer, args.d_steps, args.g_steps)
+        utils.train_minimax(D, G, train_loader, epoch, D_optimizer, G_optimizer, args.d_steps, args.g_steps, args.batch_size)
