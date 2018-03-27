@@ -130,7 +130,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
                 100. * batch_id / len(train_loader),
                 batch_g_loss, d_batch_loss))
     print('====> Epoch: {} Generator loss: {:.4f}, Discr. Loss: {:.4f}'.format(
-          epoch, g_loss/ number_generator_obs, d_avg_loss / number_discriminator_obs))
+          epoch, epoch_g_loss/ number_generator_obs, epoch_d_loss / number_discriminator_obs))
 
 
 
