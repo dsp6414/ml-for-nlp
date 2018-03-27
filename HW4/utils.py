@@ -75,9 +75,9 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         #### DONE TRAINING DISCRIMINATOR -> TRAIN GENERATOR FOR G_STEPS
         if batch_id % d_steps == 0:
             for i in range(g_steps):
-                loss, num_obs = train_generator()
+                batch_g_loss, num_obs = train_generator()
                 number_generator_obs += num_obs
-                epoch_g_loss += loss
+                epoch_g_loss += batch_g_loss
 
         ## CONTINUE TRAINING DISCRIMINATOR
         img = Variable(img)
