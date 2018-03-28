@@ -175,6 +175,8 @@ def eval_minimax(discriminator_model, generative_model, data_loader, epoch, batc
         # d_avg_loss += .5 * (fake_loss.data[0] + real_loss.data[0])
         epoch_d_loss += real_loss.data[0]
 
+    epoch_d_loss = epoch_d_loss / n_batches
+
     print("discr real loss", epoch_d_loss)
 
     # FAKE DATA: DISCRIMINATOR
