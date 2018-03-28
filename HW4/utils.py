@@ -176,6 +176,8 @@ def eval_minimax(discriminator_model, generative_model, data_loader, epoch, batc
         # d_avg_loss += .5 * (fake_loss.data[0] + real_loss.data[0])
         epoch_d_loss += real_loss.data[0]
 
+    print("discr real loss", epoch_d_loss)
+
     # FAKE DATA: DISCRIMINATOR
     n_obs = n_batches * batch_size
 
@@ -193,6 +195,8 @@ def eval_minimax(discriminator_model, generative_model, data_loader, epoch, batc
         desired_fake_decision = desired_fake_decision.cuda()
     fake_loss = criterion(fake_decision, desired_fake_decision)
     d_batch_loss = fake_loss.data[0]
+
+    print('d fake loss', d_batch_loss)
 
     ## AVERAGE REAL AND FAKE
     epoch_d_loss = epoch_d_loss *.5 + d_batch_loss *.5
