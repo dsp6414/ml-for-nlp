@@ -76,6 +76,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         if batch_id % d_steps == 0:
             for i in range(g_steps):
                 batch_g_loss, num_obs = train_generator()
+                print(batch_g_loss, num_obs)
                 number_generator_obs += 1
                 epoch_g_loss += batch_g_loss
 
@@ -114,7 +115,6 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
             if USE_CUDA:
                 desired_real_decision = desired_real_decision.cuda()
             real_loss = criterion(real_decision, desired_real_decision)
-            # d_avg_loss += .5 * (fake_loss.data[0] + real_loss.data[0])
             d_batch_loss = real_loss.data[0]
             real_loss.backward()
 
@@ -199,8 +199,9 @@ def eval_minimax(discriminator_model, generative_model, data_loader, epoch, batc
 
     ## GENERATOR:
     epoch_g_loss, num_obs = eval_generator(n_obs)
+    print(num_obs)
 
-    print('====> Eval set loss: Discriminator: {:.4f}, Generator: {:.4f}'.format(epoch_d_loss, epoch_g_loss))
+    print('====> Eval set loss: Generator Loss: {:.4f}, Discr.: {:.4f}'.format(epoch_g_loss, epoch_d_loss))
 
 
 
