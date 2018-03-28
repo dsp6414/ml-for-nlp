@@ -160,7 +160,7 @@ def eval_minimax(discriminator_model, generative_model, data_loader, epoch, batc
     n_batches = 0
 
     # REAL DATA: DISCRIMINATOR
-    for batch_id, (img, label) in enumerate(train_loader): 
+    for batch_id, (img, label) in enumerate(data_loader): 
         n_batches += 1
         img = Variable(img)
         if USE_CUDA:
