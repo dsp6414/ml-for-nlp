@@ -36,6 +36,8 @@ parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                     help='how many batches to wait before logging training status')
 args = parser.parse_args()
 
+torch.manual_seed(args.seed)
+
 if args.model=='VAE':
     train_dataset = datasets.MNIST(root='./data/',
                             train=True, 

@@ -117,7 +117,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
             d_batch_loss = real_loss.data[0]
             real_loss.backward()
 
-        if d_batch_loss > 0.5:
+        if d_batch_loss > 0.6:
             print("STEP", d_batch_loss)
             D_optimizer.step()
 
