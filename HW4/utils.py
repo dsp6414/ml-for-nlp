@@ -72,7 +72,6 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
 
 
     for batch_id, (img, label) in enumerate(train_loader):
-        print(batch_id)
         #### DONE TRAINING DISCRIMINATOR -> TRAIN GENERATOR FOR G_STEPS
         if batch_id % d_steps == 0:
             for i in range(g_steps):
@@ -133,6 +132,75 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
                 batch_g_loss, d_batch_loss))
     print('====> Epoch: {} Generator loss: {:.4f}, Discr. Loss: {:.4f}'.format(
           epoch, epoch_g_loss/ number_generator_obs, epoch_d_loss / number_discriminator_obs))
+
+def eval_minimax(discriminator_model, generative_model, data_loader, epoch, batch_size):
+    discriminator_model.eval()
+    generative_model.eval()
+
+    def eval_generator(batch_size):
+        # Some noise as input
+        z = torch.randn(batch_size, 1) # [batch_size x g_input_dim]
+        z = Variable(z)
+        if USE_CUDA: 
+            z = z.cuda()
+
+        fake_imgs = generative_model(z)
+        desired_genuine = Variable(torch.ones(batch_size, 1))
+        if USE_CUDA:
+            desired_genuine = desired_genuine.cuda()
+        discriminator_output = discriminator_model(fake_imgs)
+        gen_loss = criterion(discriminator_output, desired_genuine)
+
+        batch_g_loss = gen_loss.data[0]
+        return batch_g_loss, batch_size
+
+    epoch_d_loss = 0.0
+    epoch_g_loss = 0.0
+
+    n_batches = 0
+
+    # REAL DATA: DISCRIMINATOR
+    for batch_id, (img, label) in enumerate(train_loader): 
+        n_batches += 1
+        img = Variable(img)
+        if USE_CUDA:
+            img = img.cuda()
+
+        real_img = img.view(batch_size, -1)
+        real_decision = discriminator_model(real_img) # batch_size x 1
+        desired_real_decision= Variable(torch.ones((batch_size,1)))
+        if USE_CUDA:
+            desired_real_decision = desired_real_decision.cuda()
+        real_loss = criterion(real_decision, desired_real_decision)
+        # d_avg_loss += .5 * (fake_loss.data[0] + real_loss.data[0])
+        epoch_d_loss += real_loss.data[0]
+
+    # FAKE DATA: DISCRIMINATOR
+    n_obs = n_batches * batch_size
+
+    ## FAKE DATA
+    # Generate some noise from normal dist
+    z = torch.randn(n_obs, 1) # [batch_size x g_input_dim]
+    z = Variable(z)
+    if USE_CUDA: 
+        z = z.cuda()
+    # Pass into generator
+    fake_img = generative_model(z).detach() # is .detach() necessary?
+    fake_decision = discriminator_model(fake_img)
+    desired_fake_decision = Variable(torch.zeros((n_obs, 1)))
+    if USE_CUDA:
+        desired_fake_decision = desired_fake_decision.cuda()
+    fake_loss = criterion(fake_decision, desired_fake_decision)
+    d_batch_loss = fake_loss.data[0]
+
+    ## AVERAGE REAL AND FAKE
+    epoch_d_loss = epoch_d_loss *.5 + d_batch_loss *.5
+
+    ## GENERATOR:
+    epoch_g_loss, num_obs = eval_generator(n_obs)
+
+    print('====> Eval set loss: Discriminator: {:.4f}, Generator: {:.4f}'.format(epoch_d_loss, epoch_g_loss))
+
 
 
 
