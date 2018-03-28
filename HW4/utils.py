@@ -166,6 +166,9 @@ def eval_minimax(discriminator_model, generative_model, data_loader, epoch, batc
         if USE_CUDA:
             img = img.cuda()
 
+        img_width = img.size()[2]
+        img_height = img.size()[3]
+
         real_img = img.view(batch_size, -1)
         real_decision = discriminator_model(real_img) # batch_size x 1
         desired_real_decision= Variable(torch.ones((batch_size,1)))
