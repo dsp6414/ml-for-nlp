@@ -203,7 +203,8 @@ def eval_minimax(discriminator_model, generative_model, data_loader, epoch, batc
     print(num_obs)
 
     fake_img = fake_img[0]
-    save_image(comparison.data.cpu(),
+    n = min(8, fake_img.size(0))
+    save_image(fake_img.data.cpu(),
                      'results/generated_' + str(epoch) + '.png', nrow=n, padding=0)
 
     print('====> Eval set loss: Generator Loss: {:.4f}, Discr.: {:.4f}'.format(epoch_g_loss, epoch_d_loss))
