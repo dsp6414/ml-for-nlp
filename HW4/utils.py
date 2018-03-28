@@ -76,7 +76,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         if batch_id % d_steps == 0:
             for i in range(g_steps):
                 batch_g_loss, num_obs = train_generator()
-                number_generator_obs += num_obs
+                number_generator_obs += 1
                 epoch_g_loss += batch_g_loss
 
         ## CONTINUE TRAINING DISCRIMINATOR
@@ -123,7 +123,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
             D_optimizer.step()
 
         epoch_d_loss += d_batch_loss
-        number_discriminator_obs += batch_size
+        number_discriminator_obs += 1
 
         if batch_id % 500 == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\t Generator Loss: {:.6f}, Disciminator Loss: {:.6f}'.format(
