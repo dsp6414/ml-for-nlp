@@ -134,6 +134,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
           epoch, epoch_g_loss/ number_generator_obs, epoch_d_loss / number_discriminator_obs))
 
 def eval_minimax(discriminator_model, generative_model, data_loader, epoch, batch_size):
+    criterion = nn.BCELoss()
     discriminator_model.eval()
     generative_model.eval()
 
