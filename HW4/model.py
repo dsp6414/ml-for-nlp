@@ -4,6 +4,7 @@ from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+import pdb
 
 class VAE(nn.Module):
     def __init__(self, input_sz, hidden_sz, hidden_sz_2):
