@@ -97,7 +97,7 @@ class PixelCNN(nn.Module):
     def __init__(self, input_size, output_size):
         """PixelCNN Model"""
         super(PixelCNN, self).__init__()
-        self.fm = 64
+        fm = 64
         self.net = nn.Sequential(
             MaskedConv2d('A', 1,  fm, 7, 1, 3, bias=False), nn.BatchNorm2d(fm), nn.ReLU(True),
             MaskedConv2d('B', fm, fm, 7, 1, 3, bias=False), nn.BatchNorm2d(fm), nn.ReLU(True),
