@@ -133,7 +133,7 @@ elif args.model == 'GAN':
     if args.generator == 'default':
         G = model.Generator(input_size=g_input_size, output_size=g_output_size)
     else:
-        G = model.PixelCNN(input_size=g_input_size, output_size=g_output_size)
+        G = model.PixelCNN(input_size=g_input_size, output_size=g_output_size, img_width=img_width, img_height=img_height)
     D = model.Discriminator(input_size=img_width * img_height, output_size = d_output_size)
 
     if USE_CUDA:

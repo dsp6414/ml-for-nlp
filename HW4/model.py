@@ -95,7 +95,7 @@ class MaskedConv2d(nn.Conv2d):
         return super(MaskedConv2d, self).forward(x)
 
 class PixelCNN(nn.Module):
-    def __init__(self, input_size, output_size):
+    def __init__(self, input_size, output_size, img_width, img_height):
         """PixelCNN Model"""
         super(PixelCNN, self).__init__()
         fm = 64
@@ -113,6 +113,7 @@ class PixelCNN(nn.Module):
         pdb.set_trace()
     
     def forward(self, x):
+        x = x.view(img_width, img_height)
         out = self.net(x)
         return out
 
