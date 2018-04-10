@@ -108,6 +108,8 @@ class PixelCNN(nn.Module):
             MaskedConv2d('B', fm, fm, 7, 1, 3, bias=False), nn.BatchNorm2d(fm), nn.ReLU(True),
             MaskedConv2d('B', fm, fm, 7, 1, 3, bias=False), nn.BatchNorm2d(fm), nn.ReLU(True),
             nn.Conv2d(fm, 256, 1))
+        print(self.net)
+        pdb.set_trace()
     
     def forward(self, x):
         out = self.net(x)
