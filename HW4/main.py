@@ -34,6 +34,7 @@ parser.add_argument('--seed', type=int, default=1, metavar='S',
                     help='random seed (default: 1)')
 parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                     help='how many batches to wait before logging training status')
+parser.add_argument('--generator', help='default generator or pixel_cnn', default='default')
 args = parser.parse_args()
 
 torch.manual_seed(args.seed)
@@ -128,7 +129,11 @@ elif args.model == 'GAN':
     d_hidden_size = 50   # Discriminator complexity
     d_output_size = 1    # Single dimension for 'real' vs. 'fake'
     minibatch_size = 10
-    G = model.Generator(input_size=g_input_size, output_size=g_output_size)
+
+    if args.generator == 'default':
+        G = model.Generator(input_size=g_input_size, output_size=g_output_size)
+    else:
+        G = model.PixelCNN(input_size=g_input_size, output_size=g_output_size)
     D = model.Discriminator(input_size=img_width * img_height, output_size = d_output_size)
 
     if USE_CUDA:
