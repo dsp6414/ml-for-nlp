@@ -87,6 +87,9 @@ elif args.model=='GAN':
     test_dataset = datasets.MNIST(root='./data/',train=False, 
                            transform=gan_transform)
 
+    pdb.set_trace()
+    print(train_dataset[0])
+
     train_img = torch.stack([torch.FloatTensor(d[0]) for d in train_dataset])
     train_label = torch.LongTensor([d[1] for d in train_dataset])
 
