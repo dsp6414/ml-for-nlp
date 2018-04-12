@@ -38,7 +38,7 @@ args = parser.parse_args()
 
 torch.manual_seed(args.seed)
 
-LR = 1e-3 if args.model = 'VAE' else .0002
+LR = 1e-3 if args.model =='VAE' else .0002
 
 if args.model=='VAE':
     train_dataset = datasets.MNIST(root='./data/',
