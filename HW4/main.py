@@ -124,7 +124,7 @@ if args.model == 'VAE':
         save_image(sample.data.view(SAMPLES, 1, img_width, img_height), 'results/sample_' + str(epoch) + '.png')
 elif args.model == 'GAN':
     # Model params
-    g_input_size = 1     # Random noise dimension coming into generator, per output vector
+    g_input_size = 100     # Random noise dimension coming into generator, per output vector
     g_hidden_size = 50   # Generator complexity
     g_output_size = img_width * img_height    # size of generated output vector
     d_input_size = 100   # Minibatch size - cardinality of distributions ???? Or is this img_width * img_height
