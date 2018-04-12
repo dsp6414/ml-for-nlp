@@ -40,7 +40,7 @@ def train(model, train_loader, epoch, optimizer):
     print('====> Epoch: {} Average loss: {:.4f}'.format(
           epoch, total_loss / len(train_loader.dataset)))
 
-def train_discriminator(discriminator, images, real_labels, fake_images, fake_labels):
+def train_discriminator(discriminator, images, real_labels, fake_images, fake_labels, d_optimizer):
     discriminator.zero_grad()
     outputs = discriminator(images)
     real_loss = criterion(outputs, real_labels)
@@ -55,7 +55,7 @@ def train_discriminator(discriminator, images, real_labels, fake_images, fake_la
     d_optimizer.step()
     return d_loss, real_score, fake_score
 
-def train_generator(generator, discriminator_outputs, real_labels):
+def train_generator(generator, discriminator_outputs, real_labels, g_optimizer):
     generator.zero_grad()
     g_loss = criterion(discriminator_outputs, real_labels)
     g_loss.backward()
@@ -63,7 +63,9 @@ def train_generator(generator, discriminator_outputs, real_labels):
     return g_loss
 
 def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_optimizer, G_optimizer, d_steps, g_steps, batch_size):
-    
+    generator = generative_model
+    discriminator = discriminator_model
+
     # draw samples from the input distribution to inspect the generation on training 
     num_test_samples = 16
     test_noise = Variable(torch.randn(num_test_samples, 100).cuda())
@@ -87,7 +89,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         fake_labels = Variable(torch.zeros(images.size(0)).cuda())
         
         # Train the discriminator
-        d_loss, real_score, fake_score = train_discriminator(discriminator, images, real_labels, fake_images, fake_labels)
+        d_loss, real_score, fake_score = train_discriminator(discriminator, images, real_labels, fake_images, fake_labels, D_optimizer)
         
         # Sample again from the generator and get output from discriminator
         noise = Variable(torch.randn(images.size(0), 100).cuda())
@@ -95,7 +97,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         outputs = discriminator(fake_images)
 
         # Train the generator
-        g_loss = train_generator(generator, outputs, real_labels)
+        g_loss = train_generator(generator, outputs, real_labels, G_optimizer)
         
         if (n+1) % 100 == 0:
             test_images = generator(test_noise)
