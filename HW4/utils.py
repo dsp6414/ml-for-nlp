@@ -117,9 +117,9 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
             d_batch_loss = real_loss.data[0]
             real_loss.backward()
 
-        if d_batch_loss > 0.6:
-            print("STEP", d_batch_loss)
-            D_optimizer.step()
+        # if d_batch_loss > 0.6:
+        #     print("STEP", d_batch_loss)
+        D_optimizer.step()
 
         epoch_d_loss += d_batch_loss
         number_discriminator_obs += 1
@@ -206,7 +206,7 @@ def eval_minimax(discriminator_model, generative_model, data_loader, epoch, batc
     print(num_obs)
 
     n = min(8, fake_img.size(0))
-    pdb.set_trace()
+
     fake_img = fake_img.view(batch_size * n_batches, 1, img_width, img_height)[0]
     save_image(fake_img.data,
                      'results_gan/generated_' + str(epoch) + '.png', nrow=img_height, padding=0)
