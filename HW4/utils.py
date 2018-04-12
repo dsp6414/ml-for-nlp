@@ -113,7 +113,8 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         if USE_CUDA:
             img = img.cuda()
 
-        epoch_d_loss = train_discriminator()
+        d_batch_loss = train_discriminator()
+        epoch_d_loss += d_batch_loss
 
         # ##  TRAINING DISCRMINATOR #####################################
         # D_optimizer.zero_grad()
