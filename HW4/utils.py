@@ -5,8 +5,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision.utils import save_image
-
+import math
 import pdb
+
 
 USE_CUDA = True if torch.cuda.is_available() else False
 
@@ -67,14 +68,6 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
     num_test_samples = 16
     test_noise = Variable(torch.randn(num_test_samples, 100).cuda())
 
-
-    # create figure for plotting
-    size_figure_grid = int(math.sqrt(num_test_samples))
-    fig, ax = plt.subplots(size_figure_grid, size_figure_grid, figsize=(6, 6))
-    for i, j in itertools.product(range(size_figure_grid), range(size_figure_grid)):
-        ax[i,j].get_xaxis().set_visible(False)
-        ax[i,j].get_yaxis().set_visible(False)
-    
     criterion = nn.BCELoss()
     discriminator_model.train()
     generative_model.train()
@@ -106,17 +99,13 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         
         if (n+1) % 100 == 0:
             test_images = generator(test_noise)
-            
-            for k in range(num_test_samples):
-                i = k//4
-                j = k%4
-                ax[i,j].cla()
-                ax[i,j].imshow(test_images[k,:].data.cpu().numpy().reshape(28, 28), cmap='Greys')
-            display.clear_output(wait=True)
-            display.display(plt.gcf())
-            
-            plt.savefig('results/mnist-gan-%03d.png'%num_fig)
-            num_fig += 1
+
+            test_images = test_images.view(num_test_samples, 1, img_width, img_height)
+
+            for num, fake_img in enumerate(test_images):
+                save_image(fake_img.data,
+                         'results_gan/generated_epoch_' + str(epoch) + '_ex'+str(num) +'.png', nrow=img_height, padding=0)
+
             print('Epoch [%d/%d], Step[%d/%d], d_loss: %.4f, g_loss: %.4f, ' 
                   'D(x): %.2f, D(G(z)): %.2f' 
                   %(epoch + 1, num_epochs, n+1, num_batches, d_loss.data[0], g_loss.data[0],
