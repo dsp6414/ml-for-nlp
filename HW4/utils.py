@@ -111,7 +111,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
 
             print('Epoch [%d/%d], Step[%d/%d], d_loss: %.4f, g_loss: %.4f, ' 
                   'D(x): %.2f, D(G(z)): %.2f' 
-                  %(epoch + 1, num_epochs, n+1, num_batches, d_loss, g_loss,
+                  %(epoch + 1, epoch, n+1, num_batches, d_loss, g_loss,
                     real_score.data.mean(), fake_score.data.mean()))
     print('====> Epoch: {} Generator loss: {:.4f}, Discr. Loss: {:.4f}'.format(
           epoch, epoch_g_loss/ number_generator_obs, epoch_d_loss / number_discriminator_obs))
