@@ -112,7 +112,7 @@ class PixelCNN(nn.Module):
     
     def forward(self, x):
         pdb.set_trace()
-        x = x.view(28, 28)
+        x = x.view(-1, 28, 28)
         out = self.net(x)
         return out
 
