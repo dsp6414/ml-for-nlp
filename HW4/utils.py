@@ -91,7 +91,6 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         fake_labels = Variable(torch.zeros(images.size(0)).cuda())
         
         # Train the discriminator
-        pdb.set_trace()
         d_loss, real_score, fake_score = train_discriminator(discriminator, images, real_labels, fake_images, fake_labels, D_optimizer, criterion)
         
         # Sample again from the generator and get output from discriminator
