@@ -39,7 +39,42 @@ def train(model, train_loader, epoch, optimizer):
     print('====> Epoch: {} Average loss: {:.4f}'.format(
           epoch, total_loss / len(train_loader.dataset)))
 
+def train_discriminator(discriminator, images, real_labels, fake_images, fake_labels):
+    discriminator.zero_grad()
+    outputs = discriminator(images)
+    real_loss = criterion(outputs, real_labels)
+    real_score = outputs
+    
+    outputs = discriminator(fake_images) 
+    fake_loss = criterion(outputs, fake_labels)
+    fake_score = outputs
+
+    d_loss = real_loss + fake_loss
+    d_loss.backward()
+    d_optimizer.step()
+    return d_loss, real_score, fake_score
+
+def train_generator(generator, discriminator_outputs, real_labels):
+    generator.zero_grad()
+    g_loss = criterion(discriminator_outputs, real_labels)
+    g_loss.backward()
+    g_optimizer.step()
+    return g_loss
+
 def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_optimizer, G_optimizer, d_steps, g_steps, batch_size):
+    
+    # draw samples from the input distribution to inspect the generation on training 
+    num_test_samples = 16
+    test_noise = Variable(torch.randn(num_test_samples, 100).cuda())
+
+
+    # create figure for plotting
+    size_figure_grid = int(math.sqrt(num_test_samples))
+    fig, ax = plt.subplots(size_figure_grid, size_figure_grid, figsize=(6, 6))
+    for i, j in itertools.product(range(size_figure_grid), range(size_figure_grid)):
+        ax[i,j].get_xaxis().set_visible(False)
+        ax[i,j].get_yaxis().set_visible(False)
+    
     criterion = nn.BCELoss()
     discriminator_model.train()
     generative_model.train()
@@ -49,118 +84,43 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
     number_generator_obs = 0
     number_discriminator_obs = 0
 
-    def train_generator():
-        ## TRAINING GENERATOR ################################
-        G_optimizer.zero_grad()
-        # Some noise as input
-        z = Variable(torch.randn(batch_size, 1)) # [batch_size x g_input_dim]
-        if USE_CUDA: 
-            z = z.cuda()
+    for n, (images, _) in enumerate(train_loader):
+        images = Variable(images.cuda())
+        real_labels = Variable(torch.ones(images.size(0)).cuda())
+        
+        # Sample from generator
+        noise = Variable(torch.randn(images.size(0), 100).cuda())
+        fake_images = generator(noise)
+        fake_labels = Variable(torch.zeros(images.size(0)).cuda())
+        
+        # Train the discriminator
+        d_loss, real_score, fake_score = train_discriminator(discriminator, images, real_labels, fake_images, fake_labels)
+        
+        # Sample again from the generator and get output from discriminator
+        noise = Variable(torch.randn(images.size(0), 100).cuda())
+        fake_images = generator(noise)
+        outputs = discriminator(fake_images)
 
-        fake_imgs = generative_model(z)
-        desired_genuine = Variable(torch.ones(batch_size, 1))
-        if USE_CUDA:
-            desired_genuine = desired_genuine.cuda()
-        discriminator_output = discriminator_model(fake_imgs)
-        gen_loss = criterion(discriminator_output, desired_genuine)
-        gen_loss.backward()
-        G_optimizer.step()
-
-        batch_g_loss = gen_loss.data[0]
-        return batch_g_loss, 1
-
-    def train_discriminator():
-        D_optimizer.zero_grad()
-        ## FAKE DATA
-        # Generate some noise from normal dist
-        z = Variable(torch.randn(batch_size, 1)) # [batch_size x g_input_dim]
-        if USE_CUDA: 
-            z = z.cuda()
-
-        # Pass into generator
-        fake_img = generative_model(z).detach() # is .detach() necessary?
-        fake_decision = discriminator_model(fake_img)
-        desired_fake_decision = Variable(torch.zeros((batch_size, 1)))
-        if USE_CUDA:
-            desired_fake_decision = desired_fake_decision.cuda()
-        fake_loss = criterion(fake_decision, desired_fake_decision)
-
-        real_img = img.view(batch_size, -1)
-        real_decision = discriminator_model(real_img) # batch_size x 1
-        desired_real_decision= Variable(torch.ones((batch_size,1)))
-        if USE_CUDA:
-            desired_real_decision = desired_real_decision.cuda()
-        real_loss = criterion(real_decision, desired_real_decision)
-        d_batch_loss = real_loss.data[0]
-
-        total_loss = real_loss + fake_loss
-
-        total_loss.backward()
-        D_optimizer.step()
-        return total_loss.data[0]
-
-
-    for batch_id, (img, label) in enumerate(train_loader):
-        #### DONE TRAINING DISCRIMINATOR -> TRAIN GENERATOR FOR G_STEPS
-        if batch_id % d_steps == 0:
-            for i in range(g_steps):
-                batch_g_loss, num_obs = train_generator()
-                number_generator_obs += 1
-                epoch_g_loss += batch_g_loss
-
-        ## CONTINUE TRAINING DISCRIMINATOR
-        img = Variable(img)
-        if USE_CUDA:
-            img = img.cuda()
-
-        d_batch_loss = train_discriminator()
-        epoch_d_loss += d_batch_loss
-
-        # ##  TRAINING DISCRMINATOR #####################################
-        # D_optimizer.zero_grad()
-
-        # ## FAKE DATA
-        # # Generate some noise from normal dist
-        # z = torch.randn(batch_size, 1) # [batch_size x g_input_dim]
-        # z = Variable(z)
-        # if USE_CUDA: 
-        #     z = z.cuda()
-
-
-        # if batch_id % 2 == 0:
-        #     # Pass into generator
-        #     fake_img = generative_model(z).detach() # is .detach() necessary?
-        #     fake_decision = discriminator_model(fake_img)
-        #     desired_fake_decision = Variable(torch.zeros((batch_size, 1)))
-        #     if USE_CUDA:
-        #         desired_fake_decision = desired_fake_decision.cuda()
-        #     fake_loss = criterion(fake_decision, desired_fake_decision)
-        #     d_batch_loss = fake_loss.data[0]
-        #     fake_loss.backward()
+        # Train the generator
+        g_loss = train_generator(generator, outputs, real_labels)
+        
+        if (n+1) % 100 == 0:
+            test_images = generator(test_noise)
             
-        # else:
-        #     ## REAL DATA:
-        #     real_img = img.view(batch_size, -1)
-        #     real_decision = discriminator_model(real_img) # batch_size x 1
-        #     desired_real_decision= Variable(torch.ones((batch_size,1)))
-        #     if USE_CUDA:
-        #         desired_real_decision = desired_real_decision.cuda()
-        #     real_loss = criterion(real_decision, desired_real_decision)
-        #     d_batch_loss = real_loss.data[0]
-        #     real_loss.backward()
-
-        # if d_batch_loss > 0.6:
-        #     print("STEP", d_batch_loss)
-        # D_optimizer.step()
-
-        # epoch_d_loss += d_batch_loss
-        number_discriminator_obs += 1
-
-        if batch_id % 10 == 0:
-            print('Train Epoch: {} [{}/{} ({:.0f}%)]\t Generator Loss: {:.6f}, Disciminator Loss: {:.6f}'.format(
-                epoch, batch_id * len(img), len(train_loader.dataset),
-                100. * batch_id / len(train_loader),
-                batch_g_loss, d_batch_loss))
+            for k in range(num_test_samples):
+                i = k//4
+                j = k%4
+                ax[i,j].cla()
+                ax[i,j].imshow(test_images[k,:].data.cpu().numpy().reshape(28, 28), cmap='Greys')
+            display.clear_output(wait=True)
+            display.display(plt.gcf())
+            
+            plt.savefig('results/mnist-gan-%03d.png'%num_fig)
+            num_fig += 1
+            print('Epoch [%d/%d], Step[%d/%d], d_loss: %.4f, g_loss: %.4f, ' 
+                  'D(x): %.2f, D(G(z)): %.2f' 
+                  %(epoch + 1, num_epochs, n+1, num_batches, d_loss.data[0], g_loss.data[0],
+                    real_score.data.mean(), fake_score.data.mean()))
     print('====> Epoch: {} Generator loss: {:.4f}, Discr. Loss: {:.4f}'.format(
           epoch, epoch_g_loss/ number_generator_obs, epoch_d_loss / number_discriminator_obs))
 
