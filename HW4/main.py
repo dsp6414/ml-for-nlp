@@ -130,7 +130,7 @@ elif args.model == 'GAN':
     d_input_size = 100   # Minibatch size - cardinality of distributions ???? Or is this img_width * img_height
     d_hidden_size = 50   # Discriminator complexity
     d_output_size = 1    # Single dimension for 'real' vs. 'fake'
-    minibatch_size = 10
+
 
     if args.generator == 'default':
         G = model.Generator(input_size=g_input_size, output_size=g_output_size)
