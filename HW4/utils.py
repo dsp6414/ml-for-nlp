@@ -103,7 +103,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         if (n+1) % 100 == 0:
             test_images = generator(test_noise)
 
-            test_images = test_images.view(num_test_samples, 1, img_width, img_height)
+            test_images = test_images.view(num_test_samples, 1, 28, 28)
 
             for num, fake_img in enumerate(test_images):
                 save_image(fake_img.data,
