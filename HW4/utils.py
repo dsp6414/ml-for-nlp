@@ -107,7 +107,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
 
             for num, fake_img in enumerate(test_images):
                 save_image(fake_img.data,
-                         'results_gan/generated_epoch_' + str(epoch) + '_ex'+str(num) +'.png', nrow=img_height, padding=0)
+                         'results_gan/generated_epoch_' + str(epoch) + '_ex'+str(num) +'.png', nrow=28, padding=0)
 
             print('Epoch [%d/%d], Step[%d/%d], d_loss: %.4f, g_loss: %.4f, ' 
                   'D(x): %.2f, D(G(z)): %.2f' 
