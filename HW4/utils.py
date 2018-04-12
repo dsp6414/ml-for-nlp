@@ -80,7 +80,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
     number_discriminator_obs = 0
 
     for n, (images, _) in enumerate(train_loader):
-        images = Variable(images.cuda())
+        images = Variable(images.cuda()).view(batch_size, -1)
         real_labels = Variable(torch.ones(images.size(0)).cuda())
         
         # Sample from generator
