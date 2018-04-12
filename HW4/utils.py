@@ -114,8 +114,6 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
                   'D(x): %.2f, D(G(z)): %.2f' 
                   %(epoch + 1, epoch, n+1, num_batches, d_loss, g_loss,
                     real_score.data.mean(), fake_score.data.mean()))
-    print('====> Epoch: {} Generator loss: {:.4f}, Discr. Loss: {:.4f}'.format(
-          epoch, epoch_g_loss/ number_generator_obs, epoch_d_loss / number_discriminator_obs))
 
 def eval_minimax(discriminator_model, generative_model, data_loader, epoch, batch_size):
     criterion = nn.BCELoss()
