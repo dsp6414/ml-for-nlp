@@ -51,16 +51,16 @@ def train_discriminator(discriminator, images, real_labels, fake_images, fake_la
     fake_score = outputs
 
     d_loss = real_loss + fake_loss
-    d_loss.backward()
+    d_loss.backward(retain_graph=True)
     d_optimizer.step()
-    return d_loss, real_score, fake_score
+    return d_loss.data[0], real_score, fake_score
 
 def train_generator(generator, discriminator_outputs, real_labels, g_optimizer, criterion):
     generator.zero_grad()
     g_loss = criterion(discriminator_outputs, real_labels)
     g_loss.backward()
     g_optimizer.step()
-    return g_loss
+    return g_loss.data[0]
 
 def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_optimizer, G_optimizer, d_steps, g_steps, batch_size):
     generator = generative_model
@@ -111,7 +111,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
 
             print('Epoch [%d/%d], Step[%d/%d], d_loss: %.4f, g_loss: %.4f, ' 
                   'D(x): %.2f, D(G(z)): %.2f' 
-                  %(epoch + 1, num_epochs, n+1, num_batches, d_loss.data[0], g_loss.data[0],
+                  %(epoch + 1, num_epochs, n+1, num_batches, d_loss, g_loss,
                     real_score.data.mean(), fake_score.data.mean()))
     print('====> Epoch: {} Generator loss: {:.4f}, Discr. Loss: {:.4f}'.format(
           epoch, epoch_g_loss/ number_generator_obs, epoch_d_loss / number_discriminator_obs))
