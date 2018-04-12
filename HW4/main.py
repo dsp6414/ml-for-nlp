@@ -124,7 +124,7 @@ if args.model == 'VAE':
         save_image(sample.data.view(SAMPLES, 1, img_width, img_height), 'results/sample_' + str(epoch) + '.png')
 elif args.model == 'GAN':
     # Model params
-    g_input_size = 100     # Random noise dimension coming into generator, per output vector
+    g_input_size = 1     # Random noise dimension coming into generator, per output vector
     g_hidden_size = 50   # Generator complexity
     g_output_size = img_width * img_height    # size of generated output vector
     d_input_size = 100   # Minibatch size - cardinality of distributions ???? Or is this img_width * img_height
@@ -144,5 +144,5 @@ elif args.model == 'GAN':
     G_optimizer = optim.Adam(G.parameters(), lr=LR)
     D_optimizer = optim.Adam(D.parameters(), lr=LR)
     for epoch in range(1, args.epochs + 1):
-        utils.train_minimax(D, G, train_loader, epoch, D_optimizer, G_optimizer, args.d_steps, args.g_steps, args.batch_size)
+        utils.train_minimax(D, G, train_loader, epoch, D_optimizer, G_optimizer, args.d_steps, args.g_steps, args.batch_size, g_input_size)
         # utils.eval_minimax(D, G, val_loader, epoch, args.batch_size)
