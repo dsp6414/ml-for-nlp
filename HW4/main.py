@@ -16,7 +16,6 @@ import pdb
 USE_CUDA = True if torch.cuda.is_available() else False
 HIDDEN1 = 400
 HIDDEN2 = 20
-LR = 1e-3
 SAMPLES = 64
 
 
@@ -38,6 +37,8 @@ parser.add_argument('--generator', help='default generator or pixel_cnn', defaul
 args = parser.parse_args()
 
 torch.manual_seed(args.seed)
+
+LR = 1e-3 if args.model = 'VAE' else .0002
 
 if args.model=='VAE':
     train_dataset = datasets.MNIST(root='./data/',
