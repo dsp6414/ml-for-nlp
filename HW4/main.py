@@ -145,4 +145,4 @@ elif args.model == 'GAN':
     D_optimizer = optim.Adam(D.parameters(), lr=LR)
     for epoch in range(1, args.epochs + 1):
         utils.train_minimax(D, G, train_loader, epoch, D_optimizer, G_optimizer, args.d_steps, args.g_steps, args.batch_size)
-        utils.eval_minimax(D, G, val_loader, epoch, args.batch_size)
+        # utils.eval_minimax(D, G, val_loader, epoch, args.batch_size)
