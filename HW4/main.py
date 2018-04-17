@@ -146,3 +146,5 @@ elif args.model == 'GAN':
     for epoch in range(1, args.epochs + 1):
         utils.train_minimax(D, G, train_loader, epoch, D_optimizer, G_optimizer, args.d_steps, args.g_steps, args.batch_size, g_input_size)
         # utils.eval_minimax(D, G, val_loader, epoch, args.batch_size)
+
+    utils.gen_interpolated_examples(g_input_size)
