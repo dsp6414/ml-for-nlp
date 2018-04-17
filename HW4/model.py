@@ -14,35 +14,77 @@ class VAE(nn.Module):
         self.hidden_sz = hidden_sz
         self.hidden_sz_2 = hidden_sz_2
 
-        self.fc1 = nn.Linear(input_sz, hidden_sz)
-        self.fc21 = nn.Linear(hidden_sz, hidden_sz_2)
-        self.fc22 = nn.Linear(hidden_sz, hidden_sz_2)
-        self.fc3 = nn.Linear(hidden_sz_2, hidden_sz)
-        self.fc4 = nn.Linear(hidden_sz, input_sz)
+        self.input_to_hidden = nn.Linear(input_sz, hidden_sz)
+        self.h1_to_h2 = nn.Linear(hidden_sz, hidden_sz_2)
+        self.h1_to_h2_2 = nn.Linear(hidden_sz, hidden_sz_2)
+        self.h2_to_h1 = nn.Linear(hidden_sz_2, hidden_sz)
+        self.hidden_to_input = nn.Linear(hidden_sz, input_sz)
 
         self.relu = nn.ReLU()
         self.sigmoid = nn.Sigmoid()
 
     def encode(self, x):
-        h1 = self.relu(self.fc1(x))
-        return self.fc21(h1), self.fc22(h1) # mu, logvar
+        h1 = self.relu(self.input_to_hidden(x))
+        return self.h1_to_h2(h1), self.h1_to_h2_2(h1) # mu, logvar
 
     def reparametrize(self, mu, logvar):
         if self.train:
-            std = logvar.mul(0.5).exp_()
+            std = logvar.mul(0.5).exp_() # extract standard deviation
             eps = Variable(std.data.new(std.size()).normal_())
-            return eps.mul(std).add_(mu)
+            return mu + std * eps #eps.mul(std).add_(mu)
         else:
             return mu
 
     def decode(self, z):
-        h3 = self.relu(self.fc3(z))
-        return self.sigmoid(self.fc4(h3))
+        h3 = self.relu(self.h2_to_h1(z))
+        return self.sigmoid(self.hidden_to_input(h3))
 
     def forward(self, x):
         mu, logvar = self.encode(x.view(-1, self.input_sz))
         z = self.reparametrize(mu, logvar)
         return self.decode(z), mu, logvar
+
+class ConditionalVAE(nn.Module):
+    def __init__(self, input_sz, hidden_sz, hidden_sz_2):
+        super(ConditionalVAE, self).__init__()
+
+        self.input_sz = input_sz
+        self.hidden_sz = hidden_sz
+        self.hidden_sz_2 = hidden_sz_2
+
+        self.input_to_hidden = nn.Linear(input_sz + 1, hidden_sz)
+        self.h1_to_h2 = nn.Linear(hidden_sz, hidden_sz_2)
+        self.h1_to_h2_2 = nn.Linear(hidden_sz, hidden_sz_2)
+        self.h2_to_h1 = nn.Linear(hidden_sz_2 + 1, hidden_sz)
+        self.hidden_to_input = nn.Linear(hidden_sz, input_sz)
+
+        self.relu = nn.ReLU()
+        self.sigmoid = nn.Sigmoid()
+
+        self.batch_sz = 128
+
+    def encode(self, x, c):
+        inputs = torch.cat((x, c), 1)
+        h1 = self.relu(self.input_to_hidden(inputs))
+        return self.h1_to_h2(h1), self.h1_to_h2_2(h1) # mu, logvar
+
+    def reparametrize(self, mu, logvar):
+        if self.train:
+            std = logvar.mul(0.5).exp_() # extract standard deviation
+            eps = Variable(std.data.new(std.size()).normal_())
+            return mu + std * eps #eps.mul(std).add_(mu)
+        else:
+            return mu
+
+    def decode(self, z, c):
+        inputs = torch.cat((z, c.unsqueeze(1)), 1)
+        h3 = self.relu(self.h2_to_h1(inputs))
+        return self.sigmoid(self.hidden_to_input(h3))
+
+    def forward(self, x, c):
+        mu, logvar = self.encode(x.view(-1, self.input_sz), c)
+        z = self.reparametrize(mu, logvar)
+        return self.decode(z, c), mu, logvar
 
 class Generator(nn.Module):
     # initializers

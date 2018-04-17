@@ -1,4 +1,5 @@
 import argparse
+import numpy as np
 import torch
 import torch.utils.data
 import torch.autograd as autograd
@@ -21,7 +22,7 @@ SAMPLES = 64
 
 parser = argparse.ArgumentParser(description='VAE MNIST')
 parser.add_argument('--model', help='which model to use. VAE or GAN')
-parser.add_argument('--batch-size', type=int, default=100, metavar='N',
+parser.add_argument('--batch-size', type=int, default=128, metavar='N',
                     help='batch size for training (default: 100). For GAN: use d-steps, g-steps instead.')
 parser.add_argument('--g-steps', type=int, help='how many steps of generator for 1 step of discriminator')
 parser.add_argument('--d-steps', type=int, default=1, help='how many steps of discriminator')
@@ -75,6 +76,7 @@ if args.model=='VAE':
 
     img_width = train_img.size()[2]
     img_height = train_img.size()[3]
+
 elif args.model=='GAN':
     gan_transform = transforms.Compose([
         transforms.ToTensor(),
@@ -107,8 +109,8 @@ elif args.model=='GAN':
     img_height = train_img.size()[3]
 
 if args.model == 'VAE':
-    LR = 2e-4
-    model = model.VAE(img_width * img_height, HIDDEN1, HIDDEN2)
+    LR = 1e-3
+    model = model.ConditionalVAE(img_width * img_height, HIDDEN1, HIDDEN2)
     if USE_CUDA:
         model.cuda()
 
@@ -117,11 +119,19 @@ if args.model == 'VAE':
     for epoch in range(1, args.epochs + 1):
         utils.train(model, train_loader, epoch, optimizer)
         utils.eval(model, val_loader, epoch)
-        sample = Variable(torch.randn(SAMPLES, HIDDEN2))
-        if USE_CUDA:
-            sample = sample.cuda()
-        sample = model.decode(sample).cpu()
-        save_image(sample.data.view(SAMPLES, 1, img_width, img_height), 'results/sample_' + str(epoch) + '.png')
+        
+        if epoch % 10 == 0:
+	        sample = Variable(torch.randn(SAMPLES, HIDDEN2))
+	        if USE_CUDA:
+	            sample = sample.cuda()
+	        pdb.set_trace()
+
+	        c = torch.zeros(SAMPLES).long().random_(0, 10).float()
+
+	        sample = model.decode(sample, Variable(c)).cpu()
+	        # pdb.set_trace()
+	        save_image(sample.data.view(SAMPLES, 1, img_width, img_height), 'results/sample_meh_' + str(epoch) + '.png')
+
 elif args.model == 'GAN':
     # Model params
     g_input_size = 100     # Random noise dimension coming into generator, per output vector

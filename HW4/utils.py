@@ -8,34 +8,48 @@ from torchvision.utils import save_image
 import math
 import pdb
 
-
 USE_CUDA = True if torch.cuda.is_available() else False
+
+batch_size = 128
 
 def loss_func(recon_x, x, mu, logvar, img_sz):
     criterion = F.binary_cross_entropy(recon_x, x.view(-1, img_sz), size_average=False)
     kl_div = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp()) # KL closed form
-
     return criterion + kl_div
 
-def train(model, train_loader, epoch, optimizer):
+    # recon_loss = F.binary_cross_entropy(recon_x, x.view(-1, img_sz), size_average=False) / 128
+    # KLLoss = torch.mean(0.5 * torch.sum(torch.exp(logvar) + mu.pow(2) - 1. - logvar, 1))
+    # return recon_loss + KLLoss
+
+def train(model, train_loader, epoch, optimizer, noise=False):
     model.train()
     total_loss = 0
+
+    noise_factor = 0.25
     for batch_id, (img, label) in enumerate(train_loader):
         img = Variable(img)
+        label = Variable(label.float())
         if USE_CUDA:
             img = img.cuda()
+            label = label.cuda()
         optimizer.zero_grad()
-        recon_batch, mu, logvar = model(img)
+
+        if noise:
+            img_noise = img + noise_factor * Variable(torch.randn(img.size()))
+            img_noise.data.clamp(0., 1.)
+            recon_batch, mu, logvar = model(img_noise, label)
+        else:
+            recon_batch, mu, logvar = model(img, label)
         loss = loss_func(recon_batch, img, mu, logvar, img.size()[2]*img.size()[3])
         loss.backward()
         total_loss += loss.data[0]
         optimizer.step()
 
-        if batch_id % 10 == 0:
-            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                epoch, batch_id * len(img), len(train_loader.dataset),
-                100. * batch_id / len(train_loader),
-                loss.data[0] / len(img)))
+        # if batch_id % 10 == 0:
+        #     print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+        #         epoch, batch_id * len(img), len(train_loader.dataset),
+        #         100. * batch_id / len(train_loader),
+        #         loss.data[0] / len(img)))
 
     print('====> Epoch: {} Average loss: {:.4f}'.format(
           epoch, total_loss / len(train_loader.dataset)))
@@ -221,26 +235,26 @@ def gen_interpolated_examples(model, noise_dim):
 
 
 
-
-def eval(model, data_loader, epoch, batch_sz=100): # maybe need to pass epoch
+def eval(model, data_loader, epoch, batch_sz=128): # maybe need to pass epoch
     model.eval()
     total_loss = 0
     for i, (img, label) in enumerate(data_loader):
         if USE_CUDA:
             img = img.cuda()
-        img = Variable(img, volatile=True)
-        recon_batch, mu, logvar = model(img)
+            label = label.cuda()
+        img = Variable(img, volatile=True) #volatile: uses minimal memory, requires_grad = False
+        label = Variable(label.float(), volatile=True)
+        recon_batch, mu, logvar = model(img, label)
         img_width = img.size()[2]
         img_height = img.size()[3]
         total_loss += loss_func(recon_batch, img, mu, logvar, img_width * img_height).data[0]
 
-        if i == 0:
+        if i == 0 and epoch % 10 == 0:
             n = min(img.size(0), 8)
-
             comparison = torch.cat([img[:n],
                                   recon_batch.view(batch_sz, 1, img_width, img_height)[:n]]) #batch_sz is the first one
             save_image(comparison.data.cpu(),
-                     'results/reconstruction_' + str(epoch) + '.png', nrow=n)
+                     'results/reconstruction_meh_' + str(epoch) + '.png', nrow=n)
 
     total_loss /= len(data_loader.dataset)
     print('====> Eval set loss: {:.4f}'.format(total_loss))
