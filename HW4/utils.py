@@ -110,6 +110,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         # Sample again from the generator and get output from discriminator
         noise = Variable(torch.randn(images.size(0), noise_dim).cuda())
         fake_images = generator(noise)
+        pdb.set_trace()
         outputs = discriminator(fake_images)
 
         # Train the generator
