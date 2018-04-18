@@ -39,7 +39,7 @@ def train(model, train_loader, epoch, optimizer, noise=False):
             img_noise.data.clamp(0., 1.)
             recon_batch, mu, logvar = model(img_noise, label)
         else:
-            recon_batch, mu, logvar = model(img, label)
+            recon_batch, mu, logvar = model(img)
         loss = loss_func(recon_batch, img, mu, logvar, img.size()[2]*img.size()[3])
         loss.backward()
         total_loss += loss.data[0]
