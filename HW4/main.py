@@ -21,7 +21,7 @@ SAMPLES = 64
 
 
 parser = argparse.ArgumentParser(description='VAE MNIST')
-parser.add_argument('--model', help='which model to use. VAE or GAN')
+parser.add_argument('--model', help='which model to use. VAE, GAN, ConditionalVAE')
 parser.add_argument('--batch-size', type=int, default=128, metavar='N',
                     help='batch size for training (default: 128). For GAN: use 100 instead.')
 parser.add_argument('--g-steps', type=int, help='how many steps of generator for 1 step of discriminator')
@@ -41,7 +41,7 @@ torch.manual_seed(args.seed)
 
 LR = 1e-3 if args.model =='VAE' else .0002
 
-if args.model=='VAE':
+if args.model=='VAE' or args.model=='ConditionalVAE':
     train_dataset = datasets.MNIST(root='./data/',
                             train=True, 
                             transform=transforms.ToTensor(),
@@ -108,7 +108,7 @@ elif args.model=='GAN':
     img_width = train_img.size()[2]
     img_height = train_img.size()[3]
 
-if args.model == 'VAE':
+if args.model == 'ConditionalVAE':
     LR = 1e-3
     model = model.ConditionalVAE(img_width * img_height, HIDDEN1, HIDDEN2)
     if USE_CUDA:
@@ -127,10 +127,24 @@ if args.model == 'VAE':
 	        
 	        c = torch.zeros(SAMPLES).long().random_(0, 10).float()
 
+            pdb.set_trace()
+
 	        sample = model.decode(sample, Variable(c)).cpu()
 	        # pdb.set_trace()
 	        save_image(sample.data.view(SAMPLES, 1, img_width, img_height), 'results/sample_meh_' + str(epoch) + '.png')
 
+elif args.model == 'VAE':
+    model = model.VAE(img_width * img_height, HIDDEN1, HIDDEN2)
+    if USE_CUDA:
+        model.cuda()
+
+    optimizer = optim.Adam(model.parameters(), lr=LR)
+
+    for epoch in range(1, args.epochs + 1):
+        utils.train(model, train_loader, epoch, optimizer)
+        utils.eval(model, val_loader, epoch)
+        
+    utils.gen_interpolated_examples(model, HIDDEN2, 'vae',use_decoder=True)
 elif args.model == 'GAN':
     # Model params
     g_input_size = 100     # Random noise dimension coming into generator, per output vector
@@ -156,5 +170,5 @@ elif args.model == 'GAN':
         utils.train_minimax(D, G, train_loader, epoch, D_optimizer, G_optimizer, args.d_steps, args.g_steps, args.batch_size, g_input_size)
         # utils.eval_minimax(D, G, val_loader, epoch, args.batch_size)
 
-    utils.gen_interpolated_examples(G, g_input_size)
+    utils.gen_interpolated_examples(G, g_input_size, 'gan')
     print("Generated interpolated examples.")

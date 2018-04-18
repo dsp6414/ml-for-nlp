@@ -213,7 +213,7 @@ def eval_minimax(discriminator_model, generative_model, data_loader, epoch, batc
     print('====> Eval set loss: Generator Loss: {:.4f}, Discr.: {:.4f}'.format(epoch_g_loss, epoch_d_loss))
 
 
-def gen_interpolated_examples(model, noise_dim):
+def gen_interpolated_examples(model, noise_dim, model_name, use_decoder=False):
     model.eval()
 
     noise_1 = Variable(torch.randn(1, noise_dim)) # [batch_size x g_input_dim]
@@ -227,11 +227,11 @@ def gen_interpolated_examples(model, noise_dim):
     new_noises = [alpha * noise_1 + (1 - alpha) * noise_2 for alpha in alphas]
 
     for alpha, noise in zip(alphas, new_noises):
-        fake_img = model(noise)
+        fake_img = model.decode(noise) if use_decoder else model(noise)
         fake_img = fake_img.view(1, 1, 28, 28)
 
         save_image(fake_img.data,
-                 'results_interp/gan_alpha_' + str(alpha).replace('.','') + '.png', nrow=28, padding=0)
+                 'results_interp/' + model_name + str(alpha).replace('.','') + '.png', nrow=28, padding=0)
 
 
 
