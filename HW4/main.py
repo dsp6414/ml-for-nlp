@@ -124,8 +124,7 @@ if args.model == 'VAE':
 	        sample = Variable(torch.randn(SAMPLES, HIDDEN2))
 	        if USE_CUDA:
 	            sample = sample.cuda()
-	        pdb.set_trace()
-
+	        
 	        c = torch.zeros(SAMPLES).long().random_(0, 10).float()
 
 	        sample = model.decode(sample, Variable(c)).cpu()

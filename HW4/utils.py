@@ -219,7 +219,7 @@ def gen_interpolated_examples(model, noise_dim):
     noise_1 = Variable(torch.randn(batch_size, noise_dim)) # [batch_size x g_input_dim]
     noise_2 = Variable(torch.randn(batch_size, noise_dim))
     if USE_CUDA: 
-        noise = noise.cuda()
+        noise_1 = noise.cuda()
         noise_2 = noise_2.cuda()
 
     alphas = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
