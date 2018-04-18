@@ -157,3 +157,4 @@ elif args.model == 'GAN':
         # utils.eval_minimax(D, G, val_loader, epoch, args.batch_size)
 
     utils.gen_interpolated_examples(G, g_input_size)
+    print("Generated interpolated examples.")

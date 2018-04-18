@@ -231,7 +231,7 @@ def gen_interpolated_examples(model, noise_dim):
         fake_img = fake_img.view(1, 1, 28, 28)
 
         save_image(fake_img.data,
-                 'results_interp/gan_alpha_' + str(alpha) + '.png', nrow=28, padding=0)
+                 'results_interp/gan_alpha_' + str(alpha).replace('.','') + '.png', nrow=28, padding=0)
 
 
 
