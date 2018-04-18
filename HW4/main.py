@@ -42,7 +42,7 @@ torch.manual_seed(args.seed)
 
 LR = 1e-3 if args.model =='VAE' else .0002
 
-if args.model=='VAE' or args.model=='ConditionalVAE':
+if args.model=='VAE' or args.model=='ConditionalVAE' or args.model == 'VIS':
     train_dataset = datasets.MNIST(root='./data/',
                             train=True, 
                             transform=transforms.ToTensor(),
@@ -145,7 +145,7 @@ elif args.model == 'VAE':
         
     utils.gen_interpolated_examples(model, HIDDEN2, 'vae',use_decoder=True)
 elif args.model == 'VIS':
-    HIDDEN2 = 2
+    HIDDEN2 = 21
     model = model.VAE(img_width * img_height, HIDDEN1, HIDDEN2)
     if USE_CUDA:
         model.cuda()
