@@ -43,10 +43,8 @@ def visualize_model(model, data_loader, batch_sz=128, is_conditional=False):
         y = mu[:, 1]
 
         colors = label.data.cpu().numpy()
-
-        pdb.set_trace()
-
-        ax.scatter(x, y, c=label.numpy())
+        ax.scatter(x, y, c=colors)
+        f.savefig('scatter_'+str(i)+'.png')
 
     f.savefig('scatterplot.png',)
 
