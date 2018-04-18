@@ -145,7 +145,8 @@ elif args.model == 'VAE':
         
     utils.gen_interpolated_examples(model, HIDDEN2, 'vae',use_decoder=True)
 elif args.model == 'VIS':
-    HIDDEN2 = 21
+    HIDDEN2 = 2
+    print('visualization: hidden2 = 2')
     model = model.VAE(img_width * img_height, HIDDEN1, HIDDEN2)
     if USE_CUDA:
         model.cuda()
