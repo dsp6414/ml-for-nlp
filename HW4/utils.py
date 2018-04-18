@@ -226,7 +226,7 @@ def gen_interpolated_examples(model, noise_dim):
 
     new_noises = [alpha * noise_1 + (1 - alpha) * noise_2 for alpha in alphas]
 
-    for alpha, noise in zip(alphas, new_noise):
+    for alpha, noise in zip(alphas, new_noises):
         fake_img = model(noise)
         fake_img = fake_img.view(num_test_samples, 1, 28, 28)
 
