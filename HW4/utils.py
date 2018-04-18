@@ -110,7 +110,7 @@ def train_minimax(discriminator_model, generative_model, train_loader, epoch, D_
         # Sample again from the generator and get output from discriminator
         noise = Variable(torch.randn(images.size(0), noise_dim).cuda())
         fake_images = generator(noise)
-        pdb.set_trace()
+        
         outputs = discriminator(fake_images)
 
         # Train the generator
@@ -219,7 +219,7 @@ def gen_interpolated_examples(model, noise_dim):
     noise_1 = Variable(torch.randn(batch_size, noise_dim)) # [batch_size x g_input_dim]
     noise_2 = Variable(torch.randn(batch_size, noise_dim))
     if USE_CUDA: 
-        noise_1 = noise.cuda()
+        noise_1 = noise_1.cuda()
         noise_2 = noise_2.cuda()
 
     alphas = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
