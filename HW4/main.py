@@ -140,7 +140,7 @@ elif args.model == 'VAE':
 
     for epoch in range(1, args.epochs + 1):
         utils.train(model, train_loader, epoch, optimizer)
-        utils.eval(model, val_loader, epoch)
+        #utils.eval(model, val_loader, epoch)
         
     utils.gen_interpolated_examples(model, HIDDEN2, 'vae',use_decoder=True)
 elif args.model == 'GAN':
