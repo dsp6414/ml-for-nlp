@@ -121,17 +121,15 @@ if args.model == 'ConditionalVAE':
         utils.eval(model, val_loader, epoch)
         
         if epoch % 10 == 0:
-	        sample = Variable(torch.randn(SAMPLES, HIDDEN2))
-	        if USE_CUDA:
-	            sample = sample.cuda()
-	        
-	        c = torch.zeros(SAMPLES).long().random_(0, 10).float()
+            sample = Variable(torch.randn(SAMPLES, HIDDEN2))
+            if USE_CUDA:
+                sample = sample.cuda()
+            
+            c = torch.zeros(SAMPLES).long().random_(0, 10).float()
 
-            pdb.set_trace()
-
-	        sample = model.decode(sample, Variable(c)).cpu()
-	        # pdb.set_trace()
-	        save_image(sample.data.view(SAMPLES, 1, img_width, img_height), 'results/sample_meh_' + str(epoch) + '.png')
+            sample = model.decode(sample, Variable(c)).cpu()
+            # pdb.set_trace()
+            save_image(sample.data.view(SAMPLES, 1, img_width, img_height), 'results/sample_meh_' + str(epoch) + '.png')
 
 elif args.model == 'VAE':
     model = model.VAE(img_width * img_height, HIDDEN1, HIDDEN2)
