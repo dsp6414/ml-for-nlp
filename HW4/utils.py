@@ -216,8 +216,8 @@ def eval_minimax(discriminator_model, generative_model, data_loader, epoch, batc
 def gen_interpolated_examples(model, noise_dim):
     model.eval()
 
-    noise_1 = Variable(torch.randn(batch_size, noise_dim)) # [batch_size x g_input_dim]
-    noise_2 = Variable(torch.randn(batch_size, noise_dim))
+    noise_1 = Variable(torch.randn(1, noise_dim)) # [batch_size x g_input_dim]
+    noise_2 = Variable(torch.randn(1, noise_dim))
     if USE_CUDA: 
         noise_1 = noise_1.cuda()
         noise_2 = noise_2.cuda()
