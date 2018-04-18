@@ -38,7 +38,6 @@ parser.add_argument('--generator', help='default generator or pixel_cnn', defaul
 parser.add_argument('--vis', default='None', help='visualization')
 args = parser.parse_args()
 
-print args.model
 torch.manual_seed(args.seed)
 
 LR = 1e-3 if args.model =='VAE' else .0002
