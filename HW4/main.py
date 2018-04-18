@@ -157,8 +157,7 @@ elif args.model == 'VIS':
         utils.train(model, train_loader, epoch, optimizer)
         utils.eval(model, val_loader, epoch)
         
-    utils.gen_interpolated_examples(model, HIDDEN2, 'vae',use_decoder=True)
-
+    utils.visualize_model(model, val_loader)
 elif args.model == 'GAN':
     # Model params
     g_input_size = 100     # Random noise dimension coming into generator, per output vector
