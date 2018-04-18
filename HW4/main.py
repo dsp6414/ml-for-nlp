@@ -23,7 +23,7 @@ SAMPLES = 64
 parser = argparse.ArgumentParser(description='VAE MNIST')
 parser.add_argument('--model', help='which model to use. VAE or GAN')
 parser.add_argument('--batch-size', type=int, default=128, metavar='N',
-                    help='batch size for training (default: 100). For GAN: use d-steps, g-steps instead.')
+                    help='batch size for training (default: 128). For GAN: use 100 instead.')
 parser.add_argument('--g-steps', type=int, help='how many steps of generator for 1 step of discriminator')
 parser.add_argument('--d-steps', type=int, default=1, help='how many steps of discriminator')
 parser.add_argument('--epochs', type=int, default=10, metavar='N',
@@ -157,4 +157,4 @@ elif args.model == 'GAN':
         utils.train_minimax(D, G, train_loader, epoch, D_optimizer, G_optimizer, args.d_steps, args.g_steps, args.batch_size, g_input_size)
         # utils.eval_minimax(D, G, val_loader, epoch, args.batch_size)
 
-    utils.gen_interpolated_examples(g_input_size)
+    utils.gen_interpolated_examples(G, g_input_size)
