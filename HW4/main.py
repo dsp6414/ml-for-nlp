@@ -38,6 +38,7 @@ parser.add_argument('--generator', help='default generator or pixel_cnn', defaul
 parser.add_argument('--vis', default='None', help='visualization')
 args = parser.parse_args()
 
+print args.model
 torch.manual_seed(args.seed)
 
 LR = 1e-3 if args.model =='VAE' else .0002
@@ -118,7 +119,7 @@ if args.model == 'ConditionalVAE':
     optimizer = optim.Adam(model.parameters(), lr=LR)
 
     for epoch in range(1, args.epochs + 1):
-        utils.train(model, train_loader, epoch, optimizer)
+        utils.train(model, train_loader, epoch, optimizer, is_conditional=True)
         utils.eval(model, val_loader, epoch)
         
         if epoch % 10 == 0:
@@ -155,7 +156,7 @@ elif args.model == 'VIS':
 
     for epoch in range(1, args.epochs + 1):
         utils.train(model, train_loader, epoch, optimizer)
-        #utils.eval(model, val_loader, epoch)
+        utils.eval(model, val_loader, epoch)
         
     utils.gen_interpolated_examples(model, HIDDEN2, 'vae',use_decoder=True)
 

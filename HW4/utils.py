@@ -4,6 +4,7 @@ from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+import matplotlib.pyplot as plt
 from torchvision.utils import save_image
 import math
 import pdb
@@ -20,6 +21,29 @@ def loss_func(recon_x, x, mu, logvar, img_sz):
     # recon_loss = F.binary_cross_entropy(recon_x, x.view(-1, img_sz), size_average=False) / 128
     # KLLoss = torch.mean(0.5 * torch.sum(torch.exp(logvar) + mu.pow(2) - 1. - logvar, 1))
     # return recon_loss + KLLoss
+
+def visualize_model(model, data_loader, batch_sz=128, is_conditional=False):
+    f, ax = plt.subplots()
+    model.eval()
+    for i, (img, label) in enumerate(data_loader):
+        if USE_CUDA:
+            img = img.cuda()
+            label = label.cuda()
+        img = Variable(img, volatile=True) #volatile: uses minimal memory, requires_grad = False
+        label = Variable(label.float(), volatile=True)
+
+        if is_conditional:
+            recon_batch, mu, logvar = model(img, label)
+        else:
+            recon_batch, mu, logvar = model(img)
+
+        x = mu[:, 0]
+        y = mu[:, 1]
+
+        ax.scatter(x, y, c=label)
+
+    f.savefig('scatterplot.png',)
+
 
 def train(model, train_loader, epoch, optimizer, noise=False):
     model.train()
@@ -236,7 +260,7 @@ def gen_interpolated_examples(model, noise_dim, model_name, use_decoder=False):
 
 
 
-def eval(model, data_loader, epoch, batch_sz=128): # maybe need to pass epoch
+def eval(model, data_loader, epoch, batch_sz=128, is_conditional=False): # maybe need to pass epoch
     model.eval()
     total_loss = 0
     for i, (img, label) in enumerate(data_loader):
@@ -245,7 +269,11 @@ def eval(model, data_loader, epoch, batch_sz=128): # maybe need to pass epoch
             label = label.cuda()
         img = Variable(img, volatile=True) #volatile: uses minimal memory, requires_grad = False
         label = Variable(label.float(), volatile=True)
-        recon_batch, mu, logvar = model(img, label)
+
+        if is_conditional:
+            recon_batch, mu, logvar = model(img, label)
+        else:
+            recon_batch, mu, logvar = model(img)
         img_width = img.size()[2]
         img_height = img.size()[3]
         total_loss += loss_func(recon_batch, img, mu, logvar, img_width * img_height).data[0]
