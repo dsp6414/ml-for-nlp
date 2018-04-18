@@ -35,6 +35,7 @@ parser.add_argument('--seed', type=int, default=1, metavar='S',
 parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                     help='how many batches to wait before logging training status')
 parser.add_argument('--generator', help='default generator or pixel_cnn', default='default')
+parser.add_argument('--vis', default='None', help='visualization')
 args = parser.parse_args()
 
 torch.manual_seed(args.seed)
@@ -143,6 +144,20 @@ elif args.model == 'VAE':
         #utils.eval(model, val_loader, epoch)
         
     utils.gen_interpolated_examples(model, HIDDEN2, 'vae',use_decoder=True)
+elif args.model == 'VIS':
+    HIDDEN2 = 2
+    model = model.VAE(img_width * img_height, HIDDEN1, HIDDEN2)
+    if USE_CUDA:
+        model.cuda()
+
+    optimizer = optim.Adam(model.parameters(), lr=LR)
+
+    for epoch in range(1, args.epochs + 1):
+        utils.train(model, train_loader, epoch, optimizer)
+        #utils.eval(model, val_loader, epoch)
+        
+    utils.gen_interpolated_examples(model, HIDDEN2, 'vae',use_decoder=True)
+
 elif args.model == 'GAN':
     # Model params
     g_input_size = 100     # Random noise dimension coming into generator, per output vector

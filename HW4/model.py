@@ -41,6 +41,7 @@ class VAE(nn.Module):
 
     def forward(self, x):
         mu, logvar = self.encode(x.view(-1, self.input_sz))
+        pdb.set_trace()
         z = self.reparametrize(mu, logvar)
         return self.decode(z), mu, logvar
 
