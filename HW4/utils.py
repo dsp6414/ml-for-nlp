@@ -43,9 +43,9 @@ def visualize_model(model, data_loader, batch_sz=128, is_conditional=False):
         y = mu[:, 1]
 
         colors = label.data.cpu().numpy()
-        ax.scatter(x, y, c=colors)
-        f.savefig('scatter/scatter_'+str(i)+'.png')
+        im = ax.scatter(x, y, c=colors)
 
+    f.colorbar(im, ax=ax)
     f.savefig('scatter/scatterplot.png',)
 
 
