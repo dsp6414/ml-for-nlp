@@ -44,9 +44,9 @@ def visualize_model(model, data_loader, batch_sz=128, is_conditional=False):
 
         colors = label.data.cpu().numpy()
         ax.scatter(x, y, c=colors)
-        f.savefig('scatter_'+str(i)+'.png')
+        f.savefig('scatter/scatter_'+str(i)+'.png')
 
-    f.savefig('scatterplot.png',)
+    f.savefig('scatter/scatterplot.png',)
 
 
 def train(model, train_loader, epoch, optimizer, noise=False):
