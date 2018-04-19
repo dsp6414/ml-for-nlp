@@ -24,26 +24,28 @@ def loss_func(recon_x, x, mu, logvar, img_sz):
     # KLLoss = torch.mean(0.5 * torch.sum(torch.exp(logvar) + mu.pow(2) - 1. - logvar, 1))
     # return recon_loss + KLLoss
 
-def visualize_model(model, data_loader, batch_sz=128, is_conditional=False):
+def visualize_model(model, data_loaders, batch_sz=128, is_conditional=False):
     f, ax = plt.subplots()
     model.eval()
-    for i, (img, label) in enumerate(data_loader):
-        if USE_CUDA:
-            img = img.cuda()
-            label = label.cuda()
-        img = Variable(img, volatile=True) #volatile: uses minimal memory, requires_grad = False
-        label = Variable(label.float(), volatile=True)
 
-        if is_conditional:
-            recon_batch, mu, logvar = model(img, label)
-        else:
-            recon_batch, mu, logvar = model(img)
+    for data_loader in data_loaders:
+        for i, (img, label) in enumerate(data_loader):
+            if USE_CUDA:
+                img = img.cuda()
+                label = label.cuda()
+            img = Variable(img, volatile=True) #volatile: uses minimal memory, requires_grad = False
+            label = Variable(label.float(), volatile=True)
 
-        x = mu[:, 0]
-        y = mu[:, 1]
+            if is_conditional:
+                recon_batch, mu, logvar = model(img, label)
+            else:
+                recon_batch, mu, logvar = model(img)
 
-        colors = label.data.cpu().numpy()
-        im = ax.scatter(x, y, c=colors)
+            x = mu[:, 0]
+            y = mu[:, 1]
+
+            colors = label.data.cpu().numpy()
+            im = ax.scatter(x, y, c=colors)
 
     f.colorbar(im, ax=ax)
     f.savefig('scatter/scatterplot.png',)

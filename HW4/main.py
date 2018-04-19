@@ -157,7 +157,7 @@ elif args.model == 'VIS':
         utils.train(model, train_loader, epoch, optimizer)
         utils.eval(model, val_loader, epoch)
         
-    utils.visualize_model(model, val_loader)
+    utils.visualize_model(model, [train_loader,val_loader])
 elif args.model == 'GAN':
     # Model params
     g_input_size = 100     # Random noise dimension coming into generator, per output vector
