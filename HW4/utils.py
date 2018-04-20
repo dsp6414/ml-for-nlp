@@ -53,7 +53,6 @@ def visualize_model(model, data_loaders, batch_sz=128, is_conditional=False):
 
 def generate_image_plot(model):
     pdb.set_trace()
-    xx, yy = np.meshgrid(np.linspace(-2, 2, 10), np.linspace(-2, 2, 10))
 
     nx = ny = 10
     x_values = np.linspace(-2, 2, nx)
