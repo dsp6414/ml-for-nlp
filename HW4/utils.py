@@ -67,8 +67,8 @@ def generate_image_plot(model):
 
             if USE_CUDA:
                 z_mu = z_mu.cuda()
-            x_mean = model.decode(z_mu)
-            canvas[(nx-i-1)*28:(nx-i)*28, j*28:(j+1)*28] = x_mean[0].reshape(28, 28)
+            x_mean = model.decode(z_mu).data
+            canvas[(nx-i-1)*28:(nx-i)*28, j*28:(j+1)*28] = x_mean[0].view(28, 28)
 
     plt.figure(figsize=(8, 10))        
     Xi, Yi = np.meshgrid(x_values, y_values)
