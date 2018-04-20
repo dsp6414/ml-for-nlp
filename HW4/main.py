@@ -157,7 +157,7 @@ elif args.model == 'VIS':
         utils.train(model, train_loader, epoch, optimizer)
         utils.eval(model, val_loader, epoch)
 
-    utils.generate_image_plot(model, use_decoder=True)
+    utils.generate_image_plot(model)
         
    #  utils.visualize_model(model, [train_loader,val_loader])
 elif args.model == 'GAN':
