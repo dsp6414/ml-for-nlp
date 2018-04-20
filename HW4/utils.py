@@ -63,7 +63,10 @@ def generate_image_plot(model):
         for j, xi in enumerate(y_values):
             pdb.set_trace()
             z = np.array([[xi, yi]])
-            z_mu = Variable(torch.from_numpy(z))
+            z_mu = Variable(torch.from_numpy(z)).float()
+
+            if USE_CUDA:
+                z_mu = z_mu.cuda()
             x_mean = model.decode(z_mu)
             canvas[(nx-i-1)*28:(nx-i)*28, j*28:(j+1)*28] = x_mean[0].reshape(28, 28)
 
