@@ -61,7 +61,7 @@ def generate_image_plot(model):
     canvas = np.empty((28*ny, 28*nx))
     for i, yi in enumerate(x_values):
         for j, xi in enumerate(y_values):
-            # pdb.set_trace()
+            pdb.set_trace()
             z = np.array([[xi, yi]])
             z_mu = Variable(torch.from_numpy(z))
             x_mean = model.decode(z_mu)
