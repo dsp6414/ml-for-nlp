@@ -50,6 +50,14 @@ def visualize_model(model, data_loaders, batch_sz=128, is_conditional=False):
     f.colorbar(im, ax=ax)
     f.savefig('scatter/scatterplot.png',)
 
+def generate_image_plot(model, use_decoder=True):
+    pdb.set_trace()
+    xx, yy = np.meshgrid(np.linspace(-2, 2, 10), np.linspace(-2, 2, 10))
+
+    preds = model.decode(torch.stack(xx,yy))
+
+
+
 
 def train(model, train_loader, epoch, optimizer, noise=False):
     model.train()

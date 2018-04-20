@@ -156,8 +156,10 @@ elif args.model == 'VIS':
     for epoch in range(1, args.epochs + 1):
         utils.train(model, train_loader, epoch, optimizer)
         utils.eval(model, val_loader, epoch)
+
+    utils.generate_image_plot(model, use_decoder=True)
         
-    utils.visualize_model(model, [train_loader,val_loader])
+   #  utils.visualize_model(model, [train_loader,val_loader])
 elif args.model == 'GAN':
     # Model params
     g_input_size = 100     # Random noise dimension coming into generator, per output vector
