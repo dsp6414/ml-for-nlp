@@ -50,11 +50,28 @@ def visualize_model(model, data_loaders, batch_sz=128, is_conditional=False):
     f.colorbar(im, ax=ax)
     f.savefig('scatter/scatterplot.png',)
 
-def generate_image_plot(model, use_decoder=True):
+def generate_image_plot(model):
     pdb.set_trace()
     xx, yy = np.meshgrid(np.linspace(-2, 2, 10), np.linspace(-2, 2, 10))
 
-    preds = model.decode(torch.stack(xx,yy))
+    nx = ny = 10
+    x_values = np.linspace(-2, 2, nx)
+    y_values = np.linspace(-2, 2, ny)
+
+    canvas = np.empty((28*ny, 28*nx))
+    for i, yi in enumerate(x_values):
+        for j, xi in enumerate(y_values):
+            pdb.set_trace()
+            z = np.array([[xi, yi]])
+            z_mu = Variable(torch.from_numpy(z))
+            x_mean = model.decode(z_mu)
+            canvas[(nx-i-1)*28:(nx-i)*28, j*28:(j+1)*28] = x_mean[0].reshape(28, 28)
+
+    plt.figure(figsize=(8, 10))        
+    Xi, Yi = np.meshgrid(x_values, y_values)
+    plt.imshow(canvas, origin="upper", cmap="gray")
+    plt.tight_layout()
+    plt.savefig('part4.png')
 
 
 
