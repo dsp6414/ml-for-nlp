@@ -63,7 +63,7 @@ def generate_image_plot(model):
         for j, xi in enumerate(y_values):
             pdb.set_trace()
             z = np.array([[xi, yi]])
-            z_mu = Variable(torch.from_numpy(z)).float()
+            z_mu = Variable(torch.from_numpy(z).float())
 
             if USE_CUDA:
                 z_mu = z_mu.cuda()
