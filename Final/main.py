@@ -9,6 +9,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
+import model, utils
+
 parser = argparse.ArgumentParser(description='Pragmatics')
 # parser.add_argument('--model', help='which model to use')
 parser.add_argument('--batch-size', type=int, default=100, metavar='N',
@@ -29,3 +31,9 @@ N_TEST_IMAGES = 100
 N_TEST = N_TEST_IMAGES * 10
 
 N_EXPERIMENT_PAIRS = 100
+
+
+listener0_model = Listener0Model() # need to pass in some parameters
+speaker0_model = Speaker0Model()
+sampling_speaker1_model = SamplingSpeaker1Model()
+# compiled_speaker1_model = Compiledspeaker1Model()
