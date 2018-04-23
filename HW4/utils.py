@@ -21,10 +21,6 @@ def loss_func(recon_x, x, mu, logvar, img_sz):
     kl_div = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp()) # KL closed form
     return criterion + kl_div
 
-    # recon_loss = F.binary_cross_entropy(recon_x, x.view(-1, img_sz), size_average=False) / 128
-    # KLLoss = torch.mean(0.5 * torch.sum(torch.exp(logvar) + mu.pow(2) - 1. - logvar, 1))
-    # return recon_loss + KLLoss
-
 def visualize_model(model, data_loaders, batch_sz=128, is_conditional=False):
     f, ax = plt.subplots()
     model.eval()
@@ -75,9 +71,6 @@ def generate_image_plot(model):
     plt.imshow(canvas, origin="upper", cmap="gray")
     plt.tight_layout()
     plt.savefig('part4.png')
-
-
-
 
 def train(model, train_loader, epoch, optimizer, noise=False):
     model.train()
@@ -291,9 +284,6 @@ def gen_interpolated_examples(model, noise_dim, model_name, use_decoder=False):
         save_image(fake_img.data,
                  'results_interp/' + model_name + str(alpha).replace('.','') + '.png', nrow=28, padding=0)
 
-
-
-
 def eval(model, data_loader, epoch, batch_sz=128, is_conditional=False): # maybe need to pass epoch
     model.eval()
     total_loss = 0
@@ -321,5 +311,3 @@ def eval(model, data_loader, epoch, batch_sz=128, is_conditional=False): # maybe
 
     total_loss /= len(data_loader.dataset)
     print('====> Eval set loss: {:.4f}'.format(total_loss))
-
-
