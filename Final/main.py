@@ -9,7 +9,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
-import model, utils
+import model, utils, corpus
 
 parser = argparse.ArgumentParser(description='Pragmatics')
 # parser.add_argument('--model', help='which model to use')
@@ -32,8 +32,18 @@ N_TEST = N_TEST_IMAGES * 10
 
 N_EXPERIMENT_PAIRS = 100
 
+train_scenes, dev_scenes, test_scenes = corpus.load_abstract()
+
 
 listener0_model = Listener0Model() # need to pass in some parameters
 speaker0_model = Speaker0Model()
 sampling_speaker1_model = SamplingSpeaker1Model()
 # compiled_speaker1_model = Compiledspeaker1Model()
+
+# Train base
+utils.train(train_scenes, dev_scenes, listener0_model)
+utils.train(train_scenes, dev_scenes, speaker0_model)
+
+# Train compiled
+utils.train(train_scenes, dev_scenes, sampling_speaker1_model)
+
