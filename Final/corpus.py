@@ -133,14 +133,13 @@ def load_binarized_feature_file(file_path):
 def load_all_feature_files():
     feature_dfs = []
     for file in os.listdir(data_path + "VisualFeatures"):
-        if not file.endswith("_names.txt"):
+        if not file.endswith("_names.txt") and file.endswith(".txt"):
             file_path = data_path + "VisualFeatures/" + file
-            print(file_path)
             feature_df = load_binarized_feature_file(file_path)
             feature_dfs.append(feature_df)
 
-    pdb.set_trace()
-    merged_df = pd.concat(feature_dfs, axis=0)
+    # num_cols = sum([df.shape[1] for df in feature_dfs])
+    merged_df = pd.concat(feature_dfs, axis=1)
     return merged_df
 
 
