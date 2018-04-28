@@ -9,7 +9,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
-import model, utils, corpus
+import model, util, corpus
 
 parser = argparse.ArgumentParser(description='Pragmatics')
 # parser.add_argument('--model', help='which model to use')
@@ -23,7 +23,7 @@ parser.add_argument('--seed', type=int, default=1, metavar='S',
                     help='random seed (default: 1)')
 parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                     help='how many batches to wait before logging training status')
-parser.add_argumet('--hidden-sz', type=int, default=100,
+parser.add_argument('--hidden-sz', type=int, default=100,
                     help='hidden size of the neural networks')
 args = parser.parse_args()
 
