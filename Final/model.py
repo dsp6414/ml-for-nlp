@@ -5,9 +5,13 @@ from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+import pdb
 
 N_PROP_TYPES = 8
 N_PROP_OBJECTS = 35
+
+def logsumexp(inputs, dim=None, keepdim=False):
+    return (inputs - F.log_softmax(inputs)).mean(dim, keepdim=keepdim)
 
 class Listener0Model(nn.Module):
     def __init__(self, vocab_sz, num_scenes, hidden_sz, output_sz, dropout): #figure out what parameters later
@@ -20,22 +24,22 @@ class Listener0Model(nn.Module):
 
         self.scene_input_sz = N_PROP_TYPES * N_PROP_OBJECTS
 
-        self.scene_encoder = LinearSceneEncoder("Listener0", self.scene_input_sz, hidden_sz) #figure out what parameters later
-        self.string_encoder = LinearStringEncoder("Listener0", vocab_sz, hidden_sz) #figure out what parameters later
+        self.scene_encoder = LinearSceneEncoder("Listener0", self.scene_input_sz, hidden_sz, dropout) #figure out what parameters later
+        self.string_encoder = LinearStringEncoder("Listener0", vocab_sz, hidden_sz, dropout) #figure out what parameters later
         self.scorer = MLPScorer("Listener0", hidden_sz, output_sz, dropout) #figure out what parameters later
         # self.fc = nn.Linear() #Insert something here what is this?
 
 
     def forward(self, data, alt_data): # alt_data seems to be a list, data seems to have both string and image
         scene_enc = self.scene_encoder(data)
-        alt_scene_enc = [self.scene_encoder(alt_data) for i in alt_data]
+        alt_scene_enc = [self.scene_encoder(alt) for alt in alt_data]
         string_enc = self.string_encoder(data) # data has the string?
 
-        scenes = [scene_enc] + alt_scene_enc
-        labels = np.zeros((len(data),))
-        log_probs, accs = self.scorer(scenes, string_enc, labels)
+        scenes = [scene_enc] + alt_scene_enc # List of length 2
+        labels = np.zeros((len(data),)) # length 100
+        log_probs = self.scorer(string_enc, scenes, labels)
 
-        return log_probs, accs
+        return log_probs
 
 class Speaker0Model(nn.Module):
     def __init__(self, vocab_sz, hidden_sz, dropout): #figure out what parameters later
@@ -45,7 +49,7 @@ class Speaker0Model(nn.Module):
         self.hidden_sz = hidden_sz
         self.scene_input_sz = N_PROP_OBJECTS * N_PROP_TYPES
 
-        self.scene_encoder = LinearSceneEncoder("Speaker0SceneEncoder", self.scene_input_sz, hidden_sz)
+        self.scene_encoder = LinearSceneEncoder("Speaker0SceneEncoder", self.scene_input_sz, hidden_sz, dropout)
         self.string_decoder = MLPStringDecoder("Speaker0StringDecoder", self.hidden_sz, self.hidden_sz, self.vocab_sz, dropout) # Not sure what the input and hidden size are for this
         # self.fc = nn.Linear() #Insert something here Why is this needed?
 
@@ -53,7 +57,7 @@ class Speaker0Model(nn.Module):
 
     def forward(self, data, alt_data):
         scene_enc = self.scene_encoder(data)
-        losses = self.string_decoder("", scene_enc, data) # this seems off. no calling alt_data?
+        losses = self.string_decoder(scene_enc, data) # this seems off. no calling alt_data?
 
         return losses, np.asarray(0)
 
@@ -90,7 +94,7 @@ class SamplingSpeaker1Model(nn.Module):
                 fake_scenes.append(data[i]._replace(fake_scenes, alt_data, dropout)) # do I need dropout here
             all_fake_scenes.append(fake_scenes)
 
-            listener_logprobs, accs = self.listener0.forward(fake_scenes, alt_data, dropout) # dropout"
+            listener_logprobs = self.listener0.forward(fake_scenes, alt_data, dropout) # dropout"
             speaker_scores[:, i_sample] = speaker_log_probs
             listener_scores[:, i_sample] = listener_log_probs
 
@@ -164,34 +168,38 @@ class CompiledSpeaker1Model(nn.Module):
         return probs, np.zeros(probs.shape), sample
 
 class LinearStringEncoder(nn.Module):
-    def __init__(self, name, vocab_sz, hidden_sz): #figure out what parameters later
+    def __init__(self, name, vocab_sz, hidden_sz, dropout): #figure out what parameters later
         super(LinearStringEncoder, self).__init__()
         self.name = name
         self.vocab_sz = vocab_sz
         self.hidden_sz = hidden_sz
         self.fc = nn.Linear(vocab_sz, hidden_sz)
+        self.dropout = dropout
 
-    def forward(self, prefix, scenes, dropout):
+    def forward(self, scenes):
         feature_data = Variable(torch.zeros(len(scenes), self.vocab_sz))
         if torch.cuda.is_available():
             feature_data = feature_data.cuda()
 
         for i_scene, scene in enumerate(scenes):
             for word in scene.description:
-                feature_data[i_scene, word] += 1
-        print("LinearStringEncoder_" + prefix)
+                feature_data[i_scene, word] = feature_data[i_scene, word] + 1 # for some reason += is buggy
+        # print("LinearStringEncoder_" + prefix)
+        # print("LinearStringEncoder_")
+
         result = self.fc(feature_data)
         return result
 
 class LinearSceneEncoder(nn.Module):
-    def __init__(self, name, input_sz, hidden_sz): #figure out what parameters later
+    def __init__(self, name, input_sz, hidden_sz, dropout): #figure out what parameters later
         super(LinearSceneEncoder, self).__init__()
         self.name = name
         self.input_sz = input_sz
         self.hidden_sz = hidden_sz
         self.fc = nn.Linear(input_sz, hidden_sz)
+        self.dropout_p = dropout
 
-    def forward(self, prefix, scenes, dropout):
+    def forward(self, scenes):
         feature_data = Variable(torch.zeros(len(scenes), N_PROP_TYPES * N_PROP_OBJECTS))
         if torch.cuda.is_available():
             feature_data = feature_data.cuda()
@@ -200,7 +208,8 @@ class LinearSceneEncoder(nn.Module):
             for prop in scene.props:
                 feature_data[i_scene, prop.type_index * N_PROP_OBJECTS +
                         prop.object_index] = 1
-        print("LinearSceneEncoder_" + prefix)
+        # print("LinearSceneEncoder_" + prefix)
+        # print("LinearSceneEncoder_")
         result = self.fc(feature_data)
         return result
 
@@ -233,7 +242,7 @@ class LSTMStringDecoder(nn.Module):
         return (Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)),
             Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)))
 
-    def forward(self, prefix, encoding, scenes): # why do you need encoding or prefix?
+    def forward(self, encoding, scenes): # why do you need encoding or prefix? QUESTION
         max_words = max(len(scene.description) for scene in scenes)
         word_data = Variable(torch.zeros(len(scenes), max_words))
 
@@ -245,7 +254,8 @@ class LSTMStringDecoder(nn.Module):
             for i_word, word in enumerate(scene.description):
                 word_data[i_scene, i_word] = word
 
-        print("LSTMStringDecoder_" + prefix)
+        # print("LSTMStringDecoder_" + prefix)
+        # print("LSTMStringDecoder_")
 
         hidden = init_hidden()
         embedding = self.embedding(word_data) # find out dimensions of word_data
@@ -259,24 +269,43 @@ class MLPScorer(nn.Module):
         super(MLPScorer, self).__init__()
         self.name = name
         self.output_sz = output_sz
-        self.hidden_sz = hidden_sz
+        self.hidden_sz = hidden_sz # hidden_sz refers to the encoding size?
         self.dropout_p = dropout
 
-        self.linear = nn.Linear(hidden_sz, output_sz)
+        self.intermediate_sz = hidden_sz # not sure..
 
-    def forward(self, prefix, query, targets):
-        print("MLPScorer_" + prefix)
-        
-        num_targets = len(targets)
-        for target in targets:
-            target.unsqueeze_(1) # should be batch_sz, 1, n_dims = 50 (hidden size)
-        query.unsqueeze_(1) # should be batch_sz, 1, n_dims = 50 (hidden size)
-        targets = torch.cat(targets, dim=1)
-        new_query = query.expand(-1, num_targets)
-        new_sum = new_query + targets # element wise summation. MAY NOT WORK
+        self.linear_4 = nn.Linear(hidden_sz, self.intermediate_sz) # Referent (scene) encodings
+        self.linear_5 = nn.Linear(hidden_sz, self.intermediate_sz) # String encodings
+        self.linear_3 = nn.Linear(self.intermediate_sz, 1) # what size is this supposed to be?
 
-        result = self.linear(new_sum).squeeze(1) # should now be batch_sz, n_dims
-        return result
+
+    def forward(self, query, targets, labels): # string_enc, scenes, labels
+        # print("MLPScorer_" + prefix)
+        # print("MLPScorer_")
+
+        # targets = scenes? each is [100 x 50] = batch_size x hidden_sz -> 
+        num_targets = len(targets) # 2 
+
+        targets_after_linear = [self.linear_4(target).unsqueeze(1) for target in targets]
+        targets = torch.cat(targets_after_linear, dim=1)
+
+        string_enc = self.linear_5(query).unsqueeze(1) # w_5 * e_d
+
+        linear_combination = targets + string_enc # batch_sz x 2 x output?
+
+        post_relu = F.relu(linear_combination)
+
+        ss = self.linear_3(post_relu) # [batch_size x 2 x 1]
+
+        # should we output the log softmaxes???
+        return F.log_softmax(ss, dim=1).squeeze() # i think this is right..
+
+        # # query.unsqueeze_(1) # should be batch_sz, 1, n_dims = 50 (hidden size)
+        # new_query = query.expand(-1, num_targets)
+        # new_sum = new_query + targets # element wise summation. MAY NOT WORK
+
+        # result = self.linear(new_sum).squeeze(1) # should now be batch_sz, n_dims
+        # return result
 
 class MLPStringDecoder(nn.Module):
     def __init__(self, name, input_sz, hidden_sz, vocab_sz, dropout):

@@ -23,10 +23,12 @@ parser.add_argument('--seed', type=int, default=1, metavar='S',
                     help='random seed (default: 1)')
 parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                     help='how many batches to wait before logging training status')
-parser.add_argument('--hidden-sz', type=int, default=100,
+parser.add_argument('--hidden-sz', type=int, default=50,
                     help='hidden size of the neural networks')
 parser.add_argument('--LR', type=float, default=1.0,
                     help='learning rate')
+parser.add_argument('--alternatives', type=int, default=1,
+                    help='how many alternatives to find')
 args = parser.parse_args()
 
 torch.manual_seed(args.seed)

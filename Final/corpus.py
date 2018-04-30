@@ -4,6 +4,7 @@ import pandas as pd
 import re
 import pdb
 import os
+import torch
 
 from util import Index
 
@@ -76,8 +77,7 @@ def load_scenes(scene_props):
 
     word_counter = defaultdict(lambda: 0)
 
-    feature_df = load_all_feature_files()
-    
+    feature_tensor = load_all_feature_files() # 44 x 10020 col
 
     # Read in the sentence descriptions
     for sent_file_id in range(1, 3):
@@ -121,8 +121,7 @@ def load_scenes(scene_props):
                     word_ids = [WORD_INDEX[w] or 0 for w in words]
 
                     print(scene_id)                 
-                    # features = feature_df.iloc[scene_id, :]
-                    features = None
+                    features = feature_tensor[:, scene_id] # Size 44
                     scenes.append(Scene(image_strid, props, word_ids, features))
 
     n_words = len(word_counter.keys())
@@ -144,7 +143,11 @@ def load_all_feature_files():
 
     # num_cols = sum([df.shape[1] for df in feature_dfs])
     merged_df = pd.concat(feature_dfs, axis=1)
-    return merged_df
+    merged_np = merged_df.values
+    merged_tensor = torch.from_numpy(merged_np)
+
+    # transpose to be [44 x 10020]
+    return merged_tensor.t()
 
 
 def load_abstract():

@@ -1,5 +1,9 @@
 import pdb
 import torch.nn as nn
+import numpy as np
+from torch.autograd import Variable
+import torch
+
 class Struct:
     def __init__(self, **entries):
         rec_entries = {}
@@ -101,13 +105,12 @@ def train(train_scenes, dev_scenes, model, optimizer, args):
     n_train = len(train_scenes) 
     n_test = len(dev_scenes)
     model.train()
-    pdb.set_trace()
 
     criterion = nn.CrossEntropyLoss() # should this be NLL?
 
-    n_train_batches = n_train / args.batch_size
+    n_train_batches = int(n_train / args.batch_size) # just truncate this i guess
 
-    for epoch in range(args.epochs):
+    for epoch in range(1, args.epochs + 1):
         epoch_loss = 0.0
 
         for i_batch in range(n_train_batches):
@@ -119,9 +122,17 @@ def train(train_scenes, dev_scenes, model, optimizer, args):
             alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
             
             outputs = model.forward(batch_data, alt_data)
-            loss = criterion(ouputs, batch_data) # what should these be?
+            pdb.set_trace()
+
+            targets = Variable(torch.zeros(args.batch_size)).long()
+
+            loss = criterion(outputs, targets) # what should these be?
             loss.backward()
             optimizer.step()
             epoch_loss += loss.data[0]
+
+            if (i_batch % 100 == 0):
+                print('Epoch [%d/%d], Step[%d/%d], loss: %.4f' 
+                  %(epoch, args.epochs, i_batch, n_train_batches, loss.data[0])
 
         print('====> Epoch {}: Training Loss {:.4f}'.format(epoch, epoch_loss))
