@@ -42,17 +42,25 @@ N_TEST_IMAGES = 100
 N_TEST = N_TEST_IMAGES * 10
 N_EXPERIMENT_PAIRS = 100
 
+VOCAB_SIZE = 2713
+
+# Not sure about num_scenes??
+NUM_SCENES = 10
+
 train_scenes, dev_scenes, test_scenes = corpus.load_abstract()
 
-listener0_model = model.Listener0Model(args.hidden_sz) # need to pass in some parameters
-speaker0_model = model.Speaker0Model(args.hidden_sz)
-sampling_speaker1_model = model.SamplingSpeaker1Model(args.hidden_sz)
+output_size = 1 # should this be 1? because the output of the listener should just be a probability distr.
+listener0_model = model.Listener0Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, output_size, dropout=0) # need to pass in some parameters
+speaker0_model = model.Speaker0Model(VOCAB_SIZE, args.hidden_sz, dropout=0)
+
+# Not sure what output size of speaker model is..
+sampling_speaker1_model = model.SamplingSpeaker1Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, VOCAB_SIZE, dropout=0)
 # compiled_speaker1_model = model.Compiledspeaker1Model()
 
 # Train base
-utils.train(train_scenes, dev_scenes, listener0_model)
-utils.train(train_scenes, dev_scenes, speaker0_model)
+util.train(train_scenes, dev_scenes, listener0_model)
+util.train(train_scenes, dev_scenes, speaker0_model)
 
 # Train compiled
-utils.train(train_scenes, dev_scenes, sampling_speaker1_model)
+util.train(train_scenes, dev_scenes, sampling_speaker1_model)
 

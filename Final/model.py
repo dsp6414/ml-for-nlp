@@ -22,8 +22,8 @@ class Listener0Model(nn.Module):
 
         self.scene_encoder = LinearSceneEncoder("Listener0", self.scene_input_sz, hidden_sz) #figure out what parameters later
         self.string_encoder = LinearStringEncoder("Listener0", vocab_sz, hidden_sz) #figure out what parameters later
-        self.scorer = MLPScorer("Listener0", hidden_sz, output_sz) #figure out what parameters later
-        self.fc = nn.Linear() #Insert something here
+        self.scorer = MLPScorer("Listener0", hidden_sz, output_sz, dropout) #figure out what parameters later
+        # self.fc = nn.Linear() #Insert something here what is this?
 
 
     def forward(self, data, alt_data): # alt_data seems to be a list, data seems to have both string and image
@@ -45,9 +45,9 @@ class Speaker0Model(nn.Module):
         self.hidden_sz = hidden_sz
         self.scene_input_sz = N_PROP_OBJECTS * N_PROP_TYPES
 
-        self.scene_encoder = LinearSceneEncoder("Speaker0", self.scene_input_sz, hidden_sz)
-        self.string_decoder = MLPStringDecoder("Speaker0", parameters)
-        self.fc = nn.Linear() #Insert something here
+        self.scene_encoder = LinearSceneEncoder("Speaker0SceneEncoder", self.scene_input_sz, hidden_sz)
+        self.string_decoder = MLPStringDecoder("Speaker0StringDecoder", self.hidden_sz, self.hidden_sz, self.vocab_sz, dropout) # Not sure what the input and hidden size are for this
+        # self.fc = nn.Linear() #Insert something here Why is this needed?
 
         self.dropout_p = dropout
 
@@ -64,13 +64,13 @@ class Speaker0Model(nn.Module):
         return probs, np.zeros(probs.shape), sample
 
 class SamplingSpeaker1Model(nn.Module):
-    def __init__(self, dropout, parameters): #figure out what parameters later
+    def __init__(self, vocab_sz, num_scenes, hidden_sz, output_sz, dropout): #figure out what parameters later
         super(SamplingSpeaker1Model, self).__init__()
 
-        self.listener0 = Listener0Model(dropout, parameters)
-        self.speaker0 = Speaker0Model(dropout, parameters)
+        self.listener0 = Listener0Model(vocab_sz, num_scenes, hidden_sz, output_sz, dropout)
+        self.speaker0 = Speaker0Model(vocab_sz, hidden_sz, dropout)
 
-        self.fc = nn.Linear() # figure out parameters
+        # self.fc = nn.Linear() # figure out parameters
 
     def sample(self, data, alt_data, viterbi, quantile=None):
         if viterbi or quantile is not None:
@@ -233,7 +233,7 @@ class LSTMStringDecoder(nn.Module):
         return (Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)),
             Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)))
 
-    def forward(self, prefix, encoding, scenes, dropout):
+    def forward(self, prefix, encoding, scenes): # why do you need encoding or prefix?
         max_words = max(len(scene.description) for scene in scenes)
         word_data = Variable(torch.zeros(len(scenes), max_words))
 
@@ -277,4 +277,33 @@ class MLPScorer(nn.Module):
 
         result = self.linear(new_sum).squeeze(1) # should now be batch_sz, n_dims
         return result
+
+class MLPStringDecoder(nn.Module):
+    def __init__(self, name, input_sz, hidden_sz, vocab_sz, dropout):
+        super(MLPStringDecoder, self).__init__()
+        self.net = nn.Sequential(
+            nn.Linear(input_sz, hidden_sz),
+            nn.Linear(hidden_sz, hidden_sz),
+            nn.Linear(hidden_sz, vocab_sz),
+            nn.Dropout(dropout)
+            )
+
+    def forward(self, scenes):
+        max_words = max(len(scene.description) for scene in scenes)
+
+        word_data = Variable(torch.zeros(len(scenes), max_words))
+
+        if torch.cuda.is_available():
+            word_data = word_data.cuda()
+
+        for i_scene, scene in enumerate(scenes):
+            offset = max_words - len(scene.description)
+            for i_word, word in enumerate(scene.description):
+                word_data[i_scene, i_word] = word
+
+        output = self.net(word_data)
+        return output
+
+
+
 

@@ -121,8 +121,11 @@ def load_scenes(scene_props):
                     word_ids = [WORD_INDEX[w] or 0 for w in words]
 
                     print(scene_id)                 
-                    features = feature_df.iloc[scene_id, :]
+                    # features = feature_df.iloc[scene_id, :]
+                    features = None
                     scenes.append(Scene(image_strid, props, word_ids, features))
+
+    n_words = len(word_counter.keys())
     return scenes
 
 def load_binarized_feature_file(file_path):
@@ -137,13 +140,11 @@ def load_all_feature_files():
             file_path = data_path + "VisualFeatures/" + file
             feature_df = load_binarized_feature_file(file_path)
             feature_dfs.append(feature_df)
+            break
 
     # num_cols = sum([df.shape[1] for df in feature_dfs])
     merged_df = pd.concat(feature_dfs, axis=1)
     return merged_df
-
-
-    
 
 
 def load_abstract():
