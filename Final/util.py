@@ -124,6 +124,9 @@ def train(train_scenes, dev_scenes, model, optimizer, args):
             outputs = model.forward(batch_data, alt_data)
             targets = Variable(torch.zeros(args.batch_size)).long()
 
+            if torch.cuda.is_available():
+                targets = targets.cuda()
+
             loss = criterion(outputs, targets) # what should these be?
             loss.backward()
             optimizer.step()

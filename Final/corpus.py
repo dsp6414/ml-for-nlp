@@ -128,6 +128,8 @@ def load_scenes(scene_props):
     return scenes
 
 def load_binarized_feature_file(file_path):
+    # feature_np = np.loadtxt(file_path, delimiter='\t',)
+
     feature_df = pd.read_csv(file_path, sep='\t', header=None)
     feature_df.dropna(axis=1, how='all', inplace=True)
     return feature_df
@@ -145,6 +147,9 @@ def load_all_feature_files():
     merged_df = pd.concat(feature_dfs, axis=1)
     merged_np = merged_df.values
     merged_tensor = torch.from_numpy(merged_np)
+
+    if torch.cuda.is_available():
+        merged_tensor = merged_tensor.cuda()
 
     # transpose to be [44 x 10020]
     return merged_tensor.t()
