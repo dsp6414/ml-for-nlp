@@ -106,7 +106,7 @@ def train(train_scenes, dev_scenes, model, optimizer, args):
     n_test = len(dev_scenes)
     model.train()
 
-    criterion = nn.CrossEntropyLoss() # should this be NLL?
+    criterion = nn.CrossEntropyLoss() 
 
     n_train_batches = int(n_train / args.batch_size) # just truncate this i guess
 
@@ -122,8 +122,6 @@ def train(train_scenes, dev_scenes, model, optimizer, args):
             alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
             
             outputs = model.forward(batch_data, alt_data)
-            pdb.set_trace()
-
             targets = Variable(torch.zeros(args.batch_size)).long()
 
             loss = criterion(outputs, targets) # what should these be?
@@ -133,6 +131,6 @@ def train(train_scenes, dev_scenes, model, optimizer, args):
 
             if (i_batch % 100 == 0):
                 print('Epoch [%d/%d], Step[%d/%d], loss: %.4f' 
-                  %(epoch, args.epochs, i_batch, n_train_batches, loss.data[0])
+                  %(epoch, args.epochs, i_batch, n_train_batches, loss.data[0]))
 
-        print('====> Epoch {}: Training Loss {:.4f}'.format(epoch, epoch_loss))
+        print('====> Epoch %d: Training loss: %.4f' % (epoch, epoch_loss))

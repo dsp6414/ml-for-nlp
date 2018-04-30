@@ -31,6 +31,7 @@ class Listener0Model(nn.Module):
 
 
     def forward(self, data, alt_data): # alt_data seems to be a list, data seems to have both string and image
+        pdb.set_trace()
         scene_enc = self.scene_encoder(data)
         alt_scene_enc = [self.scene_encoder(alt) for alt in alt_data]
         string_enc = self.string_encoder(data) # data has the string?
@@ -295,10 +296,12 @@ class MLPScorer(nn.Module):
 
         post_relu = F.relu(linear_combination)
 
-        ss = self.linear_3(post_relu) # [batch_size x 2 x 1]
+        ss = self.linear_3(post_relu).squeeze() # [batch_size x 2] after squeeze
+
+        return ss
 
         # should we output the log softmaxes???
-        return F.log_softmax(ss, dim=1).squeeze() # i think this is right..
+        return F.log_softmax(ss, dim=1).squeeze() #i guess not for cross entropy
 
         # # query.unsqueeze_(1) # should be batch_sz, 1, n_dims = 50 (hidden size)
         # new_query = query.expand(-1, num_targets)
