@@ -58,14 +58,15 @@ class Speaker0Model(nn.Module):
 
     def forward(self, data, alt_data):
         scene_enc = self.scene_encoder(data)
-        losses = self.string_decoder(scene_enc, data) # this seems off. no calling alt_data?
+        losses = self.string_decoder(scene_enc, data) # this seems off. no calling alt_data? <- this is right bc speaker0 is naive
 
         return losses, np.asarray(0)
 
     # I have no idea what's going on here
-    def sample(self, data, alt_data, viterbi, quantile=None):
-        scene_enc = self.scene_encoder("", data)
-        probs, sample = self.string_decoder("", scene_enc, viterbi)
+    # def sample(self, data, alt_data, viterbi, quantile=None):
+    def sample(self, data, alt_data):
+        scene_enc = self.scene_encoder(data)
+        probs, sample = self.string_decoder(scene_enc)
         return probs, np.zeros(probs.shape), sample
 
 class SamplingSpeaker1Model(nn.Module):
@@ -243,7 +244,7 @@ class LSTMStringDecoder(nn.Module):
         return (Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)),
             Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)))
 
-    def forward(self, encoding, scenes): # why do you need encoding or prefix? QUESTION
+    def forward(self, scenes): # why do you need encoding or prefix? QUESTION
         max_words = max(len(scene.description) for scene in scenes)
         word_data = Variable(torch.zeros(len(scenes), max_words))
 
@@ -320,7 +321,8 @@ class MLPStringDecoder(nn.Module):
             nn.Dropout(dropout)
             )
 
-    def forward(self, scenes):
+    def forward(self, scene_enc, scenes):
+        pdb.set_trace()
         max_words = max(len(scene.description) for scene in scenes)
 
         word_data = Variable(torch.zeros(len(scenes), max_words))
