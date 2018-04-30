@@ -65,9 +65,7 @@ if torch.cuda.is_available():
 	listener0_model.cuda()
 	speaker0_model.cuda()
 	sampling_speaker1_model.cuda()
-	compiled_speaker1_model.cuda()
-
-
+	# compiled_speaker1_model.cuda()
 
 
 optimizer_l0 = optim.Adam(listener0_model.parameters(), lr=LR)
