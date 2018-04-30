@@ -61,6 +61,15 @@ speaker0_model = model.Speaker0Model(VOCAB_SIZE, args.hidden_sz, dropout=0)
 sampling_speaker1_model = model.SamplingSpeaker1Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, VOCAB_SIZE, dropout=0)
 # compiled_speaker1_model = model.Compiledspeaker1Model()
 
+if torch.cuda.is_available():
+	listener0_model.cuda()
+	speaker0_model.cuda()
+	sampling_speaker1_model.cuda()
+	compiled_speaker1_model.cuda()
+
+
+
+
 optimizer_l0 = optim.Adam(listener0_model.parameters(), lr=LR)
 optimizer_s0 = optim.Adam(listener0_model.parameters(), lr=LR)
 optimizer_ss1 = optim.Adam(listener0_model.parameters(), lr=LR)
