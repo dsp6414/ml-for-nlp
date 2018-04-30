@@ -25,6 +25,8 @@ parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                     help='how many batches to wait before logging training status')
 parser.add_argument('--hidden-sz', type=int, default=100,
                     help='hidden size of the neural networks')
+parser.add_argument('--LR', type=float, default=1.0,
+                    help='learning rate')
 args = parser.parse_args()
 
 torch.manual_seed(args.seed)
@@ -57,10 +59,14 @@ speaker0_model = model.Speaker0Model(VOCAB_SIZE, args.hidden_sz, dropout=0)
 sampling_speaker1_model = model.SamplingSpeaker1Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, VOCAB_SIZE, dropout=0)
 # compiled_speaker1_model = model.Compiledspeaker1Model()
 
+optimizer_l0 = optim.Adam(listener0_model.parameters(), lr=LR)
+optimizer_s0 = optim.Adam(listener0_model.parameters(), lr=LR)
+optimizer_ss1 = optim.Adam(listener0_model.parameters(), lr=LR)
+
 # Train base
-util.train(train_scenes, dev_scenes, listener0_model)
-util.train(train_scenes, dev_scenes, speaker0_model)
+util.train(train_scenes, dev_scenes, listener0_model, optimizer_l0, args)
+util.train(train_scenes, dev_scenes, speaker0_model, optimizer_s0, args)
 
 # Train compiled
-util.train(train_scenes, dev_scenes, sampling_speaker1_model)
+util.train(train_scenes, dev_scenes, sampling_speaker1_model, optimizer_ss1, args)
 

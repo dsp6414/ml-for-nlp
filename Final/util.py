@@ -1,3 +1,5 @@
+import pdb
+import torch.nn as nn
 class Struct:
     def __init__(self, **entries):
         rec_entries = {}
@@ -93,3 +95,33 @@ def tree_zip(*trees):
         zipped_children_rec = [tree_zip(*z) for z in zipped_children]
         return tuple(zipped_children_rec)
     return trees
+
+# listener
+def train(train_scenes, dev_scenes, model, optimizer, args):
+    n_train = len(train_scenes) 
+    n_test = len(dev_scenes)
+    model.train()
+    pdb.set_trace()
+
+    criterion = nn.CrossEntropyLoss() # should this be NLL?
+
+    n_train_batches = n_train / args.batch_size
+
+    for epoch in range(args.epochs):
+        epoch_loss = 0.0
+
+        for i_batch in range(n_train_batches):
+            batch_data = train_scenes[i_batch * args.batch_size : 
+                                      (i_batch + 1) * args.batch_size]
+            alt_indices = \
+                    [np.random.choice(n_train, size=args.batch_size)
+                     for i_alt in range(args.alternatives)]
+            alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
+            
+            outputs = model.forward(batch_data, alt_data)
+            loss = criterion(ouputs, batch_data) # what should these be?
+            loss.backward()
+            optimizer.step()
+            epoch_loss += loss.data[0]
+
+        print('====> Epoch {}: Training Loss {:.4f}'.format(epoch, epoch_loss))
