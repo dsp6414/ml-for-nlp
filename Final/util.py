@@ -114,6 +114,7 @@ def train(train_scenes, dev_scenes, model, optimizer, args):
         epoch_loss = 0.0
 
         for i_batch in range(n_train_batches):
+            optimizer.zero_grad()
             batch_data = train_scenes[i_batch * args.batch_size : 
                                       (i_batch + 1) * args.batch_size]
             alt_indices = \
