@@ -45,7 +45,7 @@ class Listener0Model(nn.Module):
         return log_probs
 
 class Speaker0Model(nn.Module):
-    def __init__(self, vocab_sz, hidden_sz, dropout): #figure out what parameters later
+    def __init__(self, vocab_sz, hidden_sz, dropout, string_decoder='MLP'): #figure out what parameters later
         super(Speaker0Model, self).__init__()
 
         self.vocab_sz = vocab_sz
@@ -53,11 +53,16 @@ class Speaker0Model(nn.Module):
         self.scene_input_sz = N_PROP_OBJECTS * N_PROP_TYPES
 
         self.scene_encoder = LinearSceneEncoder("Speaker0SceneEncoder", self.scene_input_sz, hidden_sz, dropout)
-        self.string_decoder = MLPStringDecoder("Speaker0StringDecoder", self.hidden_sz, self.hidden_sz, self.vocab_sz, dropout) # Not sure what the input and hidden size are for this
-        
-        embedding_dim = self.hidden_sz # ???
-        # self.string_decoder = LSTMStringDecoder("Speaker0StringDecoder", self.vocab_sz, embedding_dim, self.hidden_sz, dropout)
 
+        embedding_dim = self.hidden_sz # ???
+
+        if string_decoder == 'LSTM':
+            self.string_decoder = LSTMStringDecoder("Speaker0StringDecoder", self.vocab_sz, embedding_dim, self.hidden_sz, dropout)
+        else:
+            self.string_decoder = MLPStringDecoder("Speaker0StringDecoder", self.hidden_sz, self.vocab_sz, dropout) # Not sure what the input and hidden size are for this
+        
+        
+        # 
         # name, vocab_sz, embedding_dim, hidden_sz, dropout, num_layers=2):
         # self.fc = nn.Linear() #Insert something here Why is this needed?
 
@@ -254,7 +259,7 @@ class LSTMStringDecoder(nn.Module):
         return (Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)),
             Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)))
 
-    def forward(self, scene_enc, max_words):
+    def forward(self, scene_enc, scenes, max_words):
         max_words = max(len(scene.description) for scene in scenes)
         word_data = Variable(torch.zeros(len(scenes), max_words))
 
@@ -289,9 +294,6 @@ class MLPScorer(nn.Module):
 
 
     def forward(self, query, targets, labels): # string_enc, scenes, labels
-        # print("MLPScorer_" + prefix)
-        # print("MLPScorer_")
-
         # targets = scenes? each is [100 x 50] = batch_size x hidden_sz -> 
         num_targets = len(targets) # 2 
 
@@ -319,16 +321,9 @@ class MLPScorer(nn.Module):
         # return result
 
 class MLPStringDecoder(nn.Module):
-    def __init__(self, name, input_sz, hidden_sz, vocab_sz, dropout):
+    def __init__(self, name, hidden_sz, vocab_sz, dropout):
         super(MLPStringDecoder, self).__init__()
         self.vocab_sz = vocab_sz
-        self.net = nn.Sequential(
-            nn.Linear(input_sz, hidden_sz),
-            nn.Linear(hidden_sz, hidden_sz),
-            nn.Linear(hidden_sz, vocab_sz),
-            nn.Dropout(dropout)
-            )
-
         self.forward_net = nn.Sequential(
             nn.Linear(2 * vocab_sz + hidden_sz, vocab_sz), # Linear 7
             nn.ReLU(),
@@ -356,12 +351,12 @@ class MLPStringDecoder(nn.Module):
         d_n = Variable(self.one_hot(start_of_sentence, self.vocab_sz)) # [batch_sz x vocab_sz]
         d_prev = Variable(torch.zeros(batch_sz, self.vocab_sz)) # [batch_sz x vocab_sz]
 
-        if torch.cuda.is_available():
-            d_n, d_prev = d_n.cuda(), d_prev.cuda()
-
         losses = []
 
         for i in range(1, max_words):
+            if torch.cuda.is_available():
+                d_n, d_prev = d_n.cuda(), d_prev.cuda()
+
             out = self.forward_step(d_n, d_prev, scene_enc) # [batch_sz x vocab_sz]
             losses.append(out)
             values, indices = torch.max(out, 1)

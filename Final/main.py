@@ -31,6 +31,7 @@ parser.add_argument('--alternatives', type=int, default=1,
                     help='how many alternatives to find')
 parser.add_argument('--dropout', type=float, default =0.0, help='dropout probability')
 parser.add_argument('--model', default=None, help='which model to train (if debugging)')
+parser.add_argument('--dec', default='MLP', help='which string decoder model to use for Speaker0)')
 args = parser.parse_args()
 
 torch.manual_seed(args.seed)
@@ -57,7 +58,7 @@ train_scenes, dev_scenes, test_scenes = corpus.load_abstract()
 
 output_size = 1 # should this be 1? because the output of the listener should just be a probability distr.
 listener0_model = model.Listener0Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, output_size, args.dropout) # need to pass in some parameters
-speaker0_model = model.Speaker0Model(VOCAB_SIZE, args.hidden_sz, args.dropout)
+speaker0_model = model.Speaker0Model(VOCAB_SIZE, args.hidden_sz, args.dropout, args.dec)
 
 # Not sure what output size of speaker model is..
 sampling_speaker1_model = model.SamplingSpeaker1Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, VOCAB_SIZE, args.dropout)
@@ -77,6 +78,9 @@ optimizer_ss1 = optim.Adam(sampling_speaker1_model.parameters(), lr=LR)
 print("Hyperparameters:", args)
 
 if args.model == None:
+	print("Listener0: ", listener0_model)
+	print("Speaker0: ", listener0_model)
+	print("SamplingSpeaker1Model: ", sampling_speaker1_model)
 	# Train base
 	util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
 	util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
@@ -84,10 +88,13 @@ if args.model == None:
 	# Train compiled
 	util.train(train_scenes, sampling_speaker1_model, optimizer_ss1, args)
 elif args.model == 'l0':
+	print("Listener0: ", listener0_model)
 	util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
 elif args.model == 's0':
+	print("Speaker0: ", listener0_model)
 	util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
 elif args.model == 'ss1':
+	print("SamplingSpeaker1Model: ", sampling_speaker1_model)
 	util.train(train_scenes, sampling_speaker1_model, optimizer_ss1, args)
 
 
