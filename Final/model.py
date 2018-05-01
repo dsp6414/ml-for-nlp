@@ -56,7 +56,7 @@ class Speaker0Model(nn.Module):
         self.string_decoder = MLPStringDecoder("Speaker0StringDecoder", self.hidden_sz, self.hidden_sz, self.vocab_sz, dropout) # Not sure what the input and hidden size are for this
         
         embedding_dim = self.hidden_sz # ???
-        #self.string_decoder = LSTMStringDecoder("Speaker0StringDecoder", self.vocab_sz, embedding_dim, self.hidden_sz, dropout)
+        # self.string_decoder = LSTMStringDecoder("Speaker0StringDecoder", self.vocab_sz, embedding_dim, self.hidden_sz, dropout)
 
         # name, vocab_sz, embedding_dim, hidden_sz, dropout, num_layers=2):
         # self.fc = nn.Linear() #Insert something here Why is this needed?
