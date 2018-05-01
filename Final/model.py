@@ -66,7 +66,7 @@ class Speaker0Model(nn.Module):
     def forward(self, data, alt_data):
         scene_enc = self.scene_encoder(data)
         max_len = max(len(scene.description) for scene in data)
-        losses = self.string_decoder(scene_enc, max_len) # this seems off. no calling alt_data? <- this is right bc speaker0 is naive
+        losses = self.string_decoder(scene_enc, data, max_len) # this seems off. no calling alt_data? <- this is right bc speaker0 is naive
 
         return losses
 
