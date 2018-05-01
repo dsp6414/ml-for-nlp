@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser(description='Pragmatics')
 # parser.add_argument('--model', help='which model to use')
 parser.add_argument('--batch-size', type=int, default=100, metavar='N',
                     help='batch size for training (default: 100)')
-parser.add_argument('--epochs', type=int, default=10, metavar='N',
+parser.add_argument('--epochs', type=int, default=20, metavar='N',
                     help='number of epochs to train (default: 10)')
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='enables CUDA training')
@@ -29,6 +29,7 @@ parser.add_argument('--LR', type=float, default=0.01,
                     help='learning rate')
 parser.add_argument('--alternatives', type=int, default=1,
                     help='how many alternatives to find')
+parser.add_argument('--dropout', type=float, default =0.0, help='dropout probability')
 args = parser.parse_args()
 
 torch.manual_seed(args.seed)
@@ -54,11 +55,11 @@ NUM_SCENES = 10
 train_scenes, dev_scenes, test_scenes = corpus.load_abstract()
 
 output_size = 1 # should this be 1? because the output of the listener should just be a probability distr.
-listener0_model = model.Listener0Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, output_size, dropout=0) # need to pass in some parameters
-speaker0_model = model.Speaker0Model(VOCAB_SIZE, args.hidden_sz, dropout=0)
+listener0_model = model.Listener0Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, output_size, args.dropout) # need to pass in some parameters
+speaker0_model = model.Speaker0Model(VOCAB_SIZE, args.hidden_sz, args.dropout)
 
 # Not sure what output size of speaker model is..
-sampling_speaker1_model = model.SamplingSpeaker1Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, VOCAB_SIZE, dropout=0)
+sampling_speaker1_model = model.SamplingSpeaker1Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, VOCAB_SIZE, args.dropout)
 # compiled_speaker1_model = model.Compiledspeaker1Model()
 
 if torch.cuda.is_available():
@@ -69,13 +70,15 @@ if torch.cuda.is_available():
 
 
 optimizer_l0 = optim.Adam(listener0_model.parameters(), lr=LR)
-optimizer_s0 = optim.Adam(listener0_model.parameters(), lr=LR)
-optimizer_ss1 = optim.Adam(listener0_model.parameters(), lr=LR)
+optimizer_s0 = optim.Adam(speaker0_model.parameters(), lr=LR)
+optimizer_ss1 = optim.Adam(sampling_speaker1_model.parameters(), lr=LR)
+
+print("Hyperparameters:", args)
 
 # Train base
 util.train(train_scenes, dev_scenes, listener0_model, optimizer_l0, args)
-util.train(train_scenes, dev_scenes, speaker0_model, optimizer_s0, args)
+#util.train(train_scenes, dev_scenes, speaker0_model, optimizer_s0, args)
 
 # Train compiled
-util.train(train_scenes, dev_scenes, sampling_speaker1_model, optimizer_ss1, args)
+#util.train(train_scenes, dev_scenes, sampling_speaker1_model, optimizer_ss1, args)
 

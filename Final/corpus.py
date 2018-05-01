@@ -119,8 +119,7 @@ def load_scenes(scene_props):
                     words = sent.lower().split()
                     words = ["<s>"] + words + ["</s>"]
                     word_ids = [WORD_INDEX[w] or 0 for w in words]
-
-                    print(scene_id)                 
+              
                     features = feature_tensor[:, scene_id] # Size 44
                     scenes.append(Scene(image_strid, props, word_ids, features))
 
@@ -156,7 +155,7 @@ def load_all_feature_files():
 
 
 def load_abstract():
-    print("Loading feature files...\n")
+    print("Loading feature files...")
     props = load_props()
     norm_props = normalize_props(props)
     scenes = load_scenes(norm_props)

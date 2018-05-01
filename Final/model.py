@@ -321,6 +321,7 @@ class MLPStringDecoder(nn.Module):
             )
 
     def forward(self, scene_enc, scenes):
+        pdb.set_trace()
         max_words = max(len(scene.description) for scene in scenes)
 
         word_data = Variable(torch.zeros(len(scenes), max_words))
