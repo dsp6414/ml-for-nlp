@@ -31,7 +31,6 @@ class Listener0Model(nn.Module):
 
 
     def forward(self, data, alt_data): # alt_data seems to be a list, data seems to have both string and image
-        pdb.set_trace()
         scene_enc = self.scene_encoder(data)
         alt_scene_enc = [self.scene_encoder(alt) for alt in alt_data]
         string_enc = self.string_encoder(data) # data has the string?
@@ -322,7 +321,6 @@ class MLPStringDecoder(nn.Module):
             )
 
     def forward(self, scene_enc, scenes):
-        pdb.set_trace()
         max_words = max(len(scene.description) for scene in scenes)
 
         word_data = Variable(torch.zeros(len(scenes), max_words))

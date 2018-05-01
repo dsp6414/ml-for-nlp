@@ -156,6 +156,7 @@ def load_all_feature_files():
 
 
 def load_abstract():
+    print("Loading feature files...\n")
     props = load_props()
     norm_props = normalize_props(props)
     scenes = load_scenes(norm_props)
@@ -170,4 +171,6 @@ def load_abstract():
             test_scenes.append(scene)
         else:
             train_scenes.append(scene)
+
+    print("All scenes loaded.")
     return train_scenes, dev_scenes, test_scenes
