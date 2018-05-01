@@ -39,7 +39,7 @@ PROP_EMBEDDING_SZ = 50
 
 RHO = 0.95
 EPS = 0.000001
-LR = .01
+LR = .001
 CLIP = 10
 
 N_TEST_IMAGES = 100
@@ -73,7 +73,7 @@ optimizer_s0 = optim.Adam(listener0_model.parameters(), lr=LR)
 optimizer_ss1 = optim.Adam(listener0_model.parameters(), lr=LR)
 
 # Train base
-# util.train(train_scenes, dev_scenes, listener0_model, optimizer_l0, args)
+util.train(train_scenes, dev_scenes, listener0_model, optimizer_l0, args)
 util.train(train_scenes, dev_scenes, speaker0_model, optimizer_s0, args)
 
 # Train compiled
