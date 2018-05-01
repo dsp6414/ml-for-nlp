@@ -347,7 +347,7 @@ class MLPStringDecoder(nn.Module):
         inp = torch.cat([d_n, d_prev, e_r], dim=1) # result has size batch_sz x [2 * vocab + hidden]
         return self.forward_net(inp) # Log softmax or not?? result rn has size [100 x 2713]
 
-    def forward(self, scene_enc, max_words): # Input is image encoding
+    def forward(self, scene_enc, targets, max_words): # Input is image encoding
         # Input is scene_enc: [batch_sz x hidden_sz]
         # max_words = self.max_words
         batch_sz = len(scene_enc)
@@ -357,7 +357,7 @@ class MLPStringDecoder(nn.Module):
         d_prev = Variable(torch.zeros(batch_sz, self.vocab_sz)) # [batch_sz x vocab_sz]
 
         if torch.cuda.is_available():
-            targets, d_n, d_prev = targets.cuda(), d_n.cuda(), d_prev.cuda()
+            d_n, d_prev = d_n.cuda(), d_prev.cuda()
 
         losses = []
 
