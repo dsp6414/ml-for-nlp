@@ -246,7 +246,7 @@ class LSTMStringDecoder(nn.Module):
         self.embedding.weight.data.uniform_(-self.init_param, self.init_param)
         self.linear.weight.data.uniform_(-self.init_param, self.init_param)
 
-    def init_hidden(self, batch_size=100):
+    def init_hidden(self, batch_size):
         if torch.cuda.is_available():
             return (Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)).cuda(),
             Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)).cuda())
@@ -254,7 +254,7 @@ class LSTMStringDecoder(nn.Module):
         return (Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)),
             Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)))
 
-    def forward(self, scene_enc):
+    def forward(self, scene_enc, max_words):
         max_words = max(len(scene.description) for scene in scenes)
         word_data = Variable(torch.zeros(len(scenes), max_words))
 

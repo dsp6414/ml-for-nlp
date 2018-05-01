@@ -30,6 +30,7 @@ parser.add_argument('--LR', type=float, default=0.01,
 parser.add_argument('--alternatives', type=int, default=1,
                     help='how many alternatives to find')
 parser.add_argument('--dropout', type=float, default =0.0, help='dropout probability')
+parser.add_argument('--model', default=None, help='which model to train (if debugging)')
 args = parser.parse_args()
 
 torch.manual_seed(args.seed)
@@ -75,10 +76,20 @@ optimizer_ss1 = optim.Adam(sampling_speaker1_model.parameters(), lr=LR)
 
 print("Hyperparameters:", args)
 
-# Train base
-# util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
-util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
+if args.model == None:
+	# Train base
+	util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
+	util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
 
-# Train compiled
-#util.train(train_scenes, dev_scenes, sampling_speaker1_model, optimizer_ss1, args)
+	# Train compiled
+	util.train(train_scenes, sampling_speaker1_model, optimizer_ss1, args)
+elif args.model == 'l0':
+	util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
+elif args.model == 's0':
+	util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
+elif args.model == 'ss1':
+	util.train(train_scenes, sampling_speaker1_model, optimizer_ss1, args)
+
+
+
 
