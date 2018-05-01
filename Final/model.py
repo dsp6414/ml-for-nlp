@@ -260,6 +260,8 @@ class LSTMStringDecoder(nn.Module):
             Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)))
 
     def forward(self, scene_enc, scenes, max_words):
+        pdb.set_trace()
+        batch_size = len(scene_enc)
         max_words = max(len(scene.description) for scene in scenes)
         word_data = Variable(torch.zeros(len(scenes), max_words))
 
@@ -271,7 +273,9 @@ class LSTMStringDecoder(nn.Module):
             for i_word, word in enumerate(scene.description):
                 word_data[i_scene, i_word] = word
 
-        hidden = init_hidden()
+        word_data = word_data.long()
+
+        hidden = self.init_hidden(batch_size)
         embedding = self.embedding(word_data) # find out dimensions of word_data
         output, hidden = self.lstm(embedding, hidden)
         output = self.dropout(output)
@@ -332,6 +336,8 @@ class MLPStringDecoder(nn.Module):
         self.max_words = 20 #?????
 
     def one_hot(self, batch, depth):
+        if torch.cuda.is_available():
+            batch = batch.cpu()
         ones = torch.sparse.torch.eye(depth)
         return ones.index_select(0,batch)
 
