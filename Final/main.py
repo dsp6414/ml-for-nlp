@@ -25,7 +25,7 @@ parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                     help='how many batches to wait before logging training status')
 parser.add_argument('--hidden-sz', type=int, default=50,
                     help='hidden size of the neural networks')
-parser.add_argument('--LR', type=float, default=1.0,
+parser.add_argument('--LR', type=float, default=0.01,
                     help='learning rate')
 parser.add_argument('--alternatives', type=int, default=1,
                     help='how many alternatives to find')
@@ -39,7 +39,7 @@ PROP_EMBEDDING_SZ = 50
 
 RHO = 0.95
 EPS = 0.000001
-LR = .01
+LR = args.LR
 CLIP = 10
 
 N_TEST_IMAGES = 100
