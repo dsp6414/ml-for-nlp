@@ -10,6 +10,9 @@ import pdb
 N_PROP_TYPES = 8
 N_PROP_OBJECTS = 35
 
+SOS = 1
+EOS = 14
+
 def logsumexp(inputs, dim=None, keepdim=False):
     return (inputs - F.log_softmax(inputs)).mean(dim, keepdim=keepdim)
 
@@ -51,15 +54,21 @@ class Speaker0Model(nn.Module):
 
         self.scene_encoder = LinearSceneEncoder("Speaker0SceneEncoder", self.scene_input_sz, hidden_sz, dropout)
         self.string_decoder = MLPStringDecoder("Speaker0StringDecoder", self.hidden_sz, self.hidden_sz, self.vocab_sz, dropout) # Not sure what the input and hidden size are for this
+        
+        embedding_dim = self.hidden_sz # ???
+        #self.string_decoder = LSTMStringDecoder("Speaker0StringDecoder", self.vocab_sz, embedding_dim, self.hidden_sz, dropout)
+
+        # name, vocab_sz, embedding_dim, hidden_sz, dropout, num_layers=2):
         # self.fc = nn.Linear() #Insert something here Why is this needed?
 
         self.dropout_p = dropout
 
     def forward(self, data, alt_data):
         scene_enc = self.scene_encoder(data)
-        losses = self.string_decoder(scene_enc, data) # this seems off. no calling alt_data? <- this is right bc speaker0 is naive
+        max_len = max(len(scene.description) for scene in data)
+        losses = self.string_decoder(scene_enc, max_len) # this seems off. no calling alt_data? <- this is right bc speaker0 is naive
 
-        return losses, np.asarray(0)
+        return losses
 
     # I have no idea what's going on here
     # def sample(self, data, alt_data, viterbi, quantile=None):
@@ -229,6 +238,8 @@ class LSTMStringDecoder(nn.Module):
         self.lstm = nn.LSTM(embedding_dim, hidden_sz, num_layers, dropout=self.dropout_p)
         self.linear = nn.Linear(hidden_sz, vocab_sz)
         self.dropout = nn.Dropout(self.dropout_p)
+
+        self.init_param = 1.0
         self.init_weights()
 
     def init_weights(self):
@@ -243,7 +254,7 @@ class LSTMStringDecoder(nn.Module):
         return (Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)),
             Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)))
 
-    def forward(self, scenes): # why do you need encoding or prefix? QUESTION
+    def forward(self, scene_enc):
         max_words = max(len(scene.description) for scene in scenes)
         word_data = Variable(torch.zeros(len(scenes), max_words))
 
@@ -254,9 +265,6 @@ class LSTMStringDecoder(nn.Module):
             offset = max_words - len(scene.description)
             for i_word, word in enumerate(scene.description):
                 word_data[i_scene, i_word] = word
-
-        # print("LSTMStringDecoder_" + prefix)
-        # print("LSTMStringDecoder_")
 
         hidden = init_hidden()
         embedding = self.embedding(word_data) # find out dimensions of word_data
@@ -313,6 +321,7 @@ class MLPScorer(nn.Module):
 class MLPStringDecoder(nn.Module):
     def __init__(self, name, input_sz, hidden_sz, vocab_sz, dropout):
         super(MLPStringDecoder, self).__init__()
+        self.vocab_sz = vocab_sz
         self.net = nn.Sequential(
             nn.Linear(input_sz, hidden_sz),
             nn.Linear(hidden_sz, hidden_sz),
@@ -320,21 +329,46 @@ class MLPStringDecoder(nn.Module):
             nn.Dropout(dropout)
             )
 
-    def forward(self, scene_enc, scenes):
-        pdb.set_trace()
-        max_words = max(len(scene.description) for scene in scenes)
+        self.forward_net = nn.Sequential(
+            nn.Linear(2 * vocab_sz + hidden_sz, vocab_sz), # Linear 7
+            nn.ReLU(),
+            nn.Linear(vocab_sz, vocab_sz)
+            )
+        self.max_words = 20 #?????
 
-        word_data = Variable(torch.zeros(len(scenes), max_words))
+    def one_hot(self, batch, depth):
+        ones = torch.sparse.torch.eye(depth)
+        return ones.index_select(0,batch)
+
+    def forward_step(self, d_n, d_prev, e_r):
+        # d_n = indicator feature on previous word, should be of size vocab_sz?
+        # d_prev: also vocab_sz, indicator feature on all previous (basically BOW)
+        # e_r: hidden_sz
+        inp = torch.cat([d_n, d_prev, e_r], dim=1) # result has size batch_sz x [2 * vocab + hidden]
+        return self.forward_net(inp) # Log softmax or not?? result rn has size [100 x 2713]
+
+    def forward(self, scene_enc, max_words): # Input is image encoding
+        # Input is scene_enc: [batch_sz x hidden_sz]
+        # max_words = self.max_words
+        batch_sz = len(scene_enc)
+
+        start_of_sentence = torch.ones(batch_sz).long() # ones to signal <s> [batch_sz]
+        d_n = Variable(self.one_hot(start_of_sentence, self.vocab_sz)) # [batch_sz x vocab_sz]
+        d_prev = Variable(torch.zeros(batch_sz, self.vocab_sz)) # [batch_sz x vocab_sz]
 
         if torch.cuda.is_available():
-            word_data = word_data.cuda()
+            targets, d_n, d_prev = targets.cuda(), d_n.cuda(), d_prev.cuda()
 
-        for i_scene, scene in enumerate(scenes):
-            offset = max_words - len(scene.description)
-            for i_word, word in enumerate(scene.description):
-                word_data[i_scene, i_word] = word
+        losses = []
 
-        output = self.net(word_data)
+        for i in range(1, max_words):
+            out = self.forward_step(d_n, d_prev, scene_enc) # [batch_sz x vocab_sz]
+            losses.append(out)
+            values, indices = torch.max(out, 1)
+            d_prev += d_n # Add last word to d_prev
+            d_n = Variable(self.one_hot(indices.data, self.vocab_sz))
+
+        output = torch.cat(losses, dim=0) # [(batch_sz * len) x vocab_sz]
         return output
 
 

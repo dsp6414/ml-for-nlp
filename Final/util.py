@@ -100,10 +100,27 @@ def tree_zip(*trees):
         return tuple(zipped_children_rec)
     return trees
 
-# listener
-def train(train_scenes, dev_scenes, model, optimizer, args):
+# listener (all zeros because the correct choice is the 0th one)
+def listener_targets(args, scenes):
+    return Variable(torch.zeros(args.batch_size)).long()
+
+# speaker (this is annoying)
+def speaker0_targets(args, scenes):
+    max_words = max(len(scene.description) for scene in scenes)
+
+    targets = Variable(torch.zeros(len(scenes), max_words)) # [100 x 15]
+    for i_scene, scene in enumerate(scenes):
+        offset = max_words - len(scene.description)
+        for i_word, word in enumerate(scene.description):
+            targets[i_scene, i_word] = word
+
+    # Ignore first <s> and flatten
+    targets = targets[:, 1:].contiguous().view(-1).long()
+    return targets
+
+
+def train(train_scenes, model, optimizer, args, target_func):
     n_train = len(train_scenes) 
-    n_test = len(dev_scenes)
     model.train()
 
     criterion = nn.CrossEntropyLoss() 
@@ -123,17 +140,18 @@ def train(train_scenes, dev_scenes, model, optimizer, args):
             alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
             
             outputs = model.forward(batch_data, alt_data)
-            targets = Variable(torch.zeros(args.batch_size)).long()
+            targets = target_func(args, batch_data)
 
             if torch.cuda.is_available():
                 targets = targets.cuda()
+
 
             loss = criterion(outputs, targets) # what should these be?
             loss.backward()
             optimizer.step()
             epoch_loss += loss.data[0]
 
-            if (i_batch % 100 == 0):
+            if (i_batch % args.log_interval == 0):
                 print('Epoch [%d/%d], Step[%d/%d], loss: %.4f' 
                   %(epoch, args.epochs, i_batch, n_train_batches, loss.data[0]))
 

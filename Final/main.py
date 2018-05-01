@@ -76,8 +76,8 @@ optimizer_ss1 = optim.Adam(sampling_speaker1_model.parameters(), lr=LR)
 print("Hyperparameters:", args)
 
 # Train base
-util.train(train_scenes, dev_scenes, listener0_model, optimizer_l0, args)
-#util.train(train_scenes, dev_scenes, speaker0_model, optimizer_s0, args)
+# util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
+util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
 
 # Train compiled
 #util.train(train_scenes, dev_scenes, sampling_speaker1_model, optimizer_ss1, args)

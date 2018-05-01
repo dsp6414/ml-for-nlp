@@ -98,6 +98,9 @@ def load_scenes(scene_props):
         if count >= MIN_WORD_COUNT:
             WORD_INDEX.index(word)
 
+    print("SOS:", WORD_INDEX.index("<s>"))
+    print("EOS:", WORD_INDEX.index("</s>"))
+
     # Read in the ids
     for sent_file_id in range(1, 3):
         with open(data_path + "SimpleSentences/SimpleSentences%d_10020.txt" %
