@@ -1,5 +1,0 @@
-Loading feature files...
-SOS: 1058
-EOS: 701
-All scenes loaded.
-Hyperparameters: Namespace(LR=0.01, alternatives=1, batch_size=100, dropout=0.0, epochs=20, hidden_sz=50, log_interval=10, model='s0', no_cuda=False, seed=1)
