@@ -72,7 +72,8 @@ class Speaker0Model(nn.Module):
         scene_enc = self.scene_encoder(data)
         max_len = max(len(scene.description) for scene in data)
         losses = self.string_decoder(scene_enc, data, max_len) # this seems off. no calling alt_data? <- this is right bc speaker0 is naive
-
+        pdb.set_trace() # losses was [1400 x 2713]
+        # should probs be like 
         return losses
 
     # I have no idea what's going on here
@@ -240,7 +241,7 @@ class LSTMStringDecoder(nn.Module):
         self.dropout_p = dropout
 
         self.embedding = nn.Embedding(vocab_sz, embedding_dim)
-        self.lstm = nn.LSTM(embedding_dim, hidden_sz, num_layers, dropout=self.dropout_p)
+        self.lstm = nn.LSTM(embedding_dim, hidden_sz, num_layers, dropout=self.dropout_p, batch_first=True)
         self.linear = nn.Linear(hidden_sz, vocab_sz)
         self.dropout = nn.Dropout(self.dropout_p)
 
@@ -274,13 +275,16 @@ class LSTMStringDecoder(nn.Module):
                 word_data[i_scene, i_word] = word
 
         word_data = word_data.long()
+        pdb.set_trace()
 
         hidden = self.init_hidden(batch_size)
-        embedding = self.embedding(word_data) # find out dimensions of word_data
+        embedding = self.embedding(word_data) # dimensions of word_data = [100 x 15]
         output, hidden = self.lstm(embedding, hidden)
-        output = self.dropout(output)
-        output = self.linear(output.view(-1, self.hidden_sz))
-        return output, hidden
+        output = self.dropout(output) # [100 x 15 x 50]
+        output = output[:, 1:, :].contiguous()
+        pdb.set_trace()
+        output = self.linear(output.view(-1, self.hidden_sz)) # [1500 x 2713]?
+        return output
 
 class MLPScorer(nn.Module):
     def __init__(self, name, hidden_sz, output_sz, dropout): #figure out what parameters later
