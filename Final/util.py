@@ -140,7 +140,7 @@ def train(train_scenes, model, optimizer, args, target_func):
                      for i_alt in range(args.alternatives)]
             alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
             
-            outputs = model.forward(batch_data, alt_data)
+            outputs = model(batch_data, alt_data)
             targets = target_func(args, batch_data)
 
             if torch.cuda.is_available():
@@ -158,12 +158,26 @@ def train(train_scenes, model, optimizer, args, target_func):
 
         logging.info('====> Epoch %d: Training loss: %.4f' % (epoch, epoch_loss))
 
+def get_examples(scenes, model, args):
+    model.eval()
+    n_train_batches = int(n_train / args.batch_size)
+
+    for i_batch in range(n_train_batches):
+        batch_data = train_scenes[i_batch * args.batch_size : 
+                                      (i_batch + 1) * args.batch_size]
+        alt_indices = \
+                [np.random.choice(n_train, size=args.batch_size)
+                 for i_alt in range(args.alternatives)]
+        alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
+
+
+
 def setup_logging(args):
     with open("log/file_num.txt") as file: 
         experiment_counter = file.read()
 
     with open("log/file_num.txt", 'w') as file: 
-        file.write(str(experiment_counter + 1))
+        file.write(str(int(experiment_counter) + 1))
 
     log_prefix = args.model if args.model else 'exp'
     log_file = args.model + '_' + experiment_counter +'.out'

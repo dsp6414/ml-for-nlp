@@ -32,7 +32,7 @@ parser.add_argument('--alternatives', type=int, default=1,
                     help='how many alternatives to find')
 parser.add_argument('--dropout', type=float, default =0.0, help='dropout probability')
 parser.add_argument('--model', default=None, help='which model to train (if debugging)')
-parser.add_argument('--dec', default='MLP', help='which string decoder model to use for Speaker0)')
+parser.add_argument('--dec', default='LSTM', help='which string decoder model to use for Speaker0. LSTM or MLP')
 args = parser.parse_args()
 
 torch.manual_seed(args.seed)
@@ -100,7 +100,7 @@ elif args.model == 's0':
 	util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
 elif args.model == 'ss1':
 	logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
-	util.train(train_scenes, sampling_speaker1_model, optimizer_ss1, args)
+	util.train(train_scenes, sampling_speaker1_model, optimizer_ss1, args, util.speaker0_targets)
 
 
 

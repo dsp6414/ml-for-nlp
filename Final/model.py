@@ -92,7 +92,7 @@ class SamplingSpeaker1Model(nn.Module):
 
         # self.fc = nn.Linear() # figure out parameters
 
-    def sample(self, data, alt_data, viterbi, quantile=None):
+    def sample(self, data, alt_data, viterbi=None, quantile=None):
         if viterbi or quantile is not None:
             n_samples = 10
         else:

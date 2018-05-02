@@ -80,6 +80,8 @@ def load_scenes(scene_props):
 
     feature_tensor = load_all_feature_files() # 44 x 10020 col
 
+    WORD_INDEX.index("<s>") # make sure "<s>" is 1
+
     # Read in the sentence descriptions
     for sent_file_id in range(1, 3):
         with open(data_path + "SimpleSentences/SimpleSentences%d_10020.txt" %
