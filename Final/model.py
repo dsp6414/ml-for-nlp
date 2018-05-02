@@ -200,8 +200,8 @@ class LinearStringEncoder(nn.Module):
         for i_scene, scene in enumerate(scenes):
             for word in scene.description:
                 feature_data[i_scene, word] = feature_data[i_scene, word] + 1 # for some reason += is buggy
-        # print("LinearStringEncoder_" + prefix)
-        # print("LinearStringEncoder_")
+        # logging.info("LinearStringEncoder_" + prefix)
+        # logging.info("LinearStringEncoder_")
 
         result = self.fc(feature_data)
         return result
@@ -224,8 +224,8 @@ class LinearSceneEncoder(nn.Module):
             for prop in scene.props:
                 feature_data[i_scene, prop.type_index * N_PROP_OBJECTS +
                         prop.object_index] = 1
-        # print("LinearSceneEncoder_" + prefix)
-        # print("LinearSceneEncoder_")
+        # logging.info("LinearSceneEncoder_" + prefix)
+        # logging.info("LinearSceneEncoder_")
         result = self.fc(feature_data)
         return result
 

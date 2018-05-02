@@ -5,6 +5,7 @@ import re
 import pdb
 import os
 import torch
+import logging
 
 from util import Index
 
@@ -98,9 +99,6 @@ def load_scenes(scene_props):
         if count >= MIN_WORD_COUNT:
             WORD_INDEX.index(word)
 
-    print("SOS:", WORD_INDEX.index("<s>"))
-    print("EOS:", WORD_INDEX.index("</s>"))
-
     # Read in the ids
     for sent_file_id in range(1, 3):
         with open(data_path + "SimpleSentences/SimpleSentences%d_10020.txt" %
@@ -158,7 +156,7 @@ def load_all_feature_files():
 
 
 def load_abstract():
-    print("Loading feature files...")
+    logging.info("Loading feature files...")
     props = load_props()
     norm_props = normalize_props(props)
     scenes = load_scenes(norm_props)
@@ -174,5 +172,5 @@ def load_abstract():
         else:
             train_scenes.append(scene)
 
-    print("All scenes loaded.")
+    logging.info("All scenes loaded.")
     return train_scenes, dev_scenes, test_scenes

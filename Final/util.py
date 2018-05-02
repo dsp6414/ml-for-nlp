@@ -3,6 +3,7 @@ import torch.nn as nn
 import numpy as np
 from torch.autograd import Variable
 import torch
+import logging
 
 class Struct:
     def __init__(self, **entries):
@@ -152,7 +153,22 @@ def train(train_scenes, model, optimizer, args, target_func):
             epoch_loss += loss.data[0]
 
             if (i_batch % args.log_interval == 0):
-                print('Epoch [%d/%d], Step[%d/%d], loss: %.4f' 
+                logging.info('Epoch [%d/%d], Step[%d/%d], loss: %.4f' 
                   %(epoch, args.epochs, i_batch, n_train_batches, loss.data[0]))
 
-        print('====> Epoch %d: Training loss: %.4f' % (epoch, epoch_loss))
+        logging.info('====> Epoch %d: Training loss: %.4f' % (epoch, epoch_loss))
+
+def setup_logging(args):
+    with open("log/file_num.txt") as file: 
+        experiment_counter = file.read()
+
+    with open("log/file_num.txt", 'w') as file: 
+        file.write(str(experiment_counter + 1))
+
+    log_prefix = args.model if args.model else 'exp'
+    log_file = args.model + '_' + experiment_counter +'.out'
+    log_path = 'log/' + log_file
+    level = logging.INFO 
+    format = ' %(message)s' 
+    handlers = [logging.FileHandler(log_path), logging.StreamHandler()] 
+    logging.basicConfig(level = level, format = format, handlers = handlers) 

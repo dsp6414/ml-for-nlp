@@ -8,6 +8,7 @@ from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+import logging
 
 import model, util, corpus
 
@@ -54,6 +55,8 @@ VOCAB_SIZE = 2713
 # Not sure about num_scenes??
 NUM_SCENES = 10
 
+util.setup_logging(args)
+
 train_scenes, dev_scenes, test_scenes = corpus.load_abstract()
 
 output_size = 1 # should this be 1? because the output of the listener should just be a probability distr.
@@ -63,6 +66,8 @@ speaker0_model = model.Speaker0Model(VOCAB_SIZE, args.hidden_sz, args.dropout, a
 # Not sure what output size of speaker model is..
 sampling_speaker1_model = model.SamplingSpeaker1Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, VOCAB_SIZE, args.dropout)
 # compiled_speaker1_model = model.Compiledspeaker1Model()
+
+
 
 if torch.cuda.is_available():
 	listener0_model.cuda()
@@ -75,12 +80,12 @@ optimizer_l0 = optim.Adam(listener0_model.parameters(), lr=LR)
 optimizer_s0 = optim.Adam(speaker0_model.parameters(), lr=LR)
 optimizer_ss1 = optim.Adam(sampling_speaker1_model.parameters(), lr=LR)
 
-print("Hyperparameters:", args)
+logging.info("Hyperparameters:" + str(args))
 
 if args.model == None:
-	print("Listener0: ", listener0_model)
-	print("Speaker0: ", listener0_model)
-	print("SamplingSpeaker1Model: ", sampling_speaker1_model)
+	logging.info("Listener0: " + str(listener0_model))
+	logging.info("Speaker0: " + str(listener0_model))
+	logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
 	# Train base
 	util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
 	util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
@@ -88,13 +93,13 @@ if args.model == None:
 	# Train compiled
 	util.train(train_scenes, sampling_speaker1_model, optimizer_ss1, args)
 elif args.model == 'l0':
-	print("Listener0: ", listener0_model)
+	logging.info("Listener0: " + str(listener0_model))
 	util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
 elif args.model == 's0':
-	print("Speaker0: ", listener0_model)
+	logging.info("Speaker0: " + str(listener0_model))
 	util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
 elif args.model == 'ss1':
-	print("SamplingSpeaker1Model: ", sampling_speaker1_model)
+	logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
 	util.train(train_scenes, sampling_speaker1_model, optimizer_ss1, args)
 
 
