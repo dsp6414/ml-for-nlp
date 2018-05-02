@@ -6,6 +6,8 @@ import torch
 import logging
 
 MAX_LEN = 20
+SOS = 1
+EOS = 2
 class Struct:
     def __init__(self, **entries):
         rec_entries = {}
@@ -159,18 +161,19 @@ def train(train_scenes, model, optimizer, args, target_func):
 
         logging.info('====> Epoch %d: Training loss: %.4f' % (epoch, epoch_loss))
 
-def predict(model, scene_enc): # Predict with beam search based on scene enc
+
+def predict(decoder, scene_enc): # Predict with beam search based on scene enc
     # start off with <s>
-    initial_guess = torch.ones(batch_sz).long() # ones to signal <s> [batch_sz]
+    initial_guess = torch.ones(1).view(1,1).long() # ones to signal <s> [1, 1]
+
+    decoder_hidden = decoder.init_hidden()# [SOMETHING] or maybe scene_enc??
     if torch.cuda.is_available():
         initial_guess = initial_guess.cuda()
     current_hypotheses = [(0, initial_guess, decoder_hidden)] # 
 
     completed_guesses = []
 
-    output_length = MAX_LEN
-
-    for i in range(output_length):
+    for i in range(MAX_LEN):
         guesses_for_this_length = []
         while (current_hypotheses != []):
             # Pop something off the current hypotheses
@@ -182,11 +185,12 @@ def predict(model, scene_enc): # Predict with beam search based on scene enc
             if last_word.squeeze().data[0] == EOS: 
                 completed_guesses.append((log_prob, last_sequence_guess, None))
             else:
-                if self.attn:
-                    decoder_outputs, decoder_hidden, attn_weights = self.decoder(last_word, decoder_hidden, encoder_outputs)
-                else:
-                    decoder_outputs, decoder_hidden = self.decoder(last_word, decoder_hidden, encoder_outputs)
-                # Get k hypotheses for each 
+                # if self.attn:
+                #     decoder_outputs, decoder_hidden, attn_weights = self.decoder(last_word, decoder_hidden, encoder_outputs)
+                # else:
+                #     decoder_outputs, decoder_hidden = self.decoder(last_word, decoder_hidden, encoder_outputs)
+                decoder_outputs, decoder_hidden = self.decoder(last_word, decoder_hidden, encoder_outputs)
+                # # Get k hypotheses for each 
                 # decoder outputs is [target_len x batch x en_vocab_sz] -> [1 x 1 x vocab]
                 vocab_size = len(decoder_outputs[0][0])
                 n_probs, n_indices = torch.topk(decoder_outputs, k, dim=2)

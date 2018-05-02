@@ -15,6 +15,21 @@ EOS = 2
 
 MAX_LEN = 20
 
+def scenes_to_vec(scenes):
+    max_words = max(len(scene.description) for scene in scenes)
+    word_data = Variable(torch.zeros(len(scenes), max_words))
+
+    if torch.cuda.is_available():
+        word_data = word_data.cuda()
+
+    for i_scene, scene in enumerate(scenes):
+        offset = max_words - len(scene.description)
+        for i_word, word in enumerate(scene.description):
+            word_data[i_scene, i_word] = word
+
+    word_data = word_data.long()
+    return word_data
+
 def logsumexp(inputs, dim=None, keepdim=False):
     return (inputs - F.log_softmax(inputs)).mean(dim, keepdim=keepdim)
 
@@ -64,7 +79,6 @@ class Speaker0Model(nn.Module):
             self.string_decoder = MLPStringDecoder("Speaker0StringDecoder", self.hidden_sz, self.vocab_sz, dropout) # Not sure what the input and hidden size are for this
         
         
-        # 
         # name, vocab_sz, embedding_dim, hidden_sz, dropout, num_layers=2):
         # self.fc = nn.Linear() #Insert something here Why is this needed?
 
@@ -263,22 +277,12 @@ class LSTMStringDecoder(nn.Module):
     def forward(self, scene_enc, scenes, max_words):
         pdb.set_trace()
         batch_size = len(scene_enc)
-        max_words = max(len(scene.description) for scene in scenes)
-        word_data = Variable(torch.zeros(len(scenes), max_words))
-
-        if torch.cuda.is_available():
-            word_data = word_data.cuda()
-
-        for i_scene, scene in enumerate(scenes):
-            offset = max_words - len(scene.description)
-            for i_word, word in enumerate(scene.description):
-                word_data[i_scene, i_word] = word
-
-        word_data = word_data.long()
+        word_data = scenes_to_vec(scenes)
         pdb.set_trace()
 
         hidden = self.init_hidden(batch_size)
         embedding = self.embedding(word_data) # dimensions of word_data = [100 x 15]
+        embeddings = torch.cat(embedding, scene_enc)
         output, hidden = self.lstm(embedding, hidden)
         output = self.dropout(output) # [100 x 15 x 50]
         output = output[:, 1:, :].contiguous()
