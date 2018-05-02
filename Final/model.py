@@ -11,7 +11,9 @@ N_PROP_TYPES = 8
 N_PROP_OBJECTS = 35
 
 SOS = 1
-EOS = 14
+EOS = 2
+
+MAX_LEN = 20
 
 def logsumexp(inputs, dim=None, keepdim=False):
     return (inputs - F.log_softmax(inputs)).mean(dim, keepdim=keepdim)
@@ -90,8 +92,6 @@ class SamplingSpeaker1Model(nn.Module):
         self.listener0 = Listener0Model(vocab_sz, num_scenes, hidden_sz, output_sz, dropout)
         self.speaker0 = Speaker0Model(vocab_sz, hidden_sz, dropout)
 
-        # self.fc = nn.Linear() # figure out parameters
-
     def sample(self, data, alt_data, viterbi=None, quantile=None):
         if viterbi or quantile is not None:
             n_samples = 10
@@ -103,7 +103,7 @@ class SamplingSpeaker1Model(nn.Module):
 
         all_fake_scenes = []
         for i_sample in range(n_samples):
-            speaker_log_probs, _, sample = self.speaker0.sample(data, alt_data, dropout, viterbi=False)
+            speaker_log_probs, _, sample = self.speaker0.sample(data, alt_data, viterbi=False)
 
             fake_scenes = []
             for i in range(len(data)):
@@ -375,6 +375,7 @@ class MLPStringDecoder(nn.Module):
 
         output = torch.cat(losses, dim=0) # [(batch_sz * len) x vocab_sz]
         return output
+
 
 
 

@@ -5,6 +5,7 @@ from torch.autograd import Variable
 import torch
 import logging
 
+MAX_LEN = 20
 class Struct:
     def __init__(self, **entries):
         rec_entries = {}
@@ -157,6 +158,56 @@ def train(train_scenes, model, optimizer, args, target_func):
                   %(epoch, args.epochs, i_batch, n_train_batches, loss.data[0]))
 
         logging.info('====> Epoch %d: Training loss: %.4f' % (epoch, epoch_loss))
+
+def predict(model, scene_enc): # Predict with beam search based on scene enc
+    # start off with <s>
+    initial_guess = torch.ones(batch_sz).long() # ones to signal <s> [batch_sz]
+    if torch.cuda.is_available():
+        initial_guess = initial_guess.cuda()
+    current_hypotheses = [(0, initial_guess, decoder_hidden)] # 
+
+    completed_guesses = []
+
+    output_length = MAX_LEN
+
+    for i in range(output_length):
+        guesses_for_this_length = []
+        while (current_hypotheses != []):
+            # Pop something off the current hypotheses
+            hypothesis = current_hypotheses.pop(0)
+            log_prob, last_sequence_guess, decoder_hidden = hypothesis
+            
+            last_word = last_sequence_guess[-1:, :]
+            # EOS token:
+            if last_word.squeeze().data[0] == EOS: 
+                completed_guesses.append((log_prob, last_sequence_guess, None))
+            else:
+                if self.attn:
+                    decoder_outputs, decoder_hidden, attn_weights = self.decoder(last_word, decoder_hidden, encoder_outputs)
+                else:
+                    decoder_outputs, decoder_hidden = self.decoder(last_word, decoder_hidden, encoder_outputs)
+                # Get k hypotheses for each 
+                # decoder outputs is [target_len x batch x en_vocab_sz] -> [1 x 1 x vocab]
+                vocab_size = len(decoder_outputs[0][0])
+                n_probs, n_indices = torch.topk(decoder_outputs, k, dim=2)
+                new_probs = F.log_softmax(n_probs, dim=2) + log_prob# this should be tensor of size k 
+                new_probs = new_probs.squeeze().data
+                new_sequences = [torch.cat([last_sequence_guess, n_index.view(1, 1)],dim=0) for n_index in n_indices.squeeze()] # check this
+                new_hidden = [decoder_hidden] * k
+                # decoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
+                seq_w_probs = list(zip(new_probs, new_sequences, new_hidden))
+                guesses_for_this_length = guesses_for_this_length + seq_w_probs
+
+        # Top k current hypotheses after this time step:
+        guesses_for_this_length = sorted(guesses_for_this_length, key= lambda tup: -1*tup[0])[:k]
+
+        current_hypotheses = current_hypotheses + guesses_for_this_length
+
+    # Return top result
+    completed_guesses = completed_guesses + guesses_for_this_length
+
+    completed_guesses.sort(key= lambda tup: -1*tup[0])
+    return [x[1] for x in completed_guesses]
 
 def get_examples(scenes, model, args):
     model.eval()

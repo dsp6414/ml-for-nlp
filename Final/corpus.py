@@ -81,6 +81,7 @@ def load_scenes(scene_props):
     feature_tensor = load_all_feature_files() # 44 x 10020 col
 
     WORD_INDEX.index("<s>") # make sure "<s>" is 1
+    WORD_INDEX.index("</s>") # make sure "</s>" is 2
 
     # Read in the sentence descriptions
     for sent_file_id in range(1, 3):
@@ -127,6 +128,9 @@ def load_scenes(scene_props):
                     scenes.append(Scene(image_strid, props, word_ids, features))
 
     n_words = len(word_counter.keys())
+
+    logging.info('<s> = %d' % (WORD_INDEX["<s>"]))
+    logging.info('</s> = %d' % (WORD_INDEX["</s>"]))
     return scenes
 
 def load_binarized_feature_file(file_path):
