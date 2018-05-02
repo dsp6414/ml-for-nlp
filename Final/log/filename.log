@@ -1,0 +1,21 @@
+ Loading feature files...
+ All scenes loaded.
+ Epoch [1/20], Step[0/483], loss: 7.8326
+ Epoch [1/20], Step[10/483], loss: 3.3056
+ Epoch [1/20], Step[20/483], loss: 2.3188
+ Epoch [1/20], Step[30/483], loss: 1.6713
+ Epoch [1/20], Step[40/483], loss: 1.3860
+ Epoch [1/20], Step[50/483], loss: 1.2670
+ Epoch [1/20], Step[60/483], loss: 1.1364
+ Epoch [1/20], Step[70/483], loss: 0.6916
+ Epoch [1/20], Step[80/483], loss: 0.6872
+ Epoch [1/20], Step[90/483], loss: 0.3591
+ Epoch [1/20], Step[100/483], loss: 0.3220
+ Epoch [1/20], Step[110/483], loss: 0.3158
+ Epoch [1/20], Step[120/483], loss: 0.2487
+ Epoch [1/20], Step[130/483], loss: 0.1252
+ Epoch [1/20], Step[140/483], loss: 0.1833
+ Epoch [1/20], Step[150/483], loss: 0.1823
+ Epoch [1/20], Step[160/483], loss: 0.2125
+ Epoch [1/20], Step[170/483], loss: 0.1121
+ Epoch [1/20], Step[180/483], loss: 0.1294
