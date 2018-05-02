@@ -47,7 +47,7 @@ class Listener0Model(nn.Module):
         return log_probs
 
 class Speaker0Model(nn.Module):
-    def __init__(self, vocab_sz, hidden_sz, dropout, string_decoder='MLP'): #figure out what parameters later
+    def __init__(self, vocab_sz, hidden_sz, dropout, string_decoder='LSTM'): #figure out what parameters later
         super(Speaker0Model, self).__init__()
 
         self.vocab_sz = vocab_sz

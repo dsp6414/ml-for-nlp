@@ -100,7 +100,9 @@ elif args.model == 's0':
 	util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
 elif args.model == 'ss1':
 	logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
-	util.train(train_scenes, sampling_speaker1_model, optimizer_ss1, args, util.speaker0_targets)
+	util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
+	util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
+	# util.train(train_scenes, sampling_speaker1_model, optimizer_ss1, args, util.speaker0_targets)
 
 
 
