@@ -79,7 +79,6 @@ class Speaker0Model(nn.Module):
         else:
             self.string_decoder = MLPStringDecoder("Speaker0StringDecoder", self.hidden_sz, self.vocab_sz, dropout) # Not sure what the input and hidden size are for this
         
-        
         # name, vocab_sz, embedding_dim, hidden_sz, dropout, num_layers=2):
         # self.fc = nn.Linear() #Insert something here Why is this needed?
 
@@ -88,16 +87,61 @@ class Speaker0Model(nn.Module):
     def forward(self, data, alt_data):
         scene_enc = self.scene_encoder(data)
         max_len = max(len(scene.description) for scene in data)
-        losses = self.string_decoder(scene_enc, data, max_len) # this seems off. no calling alt_data? <- this is right bc speaker0 is naive
+        losses = self.string_decoder(scene_enc, data, max_len)
         pdb.set_trace() # losses was [1400 x 2713]
-        # should probs be like 
+        # should probs be like
         return losses
 
-    # I have no idea what's going on here
-    # def sample(self, data, alt_data, viterbi, quantile=None):
-    def sample(self, data, alt_data):
+    def sample(self, data, alt_data, viterbi=False):
         scene_enc = self.scene_encoder(data)
-        probs, sample = self.string_decoder(scene_enc)
+        max_len = max(len(scene.description) for scene in data)
+        sample = self.string_decoder.sample(scene_enc, data, max_len, viterbi) # used to return probs, sample
+        return sample # used to return probs, np.zeros(probs.shape), sample
+
+class CompiledSpeaker1Model(nn.Module):
+    def __init__(self, vocab_sz, hidden_sz, dropout): #figure out what parameters later
+        super(CompiledSpeaker1Model, self).__init__()
+        self.vocab_sz = vocab_sz
+        self.hidden_sz = hidden_sz
+
+        self.scene_input_sz = N_PROP_TYPES * N_PROP_OBJECTS
+
+        self.sampler = SamplingSpeaker1Model() # send params
+        self.scene_encoder = LinearSceneEncoder("CompSpeaker1Model", self.scene_input_sz, hidden_sz)
+        self.string_decoder = MLPStringDecoder("CompSpeaker1Model")
+
+        self.fc = nn.Linear() # maybe??
+        self.dropout_p = dropout
+
+    def forward(self, data, alt_data):
+        _, _, samples = self.sampler.sample(data, alt_data, self.dropout_p, True)
+
+        scene_enc = self.scene_encoder.forward("true", data, self.dropout_p)
+        alt_scene_enc = [self.scene_encoder.forward("alt%d" % i, alt, self.dropout_p)
+                            for i, alt in enumerate(alt_data)]
+
+        ### figure out how to translate these lines
+        l_cat = "CompSpeaker1Model_concat"
+        self.apollo_net.f(Concat(
+            l_cat, bottoms=[scene_enc] + alt_scene_enc))
+        ###
+
+        fake_data = [d._replace(description=s) for d, s in zip(data, samples)]
+
+        losses = self.string_decoder.forward("", l_cat, fake_data, self.dropout_p)
+        return losses, np.asarray(0)
+
+    def sample(self, data, alt_data, viterbi, quantile=None):
+        scene_enc = self.scene_encoder.forward("true", data, self.dropout_p)
+        alt_scene_enc = [self.scene_encoder.forward("alt%d" % i, alt, self.dropout_p)
+                            for i, alt in enumerate(alt_data)]
+        ### figure out how to translate these lines
+        l_cat = "CompSpeaker1Model_concat"
+        self.apollo_net.f(Concat(
+            l_cat, bottoms=[scene_enc] + alt_scene_enc))
+        ###
+
+        probs, sample = self.string_decoder.sample("", l_cat, viterbi)
         return probs, np.zeros(probs.shape), sample
 
 class SamplingSpeaker1Model(nn.Module):
@@ -151,52 +195,6 @@ class SamplingSpeaker1Model(nn.Module):
             out_listener_scores[i] = listener_scores[i][q]
 
         return out_speaker_scores, out_listener_scores, out_sentences
-
-class CompiledSpeaker1Model(nn.Module):
-    def __init__(self, vocab_sz, hidden_sz, dropout): #figure out what parameters later
-        super(CompiledSpeaker1Model, self).__init__()
-        self.vocab_sz = vocab_sz
-        self.hidden_sz = hidden_sz
-
-        self.scene_input_sz = N_PROP_TYPES * N_PROP_OBJECTS
-
-        self.sampler = SamplingSpeaker1Model() # send params
-        self.scene_encoder = LinearSceneEncoder("CompSpeaker1Model", self.scene_input_sz, hidden_sz)
-        self.string_decoder = MLPStringDecoder("CompSpeaker1Model")
-
-        self.fc = nn.Linear() # maybe??
-        self.dropout_p = dropout
-
-    def forward(self, data, alt_data):
-        _, _, samples = self.sampler.sample(data, alt_data, self.dropout_p, True)
-
-        scene_enc = self.scene_encoder.forward("true", data, self.dropout_p)
-        alt_scene_enc = [self.scene_encoder.forward("alt%d" % i, alt, self.dropout_p)
-                            for i, alt in enumerate(alt_data)]
-
-        ### figure out how to translate these lines
-        l_cat = "CompSpeaker1Model_concat"
-        self.apollo_net.f(Concat(
-            l_cat, bottoms=[scene_enc] + alt_scene_enc))
-        ###
-
-        fake_data = [d._replace(description=s) for d, s in zip(data, samples)]
-
-        losses = self.string_decoder.forward("", l_cat, fake_data, self.dropout_p)
-        return losses, np.asarray(0)
-
-    def sample(self, data, alt_data, viterbi, quantile=None):
-        scene_enc = self.scene_encoder.forward("true", data, self.dropout_p)
-        alt_scene_enc = [self.scene_encoder.forward("alt%d" % i, alt, self.dropout_p)
-                            for i, alt in enumerate(alt_data)]
-        ### figure out how to translate these lines
-        l_cat = "CompSpeaker1Model_concat"
-        self.apollo_net.f(Concat(
-            l_cat, bottoms=[scene_enc] + alt_scene_enc))
-        ###
-
-        probs, sample = self.string_decoder.sample("", l_cat, viterbi)
-        return probs, np.zeros(probs.shape), sample
 
 class LinearStringEncoder(nn.Module):
     def __init__(self, name, vocab_sz, hidden_sz, dropout): #figure out what parameters later
@@ -284,9 +282,34 @@ class LSTMStringDecoder(nn.Module):
         embedding = torch.cat((scene_enc.unsqueeze(1), embedding), 1) # after: [100 x 16 x 50]?
         output, hidden = self.lstm(embedding, hidden)
         output = self.dropout(output) # [100 x 15 x 50]
+        output = self.linear(output.view(-1, self.hidden_sz)) # -> [1400 x 50] (batch, max_words x hidden_size) # [1400 x 2713] (to vocab size?
+
         pdb.set_trace()
-        output = self.linear(output.view(-1, self.hidden_sz)) # [1500 x 2713]?
         return output
+
+    # Currently performs a greedy search
+    def sample(self, scene_enc, max_words, viterbi):
+        pdb.set_trace()
+        batch_size = len(scene_enc)
+
+        sampled_ids = []
+
+        hidden = self.init_hidden(batch_size)
+        inputs = scene_enc.unsqueeze(1)
+        for i in range(20): # maximum sampling length
+            output, hidden = self.lstm(inputs, hidden)
+            # output = output[:, 1:, :].contiguous() # [100 x 14 x 50]
+            pdb.set_trace()
+            output = self.linear(output.squeeze(1)) # [100 x 14 x vocab_sz]
+            pdb.set_trace()
+
+            predicted = output.max(1)[1]
+            sampled_ids.append(predicted)
+            inputs = self.embedding(predicted)
+            inputs = inputs.unsqueeze(1)
+
+        sampled_ids = torch.cat(sampled_ids, 1)
+        return sampled_ids.squeeze()
 
 class MLPScorer(nn.Module):
     def __init__(self, name, hidden_sz, output_sz, dropout): #figure out what parameters later
