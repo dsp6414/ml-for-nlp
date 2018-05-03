@@ -281,7 +281,6 @@ class LSTMStringDecoder(nn.Module):
 
         hidden = self.init_hidden(batch_size)
         embedding = self.embedding(word_data) # dimensions = [100 x 15 x 50]
-        pdb.set_trace()
         embedding = torch.cat((scene_enc.unsqueeze(1), embedding), 1) # after: [100 x 16 x 50]?
         output, hidden = self.lstm(embedding, hidden)
         output = self.dropout(output) # [100 x 15 x 50]
