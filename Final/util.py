@@ -126,6 +126,7 @@ def print_tensor(data, WORD_INDEX):
         logging.info([WORD_INDEX.get(word) for word in x])
 
 def train(train_scenes, model, optimizer, args, target_func):
+    logging.info('Training %s...' % (model.name))
     n_train = len(train_scenes) 
     model.train()
 
@@ -145,12 +146,8 @@ def train(train_scenes, model, optimizer, args, target_func):
                      for i_alt in range(args.alternatives)]
             alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
 
-<<<<<<< HEAD
             # logging.info([x.image_id for x in batch_data])
-=======
-            logging.info([x.image_id for x in batch_data])
->>>>>>> 3b7c0863e6440993ff0c962b8d43e1b9d47a9631
-            
+
             outputs = model(batch_data, alt_data)
             targets = target_func(args, batch_data)
 

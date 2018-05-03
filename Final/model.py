@@ -47,6 +47,7 @@ class Listener0Model(nn.Module):
         self.hidden_sz = hidden_sz
         self.output_sz = output_sz
         self.dropout_p = dropout # need to pass this in somewhere
+        self.name='Listener0'
 
         self.scene_input_sz = N_PROP_TYPES * N_PROP_OBJECTS
 
@@ -70,6 +71,8 @@ class Listener0Model(nn.Module):
 class Speaker0Model(nn.Module):
     def __init__(self, vocab_sz, hidden_sz, dropout, string_decoder='LSTM'): #figure out what parameters later
         super(Speaker0Model, self).__init__()
+
+        self.name='Speaker0'
 
         self.vocab_sz = vocab_sz
         self.hidden_sz = hidden_sz
@@ -146,11 +149,13 @@ class CompiledSpeaker1Model(nn.Module):
         return probs, np.zeros(probs.shape), sample
 
 class SamplingSpeaker1Model(nn.Module):
-    def __init__(self, vocab_sz, num_scenes, hidden_sz, output_sz, dropout): #figure out what parameters later
+    def __init__(self, listener0, speaker0): #figure out what parameters later
         super(SamplingSpeaker1Model, self).__init__()
 
-        self.listener0 = Listener0Model(vocab_sz, num_scenes, hidden_sz, output_sz, dropout)
-        self.speaker0 = Speaker0Model(vocab_sz, hidden_sz, dropout)
+        # self.listener0 = Listener0Model(vocab_sz, num_scenes, hidden_sz, output_sz, dropout)
+        # self.speaker0 = Speaker0Model(vocab_sz, hidden_sz, dropout)
+        self.listener0 = listener0
+        self.speaker0 = speaker0
 
     def sample(self, data, alt_data, viterbi=None, quantile=None):
         if viterbi or quantile is not None:
@@ -164,6 +169,7 @@ class SamplingSpeaker1Model(nn.Module):
         all_fake_scenes = []
         for i_sample in range(n_samples):
             speaker_log_probs, sampled_ids = self.speaker0.sample(data, alt_data, viterbi=False) # used to output [speaker_log_probs, _, sample]
+            print_tensor(sampled_ids)
 
             sampled_captions = []
             for sampled_id in sampled_ids:
@@ -179,7 +185,7 @@ class SamplingSpeaker1Model(nn.Module):
             # Replace description for real image with description generated
             fake_scenes = []
             for i in range(len(data)):
-                fake_scenes.append(data[i]._replace(description=sampled_ids[i]))
+                fake_scenes.append(data[i]._replace(description=sampled_ids[i].data))
             all_fake_scenes.append(fake_scenes)
 
             listener_log_probs = self.listener0(fake_scenes, alt_data)
@@ -210,7 +216,8 @@ class SamplingSpeaker1Model(nn.Module):
             out_speaker_scores[i] = speaker_scores[i][q]
             out_listener_scores[i] = listener_scores[i][q]
 
-        return out_speaker_scores, out_listener_scores, out_sentences
+        stacked_sentences = Variable(torch.stack(out_sentences)) # [100 x 20]
+        return (out_speaker_scores, out_listener_scores), stacked_sentences
 
 class LinearStringEncoder(nn.Module):
     def __init__(self, name, vocab_sz, hidden_sz, dropout): #figure out what parameters later
@@ -227,9 +234,9 @@ class LinearStringEncoder(nn.Module):
             feature_data = feature_data.cuda()
 
         for i_scene, scene in enumerate(scenes):
-            print(scene.description)
             for word in scene.description:
-                feature_data[i_scene, word.data[0]] = feature_data[i_scene, word.data[0]] + 1
+                # feature_data[i_scene, word.data[0]] = feature_data[i_scene, word.data[0]] + 1
+                feature_data[i_scene, word] = feature_data[i_scene, word] + 1
         # logging.info("LinearStringEncoder_" + prefix)
         # logging.info("LinearStringEncoder_")
 
