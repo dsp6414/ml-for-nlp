@@ -91,9 +91,6 @@ class Speaker0Model(nn.Module):
 
     def forward(self, data, alt_data):
         scene_enc = self.scene_encoder(data)
-        # for scene in data:
-        #     print([WORD_INDEX.get(word) for word in scene.description])
-        # [WORD_INDEX.get(word) for word in sampled_ids[0].data]
         max_len = max(len(scene.description) for scene in data)
         losses = self.string_decoder(scene_enc, data, max_len) # losses was [1400 x 2713]
         # should probs be like

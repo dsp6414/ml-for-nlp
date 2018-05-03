@@ -160,6 +160,9 @@ def load_all_feature_files():
     # transpose to be [44 x 10020]
     return merged_tensor.t()
 
+def print_tensor(data):
+    for x in data:
+        logging.info([WORD_INDEX.get(word) for word in x])
 
 def load_abstract():
     logging.info("Loading feature files...")

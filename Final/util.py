@@ -145,7 +145,7 @@ def train(train_scenes, model, optimizer, args, target_func):
                      for i_alt in range(args.alternatives)]
             alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
 
-            logging.info([x.scene_id for x in batch_data])
+            # logging.info([x.image_id for x in batch_data])
             
             outputs = model(batch_data, alt_data)
             targets = target_func(args, batch_data)
