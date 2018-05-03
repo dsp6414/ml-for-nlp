@@ -129,7 +129,7 @@ def train(train_scenes, model, optimizer, args, target_func):
     n_train = len(train_scenes) 
     model.train()
 
-    criterion = nn.CrossEntropyLoss() 
+    criterion = nn.CrossEntropyLoss()
 
     n_train_batches = int(n_train / args.batch_size) # just truncate this i guess
 
@@ -145,7 +145,7 @@ def train(train_scenes, model, optimizer, args, target_func):
                      for i_alt in range(args.alternatives)]
             alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
 
-            logging.info([x.scene_id for x in batch_data])
+            logging.info([x.image_id for x in batch_data])
             
             outputs = model(batch_data, alt_data)
             targets = target_func(args, batch_data)
@@ -228,9 +228,37 @@ def get_examples(model, train_scenes, args, word_index):
         logging.info([scene.image_id for scene in batch_data])
         pdb.set_trace()
 
+def run_experiment(name, cname, rname, model, data):
+    data_by_image = defaultdict(list)
+    for datum in data:
+        data_by_image[datum.image_id].append(datum)
 
+    with open("experiments/%s/%s.ids.txt" % (name, cname)) as id_f, \
+        open("experiments/%s/%s.results.%s.txt" % (name, cname, rname), 'w') as results_f:
+        # print >>results_f, "id,target,distractor,similarity,model_name,speaker_score,listener_score,description"
 
-
+        counter = 0
+        for line in id_f:
+            img1, img2, similarity = line.strip().split(',')
+            assert img1 in data_by_image and img2 in data_by_image
+            d1 = data_by_image[img1][0]
+            d2 = data_by_image[img2][0]
+            for model_name, model in models.items():
+                for i_sample in range(10):
+                    speaker_scores, listener_scores, samples = \
+                            model.sample([d1], [[d2]], dropout=False, viterbi=False)
+                    parts = [
+                        counter,
+                        img1,
+                        img2,
+                        similarity,
+                        model_name,
+                        speaker_scores[0],
+                        listener_scores[0],
+                        " ".join([WORD_INDEX.get(i) for i in samples[0][1:-1]])
+                    ]
+                    # print >>results_f, ",".join([str(s) for s in parts])
+                    counter += 1
 
 def setup_logging(args):
     with open("log/file_num.txt") as file: 
