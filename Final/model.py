@@ -8,6 +8,8 @@ import torch.optim as optim
 import pdb
 from corpus import WORD_INDEX
 
+from corpus import WORD_INDEX
+
 N_PROP_TYPES = 8
 N_PROP_OBJECTS = 35
 
@@ -94,10 +96,20 @@ class Speaker0Model(nn.Module):
         return losses
 
     def sample(self, data, alt_data, viterbi=False):
+        pdb.set_trace()
         scene_enc = self.scene_encoder(data)
         max_len = max(len(scene.description) for scene in data)
-        sample = self.string_decoder.sample(scene_enc, max_len, viterbi) # used to return probs, sample
-        return sample # used to return probs, np.zeros(probs.shape), sample
+        probs, sampled_ids = self.string_decoder.sample(scene_enc, data, max_len, viterbi) # used to return probs, sample
+        sampled_caption = []
+        for word_id in sampled_ids:
+            word = WORD_INDEX[word_id]
+            sampled_caption.append(word)
+            if word == '</s>':
+                break
+        sample = ' '.join(sampled_caption)
+
+        return probs, sample # used to return probs, np.zeros(probs.shape), sample
+
 
 class CompiledSpeaker1Model(nn.Module):
     def __init__(self, vocab_sz, hidden_sz, dropout): #figure out what parameters later
@@ -163,7 +175,7 @@ class SamplingSpeaker1Model(nn.Module):
 
         all_fake_scenes = []
         for i_sample in range(n_samples):
-            speaker_log_probs, _, sample = self.speaker0.sample(data, alt_data, viterbi=False)
+            speaker_log_probs, sample = self.speaker0.sample(data, alt_data, viterbi=False) # used to output [speaker_log_probs, _, sample]
 
             fake_scenes = []
             for i in range(len(data)):
@@ -294,6 +306,7 @@ class LSTMStringDecoder(nn.Module):
         batch_size = len(scene_enc)
 
         sampled_ids = []
+        out_logprobs = torch.zeros(batch_size, max_words)
 
         hidden = self.init_hidden(batch_size)
         inputs = scene_enc.unsqueeze(1)
@@ -304,16 +317,16 @@ class LSTMStringDecoder(nn.Module):
             output = self.linear(output.squeeze(1)) # [100 x 14 x vocab_sz]
             # pdb.set_trace()
 
-            print(output.size())
+            # need to figure out if I need to check if predicted had 2 (end of sentence) in it.
             predicted = output.max(1)[1]
+            out_logprobs[i] += np.log(output.max(1)[0])
             sampled_ids.append(predicted)
             inputs = self.embedding(predicted)
             inputs = inputs.unsqueeze(1)
 
-        pdb.set_trace()
+        sampled_ids = torch.cat(sampled_ids, 1)
+        return out_logprobs, sampled_ids.squeeze()
 
-        sampled_ids = torch.stack(sampled_ids, 1)
-        return sampled_ids.squeeze()
 
 class MLPScorer(nn.Module):
     def __init__(self, name, hidden_sz, output_sz, dropout): #figure out what parameters later
