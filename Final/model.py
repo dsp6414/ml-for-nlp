@@ -7,6 +7,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import pdb
 from corpus import WORD_INDEX
+import logging
 
 N_PROP_TYPES = 8
 N_PROP_OBJECTS = 35
@@ -169,7 +170,6 @@ class SamplingSpeaker1Model(nn.Module):
         all_fake_scenes = []
         for i_sample in range(n_samples):
             speaker_log_probs, sampled_ids = self.speaker0.sample(data, alt_data, viterbi=False) # used to output [speaker_log_probs, _, sample]
-            print_tensor(sampled_ids)
 
             sampled_captions = []
             for sampled_id in sampled_ids:

@@ -8,6 +8,8 @@ import logging
 MAX_LEN = 20
 SOS = 1
 EOS = 2
+
+experiment_counter = None
 class Struct:
     def __init__(self, **entries):
         rec_entries = {}

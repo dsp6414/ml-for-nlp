@@ -113,7 +113,8 @@ elif args.model == 'ss1':
 	util.get_examples(sampling_speaker1_model, train_scenes, args, corpus.WORD_INDEX)
 
 	# util.train(train_scenes, sampling_speaker1_model, optimizer_ss1, args, util.speaker0_targets)
-
+	file_name = args.model + util.experiment_counter + '.pth'
+	torch.save(sampling_speaker1_model.state_dict(), file_name)
 
 # Run Experiments
 
