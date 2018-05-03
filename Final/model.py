@@ -100,16 +100,8 @@ class Speaker0Model(nn.Module):
         scene_enc = self.scene_encoder(data) # [100 x 50]
         max_len = max(len(scene.description) for scene in data) # 15
         probs, sampled_ids = self.string_decoder.sample(scene_enc, max_len, viterbi) # used to return probs, sample
-        sampled_caption = []
-        for word_id in sampled_ids:
-            word = WORD_INDEX[word_id]
-            sampled_caption.append(word)
-            if word == '</s>':
-                break
         pdb.set_trace()
-        sample = ' '.join(sampled_caption)
-
-        return probs, sample # used to return probs, np.zeros(probs.shape), sample
+        return probs, sampled_ids # used to return probs, np.zeros(probs.shape), sample
 
 
 class CompiledSpeaker1Model(nn.Module):
@@ -179,6 +171,16 @@ class SamplingSpeaker1Model(nn.Module):
         all_fake_scenes = []
         for i_sample in range(n_samples):
             speaker_log_probs, sample = self.speaker0.sample(data, alt_data, viterbi=False) # used to output [speaker_log_probs, _, sample]
+
+            # sampled_caption = []
+            # for word_id in sampled_ids:
+            
+            #     word = WORD_INDEX.get(word_id)
+            #     sampled_caption.append(word)
+            #     if word_id == 2:
+            #         break
+            # sample = ' '.join(sampled_caption)
+
 
             fake_scenes = []
             for i in range(len(data)):
@@ -325,8 +327,7 @@ class LSTMStringDecoder(nn.Module):
         pdb.set_trace()
         sampled_ids = torch.stack(sampled_ids, 1)
         out_log_probs = torch.stack(out_log_probs, 1)
-        return out_log_probs, sampled_ids.squeeze()
-
+        return out_log_probs, sampled_ids
 
 class MLPScorer(nn.Module):
     def __init__(self, name, hidden_sz, output_sz, dropout): #figure out what parameters later
