@@ -170,33 +170,39 @@ class SamplingSpeaker1Model(nn.Module):
 
         all_fake_scenes = []
         for i_sample in range(n_samples):
-            speaker_log_probs, sample = self.speaker0.sample(data, alt_data, viterbi=False) # used to output [speaker_log_probs, _, sample]
+            speaker_log_probs, sampled_ids = self.speaker0.sample(data, alt_data, viterbi=False) # used to output [speaker_log_probs, _, sample]
 
-            # sampled_caption = []
-            # for word_id in sampled_ids:
-            
-            #     word = WORD_INDEX.get(word_id)
-            #     sampled_caption.append(word)
-            #     if word_id == 2:
-            #         break
-            # sample = ' '.join(sampled_caption)
+            pdb.set_trace()
+            sampled_captions = []
+            for sampled_id in sampled_ids:
+                sampled_caption = []
+                for word_id in sampled_id:
+                    word = WORD_INDEX.get(word_id)
+                    sampled_caption.append(word)
+                    if word_id == 2:
+                        sampled_captions.append(' '.join(sampled_caption))
+                        break
+                sampled_captions.append(' '.join(sampled_caption))
 
-
+            pdb.set_trace()
             fake_scenes = []
             for i in range(len(data)):
-                fake_scenes.append(data[i]._replace(description=sample[i]))
+                fake_scenes.append(data[i]._replace(description=sampled_captions[i]))
             all_fake_scenes.append(fake_scenes)
 
+            pdb.set_trace()
             listener_log_probs = self.listener0.forward(fake_scenes, alt_data, dropout)
             speaker_scores[:, i_sample] = speaker_log_probs
             listener_scores[:, i_sample] = listener_log_probs
 
         scores = listener_scores
 
+        pdb.set_trace()
         out_sentences = []
         out_speaker_scores = torch.zeros(len(data))
         out_listener_scores = torch.zeros(len(data))
 
+        pdb.set_trace()
         for i in range(len(data)):
             if viterbi:
                 q = scores[i, :].argmax()
