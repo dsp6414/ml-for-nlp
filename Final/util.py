@@ -121,6 +121,9 @@ def speaker0_targets(args, scenes):
     targets = targets.view(-1).long()
     return targets
 
+def print_tensor(data, WORD_INDEX):
+    for x in data:
+        logging.info([WORD_INDEX.get(word) for word in x])
 
 def train(train_scenes, model, optimizer, args, target_func):
     n_train = len(train_scenes) 
@@ -141,6 +144,8 @@ def train(train_scenes, model, optimizer, args, target_func):
                     [np.random.choice(n_train, size=args.batch_size)
                      for i_alt in range(args.alternatives)]
             alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
+
+            logging.info([x.scene_id for x in batch_data])
             
             outputs = model(batch_data, alt_data)
             targets = target_func(args, batch_data)
@@ -205,8 +210,7 @@ def sample(decoder, scene_enc): # Predict with beam search based on scene enc
     completed_guesses.sort(key= lambda tup: -1*tup[0])
     return [x[1] for x in completed_guesses]
 
-def get_examples(model, train_scenes, args):
-    pdb.set_trace()
+def get_examples(model, train_scenes, args, word_index):
     model.eval()
     n_train = len(train_scenes) 
     n_train_batches = int(n_train / args.batch_size)
@@ -219,8 +223,10 @@ def get_examples(model, train_scenes, args):
                  for i_alt in range(args.alternatives)]
         alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
 
+        probs, sentences = model.sample(batch_data, alt_data)
+        print_tensor(sentences.data, word_index)
+        logging.info([scene.image_id for scene in batch_data])
         pdb.set_trace()
-        model.sample(batch_data, alt_data)
 
 
 

@@ -8,7 +8,6 @@ import torch.optim as optim
 import pdb
 from corpus import WORD_INDEX
 
-from corpus import WORD_INDEX
 
 N_PROP_TYPES = 8
 N_PROP_OBJECTS = 35
@@ -17,6 +16,10 @@ SOS = 1
 EOS = 2
 
 MAX_LEN = 20
+
+def print_tensor(data):
+    for x in data:
+        logging.info([WORD_INDEX.get(word) for word in x])
 
 def scenes_to_vec(scenes):
     max_words = max(len(scene.description) for scene in scenes) - 1
@@ -89,8 +92,11 @@ class Speaker0Model(nn.Module):
 
     def forward(self, data, alt_data):
         scene_enc = self.scene_encoder(data)
+        # for scene in data:
+        #     print([WORD_INDEX.get(word) for word in scene.description])
+        # [WORD_INDEX.get(word) for word in sampled_ids[0].data]
         max_len = max(len(scene.description) for scene in data)
-        pdb.set_trace()
+        # pdb.set_trace()
         losses = self.string_decoder(scene_enc, data, max_len) # losses was [1400 x 2713]
         # should probs be like
         return losses
@@ -235,6 +241,7 @@ class LinearStringEncoder(nn.Module):
             feature_data = feature_data.cuda()
 
         for i_scene, scene in enumerate(scenes):
+            print(scene.description)
             for word in scene.description:
                 feature_data[i_scene, word] = feature_data[i_scene, word] + 1 # for some reason += is buggy
         # logging.info("LinearStringEncoder_" + prefix)
@@ -298,7 +305,7 @@ class LSTMStringDecoder(nn.Module):
             Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)))
 
     def forward(self, scene_enc, scenes, max_words):
-        pdb.set_trace()
+        # pdb.set_trace()
         batch_size = len(scene_enc) # [100 x 50]
         word_data = scenes_to_vec(scenes) # [100 x 15]
 
@@ -313,6 +320,7 @@ class LSTMStringDecoder(nn.Module):
 
     # Currently performs a greedy search
     def sample(self, scene_enc, max_words, viterbi):
+        pdb.set_trace()
         batch_size = len(scene_enc)                     # 100
         sampled_ids = []
         out_log_probs = []
@@ -324,15 +332,15 @@ class LSTMStringDecoder(nn.Module):
             output = self.linear(output.squeeze(1))     # [100 x 2713] (vocab size)
 
             # need to figure out if I need to check if predicted had 2 (end of sentence) in it.
-            predicted = output.max(1)[1]
-            out_log_probs.append(torch.log(output.max(1)[0]))
+            out_prob, predicted = output.max(1) # predicted is size [100]
+            out_log_probs.append(torch.log(out_prob))
             sampled_ids.append(predicted)
             inputs = self.embedding(predicted)
             inputs = inputs.unsqueeze(1)
 
-        pdb.set_trace()
         sampled_ids = torch.stack(sampled_ids, 1)
         out_log_probs = torch.stack(out_log_probs, 1)
+        pdb.set_trace()
         return out_log_probs, sampled_ids
 
 class MLPScorer(nn.Module):
