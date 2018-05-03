@@ -16,6 +16,10 @@ EOS = 2
 
 MAX_LEN = 20
 
+def print_tensor(data):
+    for x in data:
+        logging.info([WORD_INDEX.get(word) for word in x])
+
 def scenes_to_vec(scenes):
     max_words = max(len(scene.description) for scene in scenes) - 1
     word_data = Variable(torch.zeros(len(scenes), max_words))
@@ -87,6 +91,9 @@ class Speaker0Model(nn.Module):
 
     def forward(self, data, alt_data):
         scene_enc = self.scene_encoder(data)
+        # for scene in data:
+        #     print([WORD_INDEX.get(word) for word in scene.description])
+        # [WORD_INDEX.get(word) for word in sampled_ids[0].data]
         max_len = max(len(scene.description) for scene in data)
         losses = self.string_decoder(scene_enc, data, max_len) # losses was [1400 x 2713]
         # should probs be like
@@ -229,6 +236,7 @@ class LinearStringEncoder(nn.Module):
             feature_data = feature_data.cuda()
 
         for i_scene, scene in enumerate(scenes):
+            print(scene.description)
             for word in scene.description:
                 feature_data[i_scene, word.data[0]] = feature_data[i_scene, word.data[0]] + 1
         # logging.info("LinearStringEncoder_" + prefix)
@@ -306,6 +314,7 @@ class LSTMStringDecoder(nn.Module):
 
     # Currently performs a greedy search
     def sample(self, scene_enc, max_words, viterbi):
+        pdb.set_trace()
         batch_size = len(scene_enc)                     # 100
         sampled_ids = []
         out_log_probs = []
@@ -317,14 +326,15 @@ class LSTMStringDecoder(nn.Module):
             output = self.linear(output.squeeze(1))     # [100 x 2713] (vocab size)
 
             # need to figure out if I need to check if predicted had 2 (end of sentence) in it.
-            predicted = output.max(1)[1]
-            out_log_probs.append(torch.log(output.max(1)[0]))
+            out_prob, predicted = output.max(1) # predicted is size [100]
+            out_log_probs.append(torch.log(out_prob))
             sampled_ids.append(predicted)
             inputs = self.embedding(predicted)
             inputs = inputs.unsqueeze(1)
 
         sampled_ids = torch.stack(sampled_ids, 1)
         out_log_probs = torch.stack(out_log_probs, 1)
+        pdb.set_trace()
         return out_log_probs, sampled_ids
 
 class MLPScorer(nn.Module):

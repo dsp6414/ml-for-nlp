@@ -101,7 +101,7 @@ elif args.model == 'l0':
 elif args.model == 's0':
 	logging.info("Speaker0: " + str(speaker0_model))
 	util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
-	util.get_examples(speaker0_model, train_scenes, args)
+	util.get_examples(speaker0_model, train_scenes, args, corpus.WORD_INDEX)
 elif args.model == 'cs1':
 	logging.info("CompiledSpeaker1Model: " + str(compiled_speaker1_model))
 	# util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
