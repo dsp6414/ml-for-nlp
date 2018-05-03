@@ -96,9 +96,9 @@ class Speaker0Model(nn.Module):
 
     def sample(self, data, alt_data, viterbi=False):
         pdb.set_trace()
-        scene_enc = self.scene_encoder(data)
-        max_len = max(len(scene.description) for scene in data)
-        probs, sampled_ids = self.string_decoder.sample(scene_enc, data, max_len, viterbi) # used to return probs, sample
+        scene_enc = self.scene_encoder(data) # [100 x 50]
+        max_len = max(len(scene.description) for scene in data) # 15
+        probs, sampled_ids = self.string_decoder.sample(scene_enc, max_len, viterbi) # used to return probs, sample
         sampled_caption = []
         for word_id in sampled_ids:
             word = WORD_INDEX[word_id]
@@ -110,18 +110,20 @@ class Speaker0Model(nn.Module):
         return probbs, sample # used to return probs, np.zeros(probs.shape), sample
 
 class CompiledSpeaker1Model(nn.Module):
-    def __init__(self, vocab_sz, hidden_sz, dropout): #figure out what parameters later
+    def __init__(self, vocab_sz, num_scenes, hidden_sz, output_sz, dropout): #figure out what parameters later
         super(CompiledSpeaker1Model, self).__init__()
         self.vocab_sz = vocab_sz
+        self.num_scenes = num_scenes
         self.hidden_sz = hidden_sz
+        self.output_sz = output_sz
 
         self.scene_input_sz = N_PROP_TYPES * N_PROP_OBJECTS
 
-        self.sampler = SamplingSpeaker1Model() # send params
-        self.scene_encoder = LinearSceneEncoder("CompSpeaker1Model", self.scene_input_sz, hidden_sz)
-        self.string_decoder = MLPStringDecoder("CompSpeaker1Model")
+        self.sampler = SamplingSpeaker1Model(vocab_sz, num_scenes, hidden_sz, output_sz, dropout) # send params
+        self.scene_encoder = LinearSceneEncoder("CompSpeaker1Model", self.scene_input_sz, hidden_sz, dropout)
+        self.string_decoder = MLPStringDecoder("CompSpeaker1Model", hidden_sz, vocab_sz, dropout)
 
-        self.fc = nn.Linear() # maybe??
+        # self.fc = nn.Linear()
         self.dropout_p = dropout
 
     def forward(self, data, alt_data):
@@ -168,8 +170,8 @@ class SamplingSpeaker1Model(nn.Module):
         else:
             n_samples = 1
 
-        speaker_scores = np.zeros((len(data), n_samples))
-        listener_scores = np.zeros((len(data), n_samples))
+        speaker_scores = torch.zeros((len(data), n_samples))
+        listener_scores = torch.zeros((len(data), n_samples))
 
         all_fake_scenes = []
         for i_sample in range(n_samples):
@@ -177,18 +179,18 @@ class SamplingSpeaker1Model(nn.Module):
 
             fake_scenes = []
             for i in range(len(data)):
-                fake_scenes.append(data[i]._replace(fake_scenes, alt_data, dropout)) # do I need dropout here
+                fake_scenes.append(data[i]._replace(description=sample[i]))
             all_fake_scenes.append(fake_scenes)
 
-            listener_logprobs = self.listener0.forward(fake_scenes, alt_data, dropout) # dropout"
+            listener_log_probs = self.listener0.forward(fake_scenes, alt_data, dropout)
             speaker_scores[:, i_sample] = speaker_log_probs
             listener_scores[:, i_sample] = listener_log_probs
 
         scores = listener_scores
 
         out_sentences = []
-        out_speaker_scores = np.zeros(len(data))
-        out_listener_scores = np.zeros(len(data))
+        out_speaker_scores = torch.zeros(len(data))
+        out_listener_scores = torch.zeros(len(data))
 
         for i in range(len(data)):
             if viterbi:
@@ -301,31 +303,28 @@ class LSTMStringDecoder(nn.Module):
 
     # Currently performs a greedy search
     def sample(self, scene_enc, max_words, viterbi):
-        pdb.set_trace()
-        batch_size = len(scene_enc)
-
+        batch_size = len(scene_enc)                     # 100
         sampled_ids = []
-        out_logprobs = torch.zeros(batch_size, max_words)
+        out_log_probs = []
 
-        hidden = self.init_hidden(batch_size)
-        inputs = scene_enc.unsqueeze(1)
-        for i in range(20): # maximum sampling length
-            output, hidden = self.lstm(inputs, hidden)
-            # output = output[:, 1:, :].contiguous() # [100 x 14 x 50]
-            pdb.set_trace()
-            output = self.linear(output.squeeze(1)) # [100 x 14 x vocab_sz]
-            pdb.set_trace()
+        hidden = self.init_hidden(batch_size)           # [2 x 100 x 50]
+        inputs = scene_enc.unsqueeze(1)                 # [100 x 1 x 50]
+        for i in range(20):                             # maximum sampling length
+            output, hidden = self.lstm(inputs, hidden)  # [100 x 1 x 50], [2 x 100 x 50]
+            output = self.linear(output.squeeze(1))     # [100 x 2713] (vocab size)
 
             # need to figure out if I need to check if predicted had 2 (end of sentence) in it.
 
             predicted = output.max(1)[1]
-            out_logprobs[i] += np.log(output.max(1)[0])
+            out_log_probs.append(torch.log(output.max(1)[0]))
             sampled_ids.append(predicted)
             inputs = self.embedding(predicted)
             inputs = inputs.unsqueeze(1)
 
-        sampled_ids = torch.cat(sampled_ids, 1)
-        return out_logprobs, sampled_ids.squeeze()
+        pdb.set_trace()
+        sampled_ids = torch.stack(sampled_ids, 1)
+        out_log_probs = torch.stack(out_log_probs, 1)
+        return out_log_probs, sampled_ids.squeeze()
 
 class MLPScorer(nn.Module):
     def __init__(self, name, hidden_sz, output_sz, dropout): #figure out what parameters later
