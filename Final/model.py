@@ -6,6 +6,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import pdb
+from corpus import WORD_INDEX
 
 N_PROP_TYPES = 8
 N_PROP_OBJECTS = 35
@@ -87,15 +88,15 @@ class Speaker0Model(nn.Module):
     def forward(self, data, alt_data):
         scene_enc = self.scene_encoder(data)
         max_len = max(len(scene.description) for scene in data)
-        losses = self.string_decoder(scene_enc, data, max_len)
-        pdb.set_trace() # losses was [1400 x 2713]
+        pdb.set_trace()
+        losses = self.string_decoder(scene_enc, data, max_len) # losses was [1400 x 2713]
         # should probs be like
         return losses
 
     def sample(self, data, alt_data, viterbi=False):
         scene_enc = self.scene_encoder(data)
         max_len = max(len(scene.description) for scene in data)
-        sample = self.string_decoder.sample(scene_enc, data, max_len, viterbi) # used to return probs, sample
+        sample = self.string_decoder.sample(scene_enc, max_len, viterbi) # used to return probs, sample
         return sample # used to return probs, np.zeros(probs.shape), sample
 
 class CompiledSpeaker1Model(nn.Module):
@@ -274,6 +275,7 @@ class LSTMStringDecoder(nn.Module):
             Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)))
 
     def forward(self, scene_enc, scenes, max_words):
+        pdb.set_trace()
         batch_size = len(scene_enc) # [100 x 50]
         word_data = scenes_to_vec(scenes) # [100 x 15]
 
@@ -283,9 +285,8 @@ class LSTMStringDecoder(nn.Module):
         output, hidden = self.lstm(embedding, hidden)
         output = self.dropout(output) # [100 x 15 x 50]
         output = self.linear(output.view(-1, self.hidden_sz)) # -> [1400 x 50] (batch, max_words x hidden_size) # [1400 x 2713] (to vocab size?
-
-        pdb.set_trace()
         return output
+
 
     # Currently performs a greedy search
     def sample(self, scene_enc, max_words, viterbi):
@@ -299,16 +300,19 @@ class LSTMStringDecoder(nn.Module):
         for i in range(20): # maximum sampling length
             output, hidden = self.lstm(inputs, hidden)
             # output = output[:, 1:, :].contiguous() # [100 x 14 x 50]
-            pdb.set_trace()
+            # pdb.set_trace()
             output = self.linear(output.squeeze(1)) # [100 x 14 x vocab_sz]
-            pdb.set_trace()
+            # pdb.set_trace()
 
+            print(output.size())
             predicted = output.max(1)[1]
             sampled_ids.append(predicted)
             inputs = self.embedding(predicted)
             inputs = inputs.unsqueeze(1)
 
-        sampled_ids = torch.cat(sampled_ids, 1)
+        pdb.set_trace()
+
+        sampled_ids = torch.stack(sampled_ids, 1)
         return sampled_ids.squeeze()
 
 class MLPScorer(nn.Module):

@@ -118,8 +118,7 @@ def speaker0_targets(args, scenes):
         for i_word, word in enumerate(scene.description):
             targets[i_scene, i_word] = word
 
-    # Ignore first <s> and flatten
-    targets = targets[:, 1:].contiguous().view(-1).long()
+    targets = targets.view(-1).long()
     return targets
 
 
@@ -149,7 +148,6 @@ def train(train_scenes, model, optimizer, args, target_func):
             if torch.cuda.is_available():
                 targets = targets.cuda()
 
-            pdb.set_trace()
             loss = criterion(outputs, targets) # what should these be?
             loss.backward()
             optimizer.step()
@@ -162,10 +160,8 @@ def train(train_scenes, model, optimizer, args, target_func):
         logging.info('====> Epoch %d: Training loss: %.4f' % (epoch, epoch_loss))
 
 
-def predict(decoder, scene_enc): # Predict with beam search based on scene enc
-    # start off with <s>
-    initial_guess = torch.ones(1).view(1,1).long() # ones to signal <s> [1, 1]
-
+def sample(decoder, scene_enc): # Predict with beam search based on scene enc
+    initial_guess = scene_enc
     decoder_hidden = decoder.init_hidden()# [SOMETHING] or maybe scene_enc??
     if torch.cuda.is_available():
         initial_guess = initial_guess.cuda()
@@ -185,10 +181,6 @@ def predict(decoder, scene_enc): # Predict with beam search based on scene enc
             if last_word.squeeze().data[0] == EOS: 
                 completed_guesses.append((log_prob, last_sequence_guess, None))
             else:
-                # if self.attn:
-                #     decoder_outputs, decoder_hidden, attn_weights = self.decoder(last_word, decoder_hidden, encoder_outputs)
-                # else:
-                #     decoder_outputs, decoder_hidden = self.decoder(last_word, decoder_hidden, encoder_outputs)
                 decoder_outputs, decoder_hidden = decoder(last_word, decoder_hidden, encoder_outputs)
                 # # Get k hypotheses for each 
                 # decoder outputs is [target_len x batch x en_vocab_sz] -> [1 x 1 x vocab]
@@ -213,8 +205,10 @@ def predict(decoder, scene_enc): # Predict with beam search based on scene enc
     completed_guesses.sort(key= lambda tup: -1*tup[0])
     return [x[1] for x in completed_guesses]
 
-def get_examples(scenes, model, args):
+def get_examples(model, train_scenes, args):
+    pdb.set_trace()
     model.eval()
+    n_train = len(train_scenes) 
     n_train_batches = int(n_train / args.batch_size)
 
     for i_batch in range(n_train_batches):
@@ -224,6 +218,11 @@ def get_examples(scenes, model, args):
                 [np.random.choice(n_train, size=args.batch_size)
                  for i_alt in range(args.alternatives)]
         alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
+
+        pdb.set_trace()
+        model.sample(batch_data, alt_data)
+
+
 
 
 

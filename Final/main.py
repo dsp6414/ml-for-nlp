@@ -10,6 +10,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import logging
 
+
 import model, util, corpus
 
 parser = argparse.ArgumentParser(description='Pragmatics')
@@ -33,6 +34,7 @@ parser.add_argument('--alternatives', type=int, default=1,
 parser.add_argument('--dropout', type=float, default =0.0, help='dropout probability')
 parser.add_argument('--model', default=None, help='which model to train (if debugging)')
 parser.add_argument('--dec', default='LSTM', help='which string decoder model to use for Speaker0. LSTM or MLP')
+
 args = parser.parse_args()
 
 torch.manual_seed(args.seed)
@@ -50,14 +52,14 @@ N_TEST_IMAGES = 100
 N_TEST = N_TEST_IMAGES * 10
 N_EXPERIMENT_PAIRS = 100
 
-VOCAB_SIZE = 2713
-
 # Not sure about num_scenes??
 NUM_SCENES = 10
 
 util.setup_logging(args)
 
 train_scenes, dev_scenes, test_scenes = corpus.load_abstract()
+
+VOCAB_SIZE = len(corpus.WORD_INDEX)
 
 output_size = 1 # should this be 1? because the output of the listener should just be a probability distr.
 listener0_model = model.Listener0Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, output_size, args.dropout) # need to pass in some parameters
@@ -96,8 +98,9 @@ elif args.model == 'l0':
 	logging.info("Listener0: " + str(listener0_model))
 	util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
 elif args.model == 's0':
-	logging.info("Speaker0: " + str(listener0_model))
+	logging.info("Speaker0: " + str(speaker0_model))
 	util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
+	util.get_examples(speaker0_model, train_scenes, args)
 elif args.model == 'ss1':
 	logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
 	util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
