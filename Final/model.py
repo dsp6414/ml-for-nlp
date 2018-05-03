@@ -123,19 +123,13 @@ class CompiledSpeaker1Model(nn.Module):
     def forward(self, data, alt_data):
         _, _, samples = self.sampler.sample(data, alt_data)
 
-        scene_enc = self.scene_encoder.forward("true", data, self.dropout_p)
-        alt_scene_enc = [self.scene_encoder.forward("alt%d" % i, alt, self.dropout_p)
-                            for i, alt in enumerate(alt_data)]
+        scene_enc = self.scene_encoder(data)
+        alt_scene_enc = [self.scene_encoder(alt) for alt in alt_data]
 
-        ### figure out how to translate these lines
-        l_cat = "CompSpeaker1Model_concat"
-        self.apollo_net.f(Concat(
-            l_cat, bottoms=[scene_enc] + alt_scene_enc))
-        ###
+        scenes = [scene_enc] + alt_scene_enc
 
         fake_data = [d._replace(description=s) for d, s in zip(data, samples)]
-
-        losses = self.string_decoder.forward("", l_cat, fake_data, self.dropout_p)
+        losses = self.string_decoder(fake_data)
         return losses, np.asarray(0)
 
     def sample(self, data, alt_data, viterbi, quantile=None):

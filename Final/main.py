@@ -66,8 +66,8 @@ output_size = 1 # should this be 1? because the output of the listener should ju
 listener0_model = model.Listener0Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, output_size, args.dropout) # need to pass in some parameters
 speaker0_model = model.Speaker0Model(VOCAB_SIZE, args.hidden_sz, args.dropout, args.dec)
 
-# Not sure what output size of compiled speaker model is..
-compiled_speaker1_model = model.CompiledSpeaker1Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, output_size, args.dropout)
+# Not sure what output size of sampling speaker model is..
+sampling_speaker1_model = model.SamplingSpeaker1Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, output_size, args.dropout)
 # compiled_speaker1_model = model.Compiledspeaker1Model()
 
 
@@ -75,26 +75,26 @@ compiled_speaker1_model = model.CompiledSpeaker1Model(VOCAB_SIZE, NUM_SCENES, ar
 if torch.cuda.is_available():
 	listener0_model.cuda()
 	speaker0_model.cuda()
-	compiled_speaker1_model.cuda()
+	sampling_speaker1_model.cuda()
 	# compiled_speaker1_model.cuda()
 
 
 optimizer_l0 = optim.Adam(listener0_model.parameters(), lr=LR)
 optimizer_s0 = optim.Adam(speaker0_model.parameters(), lr=LR)
-optimizer_cs1 = optim.Adam(compiled_speaker1_model.parameters(), lr=LR)
+optimizer_cs1 = optim.Adam(sampling_speaker1_model.parameters(), lr=LR)
 
 logging.info("Hyperparameters:" + str(args))
 
 if args.model == None:
 	logging.info("Listener0: " + str(listener0_model))
 	logging.info("Speaker0: " + str(listener0_model))
-	logging.info("CompiledSpeaker1Model: " + str(compiled_speaker1_model))
+	logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
 	# Train base
 	util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
 	util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
 
-	# Train compiled
-	util.train(train_scenes, compiled_speaker1_model, optimizer_cs1, args)
+	# Train sampling
+	util.train(train_scenes, sampling_speaker1_model, optimizer_cs1, args)
 elif args.model == 'l0':
 	logging.info("Listener0: " + str(listener0_model))
 	util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
@@ -103,8 +103,17 @@ elif args.model == 's0':
 	util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
 	util.get_examples(speaker0_model, train_scenes, args, corpus.WORD_INDEX)
 elif args.model == 'cs1':
-	logging.info("CompiledSpeaker1Model: " + str(compiled_speaker1_model))
+	logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
 	# util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
 	# util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
-	util.train(train_scenes, compiled_speaker1_model, optimizer_cs1, args, util.speaker0_targets)
+	util.train(train_scenes, sampling_speaker1_model, optimizer_cs1, args, util.speaker0_targets)
+
+
+# Run Experiments
+
+# models = {"sampling_speaker1": sampling_speaker1_model,}
+
+# run_experiment("one_different", "abstract", "base", models, dev_scenes)
+# run_experiment("by_similarity", "abstract", "base", models, dev_scenes)
+# run_experiment("all_same", "abstract", "base", models, dev_scenes)
 
