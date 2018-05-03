@@ -16,7 +16,7 @@ EOS = 2
 MAX_LEN = 20
 
 def scenes_to_vec(scenes):
-    max_words = max(len(scene.description) for scene in scenes)
+    max_words = max(len(scene.description) for scene in scenes) - 1
     word_data = Variable(torch.zeros(len(scenes), max_words))
 
     if torch.cuda.is_available():
@@ -25,7 +25,8 @@ def scenes_to_vec(scenes):
     for i_scene, scene in enumerate(scenes):
         offset = max_words - len(scene.description)
         for i_word, word in enumerate(scene.description):
-            word_data[i_scene, i_word] = word
+            if word != EOS:
+                word_data[i_scene, i_word] = word
 
     word_data = word_data.long()
     return word_data
@@ -277,13 +278,13 @@ class LSTMStringDecoder(nn.Module):
     def forward(self, scene_enc, scenes, max_words):
         batch_size = len(scene_enc) # [100 x 50]
         word_data = scenes_to_vec(scenes) # [100 x 15]
+
         hidden = self.init_hidden(batch_size)
         embedding = self.embedding(word_data) # dimensions = [100 x 15 x 50]
+        pdb.set_trace()
         embedding = torch.cat((scene_enc.unsqueeze(1), embedding), 1) # after: [100 x 16 x 50]?
         output, hidden = self.lstm(embedding, hidden)
         output = self.dropout(output) # [100 x 15 x 50]
-        pdb.set_trace()
-        output = output[:, 2:, :].contiguous() # I
         pdb.set_trace()
         output = self.linear(output.view(-1, self.hidden_sz)) # [1500 x 2713]?
         return output
