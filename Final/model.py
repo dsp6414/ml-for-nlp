@@ -8,8 +8,6 @@ import torch.optim as optim
 import pdb
 from corpus import WORD_INDEX
 
-from corpus import WORD_INDEX
-
 N_PROP_TYPES = 8
 N_PROP_OBJECTS = 35
 
@@ -55,12 +53,12 @@ class Listener0Model(nn.Module):
 
 
     def forward(self, data, alt_data): # alt_data seems to be a list, data seems to have both string and image
-        scene_enc = self.scene_encoder(data)
-        alt_scene_enc = [self.scene_encoder(alt) for alt in alt_data]
-        string_enc = self.string_encoder(data) # data has the string?
+        scene_enc = self.scene_encoder(data)                            # [100 x 50]
+        alt_scene_enc = [self.scene_encoder(alt) for alt in alt_data]   # [100 x 50]
 
-        scenes = [scene_enc] + alt_scene_enc # List of length 2
-        labels = np.zeros((len(data),)) # length 100
+        string_enc = self.string_encoder(data)                          # [100 x 50]
+        scenes = [scene_enc] + alt_scene_enc                            # List of length 2
+        labels = torch.zeros((len(data),))                              # length 100
         log_probs = self.scorer(string_enc, scenes, labels)
 
         return log_probs
@@ -90,17 +88,14 @@ class Speaker0Model(nn.Module):
     def forward(self, data, alt_data):
         scene_enc = self.scene_encoder(data)
         max_len = max(len(scene.description) for scene in data)
-        pdb.set_trace()
         losses = self.string_decoder(scene_enc, data, max_len) # losses was [1400 x 2713]
         # should probs be like
         return losses
 
     def sample(self, data, alt_data, viterbi=False):
-        pdb.set_trace()
         scene_enc = self.scene_encoder(data) # [100 x 50]
         max_len = max(len(scene.description) for scene in data) # 15
         probs, sampled_ids = self.string_decoder.sample(scene_enc, max_len, viterbi) # used to return probs, sample
-        pdb.set_trace()
         return probs, sampled_ids # used to return probs, np.zeros(probs.shape), sample
 
 
@@ -122,7 +117,7 @@ class CompiledSpeaker1Model(nn.Module):
         self.dropout_p = dropout
 
     def forward(self, data, alt_data):
-        _, _, samples = self.sampler.sample(data, alt_data, self.dropout_p, True)
+        _, _, samples = self.sampler.sample(data, alt_data)
 
         scene_enc = self.scene_encoder.forward("true", data, self.dropout_p)
         alt_scene_enc = [self.scene_encoder.forward("alt%d" % i, alt, self.dropout_p)
@@ -165,44 +160,43 @@ class SamplingSpeaker1Model(nn.Module):
         else:
             n_samples = 1
 
-        speaker_scores = torch.zeros((len(data), n_samples))
-        listener_scores = torch.zeros((len(data), n_samples))
+        speaker_scores = []
+        listener_scores = []
 
         all_fake_scenes = []
         for i_sample in range(n_samples):
             speaker_log_probs, sampled_ids = self.speaker0.sample(data, alt_data, viterbi=False) # used to output [speaker_log_probs, _, sample]
 
-            pdb.set_trace()
             sampled_captions = []
             for sampled_id in sampled_ids:
                 sampled_caption = []
                 for word_id in sampled_id:
-                    word = WORD_INDEX.get(word_id)
+                    word = WORD_INDEX.get(word_id.data[0])
                     sampled_caption.append(word)
-                    if word_id == 2:
+                    if word_id.data[0] == 2:
                         sampled_captions.append(' '.join(sampled_caption))
                         break
                 sampled_captions.append(' '.join(sampled_caption))
 
-            pdb.set_trace()
+            # Replace description for real image with description generated
             fake_scenes = []
             for i in range(len(data)):
-                fake_scenes.append(data[i]._replace(description=sampled_captions[i]))
+                fake_scenes.append(data[i]._replace(description=sampled_ids[i]))
             all_fake_scenes.append(fake_scenes)
 
-            pdb.set_trace()
-            listener_log_probs = self.listener0.forward(fake_scenes, alt_data, dropout)
-            speaker_scores[:, i_sample] = speaker_log_probs
-            listener_scores[:, i_sample] = listener_log_probs
+            listener_log_probs = self.listener0(fake_scenes, alt_data)
+            speaker_scores.append(speaker_log_probs)
+            listener_scores.append(listener_log_probs)
+
+        speaker_scores = torch.stack(speaker_scores, 2)         # [100 x 20 x 10] , 20 from max sample length
+        listener_scores = torch.stack(listener_scores, 2)       # [100 x 2 x 10]
 
         scores = listener_scores
 
-        pdb.set_trace()
         out_sentences = []
-        out_speaker_scores = torch.zeros(len(data))
-        out_listener_scores = torch.zeros(len(data))
+        out_speaker_scores = Variable(torch.zeros(len(data)))
+        out_listener_scores = Variable(torch.zeros(len(data)))
 
-        pdb.set_trace()
         for i in range(len(data)):
             if viterbi:
                 q = scores[i, :].argmax()
@@ -230,13 +224,13 @@ class LinearStringEncoder(nn.Module):
         self.dropout = dropout
 
     def forward(self, scenes):
-        feature_data = Variable(torch.zeros(len(scenes), self.vocab_sz))
+        feature_data = Variable(torch.zeros(len(scenes), self.vocab_sz))    # [100 x vocab_sz]
         if torch.cuda.is_available():
             feature_data = feature_data.cuda()
 
         for i_scene, scene in enumerate(scenes):
             for word in scene.description:
-                feature_data[i_scene, word] = feature_data[i_scene, word] + 1 # for some reason += is buggy
+                feature_data[i_scene, word.data[0]] = feature_data[i_scene, word.data[0]] + 1
         # logging.info("LinearStringEncoder_" + prefix)
         # logging.info("LinearStringEncoder_")
 
@@ -298,7 +292,6 @@ class LSTMStringDecoder(nn.Module):
             Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)))
 
     def forward(self, scene_enc, scenes, max_words):
-        pdb.set_trace()
         batch_size = len(scene_enc) # [100 x 50]
         word_data = scenes_to_vec(scenes) # [100 x 15]
 
@@ -330,7 +323,6 @@ class LSTMStringDecoder(nn.Module):
             inputs = self.embedding(predicted)
             inputs = inputs.unsqueeze(1)
 
-        pdb.set_trace()
         sampled_ids = torch.stack(sampled_ids, 1)
         out_log_probs = torch.stack(out_log_probs, 1)
         return out_log_probs, sampled_ids
