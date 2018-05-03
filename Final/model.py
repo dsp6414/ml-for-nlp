@@ -106,6 +106,7 @@ class Speaker0Model(nn.Module):
             sampled_caption.append(word)
             if word == '</s>':
                 break
+        pdb.set_trace()
         sample = ' '.join(sampled_caption)
 
         return probs, sample # used to return probs, np.zeros(probs.shape), sample
