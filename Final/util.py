@@ -149,7 +149,7 @@ def train(train_scenes, model, optimizer, args, target_func):
             if torch.cuda.is_available():
                 targets = targets.cuda()
 
-
+            pdb.set_trace()
             loss = criterion(outputs, targets) # what should these be?
             loss.backward()
             optimizer.step()
@@ -189,7 +189,7 @@ def predict(decoder, scene_enc): # Predict with beam search based on scene enc
                 #     decoder_outputs, decoder_hidden, attn_weights = self.decoder(last_word, decoder_hidden, encoder_outputs)
                 # else:
                 #     decoder_outputs, decoder_hidden = self.decoder(last_word, decoder_hidden, encoder_outputs)
-                decoder_outputs, decoder_hidden = self.decoder(last_word, decoder_hidden, encoder_outputs)
+                decoder_outputs, decoder_hidden = decoder(last_word, decoder_hidden, encoder_outputs)
                 # # Get k hypotheses for each 
                 # decoder outputs is [target_len x batch x en_vocab_sz] -> [1 x 1 x vocab]
                 vocab_size = len(decoder_outputs[0][0])

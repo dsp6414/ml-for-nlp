@@ -275,17 +275,15 @@ class LSTMStringDecoder(nn.Module):
             Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)))
 
     def forward(self, scene_enc, scenes, max_words):
-        pdb.set_trace()
-        batch_size = len(scene_enc)
-        word_data = scenes_to_vec(scenes)
-        pdb.set_trace()
-
+        batch_size = len(scene_enc) # [100 x 50]
+        word_data = scenes_to_vec(scenes) # [100 x 15]
         hidden = self.init_hidden(batch_size)
-        embedding = self.embedding(word_data) # dimensions of word_data = [100 x 15]
-        embeddings = torch.cat(embedding, scene_enc)
+        embedding = self.embedding(word_data) # dimensions = [100 x 15 x 50]
+        embedding = torch.cat((scene_enc.unsqueeze(1), embedding), 1) # after: [100 x 16 x 50]?
         output, hidden = self.lstm(embedding, hidden)
         output = self.dropout(output) # [100 x 15 x 50]
-        output = output[:, 1:, :].contiguous()
+        pdb.set_trace()
+        output = output[:, 2:, :].contiguous() # I
         pdb.set_trace()
         output = self.linear(output.view(-1, self.hidden_sz)) # [1500 x 2713]?
         return output
