@@ -21,7 +21,7 @@ MIN_WORD_COUNT = 5
 DEV_RANGE = range(N_IMAGES - N_TEST_IMAGES - N_DEV_IMAGES, N_IMAGES - N_TEST_IMAGES)
 TEST_RANGE = range(N_IMAGES - N_TEST_IMAGES, N_IMAGES)
 
-data_path = '../../../../../AbstractScenes_v1.1/'
+data_path = 'AbstractScenes_v1.1/' if os.path.exists('AbstractScenes_v1.1/') else '../../../../../AbstractScenes_v1.1/'
 # data_path = 'AbstractScenes_v1.1/'
 
 def load_props():
