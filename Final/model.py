@@ -312,7 +312,6 @@ class LSTMStringDecoder(nn.Module):
 
     # Currently performs a greedy search
     def sample(self, scene_enc, max_words, viterbi):
-        pdb.set_trace()
         batch_size = len(scene_enc)                     # 100
         sampled_ids = []
         out_log_probs = []
@@ -332,7 +331,6 @@ class LSTMStringDecoder(nn.Module):
 
         sampled_ids = torch.stack(sampled_ids, 1)
         out_log_probs = torch.stack(out_log_probs, 1)
-        pdb.set_trace()
         return out_log_probs, sampled_ids
 
 class MLPScorer(nn.Module):
