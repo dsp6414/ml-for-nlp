@@ -1,0 +1,259 @@
+ Loading feature files...
+ <s> = 1
+ </s> = 2
+ All scenes loaded.
+ Hyperparameters:Namespace(LR=0.01, alternatives=1, batch_size=100, dec='LSTM', dropout=0.0, epochs=2, hidden_sz=50, load=None, log_interval=10, model='ss1', no_cuda=False, save='True', seed=1)
+ Listener0: Listener0Model(
+  (scene_encoder): LinearSceneEncoder(
+    (fc): Linear(in_features=280, out_features=50)
+  )
+  (string_encoder): LinearStringEncoder(
+    (fc): Linear(in_features=1063, out_features=50)
+  )
+  (scorer): MLPScorer(
+    (linear_4): Linear(in_features=50, out_features=50)
+    (linear_5): Linear(in_features=50, out_features=50)
+    (linear_3): Linear(in_features=50, out_features=1)
+  )
+)
+ Speaker0: Speaker0Model(
+  (scene_encoder): LinearSceneEncoder(
+    (fc): Linear(in_features=280, out_features=50)
+  )
+  (string_decoder): LSTMStringDecoder(
+    (embedding): Embedding(1063, 50)
+    (lstm): LSTM(50, 50, num_layers=2, batch_first=True)
+    (linear): Linear(in_features=50, out_features=1063)
+    (dropout): Dropout(p=0.0)
+  )
+)
+ Training Listener0...
+ Epoch [1/2], Step[0/483], loss: 0.6948
+ Epoch [1/2], Step[10/483], loss: 0.6924
+ Epoch [1/2], Step[20/483], loss: 0.6649
+ Epoch [1/2], Step[30/483], loss: 0.6726
+ Epoch [1/2], Step[40/483], loss: 0.7197
+ Epoch [1/2], Step[50/483], loss: 0.7072
+ Epoch [1/2], Step[60/483], loss: 0.6714
+ Epoch [1/2], Step[70/483], loss: 0.7078
+ Epoch [1/2], Step[80/483], loss: 0.6374
+ Epoch [1/2], Step[90/483], loss: 0.6772
+ Epoch [1/2], Step[100/483], loss: 0.6597
+ Epoch [1/2], Step[110/483], loss: 0.6993
+ Epoch [1/2], Step[120/483], loss: 0.6334
+ Epoch [1/2], Step[130/483], loss: 0.6183
+ Epoch [1/2], Step[140/483], loss: 0.6082
+ Epoch [1/2], Step[150/483], loss: 0.7401
+ Epoch [1/2], Step[160/483], loss: 0.6416
+ Epoch [1/2], Step[170/483], loss: 0.7256
+ Epoch [1/2], Step[180/483], loss: 0.5706
+ Epoch [1/2], Step[190/483], loss: 0.5871
+ Epoch [1/2], Step[200/483], loss: 0.6670
+ Epoch [1/2], Step[210/483], loss: 0.6570
+ Epoch [1/2], Step[220/483], loss: 0.6310
+ Epoch [1/2], Step[230/483], loss: 0.6507
+ Epoch [1/2], Step[240/483], loss: 0.5453
+ Epoch [1/2], Step[250/483], loss: 0.5019
+ Epoch [1/2], Step[260/483], loss: 0.5149
+ Epoch [1/2], Step[270/483], loss: 0.5797
+ Epoch [1/2], Step[280/483], loss: 0.6927
+ Epoch [1/2], Step[290/483], loss: 0.6911
+ Epoch [1/2], Step[300/483], loss: 0.4914
+ Epoch [1/2], Step[310/483], loss: 0.5950
+ Epoch [1/2], Step[320/483], loss: 0.8503
+ Epoch [1/2], Step[330/483], loss: 0.5336
+ Epoch [1/2], Step[340/483], loss: 0.4618
+ Epoch [1/2], Step[350/483], loss: 0.6384
+ Epoch [1/2], Step[360/483], loss: 0.5619
+ Epoch [1/2], Step[370/483], loss: 0.5347
+ Epoch [1/2], Step[380/483], loss: 0.6436
+ Epoch [1/2], Step[390/483], loss: 0.5926
+ Epoch [1/2], Step[400/483], loss: 0.6125
+ Epoch [1/2], Step[410/483], loss: 0.5595
+ Epoch [1/2], Step[420/483], loss: 0.4055
+ Epoch [1/2], Step[430/483], loss: 0.5696
+ Epoch [1/2], Step[440/483], loss: 0.5356
+ Epoch [1/2], Step[450/483], loss: 0.4954
+ Epoch [1/2], Step[460/483], loss: 0.6551
+ Epoch [1/2], Step[470/483], loss: 0.5158
+ Epoch [1/2], Step[480/483], loss: 0.5093
+ ====> Epoch 1: Training loss: 298.2705
+ Accuracy: 0.622567
+ Epoch [2/2], Step[0/483], loss: 0.4425
+ Epoch [2/2], Step[10/483], loss: 0.4952
+ Epoch [2/2], Step[20/483], loss: 0.6016
+ Epoch [2/2], Step[30/483], loss: 0.5542
+ Epoch [2/2], Step[40/483], loss: 0.5238
+ Epoch [2/2], Step[50/483], loss: 0.5893
+ Epoch [2/2], Step[60/483], loss: 0.5116
+ Epoch [2/2], Step[70/483], loss: 0.4578
+ Epoch [2/2], Step[80/483], loss: 0.3942
+ Epoch [2/2], Step[90/483], loss: 0.4417
+ Epoch [2/2], Step[100/483], loss: 0.5230
+ Epoch [2/2], Step[110/483], loss: 0.5958
+ Epoch [2/2], Step[120/483], loss: 0.5322
+ Epoch [2/2], Step[130/483], loss: 0.4062
+ Epoch [2/2], Step[140/483], loss: 0.4930
+ Epoch [2/2], Step[150/483], loss: 0.5458
+ Epoch [2/2], Step[160/483], loss: 0.5334
+ Epoch [2/2], Step[170/483], loss: 0.5695
+ Epoch [2/2], Step[180/483], loss: 0.3162
+ Epoch [2/2], Step[190/483], loss: 0.6218
+ Epoch [2/2], Step[200/483], loss: 0.4580
+ Epoch [2/2], Step[210/483], loss: 0.6522
+ Epoch [2/2], Step[220/483], loss: 0.4828
+ Epoch [2/2], Step[230/483], loss: 0.5410
+ Epoch [2/2], Step[240/483], loss: 0.3306
+ Epoch [2/2], Step[250/483], loss: 0.4071
+ Epoch [2/2], Step[260/483], loss: 0.2749
+ Epoch [2/2], Step[270/483], loss: 0.3592
+ Epoch [2/2], Step[280/483], loss: 0.4687
+ Epoch [2/2], Step[290/483], loss: 0.4940
+ Epoch [2/2], Step[300/483], loss: 0.4854
+ Epoch [2/2], Step[310/483], loss: 0.5539
+ Epoch [2/2], Step[320/483], loss: 0.5498
+ Epoch [2/2], Step[330/483], loss: 0.4472
+ Epoch [2/2], Step[340/483], loss: 0.3927
+ Epoch [2/2], Step[350/483], loss: 0.3947
+ Epoch [2/2], Step[360/483], loss: 0.4609
+ Epoch [2/2], Step[370/483], loss: 0.4011
+ Epoch [2/2], Step[380/483], loss: 0.4850
+ Epoch [2/2], Step[390/483], loss: 0.5959
+ Epoch [2/2], Step[400/483], loss: 0.4657
+ Epoch [2/2], Step[410/483], loss: 0.4405
+ Epoch [2/2], Step[420/483], loss: 0.4161
+ Epoch [2/2], Step[430/483], loss: 0.3697
+ Epoch [2/2], Step[440/483], loss: 0.4591
+ Epoch [2/2], Step[450/483], loss: 0.3938
+ Epoch [2/2], Step[460/483], loss: 0.4481
+ Epoch [2/2], Step[470/483], loss: 0.4982
+ Epoch [2/2], Step[480/483], loss: 0.4034
+ ====> Epoch 2: Training loss: 227.4502
+ Accuracy: 0.750807
+ Training Speaker0...
+ Epoch [1/2], Step[0/483], loss: 6.9699
+ Epoch [1/2], Step[10/483], loss: 3.3775
+ Epoch [1/2], Step[20/483], loss: 2.5726
+ Epoch [1/2], Step[30/483], loss: 2.1425
+ Epoch [1/2], Step[40/483], loss: 2.0235
+ Epoch [1/2], Step[50/483], loss: 2.0710
+ Epoch [1/2], Step[60/483], loss: 2.0211
+ Epoch [1/2], Step[70/483], loss: 1.7568
+ Epoch [1/2], Step[80/483], loss: 1.9182
+ Epoch [1/2], Step[90/483], loss: 1.3235
+ Epoch [1/2], Step[100/483], loss: 1.2676
+ Epoch [1/2], Step[110/483], loss: 1.4592
+ Epoch [1/2], Step[120/483], loss: 1.5262
+ Epoch [1/2], Step[130/483], loss: 1.2192
+ Epoch [1/2], Step[140/483], loss: 1.4369
+ Epoch [1/2], Step[150/483], loss: 1.4734
+ Epoch [1/2], Step[160/483], loss: 1.6058
+ Epoch [1/2], Step[170/483], loss: 1.0337
+ Epoch [1/2], Step[180/483], loss: 1.4189
+ Epoch [1/2], Step[190/483], loss: 1.3990
+ Epoch [1/2], Step[200/483], loss: 0.9886
+ Epoch [1/2], Step[210/483], loss: 1.2286
+ Epoch [1/2], Step[220/483], loss: 1.0930
+ Epoch [1/2], Step[230/483], loss: 1.0003
+ Epoch [1/2], Step[240/483], loss: 1.2619
+ Epoch [1/2], Step[250/483], loss: 1.2894
+ Epoch [1/2], Step[260/483], loss: 0.8143
+ Epoch [1/2], Step[270/483], loss: 1.2476
+ Epoch [1/2], Step[280/483], loss: 1.0096
+ Epoch [1/2], Step[290/483], loss: 0.8552
+ Epoch [1/2], Step[300/483], loss: 1.2138
+ Epoch [1/2], Step[310/483], loss: 1.2106
+ Epoch [1/2], Step[320/483], loss: 1.3116
+ Epoch [1/2], Step[330/483], loss: 1.1655
+ Epoch [1/2], Step[340/483], loss: 1.2192
+ Epoch [1/2], Step[350/483], loss: 1.1652
+ Epoch [1/2], Step[360/483], loss: 0.9056
+ Epoch [1/2], Step[370/483], loss: 0.7487
+ Epoch [1/2], Step[380/483], loss: 1.0314
+ Epoch [1/2], Step[390/483], loss: 1.1291
+ Epoch [1/2], Step[400/483], loss: 1.1006
+ Epoch [1/2], Step[410/483], loss: 0.8685
+ Epoch [1/2], Step[420/483], loss: 1.0770
+ Epoch [1/2], Step[430/483], loss: 1.0461
+ Epoch [1/2], Step[440/483], loss: 1.1104
+ Epoch [1/2], Step[450/483], loss: 0.9176
+ Epoch [1/2], Step[460/483], loss: 1.1998
+ Epoch [1/2], Step[470/483], loss: 1.2976
+ Epoch [1/2], Step[480/483], loss: 0.7391
+ ====> Epoch 1: Training loss: 682.8118
+ Epoch [2/2], Step[0/483], loss: 0.9353
+ Epoch [2/2], Step[10/483], loss: 1.0846
+ Epoch [2/2], Step[20/483], loss: 1.1674
+ Epoch [2/2], Step[30/483], loss: 1.0920
+ Epoch [2/2], Step[40/483], loss: 1.1418
+ Epoch [2/2], Step[50/483], loss: 1.2351
+ Epoch [2/2], Step[60/483], loss: 1.3215
+ Epoch [2/2], Step[70/483], loss: 1.1663
+ Epoch [2/2], Step[80/483], loss: 1.3531
+ Epoch [2/2], Step[90/483], loss: 0.9280
+ Epoch [2/2], Step[100/483], loss: 0.9265
+ Epoch [2/2], Step[110/483], loss: 1.1000
+ Epoch [2/2], Step[120/483], loss: 1.1751
+ Epoch [2/2], Step[130/483], loss: 0.9879
+ Epoch [2/2], Step[140/483], loss: 1.1375
+ Epoch [2/2], Step[150/483], loss: 1.1500
+ Epoch [2/2], Step[160/483], loss: 1.2878
+ Epoch [2/2], Step[170/483], loss: 0.8585
+ Epoch [2/2], Step[180/483], loss: 1.2148
+ Epoch [2/2], Step[190/483], loss: 1.1677
+ Epoch [2/2], Step[200/483], loss: 0.8523
+ Epoch [2/2], Step[210/483], loss: 1.0427
+ Epoch [2/2], Step[220/483], loss: 0.9521
+ Epoch [2/2], Step[230/483], loss: 0.8335
+ Epoch [2/2], Step[240/483], loss: 1.0931
+ Epoch [2/2], Step[250/483], loss: 1.0823
+ Epoch [2/2], Step[260/483], loss: 0.7047
+ Epoch [2/2], Step[270/483], loss: 1.0390
+ Epoch [2/2], Step[280/483], loss: 0.9024
+ Epoch [2/2], Step[290/483], loss: 0.7459
+ Epoch [2/2], Step[300/483], loss: 1.0701
+ Epoch [2/2], Step[310/483], loss: 1.0812
+ Epoch [2/2], Step[320/483], loss: 1.1212
+ Epoch [2/2], Step[330/483], loss: 1.0406
+ Epoch [2/2], Step[340/483], loss: 1.0612
+ Epoch [2/2], Step[350/483], loss: 1.0262
+ Epoch [2/2], Step[360/483], loss: 0.8104
+ Epoch [2/2], Step[370/483], loss: 0.6898
+ Epoch [2/2], Step[380/483], loss: 0.9584
+ Epoch [2/2], Step[390/483], loss: 1.0063
+ Epoch [2/2], Step[400/483], loss: 0.9910
+ Epoch [2/2], Step[410/483], loss: 0.8036
+ Epoch [2/2], Step[420/483], loss: 0.9676
+ Epoch [2/2], Step[430/483], loss: 0.9701
+ Epoch [2/2], Step[440/483], loss: 1.0014
+ Epoch [2/2], Step[450/483], loss: 0.8345
+ Epoch [2/2], Step[460/483], loss: 1.1118
+ Epoch [2/2], Step[470/483], loss: 1.1649
+ Epoch [2/2], Step[480/483], loss: 0.6795
+ ====> Epoch 2: Training loss: 506.9111
+ SamplingSpeaker1Model: SamplingSpeaker1Model(
+  (listener0): Listener0Model(
+    (scene_encoder): LinearSceneEncoder(
+      (fc): Linear(in_features=280, out_features=50)
+    )
+    (string_encoder): LinearStringEncoder(
+      (fc): Linear(in_features=1063, out_features=50)
+    )
+    (scorer): MLPScorer(
+      (linear_4): Linear(in_features=50, out_features=50)
+      (linear_5): Linear(in_features=50, out_features=50)
+      (linear_3): Linear(in_features=50, out_features=1)
+    )
+  )
+  (speaker0): Speaker0Model(
+    (scene_encoder): LinearSceneEncoder(
+      (fc): Linear(in_features=280, out_features=50)
+    )
+    (string_decoder): LSTMStringDecoder(
+      (embedding): Embedding(1063, 50)
+      (lstm): LSTM(50, 50, num_layers=2, batch_first=True)
+      (linear): Linear(in_features=50, out_features=1063)
+      (dropout): Dropout(p=0.0)
+    )
+  )
+)
