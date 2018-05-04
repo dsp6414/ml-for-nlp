@@ -217,51 +217,8 @@ class SamplingSpeaker1Model(nn.Module):
         return (all_listener_log_probs, all_speaker_log_probs), out_descriptions
 
 
-
-
-
-
-
-        for i_sample in range(n_samples):
-            speaker_log_probs = all_speaker_log_probs[:, i_sample]
-            sampled_ids = all_sampled_ids[:, i_sample, :]
-            # speaker_log_probs, sampled_ids = self.speaker0.sample(data, alt_data, viterbi=False) # used to output [speaker_log_probs, _, sample]
-
-            sampled_captions = []
-            for sampled_id in sampled_ids:
-                sampled_caption = []
-                for word_id in sampled_id:
-                    word = WORD_INDEX.get(word_id.data[0])
-                    sampled_caption.append(word)
-                    if word_id.data[0] == 2:
-                        sampled_captions.append(' '.join(sampled_caption))
-                        break
-                sampled_captions.append(' '.join(sampled_caption))
-
-            # Replace description for real image with description generated
-            fake_scenes = []
-            for i in range(len(data)):
-                fake_scenes.append(data[i]._replace(description=sampled_ids[i].data))
-            all_fake_scenes.append(fake_scenes)
-
-            listener_log_probs = self.listener0(fake_scenes, alt_data)
-            speaker_scores.append(speaker_log_probs)
-            listener_scores.append(listener_log_probs)
-
         speaker_scores = torch.stack(speaker_scores, 2)         # [100 x 20 x 10] , 20 from max sample length
         listener_scores = torch.stack(listener_scores, 2)       # [100 x 2 x 10]
-
-        scores = listener_scores
-
-        out_sentences = []
-        out_speaker_scores = Variable(torch.zeros(len(data)))
-        out_listener_scores = Variable(torch.zeros(len(data)))
-
-        for i in range(len(data)):
-            q = 0
-            out_sentences.append(all_fake_scenes[q][i].description)
-            out_speaker_scores[i] = speaker_scores[i][q]
-            out_listener_scores[i] = listener_scores[i][q]
 
         stacked_sentences = Variable(torch.stack(out_sentences)) # [100 x 20]
         return (out_speaker_scores, out_listener_scores), stacked_sentences
