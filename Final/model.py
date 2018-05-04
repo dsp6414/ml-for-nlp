@@ -336,8 +336,11 @@ class LSTMStringDecoder(nn.Module):
     def beam_sample(self, scene_enc, max_words, viterbi, k=5):
         batch_size = 1
         encoder_outputs = None
+        # Change scene_enc to be [1 x 1 x 50]
+        scene_enc = scene_enc.transpose(0,1).unsqueeze(0)
         initial_guess =  Variable(torch.LongTensor([SOS]).view(1, 1)) # Or should this be SOS?? fix later
         initial_hidden = self.init_hidden(batch_size)# [2 x 1 x 50] or maybe scene_enc??
+        pdb.set_trace()
         zeroth, decoder_hidden = self.forward_step(scene_enc, initial_hidden, encoder_outputs, use_embeddings=False)
         if torch.cuda.is_available():
             initial_guess = initial_guess.cuda()
