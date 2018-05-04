@@ -11,7 +11,6 @@ MAX_LEN = 20
 SOS = 1
 EOS = 2
 
-experiment_counter = None
 class Struct:
     def __init__(self, **entries):
         rec_entries = {}
@@ -244,12 +243,12 @@ def get_examples(model, train_scenes, args, word_index):
         alt_indices = [np.random.choice(n_train, size=args.batch_size) for i_alt in range(args.alternatives)]
         alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
 
-        probs, sentences = model.sample(batch_data, alt_data) # [batch_size, sentences] sent is [100 x 10 x 20]
+        probs, sentences = model.sample(batch_data, alt_data, k=10) # [batch_size, sentences] sent is [100 x 10 x 20]
         pdb.set_trace()
         print_tensor3d(sentences.data, word_index)
         logging.info([scene.image_id for scene in batch_data])
 
-        scores = calculate_bleu(batch_data, sentences)
+        scores = calculate_bleu(batch_data, sentences.squeeze())
         for _, score in scores:
             bleu_score += score
         pdb.set_trace()
@@ -303,13 +302,24 @@ def calculate_bleu(batch, candidates):
 
     for (img_id, candidate) in candidates_with_ids:
         index_of_end = (candidate.data == 2).nonzero()[0][0] if len((candidate.data == 2).nonzero()) > 0 else MAX_LEN
-        candidate_chopped = candidate.data[1:index_of_end]
+        pdb.set_trace()
+        candidate_chopped = candidate.data[1:index_of_end] if index_of_end > 1 else []
         score = sentence_bleu(scene_to_description[img_id], candidate_chopped)
         # print("BLEU Score: " + str(score))
         scores_with_ids.append((img_id, score))
     return scores_with_ids
 
+def save_model(model, args):
+    file_name = 'models/' + args.model + experiment_counter + '.pth'
+    torch.save(model.state_dict(), file_name)
+    logging.info('Saved model to %s' % (file_name))
+
+def load_model(model, path):
+    model.load_state_dict(torch.load(path))
+
+
 def setup_logging(args):
+    global experiment_counter
     with open("log/file_num.txt") as file: 
         experiment_counter = file.read()
 

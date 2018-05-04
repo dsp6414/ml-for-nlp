@@ -177,7 +177,7 @@ class SamplingSpeaker1Model(nn.Module):
         self.listener0 = listener0
         self.speaker0 = speaker0
 
-    def sample(self, data, alt_data, viterbi=None, quantile=None, k=3):
+    def sample(self, data, alt_data, viterbi=None, quantile=None, k=10):
         n_samples = k 
 
         speaker_scores = []

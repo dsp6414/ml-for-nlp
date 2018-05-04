@@ -35,6 +35,8 @@ parser.add_argument('--alternatives', type=int, default=1,
 parser.add_argument('--dropout', type=float, default =0.0, help='dropout probability')
 parser.add_argument('--model', default=None, help='which model to train (if debugging)')
 parser.add_argument('--dec', default='LSTM', help='which string decoder model to use for Speaker0. LSTM or MLP')
+parser.add_argument('--save', default=False, help='if you want to save your model')
+parser.add_argument('--load', help='if you want to load a pretrained model')
 
 args = parser.parse_args()
 
@@ -109,12 +111,11 @@ elif args.model == 'ss1':
 	util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
 	sampling_speaker1_model = model.SamplingSpeaker1Model(listener0_model, speaker0_model)
 	logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
-	pdb.set_trace()
+	if args.save:
+		util.save_model(sampling_speaker1_model, args)
 	util.get_examples(sampling_speaker1_model, train_scenes, args, corpus.WORD_INDEX)
 
 	# util.train(train_scenes, sampling_speaker1_model, optimizer_ss1, args, util.speaker0_targets)
-	file_name = args.model + util.experiment_counter + '.pth'
-	torch.save(sampling_speaker1_model.state_dict(), file_name)
 
 # Run Experiments
 
