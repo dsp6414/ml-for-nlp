@@ -124,6 +124,8 @@ def speaker0_targets(args, scenes):
     targets = targets.view(-1).long()
     return targets
 
+def print_tensor_1d(data, WORD_INDEX):
+    loggin.info([WORD_INDEX.get(word) for word in data])
 def print_tensor(data, WORD_INDEX):
     for x in data:
         logging.info([WORD_INDEX.get(word) for word in x])
@@ -133,6 +135,11 @@ def print_tensor3d(data, WORD_INDEX):
         logging.info('Training row %d'  % (ind))
         for y in x:
             logging.info([WORD_INDEX.get(word) for word in y])
+
+def print_datas_and_desc(data, alt_data, sentences, WORD_INDEX):
+    for scene, alt_scenes, sent in zip(data, alt_data, sentences):
+        logging.info('Scene ID: %s, alt scene id: %s' % (scene.image_id, alt_scenes[0].image_id))
+        print_tensor(sent, WORD_INDEX)
 
 def train(train_scenes, model, optimizer, args, target_func):
     logging.info('Training %s...' % (model.name))
@@ -244,9 +251,9 @@ def get_examples(model, train_scenes, args, word_index):
         alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
 
         probs, sentences = model.sample(batch_data, alt_data, k=10) # [batch_size, sentences] sent is [100 x 10 x 20]
-        pdb.set_trace()
+        # print_datas_and_desc(batch_data, alt_data, sentences.data, word_index)
         print_tensor3d(sentences.data, word_index)
-        logging.info([scene.image_id for scene in batch_data])
+        logging.info([(scene.image_id, alt_scene.image_id) for scene, alt_scene in zip(batch_data, alt_data[0])])
 
         scores = calculate_bleu(batch_data, sentences.squeeze())
         for _, score in scores:
