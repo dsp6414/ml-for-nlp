@@ -146,6 +146,7 @@ def train(train_scenes, model, optimizer, args, target_func):
 
     for epoch in range(1, args.epochs + 1):
         epoch_loss = 0.0
+        total_correct = 0.0
 
         for i_batch in range(n_train_batches):
             optimizer.zero_grad()
@@ -166,6 +167,11 @@ def train(train_scenes, model, optimizer, args, target_func):
 
             # pdb.set_trace()
 
+            if model.name =='Listener0':
+                _, predicted = outputs.max(dim=1)
+                n_correct = (predicted.data == targets.data).sum()
+                total_correct += n_correct
+
             loss = criterion(outputs, targets) # what should these be?
             loss.backward()
             optimizer.step()
@@ -176,6 +182,9 @@ def train(train_scenes, model, optimizer, args, target_func):
                   %(epoch, args.epochs, i_batch, n_train_batches, loss.data[0]))
 
         logging.info('====> Epoch %d: Training loss: %.4f' % (epoch, epoch_loss))
+
+        if model.name=='Listener0':
+            logging.info('Accuracy: %f' % (total_correct / (n_train_batches * args.batch_size)))
 
 def sample(decoder, scene_enc): # Predict with beam search based on scene enc
     initial_guess = scene_enc
@@ -235,7 +244,8 @@ def get_examples(model, train_scenes, args, word_index):
         alt_indices = [np.random.choice(n_train, size=args.batch_size) for i_alt in range(args.alternatives)]
         alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
 
-        probs, sentences = model.sample(batch_data, alt_data) # [batch_size, sentences]
+        probs, sentences = model.sample(batch_data, alt_data) # [batch_size, sentences] sent is [100 x 10 x 20]
+        pdb.set_trace()
         print_tensor3d(sentences.data, word_index)
         logging.info([scene.image_id for scene in batch_data])
 
@@ -292,7 +302,7 @@ def calculate_bleu(batch, candidates):
     scores_with_ids = []
 
     for (img_id, candidate) in candidates_with_ids:
-        index_of_end = (candidate.data == 2).nonzero()[0][0]
+        index_of_end = (candidate.data == 2).nonzero()[0][0] if len((candidate.data == 2).nonzero()) > 0 else MAX_LEN
         candidate_chopped = candidate.data[1:index_of_end]
         score = sentence_bleu(scene_to_description[img_id], candidate_chopped)
         # print("BLEU Score: " + str(score))

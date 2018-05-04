@@ -21,7 +21,6 @@ def print_tensor(data):
     for x in data:
         logging.info([WORD_INDEX.get(word) for word in x])
 
-def tensor_to_caption()
 
 # 1-d tensor
 def pad_end1d(tensor, length):
@@ -110,10 +109,10 @@ class Speaker0Model(nn.Module):
         # should probs be like
         return losses
 
-    def sample(self, data, alt_data, viterbi=False):
+    def sample(self, data, alt_data, viterbi=False, k=10):
         scene_enc = self.scene_encoder(data) # [100 x 50]
         max_len = max(len(scene.description) for scene in data) # 15
-        probs, sampled_ids = self.string_decoder.sample(scene_enc, max_len, viterbi) # used to return probs, sample
+        probs, sampled_ids = self.string_decoder.sample(scene_enc, max_len, viterbi, k=k) # used to return probs, sample
         return probs, sampled_ids # used to return probs, np.zeros(probs.shape), sample
 
 
@@ -159,6 +158,16 @@ class CompiledSpeaker1Model(nn.Module):
         probs, sample = self.string_decoder.sample("", l_cat, viterbi)
         return probs, np.zeros(probs.shape), sample
 
+def tensor_to_caption(tensor):
+    caption = []
+    for word_id in tensor:
+        word = WORD_INDEX.get(word_id.data[0])
+        caption.append(word)
+        if word_id.data[0] == EOS:
+            break
+    return (' '.join(caption))
+
+
 class SamplingSpeaker1Model(nn.Module):
     def __init__(self, listener0, speaker0): #figure out what parameters later
         super(SamplingSpeaker1Model, self).__init__()
@@ -168,35 +177,75 @@ class SamplingSpeaker1Model(nn.Module):
         self.listener0 = listener0
         self.speaker0 = speaker0
 
-    def sample(self, data, alt_data, viterbi=None, quantile=None):
-        n_samples = 10  
+    def sample(self, data, alt_data, viterbi=None, quantile=None, k=3):
+        n_samples = k 
 
         speaker_scores = []
         listener_scores = []
 
-        all_fake_scenes = []
-        speaker_log_probs, sampled_ids = self.speaker0.sample(data, alt_data, viterbi=False, k=n_samples) # used to output [speaker_log_probs, _, sample]
-        # sampled_ids
-        sampled_captions = []
-        for sampled_id in sampled_ids:
-            sampled_caption = []
-            for word_id in sampled_id:
-                word = WORD_INDEX.get(word_id.data[0])
-                sampled_caption.append(word)
-                if word_id.data[0] == 2:
-                    sampled_captions.append(' '.join(sampled_caption))
-                    break
-            sampled_captions.append(' '.join(sampled_caption))
+        all_speaker_log_probs, all_sampled_ids = self.speaker0.sample(data, alt_data, viterbi=False, k=n_samples) # used to output [speaker_log_probs, _, sample]
+        # all_sampled_ids is  # [100 x  k x 20]
+        # all_speaker_log_probs = [100 x k]
 
-        # Replace description for real image with description generated
-        fake_scenes = []
-        for i in range(len(data)):
-            fake_scenes.append(data[i]._replace(description=sampled_ids[i].data))
-        all_fake_scenes.append(fake_scenes)
+        def create_fake_scenes(fake_description_ids, original_scene):
+            # fake descr = [k x 20]
+            # original scene = Scene(blahblah)
+            # fake_descriptions = [tensor_to_caption(ids) for ids in fake_description_ids]
+            fake_scenes = [original_scene._replace(description=caption.data) for caption in fake_description_ids]
+            return fake_scenes
 
-        listener_log_probs = self.listener0(fake_scenes, alt_data)
-        speaker_scores.append(speaker_log_probs)
-        listener_scores.append(listener_log_probs)
+        def select_best_description(scores, fake_description_ids):
+            # Scores should be [k x 2]
+            scores_for_correct = scores[:, 0]
+            value, ind = scores_for_correct.max(dim=0) # 
+            return fake_description_ids[ind]
+
+
+        ids_split = torch.unbind(all_sampled_ids, dim=0) # tuple, each of which is [10 x 20]
+        all_fake_scenes = [create_fake_scenes(fake_description_ids, original_scene) for fake_description_ids, original_scene in zip(ids_split, data)]
+
+        all_listener_log_probs = [self.listener0(fake_scenes, [[alt_data[0][i]] * n_samples]) for i, fake_scenes in enumerate(all_fake_scenes)]
+
+        # listener_scores = torch.stack(listener_scores, 2)
+
+
+        best_descriptions = [select_best_description(scores, fake_description_ids) for scores, fake_description_ids in zip(all_listener_log_probs, ids_split)]
+
+        out_descriptions = torch.stack(best_descriptions)
+        pdb.set_trace()
+        return (all_listener_log_probs, all_speaker_log_probs), out_descriptions
+
+
+
+
+
+
+
+        for i_sample in range(n_samples):
+            speaker_log_probs = all_speaker_log_probs[:, i_sample]
+            sampled_ids = all_sampled_ids[:, i_sample, :]
+            # speaker_log_probs, sampled_ids = self.speaker0.sample(data, alt_data, viterbi=False) # used to output [speaker_log_probs, _, sample]
+
+            sampled_captions = []
+            for sampled_id in sampled_ids:
+                sampled_caption = []
+                for word_id in sampled_id:
+                    word = WORD_INDEX.get(word_id.data[0])
+                    sampled_caption.append(word)
+                    if word_id.data[0] == 2:
+                        sampled_captions.append(' '.join(sampled_caption))
+                        break
+                sampled_captions.append(' '.join(sampled_caption))
+
+            # Replace description for real image with description generated
+            fake_scenes = []
+            for i in range(len(data)):
+                fake_scenes.append(data[i]._replace(description=sampled_ids[i].data))
+            all_fake_scenes.append(fake_scenes)
+
+            listener_log_probs = self.listener0(fake_scenes, alt_data)
+            speaker_scores.append(speaker_log_probs)
+            listener_scores.append(listener_log_probs)
 
         speaker_scores = torch.stack(speaker_scores, 2)         # [100 x 20 x 10] , 20 from max sample length
         listener_scores = torch.stack(listener_scores, 2)       # [100 x 2 x 10]
@@ -208,16 +257,7 @@ class SamplingSpeaker1Model(nn.Module):
         out_listener_scores = Variable(torch.zeros(len(data)))
 
         for i in range(len(data)):
-            if viterbi:
-                q = scores[i, :].argmax()
-            elif quantile is not None:
-                idx = int(n_samples * quantile)
-                if idx == n_samples:
-                    q = scores.argmax()
-                else:
-                    q = scores[i,:].argsort()[idx]
-            else:
-                q = 0
+            q = 0
             out_sentences.append(all_fake_scenes[q][i].description)
             out_speaker_scores[i] = speaker_scores[i][q]
             out_listener_scores[i] = listener_scores[i][q]
@@ -341,7 +381,6 @@ class LSTMStringDecoder(nn.Module):
         scene_enc = scene_enc.transpose(0,1).unsqueeze(0)
         initial_guess =  Variable(torch.LongTensor([SOS]).view(1, 1)) # Or should this be SOS?? fix later
         initial_hidden = self.init_hidden(batch_size)# [2 x 1 x 50] or maybe scene_enc??
-        pdb.set_trace()
         zeroth, decoder_hidden = self.forward_step(scene_enc, initial_hidden, encoder_outputs, use_embeddings=False)
         if torch.cuda.is_available():
             initial_guess = initial_guess.cuda()
