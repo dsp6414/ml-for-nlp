@@ -4,6 +4,8 @@ import numpy as np
 from torch.autograd import Variable
 import torch
 import logging
+import nltk
+from nltk.translate.bleu_score import sentence_bleu
 
 MAX_LEN = 20
 SOS = 1
@@ -156,6 +158,8 @@ def train(train_scenes, model, optimizer, args, target_func):
             if torch.cuda.is_available():
                 targets = targets.cuda()
 
+            # pdb.set_trace()
+
             loss = criterion(outputs, targets) # what should these be?
             loss.backward()
             optimizer.step()
@@ -167,13 +171,12 @@ def train(train_scenes, model, optimizer, args, target_func):
 
         logging.info('====> Epoch %d: Training loss: %.4f' % (epoch, epoch_loss))
 
-
 def sample(decoder, scene_enc): # Predict with beam search based on scene enc
     initial_guess = scene_enc
     decoder_hidden = decoder.init_hidden()# [SOMETHING] or maybe scene_enc??
     if torch.cuda.is_available():
         initial_guess = initial_guess.cuda()
-    current_hypotheses = [(0, initial_guess, decoder_hidden)] # 
+    current_hypotheses = [(0, initial_guess, decoder_hidden)]
 
     completed_guesses = []
 
@@ -218,6 +221,8 @@ def get_examples(model, train_scenes, args, word_index):
     n_train = len(train_scenes) 
     n_train_batches = int(n_train / args.batch_size)
 
+    bleu_score = 0
+
     for i_batch in range(n_train_batches):
         batch_data = train_scenes[i_batch * args.batch_size : 
                                       (i_batch + 1) * args.batch_size]
@@ -229,7 +234,14 @@ def get_examples(model, train_scenes, args, word_index):
         probs, sentences = model.sample(batch_data, alt_data)
         print_tensor(sentences.data, word_index)
         logging.info([scene.image_id for scene in batch_data])
-        pdb.set_trace()
+
+        scores = calculate_bleu(batch_data, sentences)
+        for _, score in scores:
+            bleu_score += score
+
+    bleu_score /= n_train
+    pdb.set_trace()
+    return bleu_score
 
 def run_experiment(name, cname, rname, model, data):
     data_by_image = defaultdict(list)
@@ -262,6 +274,23 @@ def run_experiment(name, cname, rname, model, data):
                     ]
                     # print >>results_f, ",".join([str(s) for s in parts])
                     counter += 1
+
+def calculate_bleu(batch, candidates):
+    scene_to_description = {}
+    for scene in batch:
+        if scene.image_id in scene_to_description:
+            scene_to_description[scene.image_id].append(scene.description)
+        else:
+            scene_to_description[scene.image_id] = [scene.description]
+
+    candidates_with_ids = [(batch[i].image_id, candidate) for i, candidate in enumerate(candidates)]
+    scores_with_ids = []
+
+    for (img_id, candidate) in candidates_with_ids:
+        score = sentence_bleu(scene_to_description[img_id], candidate.data)
+        # print("BLEU Score: " + str(score))
+        scores_with_ids.append((img_id, score))
+    return scores_with_ids
 
 def setup_logging(args):
     with open("log/file_num.txt") as file: 
