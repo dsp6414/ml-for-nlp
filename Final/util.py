@@ -127,6 +127,12 @@ def print_tensor(data, WORD_INDEX):
     for x in data:
         logging.info([WORD_INDEX.get(word) for word in x])
 
+def print_tensor3d(data, WORD_INDEX):
+    for ind, x in enumerate(data):
+        logging.info('Training row %d'  % (ind))
+        for y in x:
+            logging.info([WORD_INDEX.get(word) for word in y])
+
 def train(train_scenes, model, optimizer, args, target_func):
     logging.info('Training %s...' % (model.name))
     n_train = len(train_scenes) 
@@ -226,8 +232,8 @@ def get_examples(model, train_scenes, args, word_index):
                  for i_alt in range(args.alternatives)]
         alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
 
-        probs, sentences = model.sample(batch_data, alt_data)
-        print_tensor(sentences.data, word_index)
+        probs, sentences = model.sample(batch_data, alt_data) # [batch_size, sentences]
+        print_tensor3d(sentences.data, word_index)
         logging.info([scene.image_id for scene in batch_data])
         pdb.set_trace()
 

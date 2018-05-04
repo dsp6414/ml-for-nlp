@@ -21,6 +21,11 @@ def print_tensor(data):
     for x in data:
         logging.info([WORD_INDEX.get(word) for word in x])
 
+# 1-d tensor
+def pad_end1d(tensor, length):
+    to_pad = length - len(tensor)
+    return torch.cat([tensor, Variable(torch.zeros(to_pad).long())])
+
 def scenes_to_vec(scenes):
     max_words = max(len(scene.description) for scene in scenes) - 1
     word_data = Variable(torch.zeros(len(scenes), max_words))
@@ -310,8 +315,83 @@ class LSTMStringDecoder(nn.Module):
         return output
 
 
-    # Currently performs a greedy search
+    def forward_step(self, source, last_hidden, encoder_outputs, use_embeddings=True):
+        word_embeddings = self.embedding(source) if use_embeddings else source
+        output, new_hidden = self.lstm(word_embeddings, last_hidden)
+        output = self.dropout(output)
+        output = self.linear(output.view(-1, self.hidden_sz)) 
+        return output, new_hidden
+
     def sample(self, scene_enc, max_words, viterbi):
+        self.eval()
+        samples = []
+        probs = []
+        for scene in scene_enc:
+            prob, sample = self.beam_sample(scene.unsqueeze(1), max_words, viterbi)
+            samples.append(sample)
+            probs.append(prob)
+        return torch.stack(probs), torch.stack(samples) # [100 x  5 x 21]
+
+
+    def beam_sample(self, scene_enc, max_words, viterbi, k=5):
+        batch_size = 1
+        encoder_outputs = None
+        initial_guess =  Variable(torch.LongTensor([SOS]).view(1, 1)) # Or should this be SOS?? fix later
+        initial_hidden = self.init_hidden(batch_size)# [2 x 1 x 50] or maybe scene_enc??
+        zeroth, decoder_hidden = self.forward_step(scene_enc, initial_hidden, encoder_outputs, use_embeddings=False)
+        if torch.cuda.is_available():
+            initial_guess = initial_guess.cuda()
+        current_hypotheses = [(0, initial_guess, decoder_hidden)] # (prob, )
+
+        completed_guesses = []
+
+        for i in range(MAX_LEN - 1):
+            guesses_for_this_length = []
+            while (current_hypotheses != []):
+                # Pop something off the current hypotheses
+                log_prob, last_sequence_guess, decoder_hidden = current_hypotheses.pop(0)
+
+                last_word = last_sequence_guess[-1:, :]
+                # EOS token:
+                if last_word.squeeze().data[0] == EOS: 
+                    completed_guesses.append((log_prob, last_sequence_guess, None))
+                else:
+                    decoder_outputs, decoder_hidden = self.forward_step(last_word, decoder_hidden, encoder_outputs) # target, last_hidden, encoder_outputs
+                    # # Get k hypotheses for each 
+                    # decoder outputs is [batch x target_len x en_vocab_sz]  = [ 1 x 1 x vocab]
+                    vocab_size = self.vocab_sz
+                    n_probs, n_indices = torch.topk(decoder_outputs, k, dim=1) 
+                    new_probs = F.log_softmax(n_probs, dim=1) + log_prob# this should be tensor of size k 
+                    new_probs = new_probs.squeeze().data
+                    new_sequences = [torch.cat([last_sequence_guess, n_index.view(1, 1)],dim=0) for n_index in n_indices.squeeze()] # check this
+                    new_hidden = [decoder_hidden] * k
+                    # decoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
+                    seq_w_probs = list(zip(new_probs, new_sequences, new_hidden))
+                    guesses_for_this_length = guesses_for_this_length + seq_w_probs
+
+            # Top k current hypotheses after this time step:
+            guesses_for_this_length = sorted(guesses_for_this_length, key= lambda tup: -1*tup[0])[:k]
+
+            current_hypotheses = current_hypotheses + guesses_for_this_length
+
+        # Return top result
+        completed_guesses = completed_guesses + guesses_for_this_length
+
+        completed_guesses.sort(key= lambda tup: -1*tup[0])
+        completed_guesses = completed_guesses[:k]
+        sentences =  [x[1].squeeze() for x in completed_guesses]
+        probs = [x[0] for x in completed_guesses]
+
+        sentences = [pad_end1d(tensor, MAX_LEN) for tensor in sentences]
+
+
+        return torch.Tensor(probs), torch.stack(sentences) # [5 x 20] tensor
+
+
+
+
+    # Currently performs a greedy search
+    def old_sample(self, scene_enc, max_words, viterbi):
         pdb.set_trace()
         batch_size = len(scene_enc)                     # 100
         sampled_ids = []
