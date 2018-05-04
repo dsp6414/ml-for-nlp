@@ -24,7 +24,10 @@ def print_tensor(data):
 # 1-d tensor
 def pad_end1d(tensor, length):
     to_pad = length - len(tensor)
-    return torch.cat([tensor, Variable(torch.zeros(to_pad).long())])
+    pad = Variable(torch.zeros(to_pad).long())
+    if torch.cuda.is_available():
+        pad = pad.cuda()
+    return torch.cat([tensor, pad])
 
 def scenes_to_vec(scenes):
     max_words = max(len(scene.description) for scene in scenes) - 1
