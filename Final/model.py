@@ -416,7 +416,6 @@ class LSTMStringDecoder(nn.Module):
 
         sampled_ids = torch.stack(sampled_ids, 1)
         out_log_probs = torch.stack(out_log_probs, 1)
-        pdb.set_trace()
         return out_log_probs, sampled_ids
 
 class MLPScorer(nn.Module):

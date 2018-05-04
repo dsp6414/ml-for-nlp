@@ -232,9 +232,7 @@ def get_examples(model, train_scenes, args, word_index):
     for i_batch in range(n_train_batches):
         batch_data = train_scenes[i_batch * args.batch_size : 
                                       (i_batch + 1) * args.batch_size]
-        alt_indices = \
-                [np.random.choice(n_train, size=args.batch_size)
-                 for i_alt in range(args.alternatives)]
+        alt_indices = [np.random.choice(n_train, size=args.batch_size) for i_alt in range(args.alternatives)]
         alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
 
         probs, sentences = model.sample(batch_data, alt_data) # [batch_size, sentences]
@@ -244,6 +242,7 @@ def get_examples(model, train_scenes, args, word_index):
         scores = calculate_bleu(batch_data, sentences)
         for _, score in scores:
             bleu_score += score
+        pdb.set_trace()
 
     bleu_score /= n_train
     pdb.set_trace()
@@ -293,7 +292,9 @@ def calculate_bleu(batch, candidates):
     scores_with_ids = []
 
     for (img_id, candidate) in candidates_with_ids:
-        score = sentence_bleu(scene_to_description[img_id], candidate.data)
+        index_of_end = (candidate.data == 2).nonzero()[0][0]
+        candidate_chopped = candidate.data[1:index_of_end]
+        score = sentence_bleu(scene_to_description[img_id], candidate_chopped)
         # print("BLEU Score: " + str(score))
         scores_with_ids.append((img_id, score))
     return scores_with_ids
