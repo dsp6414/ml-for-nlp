@@ -315,7 +315,10 @@ def save_model(model, args):
     logging.info('Saved model to %s' % (file_name))
 
 def load_model(model, path):
-    model.load_state_dict(torch.load(path))
+    full_path = 'models/' + path
+    logging.info('Loading saved model %s into %s ...' % (path, model.name))
+    model.load_state_dict(torch.load(full_path))
+    logging.info('Model loaded.')
 
 
 def setup_logging(args):

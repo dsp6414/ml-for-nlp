@@ -176,6 +176,7 @@ class SamplingSpeaker1Model(nn.Module):
         # self.speaker0 = Speaker0Model(vocab_sz, hidden_sz, dropout)
         self.listener0 = listener0
         self.speaker0 = speaker0
+        self.name = 'SamplingSpeaker1'
 
     def sample(self, data, alt_data, viterbi=None, quantile=None, k=10):
         n_samples = k 
