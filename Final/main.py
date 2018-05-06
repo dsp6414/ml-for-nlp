@@ -122,7 +122,6 @@ elif args.model == 'ss1':
     if args.load is not None:
         util.load_model(listener0_model, 'l0207.pth')
         util.load_model(speaker0_model, 's0206.pth')
-        # util.load_model(sampling_speaker1_model, args.load)
     logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
     if args.save:
         util.save_model(sampling_speaker1_model, args)
