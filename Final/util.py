@@ -324,8 +324,16 @@ def save_model(model, args):
 def load_model(model, path):
     full_path = 'models/' + path
     logging.info('Loading saved model %s into %s ...' % (path, model.name))
-    model.load_state_dict(torch.load(full_path))
+
+    if torch.cuda.is_available():
+        model.load_state_dict(torch.load(full_path))
+    else:
+        model.load_state_dict(torch.load(full_path, map_location=lambda storage, loc: storage))
+
     logging.info('Model loaded.')
+
+def convert_model(model, new_path):
+    full_new_path = 'models/' + new_path
 
 
 def setup_logging(args):
