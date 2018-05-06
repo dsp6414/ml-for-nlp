@@ -402,6 +402,7 @@ def load_model(model, path):
         model.load_state_dict(torch.load(full_path))
     else:
         model.load_state_dict(torch.load(full_path, map_location=lambda storage, loc: storage))
+        model.cpu()
 
     logging.info('Model loaded.')
 
