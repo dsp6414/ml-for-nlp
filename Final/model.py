@@ -201,6 +201,11 @@ class SamplingSpeaker1Model(nn.Module):
             value, ind = scores_for_correct.max(dim=0) # 
             return fake_description_ids[ind]
 
+        # Lambda trades off between L0 and S0. This is joint probability of sentence by both listener and speaker
+        def select_best_weighted_description(listener_scores, speaker_scores, fake_description_ids, lam): # lambda controls weighing of speaker to listener
+            scores_for_correct = (listener_scores[: 0] ** (1-lam)) * (speaker_scores[: 0] ** lam) # Check this is element-wise mult
+            value, ind = scores_for_correct.max(dim=0)
+            return fake_description_ids[ind]
 
         ids_split = torch.unbind(all_sampled_ids, dim=0) # tuple, each of which is [10 x 20]
         all_fake_scenes = [create_fake_scenes(fake_description_ids, original_scene) for fake_description_ids, original_scene in zip(ids_split, data)]
@@ -217,11 +222,11 @@ class SamplingSpeaker1Model(nn.Module):
         return (all_listener_log_probs, all_speaker_log_probs), out_descriptions
 
 
-        speaker_scores = torch.stack(speaker_scores, 2)         # [100 x 20 x 10] , 20 from max sample length
-        listener_scores = torch.stack(listener_scores, 2)       # [100 x 2 x 10]
+        # speaker_scores = torch.stack(speaker_scores, 2)         # [100 x 20 x 10] , 20 from max sample length
+        # listener_scores = torch.stack(listener_scores, 2)       # [100 x 2 x 10]
 
-        stacked_sentences = Variable(torch.stack(out_sentences)) # [100 x 20]
-        return (out_speaker_scores, out_listener_scores), stacked_sentences
+        # stacked_sentences = Variable(torch.stack(out_sentences)) # [100 x 20]
+        # return (out_speaker_scores, out_listener_scores), stacked_sentences
 
 class LinearStringEncoder(nn.Module):
     def __init__(self, name, vocab_sz, hidden_sz, dropout): #figure out what parameters later

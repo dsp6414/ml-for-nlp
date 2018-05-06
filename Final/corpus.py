@@ -25,7 +25,6 @@ data_path = 'AbstractScenes_v1.1/' if os.path.exists('AbstractScenes_v1.1/') els
 # data_path = 'AbstractScenes_v1.1/'
 
 
-
 def load_props():
     scene_props = []
     with open(data_path + "Scenes_10020.txt") as scene_f:

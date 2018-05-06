@@ -282,8 +282,7 @@ def save_image_pairs(sentences, data, alt_data, WORD_INDEX):
 
         img1 = data_path + 'RenderedScenes/Scene' + str(scene.image_id) + '.png'
         img2 = data_path + 'RenderedScenes/Scene' + str(alt_scene.image_id) + '.png'
-        combined_img = 'pairs/' + str(scene.image_id) + '_&_' + str(alt_scene.image_id) + \
-                        'ss1' + str(experiment_counter) + '.png'
+        combined_img = 'pairs/ss1' + str(experiment_counter) + '_' + str(scene.image_id) + '_&_' + str(alt_scene.image_id) + '.png'
 
         images = map(Image.open, [img1, img2])
         widths, heights = zip(*(i.size for i in images))
@@ -292,7 +291,7 @@ def save_image_pairs(sentences, data, alt_data, WORD_INDEX):
 
         new_im = Image.new('RGB', (total_width, max_height + 16))
 
-        # text to image
+        # text to images
         d = ImageDraw.Draw(new_im)
         text_width, text_height = d.textsize(s_joined)
         d.text(((total_width - text_width)/2, max_height+2), s_joined, fill=(255, 255, 255))
@@ -312,7 +311,7 @@ def run_experiment(name, cname, rname, model, data):
 
     with open("experiments/%s/%s.ids.txt" % (name, cname)) as id_f, \
         open("experiments/%s/%s.results.%s.txt" % (name, cname, rname), 'w') as results_f:
-        # print >>results_f, "id,target,distractor,similarity,model_name,speaker_score,listener_score,description"
+        print >>results_f, "id,target,distractor,similarity,model_name,speaker_score,listener_score,description"
 
         counter = 0
         for line in id_f:
