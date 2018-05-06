@@ -253,7 +253,7 @@ def get_examples(model, train_scenes, args, word_index):
         probs, sentences = model.sample(batch_data, alt_data, k=10) # [batch_size, sentences] sent is [100 x 10 x 20]
         # print_datas_and_desc(batch_data, alt_data, sentences.data, word_index)
         print_tensor3d(sentences.data, word_index)
-        logging.info([(scene.image_id, alt_scene.image_id) for scene, alt_scene in zip(batch_data, alt_data[0])])
+        logging.info([(i, (scene.image_id, alt_scene.image_id)) for i, (scene, alt_scene) in enumerate(zip(batch_data, alt_data[0]))])
 
         scores = calculate_bleu(batch_data, sentences.squeeze())
         for _, score in scores:
@@ -324,8 +324,16 @@ def save_model(model, args):
 def load_model(model, path):
     full_path = 'models/' + path
     logging.info('Loading saved model %s into %s ...' % (path, model.name))
-    model.load_state_dict(torch.load(full_path))
+
+    if torch.cuda.is_available():
+        model.load_state_dict(torch.load(full_path))
+    else:
+        model.load_state_dict(torch.load(full_path, map_location=lambda storage, loc: storage))
+
     logging.info('Model loaded.')
+
+def convert_model(model, new_path):
+    full_new_path = 'models/' + new_path
 
 
 def setup_logging(args):
