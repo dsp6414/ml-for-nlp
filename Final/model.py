@@ -198,7 +198,6 @@ class SamplingSpeaker1Model(nn.Module):
 
         def select_best_description(scores, fake_description_ids):
             # Scores should be [k x 2]
-            pdb.set_trace()
             scores_for_correct = scores[:, 0]
             value, ind = scores_for_correct.max(dim=0) #
             return fake_description_ids[ind]
@@ -394,7 +393,6 @@ class LSTMStringDecoder(nn.Module):
 
         sentences = [pad_end1d(tensor, MAX_LEN) for tensor in sentences]
 
-        pdb.set_trace()
         return torch.Tensor(probs), torch.stack(sentences) # [5 x 20] tensor
 
 
