@@ -148,6 +148,7 @@ def print_datas_and_desc(data, alt_data, sentences, WORD_INDEX):
         print_tensor(sent, WORD_INDEX)
 
 def validate(val_scenes, model, optimizer, args, target_func, epoch):
+    model.eval()
     epoch_loss = 0.0
     total_correct = 0.0
     criterion = nn.CrossEntropyLoss()
@@ -177,7 +178,8 @@ def validate(val_scenes, model, optimizer, args, target_func, epoch):
 
     logging.info('====> Epoch %d: Validation loss: %.4f' % (epoch, epoch_loss))
     if model.name=='Listener0':
-        logging.info('Validation Accuracy: %f' % (total_correct / (n_train_batches * args.batch_size)))
+        logging.info('Validation Accuracy: %f' % (total_correct / (n_val_batches * args.batch_size)))
+    model.train()
 
 
 def train(train_scenes, val_scenes, model, optimizer, args, target_func):

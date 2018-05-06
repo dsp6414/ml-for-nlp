@@ -31,7 +31,7 @@ parser.add_argument('--LR', type=float, default=0.01,
                     help='learning rate')
 parser.add_argument('--alternatives', type=int, default=1,
                     help='how many alternatives to find')
-parser.add_argument('--dropout', type=float, default =0.0, help='dropout probability')
+parser.add_argument('--dropout', type=float, default =0.3, help='dropout probability')
 parser.add_argument('--model', default=None, help='which model to train (if debugging)')
 parser.add_argument('--dec', default='LSTM', help='which string decoder model to use for Speaker0. LSTM or MLP')
 parser.add_argument('--save', default=None, help='if you want to save your model')
@@ -120,7 +120,7 @@ elif args.model == 'ss1':
     sampling_speaker1_model = model.SamplingSpeaker1Model(listener0_model, speaker0_model)
 
     if args.load is not None:
-        util.load_model(listener0_model, 'l0197.pth')
+        util.load_model(listener0_model, 'l0207.pth')
         util.load_model(speaker0_model, 's0198.pth')
         # util.load_model(sampling_speaker1_model, args.load)
     logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))

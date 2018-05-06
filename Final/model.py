@@ -56,7 +56,7 @@ class Listener0Model(nn.Module):
         self.num_scenes = num_scenes
         self.hidden_sz = hidden_sz
         self.output_sz = output_sz
-        self.dropout_p = dropout # need to pass this in somewhere
+        self.dropout_p = dropout
         self.name='Listener0'
 
         self.scene_input_sz = N_PROP_TYPES * N_PROP_OBJECTS
@@ -429,6 +429,7 @@ class MLPScorer(nn.Module):
         self.output_sz = output_sz
         self.hidden_sz = hidden_sz # hidden_sz refers to the encoding size?
         self.dropout_p = dropout
+        self.dropout = nn.Dropout(self.dropout_p)
 
         self.intermediate_sz = hidden_sz # not sure..
 
@@ -450,7 +451,7 @@ class MLPScorer(nn.Module):
 
         post_relu = F.relu(linear_combination)
 
-        ss = self.linear_3(post_relu).squeeze() # [batch_size x 2] after squeeze
+        ss = self.linear_3(self.dropout(post_relu)).squeeze() # [batch_size x 2] after squeeze
 
         return ss
 
