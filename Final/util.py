@@ -177,7 +177,7 @@ def validate(val_scenes, model, optimizer, args, target_func, epoch):
 
     logging.info('====> Epoch %d: Validation loss: %.4f' % (epoch, epoch_loss))
     if model.name=='Listener0':
-        logging.info('Validation Accuracy: %f' % (total_correct / (n_train_batches * args.batch_size)))
+        logging.info('Validation Accuracy: %f' % (total_correct / (n_val_batches * args.batch_size)))
 
 
 def train(train_scenes, val_scenes, model, optimizer, args, target_func):
