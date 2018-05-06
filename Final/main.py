@@ -36,7 +36,7 @@ parser.add_argument('--dropout', type=float, default =0.0, help='dropout probabi
 parser.add_argument('--model', default=None, help='which model to train (if debugging)')
 parser.add_argument('--dec', default='LSTM', help='which string decoder model to use for Speaker0. LSTM or MLP')
 parser.add_argument('--save', default=False, help='if you want to save your model')
-parser.add_argument('--load', default=None, help='if you want to load a pretrained model. Looks inside models/')
+parser.add_argument('--load', default=None, help='if you want to load a pretrained model. Looks inside models/. For example, use --load=ss1168.pth to load models/ss1168.pth')
 
 args = parser.parse_args()
 
@@ -114,7 +114,7 @@ elif args.model == 'ss1':
 		util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
 		util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
 	sampling_speaker1_model = model.SamplingSpeaker1Model(listener0_model, speaker0_model)
-	
+
 	if args.load is not None:
 		util.load_model(sampling_speaker1_model, args.load)
 	logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
