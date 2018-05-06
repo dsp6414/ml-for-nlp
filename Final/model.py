@@ -188,6 +188,7 @@ class SamplingSpeaker1Model(nn.Module):
         # all_sampled_ids is  # [100 x  k x 20]
         # all_speaker_log_probs = [100 x k]
 
+        # Create fake scenes were the Target scene's description is replaced with another scene's
         def create_fake_scenes(fake_description_ids, original_scene):
             # fake descr = [k x 20]
             # original scene = Scene(blahblah)
@@ -197,8 +198,9 @@ class SamplingSpeaker1Model(nn.Module):
 
         def select_best_description(scores, fake_description_ids):
             # Scores should be [k x 2]
+            pdb.set_trace()
             scores_for_correct = scores[:, 0]
-            value, ind = scores_for_correct.max(dim=0) # 
+            value, ind = scores_for_correct.max(dim=0) #
             return fake_description_ids[ind]
 
         # Lambda trades off between L0 and S0. This is joint probability of sentence by both listener and speaker
@@ -207,14 +209,16 @@ class SamplingSpeaker1Model(nn.Module):
             value, ind = scores_for_correct.max(dim=0)
             return fake_description_ids[ind]
 
-        ids_split = torch.unbind(all_sampled_ids, dim=0) # tuple, each of which is [10 x 20]
+        # get 10 samples for each image pair, max length 20
+        ids_split = torch.unbind(all_sampled_ids, dim=0) # tuple of batch size 100, each of which is [10 x 20]
         all_fake_scenes = [create_fake_scenes(fake_description_ids, original_scene) for fake_description_ids, original_scene in zip(ids_split, data)]
 
-        all_listener_log_probs = [self.listener0(fake_scenes, [[alt_data[0][i]] * n_samples]) for i, fake_scenes in enumerate(all_fake_scenes)]
+        # 100 tensors of size [10 x 2]
+        all_listener_log_probs = [self.listener0(fake_scenes, [[alt_data[0][i]] * n_samples]) for i, fake_scenes in enumerate(all_fake_scenes)] 
 
         # listener_scores = torch.stack(listener_scores, 2)
 
-
+        pdb.set_trace()
         best_descriptions = [select_best_description(scores, fake_description_ids) for scores, fake_description_ids in zip(all_listener_log_probs, ids_split)]
 
         out_descriptions = torch.stack(best_descriptions)
@@ -390,10 +394,8 @@ class LSTMStringDecoder(nn.Module):
 
         sentences = [pad_end1d(tensor, MAX_LEN) for tensor in sentences]
 
-
+        pdb.set_trace()
         return torch.Tensor(probs), torch.stack(sentences) # [5 x 20] tensor
-
-
 
 
     # Currently performs a greedy search
