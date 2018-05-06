@@ -11,7 +11,6 @@ import torch.optim as optim
 import logging
 import pdb
 
-
 import model, util, corpus
 
 parser = argparse.ArgumentParser(description='Pragmatics')
@@ -76,10 +75,10 @@ speaker0_model = model.Speaker0Model(VOCAB_SIZE, args.hidden_sz, args.dropout, a
 
 
 if torch.cuda.is_available():
-	listener0_model.cuda()
-	speaker0_model.cuda()
-	# sampling_speaker1_model.cuda()
-	# compiled_speaker1_model.cuda()
+    listener0_model.cuda()
+    speaker0_model.cuda()
+    # sampling_speaker1_model.cuda()
+    # compiled_speaker1_model.cuda()
 
 
 optimizer_l0 = optim.Adam(listener0_model.parameters(), lr=LR)
@@ -88,41 +87,48 @@ optimizer_s0 = optim.Adam(speaker0_model.parameters(), lr=LR)
 logging.info("Hyperparameters:" + str(args))
 
 if args.model == None:
-	logging.info("Listener0: " + str(listener0_model))
-	logging.info("Speaker0: " + str(listener0_model))
-	logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
-	# Train base
-	util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
-	util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
+    logging.info("Listener0: " + str(listener0_model))
+    logging.info("Speaker0: " + str(listener0_model))
+    logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
+    # Train base
+    util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
+    util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
 
-	# Train sampling
-	util.train(train_scenes, sampling_speaker1_model, optimizer_cs1, args)
+    # Train sampling
+    util.train(train_scenes, sampling_speaker1_model, optimizer_cs1, args)
 elif args.model == 'l0':
-	logging.info("Listener0: " + str(listener0_model))
-	if args.load is not None:
-		util.load_model(listener0_model, args.load)
-	else:
-		util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
+    logging.info("Listener0: " + str(listener0_model))
+    if args.load is not None:
+        util.load_model(listener0_model, args.load)
+    else:
+        util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
+        util.save_model(listener0_model, args)
 elif args.model == 's0':
-	logging.info("Speaker0: " + str(speaker0_model))
-	util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
-	util.get_examples(speaker0_model, train_scenes, args, corpus.WORD_INDEX)
+    logging.info("Speaker0: " + str(speaker0_model))
+    if args.load is not None:
+        util.load_model(speaker0_model, args.load)
+    else:
+       util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
+       util.save_model(speaker0_model, args)
+       util.get_examples(speaker0_model, train_scenes, args, corpus.WORD_INDEX)
 elif args.model == 'ss1':
-	logging.info("Listener0: " + str(listener0_model))
-	logging.info("Speaker0: " + str(speaker0_model))
-	if args.load is None:
-		util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
-		util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
-	sampling_speaker1_model = model.SamplingSpeaker1Model(listener0_model, speaker0_model)
+    logging.info("Listener0: " + str(listener0_model))
+    logging.info("Speaker0: " + str(speaker0_model))
+    if args.load is None:
+        util.train(train_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
+        util.train(train_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
+    sampling_speaker1_model = model.SamplingSpeaker1Model(listener0_model, speaker0_model)
 
-	if args.load is not None:
-		util.load_model(sampling_speaker1_model, args.load)
-	logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
-	if args.save:
-		util.save_model(sampling_speaker1_model, args)
-	util.get_examples(sampling_speaker1_model, train_scenes, args, corpus.WORD_INDEX)
+    if args.load is not None:
+        util.load_model(listener0_model, 'l0182.pth')
+        util.load_model(speaker0_model, 's0181.pth')
+        # util.load_model(sampling_speaker1_model, args.load)
+    logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
+    if args.save:
+        util.save_model(sampling_speaker1_model, args)
+    util.get_examples(sampling_speaker1_model, train_scenes, args, corpus.WORD_INDEX)
 
-	# util.train(train_scenes, sampling_speaker1_model, optimizer_ss1, args, util.speaker0_targets)
+    # util.train(train_scenes, sampling_speaker1_model, optimizer_ss1, args, util.speaker0_targets)
 
 # Run Experiments
 

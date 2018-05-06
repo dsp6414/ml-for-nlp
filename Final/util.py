@@ -1,4 +1,5 @@
-import pdb
+import os
+import sys
 import torch.nn as nn
 import numpy as np
 from torch.autograd import Variable
@@ -6,10 +7,15 @@ import torch
 import logging
 import nltk
 from nltk.translate.bleu_score import sentence_bleu
+from PIL import Image, ImageDraw
+
+import pdb
 
 MAX_LEN = 20
 SOS = 1
 EOS = 2
+
+data_path = 'AbstractScenes_v1.1/' if os.path.exists('AbstractScenes_v1.1/') else '../../../../../AbstractScenes_v1.1/'
 
 class Struct:
     def __init__(self, **entries):
@@ -255,14 +261,49 @@ def get_examples(model, train_scenes, args, word_index):
         print_tensor3d(sentences.data, word_index)
         logging.info([(i, (scene.image_id, alt_scene.image_id)) for i, (scene, alt_scene) in enumerate(zip(batch_data, alt_data[0]))])
 
+        save_image_pairs(sentences.squeeze().data, batch_data, alt_data, word_index)
+
         scores = calculate_bleu(batch_data, sentences.squeeze())
         for _, score in scores:
             bleu_score += score
+        logging.info('Current BLEU Score: %f' % (bleu_score / (i_batch * args.batch_size)))
         pdb.set_trace()
 
     bleu_score /= n_train
     pdb.set_trace()
     return bleu_score
+
+def save_image_pairs(sentences, data, alt_data, WORD_INDEX):
+    for i, (scene, alt_scene) in enumerate(zip(data, alt_data[0])):
+        s = sentences[i] # this is the sentence
+        index_of_end = (s == 2).nonzero()[0][0] if len((s == 2).nonzero()) > 0 else MAX_LEN
+        s_chopped = s[1:index_of_end] if index_of_end > 1 else []
+        s_joined = ' '.join([WORD_INDEX.get(i) for i in s_chopped])
+
+        img1 = data_path + 'RenderedScenes/Scene' + str(scene.image_id) + '.png'
+        img2 = data_path + 'RenderedScenes/Scene' + str(alt_scene.image_id) + '.png'
+        combined_img = 'pairs/' + str(scene.image_id) + '_&_' + str(alt_scene.image_id) + \
+                        'ss1' + str(experiment_counter) + '.png'
+
+        images = map(Image.open, [img1, img2])
+        widths, heights = zip(*(i.size for i in images))
+        total_width = sum(widths) + 10
+        max_height = max(heights)
+
+        new_im = Image.new('RGB', (total_width, max_height + 16))
+
+        # text to image
+        d = ImageDraw.Draw(new_im)
+        text_width, text_height = d.textsize(s_joined)
+        d.text(((total_width - text_width)/2, max_height+2), s_joined, fill=(255, 255, 255))
+
+        x_offset = 0
+        images = map(Image.open, [img1, img2])
+        for im in images:
+            new_im.paste(im, (x_offset,0))
+            x_offset += im.size[0] + 10
+        pdb.set_trace()
+        new_im.save(combined_img)
 
 def run_experiment(name, cname, rname, model, data):
     data_by_image = defaultdict(list)
@@ -305,7 +346,7 @@ def calculate_bleu(batch, candidates):
             scene_to_description[scene.image_id] = [scene.description]
 
     candidates_with_ids = [(batch[i].image_id, candidate) for i, candidate in enumerate(candidates)]
-    scores_with_ids = []
+    ids_with_scores = []
 
     for (img_id, candidate) in candidates_with_ids:
         index_of_end = (candidate.data == 2).nonzero()[0][0] if len((candidate.data == 2).nonzero()) > 0 else MAX_LEN
@@ -313,8 +354,8 @@ def calculate_bleu(batch, candidates):
         candidate_chopped = candidate.data[1:index_of_end] if index_of_end > 1 else []
         score = sentence_bleu(scene_to_description[img_id], candidate_chopped)
         # print("BLEU Score: " + str(score))
-        scores_with_ids.append((img_id, score))
-    return scores_with_ids
+        ids_with_scores.append((img_id, score))
+    return ids_with_scores
 
 def save_model(model, args):
     file_name = 'models/' + args.model + experiment_counter + '.pth'
