@@ -117,12 +117,13 @@ elif args.model == 'ss1':
     if args.load is None:
         util.train(train_scenes, dev_scenes, listener0_model, optimizer_l0, args, util.listener_targets)
         util.train(train_scenes, dev_scenes, speaker0_model, optimizer_s0, args, util.speaker0_targets)
-    sampling_speaker1_model = model.SamplingSpeaker1Model(listener0_model, speaker0_model)
+        sampling_speaker1_model = model.SamplingSpeaker1Model(listener0_model, speaker0_model)
 
     if args.load is not None:
         util.load_model(listener0_model, 'l0209.pth')
         util.load_model(speaker0_model, 's0206.pth')
-        # util.load_model(sampling_speaker1_model, args.load)
+        sampling_speaker1_model = model.SamplingSpeaker1Model(listener0_model, speaker0_model)
+
     logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
     if args.save:
         util.save_model(sampling_speaker1_model, args)
