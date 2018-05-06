@@ -299,7 +299,7 @@ def get_examples(model, train_scenes, args, word_index):
         scores = calculate_bleu(batch_data, sentences.squeeze())
         for _, score in scores:
             bleu_score += score
-        logging.info('Current BLEU Score: %f' % (bleu_score / (i_batch * args.batch_size)))
+        logging.info('Current BLEU Score: %f' % (bleu_score / ((i_batch+1) * args.batch_size)))
         pdb.set_trace()
 
     bleu_score /= n_train
