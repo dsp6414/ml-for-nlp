@@ -147,7 +147,40 @@ def print_datas_and_desc(data, alt_data, sentences, WORD_INDEX):
         logging.info('Scene ID: %s, alt scene id: %s' % (scene.image_id, alt_scenes[0].image_id))
         print_tensor(sent, WORD_INDEX)
 
-def train(train_scenes, model, optimizer, args, target_func):
+def validate(val_scenes, model, optimizer, args, target_func, epoch):
+    epoch_loss = 0.0
+    total_correct = 0.0
+    criterion = nn.CrossEntropyLoss()
+    n_val = len(val_scenes) 
+    n_val_batches = int(n_val / args.batch_size) 
+    for i_batch in range(n_val_batches):
+        batch_data = val_scenes[i_batch * args.batch_size : 
+                                  (i_batch + 1) * args.batch_size]
+        alt_indices = \
+                [np.random.choice(n_val, size=args.batch_size)
+                 for i_alt in range(args.alternatives)]
+        alt_data = [[val_scenes[i] for i in alt] for alt in alt_indices]
+
+        outputs = model(batch_data, alt_data)
+        targets = target_func(args, batch_data)
+
+        if torch.cuda.is_available():
+            targets = targets.cuda()
+
+        if model.name =='Listener0':
+            _, predicted = outputs.max(dim=1)
+            n_correct = (predicted.data == targets.data).sum()
+            total_correct += n_correct
+
+        loss = criterion(outputs, targets) # what should these be?
+        epoch_loss += loss.data[0]
+
+    logging.info('====> Epoch %d: Validation loss: %.4f' % (epoch, epoch_loss))
+    if model.name=='Listener0':
+        logging.info('Validation Accuracy: %f' % (total_correct / (n_train_batches * args.batch_size)))
+
+
+def train(train_scenes, val_scenes, model, optimizer, args, target_func):
     logging.info('Training %s...' % (model.name))
     n_train = len(train_scenes) 
     model.train()
@@ -169,15 +202,11 @@ def train(train_scenes, model, optimizer, args, target_func):
                      for i_alt in range(args.alternatives)]
             alt_data = [[train_scenes[i] for i in alt] for alt in alt_indices]
 
-            # logging.info([x.image_id for x in batch_data])
-
             outputs = model(batch_data, alt_data)
             targets = target_func(args, batch_data)
 
             if torch.cuda.is_available():
                 targets = targets.cuda()
-
-            # pdb.set_trace()
 
             if model.name =='Listener0':
                 _, predicted = outputs.max(dim=1)
@@ -196,7 +225,9 @@ def train(train_scenes, model, optimizer, args, target_func):
         logging.info('====> Epoch %d: Training loss: %.4f' % (epoch, epoch_loss))
 
         if model.name=='Listener0':
-            logging.info('Accuracy: %f' % (total_correct / (n_train_batches * args.batch_size)))
+            logging.info('Training Accuracy: %f' % (total_correct / (n_train_batches * args.batch_size)))
+
+        validate(val_scenes, model, optimizer, args, target_func, epoch)
 
 def sample(decoder, scene_enc): # Predict with beam search based on scene enc
     initial_guess = scene_enc
