@@ -69,7 +69,8 @@ class Listener0Model(nn.Module):
         # self.fc = nn.Linear() #Insert something here what is this?
 
 
-    def forward(self, data, alt_data): # alt_data seems to be a list, data seems to have both string and image
+    def forward(self, data, alt_data): # data and alt_data are both lists of length n_sample. data is target scene with descriptions replaced
+        pdb.set_trace()
         scene_enc = self.scene_encoder(data)                            # [100 x 50]
         alt_scene_enc = [self.scene_encoder(alt) for alt in alt_data]   # [100 x 50]
 
