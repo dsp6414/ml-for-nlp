@@ -401,7 +401,7 @@ def load_model(model, path):
     logging.info('Loading saved model %s into %s ...' % (path, model.name))
 
     if torch.cuda.is_available():
-        model.load_state_dict(torch.load(full_path))
+        model.load_state_dict(torch.load(full_path, map_location=lambda storage, loc: storage))
     else:
         model.load_state_dict(torch.load(full_path, map_location=lambda storage, loc: storage))
         model.cpu()
