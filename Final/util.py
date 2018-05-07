@@ -304,7 +304,7 @@ def get_examples(model, train_scenes, args, word_index):
         logging.info([(i, (scene.image_id, alt_scene.image_id)) for i, (scene, alt_scene) in enumerate(zip(batch_data, alt_data[0]))])
 
         pdb.set_trace()
-        save_image_pairs(sentences.squeeze().data, batch_data, alt_data, word_index)
+        save_image_pairs(sentences.squeeze(), batch_data, alt_data, word_index)
 
         scores = calculate_bleu(batch_data, sentences.squeeze())
         for _, score in scores:

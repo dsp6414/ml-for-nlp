@@ -70,9 +70,10 @@ class Listener0Model(nn.Module):
 
 
     def forward(self, data, alt_data): # data and alt_data are both lists of length n_sample. data is target scene with descriptions replaced
-        pdb.set_trace()
-        scene_enc = self.scene_encoder(data)                            # [100 x 50]
+        
+        scene_enc = self.scene_encoder(data)                            # [len(data) x 50]
         alt_scene_enc = [self.scene_encoder(alt) for alt in alt_data]   # [100 x 50]
+        pdb.set_trace()
 
         string_enc = self.string_encoder(data)                          # [100 x 50]
         scenes = [scene_enc] + alt_scene_enc                            # List of length 2
