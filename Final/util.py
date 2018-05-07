@@ -348,7 +348,7 @@ def save_image_pairs(sentences, data, alt_data, WORD_INDEX):
         pdb.set_trace()
         new_im.save(combined_img)
 
-def run_experiment(name, cname, rname, models, data, WORD_INDEX):
+def run_experiment(name, cname, rname, models, data, WORD_INDEX, args):
     data_by_image = defaultdict(list)
     for datum in data:
         data_by_image[datum.image_id].append(datum)
@@ -366,7 +366,7 @@ def run_experiment(name, cname, rname, models, data, WORD_INDEX):
             for model_name, model in models.items():
                 # for i_sample in range(10):
                 (listener_scores, speaker_scores), samples = \
-                        model.sample([d1], [[d2]], viterbi=False)
+                        model.sample([d1], [[d2]], viterbi=False, k=args.k)
                 samples = samples.squeeze(0).squeeze(0)
                 sentence = tensor_to_caption(samples, WORD_INDEX)
                 parts = [
