@@ -1,0 +1,262 @@
+ Loading feature files...
+ Loading feature files...
+ <s> = 1
+ </s> = 2
+ All scenes loaded.
+ Hyperparameters:Namespace(LR=0.01, alternatives=1, batch_size=100, dec='LSTM', dropout=0.3, epochs=20, hidden_sz=50, load='True', log_interval=10, model='ss1', no_cuda=False, save=None, seed=1)
+ Listener0: Listener0Model(
+  (scene_encoder): LinearSceneEncoder(
+    (fc): Linear(in_features=280, out_features=50)
+  )
+  (string_encoder): LinearStringEncoder(
+    (fc): Linear(in_features=1063, out_features=50)
+  )
+  (scorer): MLPScorer(
+    (dropout): Dropout(p=0.3)
+    (linear_4): Linear(in_features=50, out_features=50)
+    (linear_5): Linear(in_features=50, out_features=50)
+    (linear_3): Linear(in_features=50, out_features=1)
+  )
+)
+ Speaker0: Speaker0Model(
+  (scene_encoder): LinearSceneEncoder(
+    (fc): Linear(in_features=280, out_features=50)
+  )
+  (string_decoder): LSTMStringDecoder(
+    (embedding): Embedding(1063, 50)
+    (lstm): LSTM(50, 50, num_layers=2, batch_first=True, dropout=0.3)
+    (linear): Linear(in_features=50, out_features=1063)
+    (dropout): Dropout(p=0.3)
+  )
+)
+ Loading saved model l0213.pth into Listener0 ...
+ Model loaded.
+ Loading saved model s0206.pth into Speaker0 ...
+ Model loaded.
+ SamplingSpeaker1Model: SamplingSpeaker1Model(
+  (listener0): Listener0Model(
+    (scene_encoder): LinearSceneEncoder(
+      (fc): Linear(in_features=280, out_features=50)
+    )
+    (string_encoder): LinearStringEncoder(
+      (fc): Linear(in_features=1063, out_features=50)
+    )
+    (scorer): MLPScorer(
+      (dropout): Dropout(p=0.3)
+      (linear_4): Linear(in_features=50, out_features=50)
+      (linear_5): Linear(in_features=50, out_features=50)
+      (linear_3): Linear(in_features=50, out_features=1)
+    )
+  )
+  (speaker0): Speaker0Model(
+    (scene_encoder): LinearSceneEncoder(
+      (fc): Linear(in_features=280, out_features=50)
+    )
+    (string_decoder): LSTMStringDecoder(
+      (embedding): Embedding(1063, 50)
+      (lstm): LSTM(50, 50, num_layers=2, batch_first=True, dropout=0.3)
+      (linear): Linear(in_features=50, out_features=1063)
+      (dropout): Dropout(p=0.3)
+    )
+  )
+)
+ Training row 0
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 1
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 2
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 3
+ ['<s>', 'nervous', 'thinks', 'sandbox', 'having', 'nervous', 'shocked', 'better', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 4
+ ['<s>', 'nervous', 'thinks', 'sandbox', 'having', 'nervous', 'shocked', 'better', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 5
+ ['<s>', 'nervous', 'thinks', 'sandbox', 'having', 'nervous', 'shocked', 'better', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 6
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 7
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 8
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 9
+ ['<s>', 'wears', 'sandbox', 'ballon', 'table', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 10
+ ['<s>', 'wears', 'sandbox', 'ballon', 'table', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 11
+ ['<s>', 'wears', 'sandbox', 'ballon', 'table', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 12
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'starting', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 13
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'starting', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 14
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'starting', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 15
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 16
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 17
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 18
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 19
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 20
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 21
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'starting', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 22
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'starting', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 23
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'starting', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 24
+ ['<s>', 'wears', 'sandbox', 'ballon', 'table', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 25
+ ['<s>', 'wears', 'sandbox', 'ballon', 'table', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 26
+ ['<s>', 'wears', 'sandbox', 'ballon', 'table', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 27
+ ['<s>', 'lap', 'sandbox', 'bottom', 'nervous', 'spaceship', 'worm', 'wears', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 28
+ ['<s>', 'lap', 'sandbox', 'bottom', 'nervous', 'spaceship', 'worm', 'wears', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 29
+ ['<s>', 'lap', 'sandbox', 'bottom', 'nervous', 'spaceship', 'worm', 'wears', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 30
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 31
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 32
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 33
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 34
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 35
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 36
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 37
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 38
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 39
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'meat', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 40
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'meat', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 41
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'meat', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 42
+ ['<s>', 'nervous', 'thinks', 'sandbox', 'cola', 'nervous', 'standng', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 43
+ ['<s>', 'nervous', 'thinks', 'sandbox', 'cola', 'nervous', 'standng', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 44
+ ['<s>', 'nervous', 'thinks', 'sandbox', 'cola', 'nervous', 'standng', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 45
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 46
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 47
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 48
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 49
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 50
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 51
+ ['<s>', 'nervous', 'thinks', 'sandbox', 'cola', 'nervous', 'standng', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 52
+ ['<s>', 'nervous', 'thinks', 'sandbox', 'cola', 'nervous', 'standng', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 53
+ ['<s>', 'nervous', 'thinks', 'sandbox', 'cola', 'nervous', 'standng', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 54
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 55
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 56
+ ['<s>', 'wears', 'sandbox', 'scare', 'cola', 'nervous', 'makes', 'large', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 57
+ ['<s>', 'nervous', 'thinks', 'sandbox', 'cola', 'nervous', 'standng', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 58
+ ['<s>', 'nervous', 'thinks', 'sandbox', 'cola', 'nervous', 'standng', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 59
+ ['<s>', 'nervous', 'thinks', 'sandbox', 'cola', 'nervous', 'standng', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 60
+ ['<s>', 'talk', 'sandbox', 'them', 'laughed', 'having', 'nervous', 'crown', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 61
+ ['<s>', 'talk', 'sandbox', 'them', 'laughed', 'having', 'nervous', 'crown', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 62
+ ['<s>', 'talk', 'sandbox', 'them', 'laughed', 'having', 'nervous', 'crown', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 63
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'laughed', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 64
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'laughed', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 65
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'laughed', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 66
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'laughed', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 67
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'laughed', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 68
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'laughed', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 69
+ ['<s>', 'lap', 'sandbox', 'open', 'them', 'crying', 'hold', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 70
+ ['<s>', 'lap', 'sandbox', 'open', 'them', 'crying', 'hold', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 71
+ ['<s>', 'lap', 'sandbox', 'open', 'them', 'crying', 'hold', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 72
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'laughed', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 73
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'laughed', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 74
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'laughed', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 75
+ ['<s>', 'nervous', 'ripe', 'sandbox', 'having', 'nervous', 'alarmed', 'silly', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 76
+ ['<s>', 'nervous', 'ripe', 'sandbox', 'having', 'nervous', 'alarmed', 'silly', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 77
+ ['<s>', 'nervous', 'ripe', 'sandbox', 'having', 'nervous', 'alarmed', 'silly', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 78
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'laughed', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 79
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'laughed', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 80
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'laughed', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 81
+ ['<s>', 'talk', 'sandbox', 'them', 'laughed', 'having', 'nervous', 'alarmed', 'silly', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 82
+ ['<s>', 'talk', 'sandbox', 'them', 'laughed', 'having', 'nervous', 'alarmed', 'silly', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 83
+ ['<s>', 'talk', 'sandbox', 'them', 'laughed', 'having', 'nervous', 'alarmed', 'silly', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 84
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'laughed', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 85
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'laughed', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 86
+ ['<s>', 'wears', 'sandbox', 'open', 'them', 'laughed', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 87
+ ['<s>', 'nervous', 'laughed', 'sandbox', 'having', 'nervous', 'alarmed', 'silly', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 88
+ ['<s>', 'nervous', 'laughed', 'sandbox', 'having', 'nervous', 'alarmed', 'silly', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 89
+ ['<s>', 'nervous', 'laughed', 'sandbox', 'having', 'nervous', 'alarmed', 'silly', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 90
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 91
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 92
+ ['<s>', 'wears', 'sandbox', 'bottom', 'nervous', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 93
+ ['<s>', 'lap', 'sandbox', 'bottom', 'nervous', 'starting', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 94
+ ['<s>', 'lap', 'sandbox', 'bottom', 'nervous', 'starting', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 95
+ ['<s>', 'lap', 'sandbox', 'bottom', 'nervous', 'starting', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 96
+ ['<s>', 'lap', 'sandbox', 'bottom', 'nervous', 'starting', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 97
+ ['<s>', 'lap', 'sandbox', 'bottom', 'nervous', 'starting', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 98
+ ['<s>', 'lap', 'sandbox', 'bottom', 'nervous', 'starting', 'spaceship', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
+ Training row 99
+ ['<s>', 'nervous', 'down', 'sandbox', 'staring', 'cola', 'nervous', 'trying', '</s>', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*', '*invalid*']
