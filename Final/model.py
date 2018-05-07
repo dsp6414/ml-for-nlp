@@ -17,6 +17,8 @@ EOS = 2
 
 MAX_LEN = 20
 
+torch.manual_seed(1)
+
 def print_tensor(data):
     for x in data:
         logging.info([WORD_INDEX.get(word) for word in x])
@@ -90,7 +92,7 @@ class Speaker0Model(nn.Module):
 
         self.scene_encoder = LinearSceneEncoder("Speaker0SceneEncoder", self.scene_input_sz, hidden_sz, dropout)
 
-        embedding_dim = self.hidden_sz # ???
+        embedding_dim = self.hidden_sz
 
         if string_decoder == 'LSTM':
             self.string_decoder = LSTMStringDecoder("Speaker0StringDecoder", self.vocab_sz, embedding_dim, self.hidden_sz, dropout)
@@ -233,6 +235,40 @@ class SamplingSpeaker1Model(nn.Module):
 
         # stacked_sentences = Variable(torch.stack(out_sentences)) # [100 x 20]
         # return (out_speaker_scores, out_listener_scores), stacked_sentences
+
+class IntrospectiveSpeakerModel(nn.Module):
+    def __init__(self, vocab_sz, hidden_sz, dropout, string_decoder='LSTM'):
+        super(IntrospectiveSpeakerModel, self).__init__()
+
+        self.name='IntrospectiveSpeaker'
+        self.vocab_sz = vocab_sz
+        self.hidden_sz = hidden_sz
+        self.scene_input_sz = N_PROP_OBJECTS * N_PROP_TYPES
+        self.scene_encoder = LinearSceneEncoder("Speaker0SceneEncoder", self.scene_input_sz, hidden_sz, dropout)
+
+        embedding_dim = self.hidden_sz
+
+        if string_decoder == 'LSTM':
+            self.string_decoder = LSTMStringDecoder("Speaker0StringDecoder", self.vocab_sz, embedding_dim, self.hidden_sz, dropout)
+        else:
+            self.string_decoder = MLPStringDecoder("Speaker0StringDecoder", self.hidden_sz, self.vocab_sz, dropout) # Not sure what the input and hidden size are for this
+        
+        # name, vocab_sz, embedding_dim, hidden_sz, dropout, num_layers=2):
+        # self.fc = nn.Linear() #Insert something here Why is this needed?
+
+        self.dropout_p = dropout
+
+    def forward(self, data, alt_data):
+        scene_enc = self.scene_encoder(data)
+        max_len = max(len(scene.description) for scene in data)
+        losses = self.string_decoder(scene_enc, data, max_len) # losses was [1400 x 2713]
+        return losses
+
+    def sample(self, data, alt_data, viterbi=False, k=10):
+        scene_enc = self.scene_encoder(data) # [100 x 50]
+        max_len = max(len(scene.description) for scene in data) # 15
+        probs, sampled_ids = self.string_decoder.sample(scene_enc, max_len, viterbi, k=k) # used to return probs, sample
+        return probs, sampled_ids # used to return probs, np.zeros(probs.shape), sample
 
 class LinearStringEncoder(nn.Module):
     def __init__(self, name, vocab_sz, hidden_sz, dropout): #figure out what parameters later
@@ -395,8 +431,6 @@ class LSTMStringDecoder(nn.Module):
         probs = [x[0] for x in completed_guesses]
 
         sentences = [pad_end1d(tensor, MAX_LEN) for tensor in sentences]
-
-        pdb.set_trace()
         return torch.Tensor(probs), torch.stack(sentences) # [5 x 20] tensor
 
     # Currently performs a greedy search

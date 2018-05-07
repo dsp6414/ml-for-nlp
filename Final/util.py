@@ -1,5 +1,6 @@
 import os
 import sys
+from collections import defaultdict
 import torch.nn as nn
 import numpy as np
 from torch.autograd import Variable
@@ -14,6 +15,8 @@ import pdb
 MAX_LEN = 20
 SOS = 1
 EOS = 2
+
+torch.manual_seed(1)
 
 data_path = 'AbstractScenes_v1.1/' if os.path.exists('AbstractScenes_v1.1/') else '../../../../../AbstractScenes_v1.1/'
 
@@ -147,6 +150,13 @@ def print_datas_and_desc(data, alt_data, sentences, WORD_INDEX):
         logging.info('Scene ID: %s, alt scene id: %s' % (scene.image_id, alt_scenes[0].image_id))
         print_tensor(sent, WORD_INDEX)
 
+def tensor_to_caption(s, WORD_INDEX):
+    index_of_end = (s == 2).nonzero()[0][0] if len((s == 2).nonzero()) > 0 else MAX_LEN
+    pdb.set_trace()
+    s_chopped = s[1:index_of_end.data[0]] if index_of_end.data[0] > 1 else []
+    s_joined = ' '.join([WORD_INDEX.get(i.data[0]) for i in s_chopped])
+    return s_joined
+
 def validate(val_scenes, model, optimizer, args, target_func, epoch):
     model.eval()
     epoch_loss = 0.0
@@ -179,7 +189,6 @@ def validate(val_scenes, model, optimizer, args, target_func, epoch):
     logging.info('====> Epoch %d: Validation loss: %.4f' % (epoch, epoch_loss))
     if model.name=='Listener0':
         logging.info('Validation Accuracy: %f' % (total_correct / (n_val_batches * args.batch_size)))
-    model.train()
 
 
 def train(train_scenes, val_scenes, model, optimizer, args, target_func):
@@ -294,25 +303,25 @@ def get_examples(model, train_scenes, args, word_index):
         print_tensor3d(sentences.data, word_index)
         logging.info([(i, (scene.image_id, alt_scene.image_id)) for i, (scene, alt_scene) in enumerate(zip(batch_data, alt_data[0]))])
 
+        pdb.set_trace()
         save_image_pairs(sentences.squeeze().data, batch_data, alt_data, word_index)
 
         scores = calculate_bleu(batch_data, sentences.squeeze())
         for _, score in scores:
             bleu_score += score
         logging.info('Current BLEU Score: %f' % (bleu_score / ((i_batch+1) * args.batch_size)))
-        pdb.set_trace()
 
     bleu_score /= n_train
-    pdb.set_trace()
     return bleu_score
 
 def save_image_pairs(sentences, data, alt_data, WORD_INDEX):
     for i, (scene, alt_scene) in enumerate(zip(data, alt_data[0])):
-        s = sentences[i] # this is the sentence
-        index_of_end = (s == 2).nonzero()[0][0] if len((s == 2).nonzero()) > 0 else MAX_LEN
-        s_chopped = s[1:index_of_end] if index_of_end > 1 else []
-        s_joined = ' '.join([WORD_INDEX.get(i) for i in s_chopped])
+        pdb.set_trace()
 
+        s = sentences[i] # this is the sentence
+        s_joined = tensor_to_caption(s, WORD_INDEX)
+
+        pdb.set_trace()
         img1 = data_path + 'RenderedScenes/Scene' + str(scene.image_id) + '.png'
         img2 = data_path + 'RenderedScenes/Scene' + str(alt_scene.image_id) + '.png'
         combined_img = 'pairs/ss1' + str(experiment_counter) + '_' + str(scene.image_id) + '_&_' + str(alt_scene.image_id) + '.png'
@@ -324,6 +333,7 @@ def save_image_pairs(sentences, data, alt_data, WORD_INDEX):
 
         new_im = Image.new('RGB', (total_width, max_height + 16))
 
+        pdb.set_trace()
         # text to images
         d = ImageDraw.Draw(new_im)
         text_width, text_height = d.textsize(s_joined)
@@ -331,20 +341,21 @@ def save_image_pairs(sentences, data, alt_data, WORD_INDEX):
 
         x_offset = 0
         images = map(Image.open, [img1, img2])
+        pdb.set_trace()
         for im in images:
             new_im.paste(im, (x_offset,0))
             x_offset += im.size[0] + 10
         pdb.set_trace()
         new_im.save(combined_img)
 
-def run_experiment(name, cname, rname, model, data):
+def run_experiment(name, cname, rname, models, data, WORD_INDEX):
     data_by_image = defaultdict(list)
     for datum in data:
         data_by_image[datum.image_id].append(datum)
 
     with open("experiments/%s/%s.ids.txt" % (name, cname)) as id_f, \
         open("experiments/%s/%s.results.%s.txt" % (name, cname, rname), 'w') as results_f:
-        print >>results_f, "id,target,distractor,similarity,model_name,speaker_score,listener_score,description"
+        results_f.write("id,target,distractor,similarity,model_name,speaker_score,listener_score,description\n")
 
         counter = 0
         for line in id_f:
@@ -353,21 +364,29 @@ def run_experiment(name, cname, rname, model, data):
             d1 = data_by_image[img1][0]
             d2 = data_by_image[img2][0]
             for model_name, model in models.items():
-                for i_sample in range(10):
-                    speaker_scores, listener_scores, samples = \
-                            model.sample([d1], [[d2]], dropout=False, viterbi=False)
-                    parts = [
-                        counter,
-                        img1,
-                        img2,
-                        similarity,
-                        model_name,
-                        speaker_scores[0],
-                        listener_scores[0],
-                        " ".join([WORD_INDEX.get(i) for i in samples[0][1:-1]])
-                    ]
-                    # print >>results_f, ",".join([str(s) for s in parts])
-                    counter += 1
+                # for i_sample in range(10):
+                (listener_scores, speaker_scores), samples = \
+                        model.sample([d1], [[d2]], viterbi=False)
+                samples = samples.squeeze(0).squeeze(0)
+                sentence = tensor_to_caption(samples, WORD_INDEX)
+                parts = [
+                    counter,
+                    img1,
+                    img2,
+                    similarity,
+                    model_name,
+                    speaker_scores.squeeze(0)[0],
+                    # listener_scores[0].squeeze(0)[0],
+                    sentence
+                ]
+
+                pdb.set_trace()
+                # samples [1 x 20] one sentence!!, data_by_image[img1] 1 scene, data_by_image[img2] [scene]
+                save_image_pairs(samples.unsqueeze(0), [d1], [[d2]], WORD_INDEX)
+
+                results_f.write(",".join([str(s) for s in parts]))
+                results_f.write('\n')
+                counter += 1
 
 def calculate_bleu(batch, candidates):
     scene_to_description = {}
@@ -382,7 +401,6 @@ def calculate_bleu(batch, candidates):
 
     for (img_id, candidate) in candidates_with_ids:
         index_of_end = (candidate.data == 2).nonzero()[0][0] if len((candidate.data == 2).nonzero()) > 0 else MAX_LEN
-        pdb.set_trace()
         candidate_chopped = candidate.data[1:index_of_end] if index_of_end > 1 else []
         score = sentence_bleu(scene_to_description[img_id], candidate_chopped)
         # print("BLEU Score: " + str(score))
@@ -399,7 +417,7 @@ def load_model(model, path):
     logging.info('Loading saved model %s into %s ...' % (path, model.name))
 
     if torch.cuda.is_available():
-        model.load_state_dict(torch.load(full_path))
+        model.load_state_dict(torch.load(full_path, map_location=lambda storage, loc: storage))
     else:
         model.load_state_dict(torch.load(full_path, map_location=lambda storage, loc: storage))
         model.cpu()
@@ -408,7 +426,6 @@ def load_model(model, path):
 
 def convert_model(model, new_path):
     full_new_path = 'models/' + new_path
-
 
 def setup_logging(args):
     global experiment_counter
