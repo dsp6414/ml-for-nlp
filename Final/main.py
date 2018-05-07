@@ -66,7 +66,7 @@ VOCAB_SIZE = len(corpus.WORD_INDEX)
 
 output_size = 1 # should this be 1? because the output of the listener should just be a probability distr.
 listener0_model = model.Listener0Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, output_size, args.dropout) # need to pass in some parameters
-speaker0_model = model.Speaker0Model(VOCAB_SIZE, args.hidden_sz, args.dropout, args.dec)
+speaker0_model = model.Speaker0Model(VOCAB_SIZE, 100, args.dropout, args.dec)
 
 # Not sure what output size of sampling speaker model is..
 # sampling_speaker1_model = model.SamplingSpeaker1Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, output_size, args.dropout)
