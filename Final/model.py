@@ -204,6 +204,7 @@ class SamplingSpeaker1Model(nn.Module):
 
         # Lambda trades off between L0 and S0. This is joint probability of sentence by both listener and speaker
         def select_best_weighted_description(listener_scores, speaker_scores, fake_description_ids, lam): # lambda controls weighing of speaker to listener
+            pdb.set_trace()
             scores_for_correct = (listener_scores[: 0] ** (1-lam)) * (speaker_scores[: 0] ** lam) # Check this is element-wise mult
             value, ind = scores_for_correct.max(dim=0)
             return fake_description_ids[ind]
@@ -218,6 +219,8 @@ class SamplingSpeaker1Model(nn.Module):
         # listener_scores = torch.stack(listener_scores, 2)
 
         pdb.set_trace()
+        # best_descriptions = [select_best_weighted_description(listener_scores, speaker_scores, fake_description_ids, 0.02) for listener_scores, speaker_scores, \
+                            # fake_description_ids in zip(all_listener_log_probs, all_speaker_log_probs, ids_split)]
         best_descriptions = [select_best_description(scores, fake_description_ids) for scores, fake_description_ids in zip(all_listener_log_probs, ids_split)]
 
         out_descriptions = torch.stack(best_descriptions)
@@ -345,8 +348,8 @@ class LSTMStringDecoder(nn.Module):
         encoder_outputs = None
         # Change scene_enc to be [1 x 1 x 50]
         scene_enc = scene_enc.transpose(0,1).unsqueeze(0)
-        initial_guess =  Variable(torch.LongTensor([SOS]).view(1, 1)) # Or should this be SOS?? fix later
-        initial_hidden = self.init_hidden(batch_size)# [2 x 1 x 50] or maybe scene_enc??
+        initial_guess =  Variable(torch.LongTensor([SOS]).view(1, 1)) # [1 x 1]
+        initial_hidden = self.init_hidden(batch_size) # [2 x 1 x 50] or maybe scene_enc??
         zeroth, decoder_hidden = self.forward_step(scene_enc, initial_hidden, encoder_outputs, use_embeddings=False)
         if torch.cuda.is_available():
             initial_guess = initial_guess.cuda()
@@ -393,8 +396,8 @@ class LSTMStringDecoder(nn.Module):
 
         sentences = [pad_end1d(tensor, MAX_LEN) for tensor in sentences]
 
+        pdb.set_trace()
         return torch.Tensor(probs), torch.stack(sentences) # [5 x 20] tensor
-
 
     # Currently performs a greedy search
     def old_sample(self, scene_enc, max_words, viterbi):
