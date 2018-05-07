@@ -66,7 +66,7 @@ VOCAB_SIZE = len(corpus.WORD_INDEX)
 
 output_size = 1 # should this be 1? because the output of the listener should just be a probability distr.
 listener0_model = model.Listener0Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, output_size, args.dropout) # need to pass in some parameters
-speaker0_model = model.Speaker0Model(VOCAB_SIZE, args.hidden_sz, args.dropout, args.dec)
+speaker0_model = model.Speaker0Model(VOCAB_SIZE, 100, args.dropout, args.dec)
 
 # Not sure what output size of sampling speaker model is..
 # sampling_speaker1_model = model.SamplingSpeaker1Model(VOCAB_SIZE, NUM_SCENES, args.hidden_sz, output_size, args.dropout)
@@ -121,7 +121,7 @@ elif args.model == 'ss1':
 
     if args.load is not None:
         util.load_model(listener0_model, 'l0209.pth')
-        util.load_model(speaker0_model, 's0206.pth')
+        util.load_model(speaker0_model, 's0231.pth')
         sampling_speaker1_model = model.SamplingSpeaker1Model(listener0_model, speaker0_model)
         # util.load_model(sampling_speaker1_model, args.load)
         # pdb.set_trace()
@@ -129,15 +129,15 @@ elif args.model == 'ss1':
     logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
     if args.save:
         util.save_model(sampling_speaker1_model, args)
-    util.get_examples(sampling_speaker1_model, train_scenes, args, corpus.WORD_INDEX)
+    # util.get_examples(sampling_speaker1_model, train_scenes, args, corpus.WORD_INDEX)
 
     # util.train(train_scenes, sampling_speaker1_model, optimizer_ss1, args, util.speaker0_targets)
 
 # Run Experiments
 
-# models = {"sampling_speaker1": sampling_speaker1_model,}
+models = {"sampling_speaker1": sampling_speaker1_model,}
 
-# run_experiment("one_different", "abstract", "base", models, dev_scenes)
+util.run_experiment("one_different", "abstract", "base", models, dev_scenes, corpus.WORD_INDEX)
 # run_experiment("by_similarity", "abstract", "base", models, dev_scenes)
 # run_experiment("all_same", "abstract", "base", models, dev_scenes)
 
