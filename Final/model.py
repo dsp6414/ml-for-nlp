@@ -17,6 +17,8 @@ EOS = 2
 
 MAX_LEN = 20
 
+torch.manual_seed(1)
+
 def print_tensor(data):
     for x in data:
         logging.info([WORD_INDEX.get(word) for word in x])

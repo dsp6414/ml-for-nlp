@@ -9,6 +9,8 @@ import logging
 
 from util import Index
 
+torch.manual_seed(1)
+
 WORD_INDEX = Index()
 
 Prop = namedtuple("Prop", ["type_index", "object_index", "x", "y", "z", "flip"])

@@ -124,6 +124,7 @@ elif args.model == 'ss1':
         # util.load_model(speaker0_model, 's0222.pth')
         sampling_speaker1_model = model.SamplingSpeaker1Model(listener0_model, speaker0_model)
         util.load_model(sampling_speaker1_model, args.load)
+        pdb.set_trace()
 
     logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
     if args.save:

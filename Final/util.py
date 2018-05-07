@@ -15,6 +15,8 @@ MAX_LEN = 20
 SOS = 1
 EOS = 2
 
+torch.manual_seed(1)
+
 data_path = 'AbstractScenes_v1.1/' if os.path.exists('AbstractScenes_v1.1/') else '../../../../../AbstractScenes_v1.1/'
 
 class Struct:
@@ -179,7 +181,6 @@ def validate(val_scenes, model, optimizer, args, target_func, epoch):
     logging.info('====> Epoch %d: Validation loss: %.4f' % (epoch, epoch_loss))
     if model.name=='Listener0':
         logging.info('Validation Accuracy: %f' % (total_correct / (n_val_batches * args.batch_size)))
-    model.train()
 
 
 def train(train_scenes, val_scenes, model, optimizer, args, target_func):
@@ -338,6 +339,7 @@ def save_image_pairs(sentences, data, alt_data, WORD_INDEX):
         new_im.save(combined_img)
 
 def run_experiment(name, cname, rname, model, data):
+    model.eval()
     data_by_image = defaultdict(list)
     for datum in data:
         data_by_image[datum.image_id].append(datum)
@@ -408,7 +410,6 @@ def load_model(model, path):
 
 def convert_model(model, new_path):
     full_new_path = 'models/' + new_path
-
 
 def setup_logging(args):
     global experiment_counter
