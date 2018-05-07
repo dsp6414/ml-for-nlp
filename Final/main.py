@@ -36,7 +36,7 @@ parser.add_argument('--model', default=None, help='which model to train (if debu
 parser.add_argument('--dec', default='LSTM', help='which string decoder model to use for Speaker0. LSTM or MLP')
 parser.add_argument('--save', default=None, help='if you want to save your model')
 parser.add_argument('--load', default=None, help='if you want to load a pretrained model. Looks inside models/. For example, use --load=ss1168.pth to load models/ss1168.pth')
-parser.add_argument('--k', default=10, help='Number of samples to use in SamplingSpeaker1')
+parser.add_argument('--k', type=int, default=10, help='Number of samples to use in SamplingSpeaker1')
 args = parser.parse_args()
 
 torch.manual_seed(args.seed)
