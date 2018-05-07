@@ -90,7 +90,7 @@ class Speaker0Model(nn.Module):
 
         self.scene_encoder = LinearSceneEncoder("Speaker0SceneEncoder", self.scene_input_sz, hidden_sz, dropout)
 
-        embedding_dim = self.hidden_sz # ???
+        embedding_dim = self.hidden_sz
 
         if string_decoder == 'LSTM':
             self.string_decoder = LSTMStringDecoder("Speaker0StringDecoder", self.vocab_sz, embedding_dim, self.hidden_sz, dropout)
