@@ -129,15 +129,15 @@ elif args.model == 'ss1':
     logging.info("SamplingSpeaker1Model: " + str(sampling_speaker1_model))
     if args.save:
         util.save_model(sampling_speaker1_model, args)
-    # util.get_examples(sampling_speaker1_model, train_scenes, args, corpus.WORD_INDEX)
+    util.get_examples(sampling_speaker1_model, train_scenes, args, corpus.WORD_INDEX)
 
     # util.train(train_scenes, sampling_speaker1_model, optimizer_ss1, args, util.speaker0_targets)
 
 # Run Experiments
 
-models = {"sampling_speaker1": sampling_speaker1_model,}
+# models = {"sampling_speaker1": sampling_speaker1_model,}
 
-util.run_experiment("one_different", "abstract", "base", models, dev_scenes, corpus.WORD_INDEX)
+# util.run_experiment("one_different", "abstract", "base", models, dev_scenes, corpus.WORD_INDEX)
 # run_experiment("by_similarity", "abstract", "base", models, dev_scenes)
 # run_experiment("all_same", "abstract", "base", models, dev_scenes)
 

@@ -379,10 +379,7 @@ def run_experiment(name, cname, rname, models, data, WORD_INDEX):
                     # listener_scores[0].squeeze(0)[0],
                     sentence
                 ]
-
-                pdb.set_trace()
-                # samples [1 x 20] one sentence!!, data_by_image[img1] 1 scene, data_by_image[img2] [scene]
-                save_image_pairs(samples.unsqueeze(0), [d1], [[d2]], WORD_INDEX)
+                # save_image_pairs(samples.unsqueeze(0), [d1], [[d2]], WORD_INDEX)
 
                 results_f.write(",".join([str(s) for s in parts]))
                 results_f.write('\n')
