@@ -17,7 +17,6 @@ def output_targets(model_name, exp_name):
 def get_target(targets, question_num):
     return targets[question_num]
 
-
 def score_qualtrics_csv(model_name, exp_name):
     csv_dir = os.path.join('qualtrics', exp_name)
     csv_path = os.path.join(csv_dir, model_name + '.csv')
@@ -46,7 +45,9 @@ def score_qualtrics_csv(model_name, exp_name):
             else:
                 # Rip
                 n_total += 1
-    return n_correct / n_total
+
+    accuracy = n_correct / n_total
+    print('Model Name: %s, Experiment Name: %s, Accuracy: %f' % (model_name, exp_name, accuracy))
 
 # print(score_qualtrics_csv('ss1252', 'by_similarity'))
 
@@ -98,7 +99,7 @@ def download_file(surveyId, model_name, exp_name):
         requestCheckUrl = baseUrl + progressId
         requestCheckResponse = requests.request("GET", requestCheckUrl, headers=headers)
         requestCheckProgress = requestCheckResponse.json()["result"]["percentComplete"]
-        print("Download is " + str(requestCheckProgress) + " complete")
+        # print("Download is " + str(requestCheckProgress) + " complete")
 
     # Step 3: Downloading file
     requestDownloadUrl = baseUrl + progressId + '/file'
@@ -106,7 +107,7 @@ def download_file(surveyId, model_name, exp_name):
 
     # Step 4: Unzipping the file
     zipfile.ZipFile(io.BytesIO(requestDownload.content)).extractall("MyQualtricsDownload")
-    print('Complete')
+    # print('Complete')
 
     # Step 5: Rename and move
     model_num = model_num_from_name(model_name)
@@ -117,12 +118,14 @@ def download_file(surveyId, model_name, exp_name):
 # surveyId = "SV_9v14qCgBotNEvPv" # 251
 # "SV_e985tYRmNHdZGG9" # 252
 
-surveys = [("SV_e985tYRmNHdZGG9", 'ss1252', 'by_similarity')]
+surveys = [("SV_e985tYRmNHdZGG9", 'ss1252', 'by_similarity'), 
+            ("SV_9v14qCgBotNEvPv", 'ss1251', 'one_different'),
+            ("SV_9Y7wryBq8bVE5nf", 's0279', 'by_similarity'),
+            ("SV_bBJecbwsZKFaKtD", 's0280', 'one_different')]
 
-surveyId, model_name, exp_name = surveys[0]
-
-download_file(surveyId, model_name, exp_name)
-print(score_qualtrics_csv(model_name, exp_name))
+for surveyId, model_name, exp_name in surveys:
+    download_file(surveyId, model_name, exp_name)
+    score_qualtrics_csv(model_name, exp_name)
 
 #download_file(surveyId, 'ss1251', 'one_different')
 #print(score_qualtrics_csv('ss1251', 'one_different'))
