@@ -1,0 +1,101 @@
+id,target,distractor,similarity,model_name,speaker_score,listener_score,description
+0,889_0,821_1,2,sampling_speaker1,-3.6707491874694824,jenny is happy to see mike
+1,888_8,860_4,2,sampling_speaker1,-3.15708589553833,jenny is kicking the soccer ball
+2,848_6,848_3,2,sampling_speaker1,-2.712844133377075,jenny is standing by the table
+3,851_9,809_3,2,sampling_speaker1,-3.8051934242248535,the rocket is flying in the sky
+4,869_5,869_3,2,sampling_speaker1,-3.623398542404175,mike is wearing a hat
+5,872_0,872_7,2,sampling_speaker1,-2.744673490524292,jenny is wearing purple sunglasses
+6,815_0,815_8,2,sampling_speaker1,-2.858214855194092,jenny is wearing a viking hat
+7,838_4,838_1,2,sampling_speaker1,-3.558716058731079,jenny is standing by the tree
+8,832_7,832_8,2,sampling_speaker1,-4.2107319831848145,jenny is holding a hot dog
+9,852_4,852_0,2,sampling_speaker1,-3.4098258018493652,mike is wearing a hat
+10,821_0,843_2,2,sampling_speaker1,-2.8946127891540527,a helicopter is flying in the sky
+11,805_0,805_2,2,sampling_speaker1,-2.9106087684631348,jenny is very happy
+12,876_0,876_1,2,sampling_speaker1,-3.8031795024871826,the cat is sitting by the fire
+13,860_4,854_0,2,sampling_speaker1,-3.72601580619812,mike is near a dog
+14,813_8,813_2,2,sampling_speaker1,-2.825549602508545,mike is wearing sun glasses
+15,826_2,859_8,2,sampling_speaker1,-3.68298077583313,an airplane is flying in the sky
+16,883_9,883_1,2,sampling_speaker1,-3.1685636043548584,mike is near a snake
+17,840_6,847_1,2,sampling_speaker1,-4.06091833114624,jenny is sad because it is raining
+18,896_9,896_3,2,sampling_speaker1,-3.918093204498291,jenny is sitting by the picnic table
+19,859_2,818_6,2,sampling_speaker1,-3.362391948699951,jenny is standing by the fire
+20,890_2,890_4,2,sampling_speaker1,-4.033042907714844,mike is sad because it is raining
+21,855_5,855_8,2,sampling_speaker1,-3.5552656650543213,mike is sitting by the cat
+22,858_9,882_7,2,sampling_speaker1,-2.6966490745544434,mike is wearing purple sunglasses
+23,852_0,852_9,2,sampling_speaker1,-3.687014102935791,mike is wearing a hat
+24,887_8,887_3,2,sampling_speaker1,-3.7713279724121094,the bear is standing by the table
+25,893_9,895_2,2,sampling_speaker1,-3.2695744037628174,the snake is slithering by
+26,814_3,848_5,2,sampling_speaker1,-3.6695613861083984,jenny is holding a pizza
+27,880_4,898_8,2,sampling_speaker1,-3.782711982727051,mike has a baseball mitt
+28,898_8,898_4,2,sampling_speaker1,-3.1316583156585693,mike is holding a baseball bat
+29,848_2,814_3,2,sampling_speaker1,-2.69490122795105,jenny is sitting on the ground
+30,839_5,839_2,2,sampling_speaker1,-3.643747091293335,jenny is holding a bunch of balloons
+31,896_3,856_2,2,sampling_speaker1,-4.091611862182617,mike is sitting on the ground
+32,830_0,830_1,2,sampling_speaker1,-3.305321216583252,mike is wearing purple sunglasses
+33,891_8,891_4,2,sampling_speaker1,-3.6319563388824463,jenny is holding a baseball mitt
+34,882_5,831_3,2,sampling_speaker1,-3.5550832748413086,jenny is sitting in the sandbox
+35,882_7,889_6,2,sampling_speaker1,-2.9029760360717773,mike is wearing purple sunglasses
+36,879_3,879_0,2,sampling_speaker1,-3.5008246898651123,the bear is scaring mike
+37,815_4,815_8,2,sampling_speaker1,-3.034571409225464,mike is wearing the hat
+38,892_7,892_9,2,sampling_speaker1,-3.9478235244750977,jenny is mad at mike
+39,880_1,898_1,2,sampling_speaker1,-2.9893364906311035,mike is sitting by the baseball bat
+40,901_2,868_4,2,sampling_speaker1,-3.4450860023498535,jenny is very happy
+41,832_5,832_7,2,sampling_speaker1,-3.7034127712249756,the cat is sitting next to jenny
+42,898_1,880_7,2,sampling_speaker1,-2.87762451171875,jenny is holding the bat
+43,893_6,883_8,2,sampling_speaker1,-3.5840935707092285,mike is kicking the snake
+44,811_4,811_6,2,sampling_speaker1,-3.176690101623535,it is raining on jenny
+45,886_8,802_1,2,sampling_speaker1,-3.8279106616973877,mike is sitting on the ground
+46,821_4,835_7,2,sampling_speaker1,-3.219423532485962,the cat is sitting next to jenny
+47,871_3,871_1,2,sampling_speaker1,-3.853240728378296,jenny is wearing a chef hat
+48,862_0,889_0,2,sampling_speaker1,-3.2625441551208496,jenny has a pie
+49,838_8,894_7,2,sampling_speaker1,-3.2168562412261963,there is a pie on the table
+50,879_0,879_6,2,sampling_speaker1,-3.066826820373535,the bear is scaring jenny
+51,853_9,871_9,2,sampling_speaker1,-3.4535071849823,mike is holding a pie
+52,901_3,901_5,2,sampling_speaker1,-3.134908676147461,jenny is sitting in the grass
+53,870_0,870_9,2,sampling_speaker1,-3.106208562850952,jenny is sitting on the ground
+54,824_8,824_2,2,sampling_speaker1,-4.350193977355957,jenny is sitting by the snake
+55,889_3,882_2,2,sampling_speaker1,-3.729674816131592,mike is kicking the ball
+56,889_7,889_0,2,sampling_speaker1,-3.9906599521636963,the balloon is flying in the sky
+57,874_5,874_3,2,sampling_speaker1,-3.5752644538879395,the snake is in the sandbox
+58,819_7,882_0,2,sampling_speaker1,-3.3357365131378174,jenny is sitting in the sandbox
+59,873_5,873_3,2,sampling_speaker1,-4.347346782684326,the dog is wearing sunglasses
+60,889_2,889_0,2,sampling_speaker1,-3.4955945014953613,mike is kicking the soccer ball
+61,827_7,827_5,2,sampling_speaker1,-3.2674591541290283,mike is wearing a chef hat
+62,855_1,855_8,2,sampling_speaker1,-3.827124834060669,the cat is sitting by jenny
+63,851_8,869_9,2,sampling_speaker1,-4.064432144165039,the cat is sitting next to jenny
+64,841_7,841_9,2,sampling_speaker1,-3.6575026512145996,the cat is sitting next to jenny
+65,816_4,816_1,2,sampling_speaker1,-3.6129777431488037,mike has a pie
+66,847_1,847_0,2,sampling_speaker1,-4.731289386749268,mike is wearing a hat
+67,832_4,832_2,2,sampling_speaker1,-3.651536464691162,mike is wearing purple sunglasses
+68,816_8,864_5,2,sampling_speaker1,-3.5069403648376465,mike is sitting on the grass
+69,806_4,806_9,2,sampling_speaker1,-3.6066908836364746,mike is kicking the soccer ball
+70,867_0,867_8,2,sampling_speaker1,-2.72568941116333,jenny is sitting in the grass
+71,829_5,829_6,2,sampling_speaker1,-3.6155898571014404,jenny is wearing a pirate hat
+72,820_1,820_3,2,sampling_speaker1,-3.7558295726776123,mike is wearing a hat
+73,853_4,853_3,2,sampling_speaker1,-3.501206398010254,mike is near a bear
+74,877_0,877_4,2,sampling_speaker1,-2.936450481414795,jenny is wearing purple sunglasses
+75,895_8,895_5,2,sampling_speaker1,-4.265744209289551,jenny is scared of the snake
+76,843_0,843_2,2,sampling_speaker1,-3.019225835800171,jenny is wearing a colorful hat
+77,829_3,829_4,2,sampling_speaker1,-3.4283862113952637,mike is wearing a silly hat
+78,898_2,898_1,2,sampling_speaker1,-3.501674175262451,jenny is holding a baseball bat
+79,813_5,813_1,2,sampling_speaker1,-2.435091733932495,mike is wearing a hat
+80,871_9,871_3,2,sampling_speaker1,-3.3148415088653564,jenny is standing by the tree
+81,839_2,884_4,2,sampling_speaker1,-3.386220932006836,jenny is wearing purple sunglasses
+82,860_2,875_3,2,sampling_speaker1,-3.6892030239105225,mike and jenny are playing catch
+83,859_4,826_9,2,sampling_speaker1,-4.187213897705078,mike is standing by the fire
+84,845_4,845_1,2,sampling_speaker1,-3.461634635925293,jenny is very happy
+85,851_1,851_9,2,sampling_speaker1,-3.7329840660095215,jenny is sitting on the grass
+86,824_5,824_2,2,sampling_speaker1,-2.971126079559326,mike and jenny are running from the snake
+87,899_9,899_7,2,sampling_speaker1,-4.175831317901611,the hot air balloon is in the sky
+88,855_9,855_8,2,sampling_speaker1,-3.5502114295959473,jenny is wearing a crown
+89,852_9,852_6,2,sampling_speaker1,-3.6867852210998535,jenny is wearing a colorful hat
+90,882_4,819_7,2,sampling_speaker1,-3.1678466796875,mike and jenny are in the sandbox
+91,812_6,855_5,2,sampling_speaker1,-3.7533681392669678,the cat is sitting by jenny
+92,832_1,832_9,2,sampling_speaker1,-4.043398857116699,the cat is sitting by jenny
+93,884_4,839_3,2,sampling_speaker1,-3.7760403156280518,the dog is watching mike and jenny
+94,877_7,877_2,2,sampling_speaker1,-3.1662333011627197,the bear is wearing a crown
+95,890_7,890_1,2,sampling_speaker1,-3.397705316543579,jenny is wearing purple sunglasses
+96,880_7,880_2,2,sampling_speaker1,-3.1960558891296387,jenny is holding the bat
+97,886_3,895_6,2,sampling_speaker1,-3.12380313873291,jenny is afraid of the snake
+98,836_8,836_6,2,sampling_speaker1,-4.296727180480957,jenny is sitting on the grass
+99,867_9,867_5,2,sampling_speaker1,-3.020256519317627,mike and jenny are happy

@@ -1,0 +1,101 @@
+id,target,distractor,similarity,model_name,speaker_score,listener_score,description
+0,889_0,821_1,2,sampling_speaker1,-3.6707491874694824,j e n n y   i s   n e a r   a   t r e e
+1,888_8,860_4,2,sampling_speaker1,-3.15708589553833,j e n n y   i s   k i c k i n g   t h e   s o c c e r   b a l l
+2,848_6,848_3,2,sampling_speaker1,-2.712844133377075,t h e   p i z z a   i s   o n   t h e   t a b l e
+3,851_9,809_3,2,sampling_speaker1,-3.8051934242248535,a   r o c k e t   i s   f l y i n g   i n   t h e   s k y
+4,869_5,869_3,2,sampling_speaker1,-3.623398542404175,t h e   b e a r   i s   s c a r i n g   m i k e   a n d   j e n n y
+5,872_0,872_7,2,sampling_speaker1,-2.744673490524292,j e n n y   i s   w e a r i n g   s u n g l a s s e s
+6,815_0,815_8,2,sampling_speaker1,-2.858214855194092,j e n n y   i s   w e a r i n g   a   c r o w n
+7,838_4,838_1,2,sampling_speaker1,-3.558716058731079,j e n n y   i s   s t a n d i n g   b y   t h e   t r e e
+8,832_7,832_8,2,sampling_speaker1,-4.2107319831848145,m i k e   i s   h o l d i n g   a   h o t   d o g
+9,852_4,852_0,2,sampling_speaker1,-3.4098258018493652,m i k e   i s   w e a r i n g   a   h a t
+10,821_0,843_2,2,sampling_speaker1,-2.8946127891540527,t h e   h e l i c o p t e r   i s   f l y i n g   i n   t h e   s k y
+11,805_0,805_2,2,sampling_speaker1,-2.9106087684631348,m i k e   a n d   j e n n y   a r e   w a v i n g   t h e i r   a r m s
+12,876_0,876_1,2,sampling_speaker1,-3.8031795024871826,j e n n y   i s   s a d   a n d   c r y i n g
+13,860_4,854_0,2,sampling_speaker1,-3.72601580619812,j e n n y   i s   s t a n d i n g   b y   t h e   t r e e
+14,813_8,813_2,2,sampling_speaker1,-2.825549602508545,m i k e   i s   s i t t i n g   i n   t h e   g r a s s
+15,826_2,859_8,2,sampling_speaker1,-3.68298077583313,j e n n y   i s   h a p p y   t o   s e e   m i k e
+16,883_9,883_1,2,sampling_speaker1,-3.1685636043548584,t h e   o w l   i s   s i t t i n g   i n   t h e   t r e e
+17,840_6,847_1,2,sampling_speaker1,-4.06091833114624,j e n n y   i s   s a d   a n d   c r y i n g
+18,896_9,896_3,2,sampling_speaker1,-3.918093204498291,j e n n y   i s   s i t t i n g   i n   t h e   g r a s s
+19,859_2,818_6,2,sampling_speaker1,-3.362391948699951,j e n n y   i s   v e r y   h a p p y
+20,890_2,890_4,2,sampling_speaker1,-4.033042907714844,j e n n y   i s   r u n n i n g   a w a y
+21,855_5,855_8,2,sampling_speaker1,-3.5552656650543213,j e n n y   i s   s i t t i n g   i n   t h e   g r a s s
+22,858_9,882_7,2,sampling_speaker1,-2.6966490745544434,j e n n y   i s   s i t t i n g   i n   t h e   g r a s s
+23,852_0,852_9,2,sampling_speaker1,-3.687014102935791,m i k e   i s   w e a r i n g   a   h a t
+24,887_8,887_3,2,sampling_speaker1,-3.7713279724121094,t h e   b e a r   i s   s c a r i n g   j e n n y
+25,893_9,895_2,2,sampling_speaker1,-3.2695744037628174,j e n n y   i s   a f r a i d   o f   t h e   s n a k e
+26,814_3,848_5,2,sampling_speaker1,-3.6695613861083984,t h e   p i z z a   i s   o n   t h e   t a b l e
+27,880_4,898_8,2,sampling_speaker1,-3.782711982727051,m i k e   a n d   j e n n y   a r e   p l a y i n g   b a s e b a l l
+28,898_8,898_4,2,sampling_speaker1,-3.1316583156585693,m i k e   i s   h o l d i n g   a   b a t
+29,848_2,814_3,2,sampling_speaker1,-2.69490122795105,t h e   p i z z a   i s   o n   t h e   t a b l e
+30,839_5,839_2,2,sampling_speaker1,-3.643747091293335,m i k e   i s   k i c k i n g   t h e   s o c c e r   b a l l
+31,896_3,856_2,2,sampling_speaker1,-4.091611862182617,t h e   d o g   i s   s t a n d i n g   n e x t   t o   m i k e
+32,830_0,830_1,2,sampling_speaker1,-3.305321216583252,m i k e   i s   w e a r i n g   a   c h e f   h a t
+33,891_8,891_4,2,sampling_speaker1,-3.6319563388824463,a   h e l i c o p t e r   i s   f l y i n g   i n   t h e   s k y
+34,882_5,831_3,2,sampling_speaker1,-3.5550832748413086,j e n n y   i s   d r i n k i n g   a   s o d a
+35,882_7,889_6,2,sampling_speaker1,-2.9029760360717773,j e n n y   i s   s i t t i n g   i n   t h e   g r a s s
+36,879_3,879_0,2,sampling_speaker1,-3.5008246898651123,t h e   b e a r   i s   s c a r i n g   m i k e   a n d   j e n n y
+37,815_4,815_8,2,sampling_speaker1,-3.034571409225464,m i k e   i s   w e a r i n g   a   v i k i n g   h a t
+38,892_7,892_9,2,sampling_speaker1,-3.9478235244750977,j e n n y   i s   v e r y   s a d
+39,880_1,898_1,2,sampling_speaker1,-2.9893364906311035,m i k e   i s   h o l d i n g   a   b a s e b a l l   b a t
+40,901_2,868_4,2,sampling_speaker1,-3.4450860023498535,t h e   o w l   i s   i n   t h e   a p p l e   t r e e
+41,832_5,832_7,2,sampling_speaker1,-3.7034127712249756,j e n n y   i s   h o l d i n g   a   h o t   d o g
+42,898_1,880_7,2,sampling_speaker1,-2.87762451171875,m i k e   i s   h o l d i n g   a   b a t
+43,893_6,883_8,2,sampling_speaker1,-3.5840935707092285,j e n n y   i s   r u n n i n g   a w a y
+44,811_4,811_6,2,sampling_speaker1,-3.176690101623535,j e n n y   i s   r u n n i n g   a w a y
+45,886_8,802_1,2,sampling_speaker1,-3.8279106616973877,m i k e   a n d   j e n n y   a r e   i n   t h e   s a n d b o x
+46,821_4,835_7,2,sampling_speaker1,-3.219423532485962,j e n n y   i s   k i c k i n g   t h e   s o c c e r   b a l l
+47,871_3,871_1,2,sampling_speaker1,-3.853240728378296,t h e   b e a r   i s   w e a r i n g   a   c h e f   h a t
+48,862_0,889_0,2,sampling_speaker1,-3.2625441551208496,m i k e   a n d   j e n n y   a r e   h a p p y
+49,838_8,894_7,2,sampling_speaker1,-3.2168562412261963,t h e   p i e   i s   o n   t h e   t a b l e
+50,879_0,879_6,2,sampling_speaker1,-3.066826820373535,j e n n y   i s   s c a r e d   o f   t h e   b e a r
+51,853_9,871_9,2,sampling_speaker1,-3.4535071849823,j e n n y   i s   s c a r e d   o f   t h e   b e a r
+52,901_3,901_5,2,sampling_speaker1,-3.134908676147461,t h e   o w l   i s   i n   t h e   a p p l e   t r e e
+53,870_0,870_9,2,sampling_speaker1,-3.106208562850952,j e n n y   i s   h o l d i n g   a   p i e
+54,824_8,824_2,2,sampling_speaker1,-4.350193977355957,t h e   o w l   i s   i n   t h e   t r e e
+55,889_3,882_2,2,sampling_speaker1,-3.729674816131592,m i k e   a n d   j e n n y   a r e   p l a y i n g   s o c c e r
+56,889_7,889_0,2,sampling_speaker1,-3.9906599521636963,j e n n y   i s   n e a r   a   t r e e
+57,874_5,874_3,2,sampling_speaker1,-3.5752644538879395,j e n n y   i s   s i t t i n g   i n   t h e   s a n d b o x
+58,819_7,882_0,2,sampling_speaker1,-3.3357365131378174,m i k e   i s   s i t t i n g   i n   t h e   s a n d b o x
+59,873_5,873_3,2,sampling_speaker1,-4.347346782684326,t h e   d o g   i s   s t a n d i n g   b y   t h e   t a b l e
+60,889_2,889_0,2,sampling_speaker1,-3.4955945014953613,m i k e   a n d   j e n n y   a r e   p l a y i n g   s o c c e r
+61,827_7,827_5,2,sampling_speaker1,-3.2674591541290283,m i k e   i s   w e a r i n g   a   c h e f   h a t
+62,855_1,855_8,2,sampling_speaker1,-3.827124834060669,m i k e   i s   s i t t i n g   o n   t h e   g r o u n d
+63,851_8,869_9,2,sampling_speaker1,-4.064432144165039,t h e   c a t   i s   s i t t i n g   n e x t   t o   j e n n y
+64,841_7,841_9,2,sampling_speaker1,-3.6575026512145996,m i k e   i s   s l i d i n g   d o w n   t h e   s l i d e
+65,816_4,816_1,2,sampling_speaker1,-3.6129777431488037,j e n n y   i s   h o l d i n g   a   p i e
+66,847_1,847_0,2,sampling_speaker1,-4.731289386749268,m i k e   i s   s i t t i n g   o n   t h e   g r o u n d
+67,832_4,832_2,2,sampling_speaker1,-3.651536464691162,t h e   k e t c h u p   i s   o n   t h e   t a b l e
+68,816_8,864_5,2,sampling_speaker1,-3.5069403648376465,m i k e   i s   s i t t i n g   o n   t h e   g r o u n d
+69,806_4,806_9,2,sampling_speaker1,-3.6066908836364746,m i k e   i s   k i c k i n g   t h e   s o c c e r   b a l l
+70,867_0,867_8,2,sampling_speaker1,-2.72568941116333,m i k e   i s   f l y i n g   a   k i t e
+71,829_5,829_6,2,sampling_speaker1,-3.6155898571014404,m i k e   i s   w e a r i n g   a   h a t
+72,820_1,820_3,2,sampling_speaker1,-3.7558295726776123,t h e   b e a r   i s   s c a r i n g   j e n n y
+73,853_4,853_3,2,sampling_speaker1,-3.501206398010254,j e n n y   i s   s c a r e d   o f   t h e   b e a r
+74,877_0,877_4,2,sampling_speaker1,-2.936450481414795,j e n n y   i s   w e a r i n g   s u n g l a s s e s
+75,895_8,895_5,2,sampling_speaker1,-4.265744209289551,j e n n y   i s   s c a r e d   o f   t h e   b e a r
+76,843_0,843_2,2,sampling_speaker1,-3.019225835800171,m i k e   i s   w e a r i n g   a   h a t
+77,829_3,829_4,2,sampling_speaker1,-3.4283862113952637,t h e   f r i s b e e   i s   i n   t h e   t r e e
+78,898_2,898_1,2,sampling_speaker1,-3.501674175262451,m i k e   i s   w e a r i n g   a   b a s e b a l l   m i t t
+79,813_5,813_1,2,sampling_speaker1,-2.435091733932495,j e n n y   i s   v e r y   h a p p y
+80,871_9,871_3,2,sampling_speaker1,-3.3148415088653564,j e n n y   i s   h o l d i n g   a   p i e
+81,839_2,884_4,2,sampling_speaker1,-3.386220932006836,m i k e   a n d   j e n n y   a r e   p l a y i n g   s o c c e r
+82,860_2,875_3,2,sampling_speaker1,-3.6892030239105225,j e n n y   i s   s t a n d i n g   b y   t h e   t r e e
+83,859_4,826_9,2,sampling_speaker1,-4.187213897705078,t h e r e   i s   a   c l o u d   i n   t h e   s k y
+84,845_4,845_1,2,sampling_speaker1,-3.461634635925293,m i k e   i s   k i c k i n g   t h e   s o c c e r   b a l l
+85,851_1,851_9,2,sampling_speaker1,-3.7329840660095215,m i k e   a n d   j e n n y   a r e   h a p p y
+86,824_5,824_2,2,sampling_speaker1,-2.971126079559326,j e n n y   i s   r u n n i n g   a w a y
+87,899_9,899_7,2,sampling_speaker1,-4.175831317901611,j e n n y   i s   s t a n d i n g   b y   t h e   t r e e
+88,855_9,855_8,2,sampling_speaker1,-3.5502114295959473,m i k e   i s   w e a r i n g   a   h a t
+89,852_9,852_6,2,sampling_speaker1,-3.6867852210998535,m i k e   i s   w e a r i n g   a   h a t
+90,882_4,819_7,2,sampling_speaker1,-3.1678466796875,m i k e   a n d   j e n n y   a r e   p l a y i n g   i n   t h e   s a n d b o x
+91,812_6,855_5,2,sampling_speaker1,-3.7533681392669678,j e n n y   i s   n e a r   a   c a t
+92,832_1,832_9,2,sampling_speaker1,-4.043398857116699,t h e   k e t c h u p   a n d   m u s t a r d   a r e   o n   t h e   t a b l e
+93,884_4,839_3,2,sampling_speaker1,-3.7760403156280518,j e n n y   i s   s i t t i n g   i n   t h e   g r a s s
+94,877_7,877_2,2,sampling_speaker1,-3.1662333011627197,m i k e   i s   w e a r i n g   s u n g l a s s e s
+95,890_7,890_1,2,sampling_speaker1,-3.397705316543579,j e n n y   i s   r u n n i n g   a w a y
+96,880_7,880_2,2,sampling_speaker1,-3.1960558891296387,m i k e   i s   h o l d i n g   a   b a t
+97,886_3,895_6,2,sampling_speaker1,-3.12380313873291,j e n n y   i s   a f r a i d   o f   t h e   s n a k e
+98,836_8,836_6,2,sampling_speaker1,-4.296727180480957,j e n n y   i s   s i t t i n g   o n   t h e   g r o u n d
+99,867_9,867_5,2,sampling_speaker1,-3.020256519317627,m i k e   a n d   j e n n y   a r e   p l a y i n g   f r i s b e e

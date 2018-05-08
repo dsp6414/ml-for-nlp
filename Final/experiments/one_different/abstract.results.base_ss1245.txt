@@ -1,0 +1,1001 @@
+id,target,distractor,similarity,model_name,speaker_score,listener_score,description
+0,889_0,821_1,2,sampling_speaker1,-3.6707491874694824,jenny is near a tree
+1,889_0,821_1,2,sampling_speaker1,-3.6707491874694824,jenny is near a tree
+2,889_0,821_1,2,sampling_speaker1,-3.6707491874694824,jenny is near a tree
+3,889_0,821_1,2,sampling_speaker1,-3.6707491874694824,jenny is near a tree
+4,889_0,821_1,2,sampling_speaker1,-3.6707491874694824,jenny is near a tree
+5,889_0,821_1,2,sampling_speaker1,-3.6707491874694824,jenny is near a tree
+6,889_0,821_1,2,sampling_speaker1,-3.6707491874694824,jenny is standing by the tree
+7,889_0,821_1,2,sampling_speaker1,-3.6707491874694824,jenny is near a tree
+8,889_0,821_1,2,sampling_speaker1,-3.6707491874694824,jenny is near a tree
+9,889_0,821_1,2,sampling_speaker1,-3.6707491874694824,jenny is near a tree
+10,888_8,860_4,2,sampling_speaker1,-3.15708589553833,jenny is kicking the soccer ball
+11,888_8,860_4,2,sampling_speaker1,-3.15708589553833,jenny is kicking the soccer ball
+12,888_8,860_4,2,sampling_speaker1,-3.15708589553833,jenny is kicking the soccer ball
+13,888_8,860_4,2,sampling_speaker1,-3.15708589553833,jenny is kicking the soccer ball
+14,888_8,860_4,2,sampling_speaker1,-3.15708589553833,jenny is kicking the soccer ball
+15,888_8,860_4,2,sampling_speaker1,-3.15708589553833,jenny is kicking the soccer ball
+16,888_8,860_4,2,sampling_speaker1,-3.15708589553833,jenny is kicking the soccer ball
+17,888_8,860_4,2,sampling_speaker1,-3.15708589553833,jenny is kicking the soccer ball
+18,888_8,860_4,2,sampling_speaker1,-3.15708589553833,jenny is kicking the soccer ball
+19,888_8,860_4,2,sampling_speaker1,-3.15708589553833,jenny is kicking the soccer ball
+20,848_6,848_3,2,sampling_speaker1,-2.712844133377075,the pizza is on the table
+21,848_6,848_3,2,sampling_speaker1,-2.712844133377075,the pizza is on the table
+22,848_6,848_3,2,sampling_speaker1,-2.712844133377075,the pizza is on the table
+23,848_6,848_3,2,sampling_speaker1,-2.712844133377075,the pizza is on the table
+24,848_6,848_3,2,sampling_speaker1,-2.712844133377075,the pizza is on the table
+25,848_6,848_3,2,sampling_speaker1,-2.712844133377075,the pizza is on the table
+26,848_6,848_3,2,sampling_speaker1,-2.712844133377075,the pizza is on the table
+27,848_6,848_3,2,sampling_speaker1,-2.712844133377075,the pizza is on the table
+28,848_6,848_3,2,sampling_speaker1,-2.712844133377075,the pizza is on the table
+29,848_6,848_3,2,sampling_speaker1,-2.712844133377075,the pizza is on the table
+30,851_9,809_3,2,sampling_speaker1,-3.8051934242248535,a rocket is flying in the sky
+31,851_9,809_3,2,sampling_speaker1,-3.8051934242248535,a rocket is flying in the sky
+32,851_9,809_3,2,sampling_speaker1,-3.8051934242248535,the rocket is flying in the sky
+33,851_9,809_3,2,sampling_speaker1,-3.8051934242248535,a rocket is flying in the sky
+34,851_9,809_3,2,sampling_speaker1,-3.8051934242248535,a rocket is flying in the sky
+35,851_9,809_3,2,sampling_speaker1,-3.8051934242248535,a rocket is flying in the sky
+36,851_9,809_3,2,sampling_speaker1,-3.8051934242248535,a rocket is flying in the sky
+37,851_9,809_3,2,sampling_speaker1,-3.8051934242248535,a rocket is flying in the sky
+38,851_9,809_3,2,sampling_speaker1,-3.8051934242248535,a rocket is flying in the sky
+39,851_9,809_3,2,sampling_speaker1,-3.8051934242248535,a rocket is flying in the sky
+40,869_5,869_3,2,sampling_speaker1,-3.623398542404175,the bear is scaring mike and jenny
+41,869_5,869_3,2,sampling_speaker1,-3.623398542404175,the bear is scaring mike and jenny
+42,869_5,869_3,2,sampling_speaker1,-3.623398542404175,the bear is scaring mike and jenny
+43,869_5,869_3,2,sampling_speaker1,-3.623398542404175,the bear is scaring mike and jenny
+44,869_5,869_3,2,sampling_speaker1,-3.623398542404175,mike is wearing a hat
+45,869_5,869_3,2,sampling_speaker1,-3.623398542404175,the bear is scaring mike and jenny
+46,869_5,869_3,2,sampling_speaker1,-3.623398542404175,mike is wearing a hat
+47,869_5,869_3,2,sampling_speaker1,-3.623398542404175,mike is wearing a hat
+48,869_5,869_3,2,sampling_speaker1,-3.623398542404175,the bear is scaring mike and jenny
+49,869_5,869_3,2,sampling_speaker1,-3.623398542404175,the bear is scaring mike and jenny
+50,872_0,872_7,2,sampling_speaker1,-2.744673490524292,mike and jenny are playing soccer
+51,872_0,872_7,2,sampling_speaker1,-2.744673490524292,mike and jenny are playing soccer
+52,872_0,872_7,2,sampling_speaker1,-2.744673490524292,jenny is wearing sunglasses
+53,872_0,872_7,2,sampling_speaker1,-2.744673490524292,mike and jenny are playing soccer
+54,872_0,872_7,2,sampling_speaker1,-2.744673490524292,mike and jenny are playing soccer
+55,872_0,872_7,2,sampling_speaker1,-2.744673490524292,mike and jenny are playing soccer
+56,872_0,872_7,2,sampling_speaker1,-2.744673490524292,mike and jenny are playing soccer
+57,872_0,872_7,2,sampling_speaker1,-2.744673490524292,mike and jenny are playing soccer
+58,872_0,872_7,2,sampling_speaker1,-2.744673490524292,mike and jenny are playing soccer
+59,872_0,872_7,2,sampling_speaker1,-2.744673490524292,mike and jenny are playing soccer
+60,815_0,815_8,2,sampling_speaker1,-2.858214855194092,jenny is wearing a crown
+61,815_0,815_8,2,sampling_speaker1,-2.858214855194092,jenny is wearing a crown
+62,815_0,815_8,2,sampling_speaker1,-2.858214855194092,jenny is wearing a crown
+63,815_0,815_8,2,sampling_speaker1,-2.858214855194092,jenny is wearing a crown
+64,815_0,815_8,2,sampling_speaker1,-2.858214855194092,jenny is wearing a crown
+65,815_0,815_8,2,sampling_speaker1,-2.858214855194092,jenny is wearing a crown
+66,815_0,815_8,2,sampling_speaker1,-2.858214855194092,jenny is wearing a crown
+67,815_0,815_8,2,sampling_speaker1,-2.858214855194092,jenny is wearing a crown
+68,815_0,815_8,2,sampling_speaker1,-2.858214855194092,jenny is wearing a crown
+69,815_0,815_8,2,sampling_speaker1,-2.858214855194092,jenny is wearing a crown
+70,838_4,838_1,2,sampling_speaker1,-3.558716058731079,jenny is standing by the tree
+71,838_4,838_1,2,sampling_speaker1,-3.558716058731079,the pie is on the table
+72,838_4,838_1,2,sampling_speaker1,-3.558716058731079,jenny is standing by the tree
+73,838_4,838_1,2,sampling_speaker1,-3.558716058731079,the pie is on the table
+74,838_4,838_1,2,sampling_speaker1,-3.558716058731079,jenny is standing by the tree
+75,838_4,838_1,2,sampling_speaker1,-3.558716058731079,jenny is standing by the tree
+76,838_4,838_1,2,sampling_speaker1,-3.558716058731079,jenny is standing by the tree
+77,838_4,838_1,2,sampling_speaker1,-3.558716058731079,the pie is on the table
+78,838_4,838_1,2,sampling_speaker1,-3.558716058731079,the pie is on the table
+79,838_4,838_1,2,sampling_speaker1,-3.558716058731079,jenny is standing by the tree
+80,832_7,832_8,2,sampling_speaker1,-4.2107319831848145,mike is holding a hot dog
+81,832_7,832_8,2,sampling_speaker1,-4.2107319831848145,mike is holding a hot dog
+82,832_7,832_8,2,sampling_speaker1,-4.2107319831848145,mike is holding a hot dog
+83,832_7,832_8,2,sampling_speaker1,-4.2107319831848145,jenny is holding a pie
+84,832_7,832_8,2,sampling_speaker1,-4.2107319831848145,mike is holding a hot dog
+85,832_7,832_8,2,sampling_speaker1,-4.2107319831848145,jenny is holding a pie
+86,832_7,832_8,2,sampling_speaker1,-4.2107319831848145,jenny is holding a pie
+87,832_7,832_8,2,sampling_speaker1,-4.2107319831848145,mike is holding a hot dog
+88,832_7,832_8,2,sampling_speaker1,-4.2107319831848145,mike is holding a hot dog
+89,832_7,832_8,2,sampling_speaker1,-4.2107319831848145,mike is holding a hot dog
+90,852_4,852_0,2,sampling_speaker1,-3.4098258018493652,mike is wearing a hat
+91,852_4,852_0,2,sampling_speaker1,-3.4098258018493652,jenny is sitting in the grass
+92,852_4,852_0,2,sampling_speaker1,-3.4098258018493652,jenny is sitting in the grass
+93,852_4,852_0,2,sampling_speaker1,-3.4098258018493652,jenny is sitting in the grass
+94,852_4,852_0,2,sampling_speaker1,-3.4098258018493652,jenny is sitting in the grass
+95,852_4,852_0,2,sampling_speaker1,-3.4098258018493652,mike is wearing a hat
+96,852_4,852_0,2,sampling_speaker1,-3.4098258018493652,mike is wearing a hat
+97,852_4,852_0,2,sampling_speaker1,-3.4098258018493652,jenny is sitting in the grass
+98,852_4,852_0,2,sampling_speaker1,-3.4098258018493652,jenny is sitting in the grass
+99,852_4,852_0,2,sampling_speaker1,-3.4098258018493652,mike is wearing a hat
+100,821_0,843_2,2,sampling_speaker1,-2.8946127891540527,a helicopter is flying in the sky
+101,821_0,843_2,2,sampling_speaker1,-2.8946127891540527,there is a helicopter in the sky
+102,821_0,843_2,2,sampling_speaker1,-2.8946127891540527,a helicopter is flying in the sky
+103,821_0,843_2,2,sampling_speaker1,-2.8946127891540527,a helicopter is flying in the sky
+104,821_0,843_2,2,sampling_speaker1,-2.8946127891540527,a helicopter is flying in the sky
+105,821_0,843_2,2,sampling_speaker1,-2.8946127891540527,a helicopter is flying in the sky
+106,821_0,843_2,2,sampling_speaker1,-2.8946127891540527,the helicopter is flying in the sky
+107,821_0,843_2,2,sampling_speaker1,-2.8946127891540527,a helicopter is flying in the sky
+108,821_0,843_2,2,sampling_speaker1,-2.8946127891540527,a helicopter is flying in the sky
+109,821_0,843_2,2,sampling_speaker1,-2.8946127891540527,a helicopter is flying in the sky
+110,805_0,805_2,2,sampling_speaker1,-2.9106087684631348,mike and jenny are waving their arms
+111,805_0,805_2,2,sampling_speaker1,-2.9106087684631348,mike and jenny are waving their arms
+112,805_0,805_2,2,sampling_speaker1,-2.9106087684631348,mike and jenny are waving their arms
+113,805_0,805_2,2,sampling_speaker1,-2.9106087684631348,mike and jenny are waving their arms
+114,805_0,805_2,2,sampling_speaker1,-2.9106087684631348,mike and jenny are waving their arms
+115,805_0,805_2,2,sampling_speaker1,-2.9106087684631348,mike and jenny are waving their arms
+116,805_0,805_2,2,sampling_speaker1,-2.9106087684631348,mike and jenny are waving their arms
+117,805_0,805_2,2,sampling_speaker1,-2.9106087684631348,mike and jenny are waving their arms
+118,805_0,805_2,2,sampling_speaker1,-2.9106087684631348,mike and jenny are waving their arms
+119,805_0,805_2,2,sampling_speaker1,-2.9106087684631348,mike is very happy
+120,876_0,876_1,2,sampling_speaker1,-3.8031795024871826,jenny is sad and crying
+121,876_0,876_1,2,sampling_speaker1,-3.8031795024871826,jenny is sad and crying
+122,876_0,876_1,2,sampling_speaker1,-3.8031795024871826,jenny is sad and crying
+123,876_0,876_1,2,sampling_speaker1,-3.8031795024871826,jenny is sad and crying
+124,876_0,876_1,2,sampling_speaker1,-3.8031795024871826,jenny is sad and crying
+125,876_0,876_1,2,sampling_speaker1,-3.8031795024871826,jenny is sad and crying
+126,876_0,876_1,2,sampling_speaker1,-3.8031795024871826,jenny is sad and crying
+127,876_0,876_1,2,sampling_speaker1,-3.8031795024871826,jenny is sad and crying
+128,876_0,876_1,2,sampling_speaker1,-3.8031795024871826,jenny is sad and crying
+129,876_0,876_1,2,sampling_speaker1,-3.8031795024871826,jenny is sad and crying
+130,860_4,854_0,2,sampling_speaker1,-3.72601580619812,jenny is standing by the tree
+131,860_4,854_0,2,sampling_speaker1,-3.72601580619812,jenny is standing by the tree
+132,860_4,854_0,2,sampling_speaker1,-3.72601580619812,jenny is standing by the tree
+133,860_4,854_0,2,sampling_speaker1,-3.72601580619812,jenny is standing by the tree
+134,860_4,854_0,2,sampling_speaker1,-3.72601580619812,jenny is standing by the tree
+135,860_4,854_0,2,sampling_speaker1,-3.72601580619812,jenny is standing by the tree
+136,860_4,854_0,2,sampling_speaker1,-3.72601580619812,jenny is standing by the tree
+137,860_4,854_0,2,sampling_speaker1,-3.72601580619812,jenny is standing by the tree
+138,860_4,854_0,2,sampling_speaker1,-3.72601580619812,jenny is standing by the tree
+139,860_4,854_0,2,sampling_speaker1,-3.72601580619812,jenny is standing by the tree
+140,813_8,813_2,2,sampling_speaker1,-2.825549602508545,mike is sitting in the grass
+141,813_8,813_2,2,sampling_speaker1,-2.825549602508545,mike is sitting in the grass
+142,813_8,813_2,2,sampling_speaker1,-2.825549602508545,mike is sitting in the grass
+143,813_8,813_2,2,sampling_speaker1,-2.825549602508545,mike is sitting in the grass
+144,813_8,813_2,2,sampling_speaker1,-2.825549602508545,mike is sitting in the grass
+145,813_8,813_2,2,sampling_speaker1,-2.825549602508545,mike is sitting in the grass
+146,813_8,813_2,2,sampling_speaker1,-2.825549602508545,mike is sitting in the grass
+147,813_8,813_2,2,sampling_speaker1,-2.825549602508545,mike is sitting in the grass
+148,813_8,813_2,2,sampling_speaker1,-2.825549602508545,mike is sitting in the grass
+149,813_8,813_2,2,sampling_speaker1,-2.825549602508545,mike is sitting in the grass
+150,826_2,859_8,2,sampling_speaker1,-3.68298077583313,jenny is happy to see mike
+151,826_2,859_8,2,sampling_speaker1,-3.68298077583313,jenny is happy to see mike
+152,826_2,859_8,2,sampling_speaker1,-3.68298077583313,jenny is happy to see mike
+153,826_2,859_8,2,sampling_speaker1,-3.68298077583313,jenny is happy to see mike
+154,826_2,859_8,2,sampling_speaker1,-3.68298077583313,jenny is very happy
+155,826_2,859_8,2,sampling_speaker1,-3.68298077583313,jenny is happy to see mike
+156,826_2,859_8,2,sampling_speaker1,-3.68298077583313,jenny is happy to see mike
+157,826_2,859_8,2,sampling_speaker1,-3.68298077583313,jenny is happy to see mike
+158,826_2,859_8,2,sampling_speaker1,-3.68298077583313,the airplane is flying high in the sky
+159,826_2,859_8,2,sampling_speaker1,-3.68298077583313,an airplane is flying in the sky
+160,883_9,883_1,2,sampling_speaker1,-3.1685636043548584,mike is scared of the snake
+161,883_9,883_1,2,sampling_speaker1,-3.1685636043548584,the owl is sitting in the tree
+162,883_9,883_1,2,sampling_speaker1,-3.1685636043548584,the owl is sitting in the tree
+163,883_9,883_1,2,sampling_speaker1,-3.1685636043548584,the owl is sitting in the tree
+164,883_9,883_1,2,sampling_speaker1,-3.1685636043548584,the owl is sitting in the tree
+165,883_9,883_1,2,sampling_speaker1,-3.1685636043548584,the owl is sitting in the tree
+166,883_9,883_1,2,sampling_speaker1,-3.1685636043548584,jenny is running away
+167,883_9,883_1,2,sampling_speaker1,-3.1685636043548584,the owl is sitting in the tree
+168,883_9,883_1,2,sampling_speaker1,-3.1685636043548584,the owl is sitting in the tree
+169,883_9,883_1,2,sampling_speaker1,-3.1685636043548584,the owl is sitting in the tree
+170,840_6,847_1,2,sampling_speaker1,-4.06091833114624,jenny is sad and crying
+171,840_6,847_1,2,sampling_speaker1,-4.06091833114624,jenny is sad and crying
+172,840_6,847_1,2,sampling_speaker1,-4.06091833114624,jenny is sad and crying
+173,840_6,847_1,2,sampling_speaker1,-4.06091833114624,jenny is sad and crying
+174,840_6,847_1,2,sampling_speaker1,-4.06091833114624,jenny is sad and crying
+175,840_6,847_1,2,sampling_speaker1,-4.06091833114624,jenny is sad and crying
+176,840_6,847_1,2,sampling_speaker1,-4.06091833114624,jenny is sad and crying
+177,840_6,847_1,2,sampling_speaker1,-4.06091833114624,jenny is sad and crying
+178,840_6,847_1,2,sampling_speaker1,-4.06091833114624,jenny is sad and crying
+179,840_6,847_1,2,sampling_speaker1,-4.06091833114624,jenny is sad and crying
+180,896_9,896_3,2,sampling_speaker1,-3.918093204498291,jenny is sitting by the picnic table
+181,896_9,896_3,2,sampling_speaker1,-3.918093204498291,mike is holding a hamburger
+182,896_9,896_3,2,sampling_speaker1,-3.918093204498291,jenny is sitting on the ground
+183,896_9,896_3,2,sampling_speaker1,-3.918093204498291,jenny is sitting by the picnic table
+184,896_9,896_3,2,sampling_speaker1,-3.918093204498291,jenny is sitting in the grass
+185,896_9,896_3,2,sampling_speaker1,-3.918093204498291,jenny is sitting in the grass
+186,896_9,896_3,2,sampling_speaker1,-3.918093204498291,jenny is sitting in the grass
+187,896_9,896_3,2,sampling_speaker1,-3.918093204498291,jenny is sitting on the ground
+188,896_9,896_3,2,sampling_speaker1,-3.918093204498291,mike is sitting on the ground
+189,896_9,896_3,2,sampling_speaker1,-3.918093204498291,jenny is sitting by the picnic table
+190,859_2,818_6,2,sampling_speaker1,-3.362391948699951,jenny is very happy
+191,859_2,818_6,2,sampling_speaker1,-3.362391948699951,jenny is very happy
+192,859_2,818_6,2,sampling_speaker1,-3.362391948699951,jenny is very happy
+193,859_2,818_6,2,sampling_speaker1,-3.362391948699951,jenny is very happy
+194,859_2,818_6,2,sampling_speaker1,-3.362391948699951,jenny is very happy
+195,859_2,818_6,2,sampling_speaker1,-3.362391948699951,jenny is very happy
+196,859_2,818_6,2,sampling_speaker1,-3.362391948699951,jenny is very happy
+197,859_2,818_6,2,sampling_speaker1,-3.362391948699951,jenny is very happy
+198,859_2,818_6,2,sampling_speaker1,-3.362391948699951,jenny is very happy
+199,859_2,818_6,2,sampling_speaker1,-3.362391948699951,jenny is very happy
+200,890_2,890_4,2,sampling_speaker1,-4.033042907714844,jenny is running away
+201,890_2,890_4,2,sampling_speaker1,-4.033042907714844,jenny is running away
+202,890_2,890_4,2,sampling_speaker1,-4.033042907714844,jenny is running away
+203,890_2,890_4,2,sampling_speaker1,-4.033042907714844,jenny is running away
+204,890_2,890_4,2,sampling_speaker1,-4.033042907714844,jenny is running away
+205,890_2,890_4,2,sampling_speaker1,-4.033042907714844,jenny is running away
+206,890_2,890_4,2,sampling_speaker1,-4.033042907714844,jenny is running away
+207,890_2,890_4,2,sampling_speaker1,-4.033042907714844,jenny is running away
+208,890_2,890_4,2,sampling_speaker1,-4.033042907714844,jenny is running away
+209,890_2,890_4,2,sampling_speaker1,-4.033042907714844,jenny is running away
+210,855_5,855_8,2,sampling_speaker1,-3.5552656650543213,jenny is sitting in the grass
+211,855_5,855_8,2,sampling_speaker1,-3.5552656650543213,jenny is sitting in the grass
+212,855_5,855_8,2,sampling_speaker1,-3.5552656650543213,jenny is sitting in the grass
+213,855_5,855_8,2,sampling_speaker1,-3.5552656650543213,jenny is sitting in the grass
+214,855_5,855_8,2,sampling_speaker1,-3.5552656650543213,jenny is wearing a blue hat
+215,855_5,855_8,2,sampling_speaker1,-3.5552656650543213,jenny is sitting in the grass
+216,855_5,855_8,2,sampling_speaker1,-3.5552656650543213,jenny is sitting in the grass
+217,855_5,855_8,2,sampling_speaker1,-3.5552656650543213,jenny is sitting in the grass
+218,855_5,855_8,2,sampling_speaker1,-3.5552656650543213,jenny is sitting in the grass
+219,855_5,855_8,2,sampling_speaker1,-3.5552656650543213,jenny is sitting in the grass
+220,858_9,882_7,2,sampling_speaker1,-2.6966490745544434,jenny is sitting in the grass
+221,858_9,882_7,2,sampling_speaker1,-2.6966490745544434,jenny is sitting in the grass
+222,858_9,882_7,2,sampling_speaker1,-2.6966490745544434,jenny is sitting in the grass
+223,858_9,882_7,2,sampling_speaker1,-2.6966490745544434,jenny is sitting in the grass
+224,858_9,882_7,2,sampling_speaker1,-2.6966490745544434,jenny is sitting in the grass
+225,858_9,882_7,2,sampling_speaker1,-2.6966490745544434,jenny is sitting in the grass
+226,858_9,882_7,2,sampling_speaker1,-2.6966490745544434,jenny is sitting in the grass
+227,858_9,882_7,2,sampling_speaker1,-2.6966490745544434,jenny is sitting in the grass
+228,858_9,882_7,2,sampling_speaker1,-2.6966490745544434,jenny is sitting in the grass
+229,858_9,882_7,2,sampling_speaker1,-2.6966490745544434,jenny is sitting in the grass
+230,852_0,852_9,2,sampling_speaker1,-3.687014102935791,jenny is happy to see mike
+231,852_0,852_9,2,sampling_speaker1,-3.687014102935791,jenny is happy to see mike
+232,852_0,852_9,2,sampling_speaker1,-3.687014102935791,mike is wearing a hat
+233,852_0,852_9,2,sampling_speaker1,-3.687014102935791,mike is wearing a colorful hat
+234,852_0,852_9,2,sampling_speaker1,-3.687014102935791,mike is wearing the hat
+235,852_0,852_9,2,sampling_speaker1,-3.687014102935791,mike is wearing a colorful hat
+236,852_0,852_9,2,sampling_speaker1,-3.687014102935791,jenny is wearing a hat
+237,852_0,852_9,2,sampling_speaker1,-3.687014102935791,jenny is happy to see mike
+238,852_0,852_9,2,sampling_speaker1,-3.687014102935791,mike is wearing a colorful hat
+239,852_0,852_9,2,sampling_speaker1,-3.687014102935791,mike is wearing the hat
+240,887_8,887_3,2,sampling_speaker1,-3.7713279724121094,the bear is scaring mike and jenny
+241,887_8,887_3,2,sampling_speaker1,-3.7713279724121094,the bear is scaring mike
+242,887_8,887_3,2,sampling_speaker1,-3.7713279724121094,jenny is mad at the bear
+243,887_8,887_3,2,sampling_speaker1,-3.7713279724121094,jenny is mad at the bear
+244,887_8,887_3,2,sampling_speaker1,-3.7713279724121094,the bear is trying to scare jenny
+245,887_8,887_3,2,sampling_speaker1,-3.7713279724121094,the bear is standing by the tree
+246,887_8,887_3,2,sampling_speaker1,-3.7713279724121094,the bear is scaring jenny
+247,887_8,887_3,2,sampling_speaker1,-3.7713279724121094,jenny is sad because it is raining
+248,887_8,887_3,2,sampling_speaker1,-3.7713279724121094,the bear is scaring jenny
+249,887_8,887_3,2,sampling_speaker1,-3.7713279724121094,the bear is scaring jenny
+250,893_9,895_2,2,sampling_speaker1,-3.2695744037628174,jenny is afraid of the snake
+251,893_9,895_2,2,sampling_speaker1,-3.2695744037628174,jenny is afraid of the snake
+252,893_9,895_2,2,sampling_speaker1,-3.2695744037628174,jenny is scared of the snake
+253,893_9,895_2,2,sampling_speaker1,-3.2695744037628174,mike is very sad
+254,893_9,895_2,2,sampling_speaker1,-3.2695744037628174,jenny is scared of the snake
+255,893_9,895_2,2,sampling_speaker1,-3.2695744037628174,jenny is afraid of the snake
+256,893_9,895_2,2,sampling_speaker1,-3.2695744037628174,mike is very sad
+257,893_9,895_2,2,sampling_speaker1,-3.2695744037628174,jenny is scared of the snake
+258,893_9,895_2,2,sampling_speaker1,-3.2695744037628174,jenny is afraid of the snake
+259,893_9,895_2,2,sampling_speaker1,-3.2695744037628174,mike is very sad
+260,814_3,848_5,2,sampling_speaker1,-3.6695613861083984,the pizza is on the table
+261,814_3,848_5,2,sampling_speaker1,-3.6695613861083984,the pizza is on the table
+262,814_3,848_5,2,sampling_speaker1,-3.6695613861083984,the pizza is on the table
+263,814_3,848_5,2,sampling_speaker1,-3.6695613861083984,the pizza is on the table
+264,814_3,848_5,2,sampling_speaker1,-3.6695613861083984,the pizza is on the table
+265,814_3,848_5,2,sampling_speaker1,-3.6695613861083984,the pizza is on the table
+266,814_3,848_5,2,sampling_speaker1,-3.6695613861083984,the pizza is on the table
+267,814_3,848_5,2,sampling_speaker1,-3.6695613861083984,the pizza is on the table
+268,814_3,848_5,2,sampling_speaker1,-3.6695613861083984,the pizza is on the table
+269,814_3,848_5,2,sampling_speaker1,-3.6695613861083984,the pizza is on the table
+270,880_4,898_8,2,sampling_speaker1,-3.782711982727051,jenny is holding a bat
+271,880_4,898_8,2,sampling_speaker1,-3.782711982727051,mike and jenny are playing catch
+272,880_4,898_8,2,sampling_speaker1,-3.782711982727051,mike and jenny are playing catch
+273,880_4,898_8,2,sampling_speaker1,-3.782711982727051,mike and jenny are playing catch
+274,880_4,898_8,2,sampling_speaker1,-3.782711982727051,mike and jenny are playing catch
+275,880_4,898_8,2,sampling_speaker1,-3.782711982727051,mike and jenny are playing catch
+276,880_4,898_8,2,sampling_speaker1,-3.782711982727051,mike and jenny are playing baseball
+277,880_4,898_8,2,sampling_speaker1,-3.782711982727051,mike and jenny are playing catch
+278,880_4,898_8,2,sampling_speaker1,-3.782711982727051,mike and jenny are playing catch
+279,880_4,898_8,2,sampling_speaker1,-3.782711982727051,mike and jenny are playing catch
+280,898_8,898_4,2,sampling_speaker1,-3.1316583156585693,mike is holding a bat
+281,898_8,898_4,2,sampling_speaker1,-3.1316583156585693,mike is holding a bat
+282,898_8,898_4,2,sampling_speaker1,-3.1316583156585693,mike is holding a bat
+283,898_8,898_4,2,sampling_speaker1,-3.1316583156585693,mike is holding a bat
+284,898_8,898_4,2,sampling_speaker1,-3.1316583156585693,mike is holding a bat
+285,898_8,898_4,2,sampling_speaker1,-3.1316583156585693,mike is holding a bat
+286,898_8,898_4,2,sampling_speaker1,-3.1316583156585693,mike is holding a bat
+287,898_8,898_4,2,sampling_speaker1,-3.1316583156585693,mike is holding a bat
+288,898_8,898_4,2,sampling_speaker1,-3.1316583156585693,mike is holding a bat
+289,898_8,898_4,2,sampling_speaker1,-3.1316583156585693,mike is holding a bat
+290,848_2,814_3,2,sampling_speaker1,-2.69490122795105,the pizza is on the table
+291,848_2,814_3,2,sampling_speaker1,-2.69490122795105,the pizza is on the table
+292,848_2,814_3,2,sampling_speaker1,-2.69490122795105,the pizza is on the table
+293,848_2,814_3,2,sampling_speaker1,-2.69490122795105,the pizza is on the table
+294,848_2,814_3,2,sampling_speaker1,-2.69490122795105,the pizza is on the table
+295,848_2,814_3,2,sampling_speaker1,-2.69490122795105,the pizza is on the table
+296,848_2,814_3,2,sampling_speaker1,-2.69490122795105,the pizza is on the table
+297,848_2,814_3,2,sampling_speaker1,-2.69490122795105,the pizza is on the table
+298,848_2,814_3,2,sampling_speaker1,-2.69490122795105,the pizza is on the table
+299,848_2,814_3,2,sampling_speaker1,-2.69490122795105,the pizza is on the table
+300,839_5,839_2,2,sampling_speaker1,-3.643747091293335,mike is kicking the soccer ball
+301,839_5,839_2,2,sampling_speaker1,-3.643747091293335,mike is kicking the soccer ball
+302,839_5,839_2,2,sampling_speaker1,-3.643747091293335,mike is kicking the soccer ball
+303,839_5,839_2,2,sampling_speaker1,-3.643747091293335,mike is kicking the soccer ball
+304,839_5,839_2,2,sampling_speaker1,-3.643747091293335,mike is kicking the soccer ball
+305,839_5,839_2,2,sampling_speaker1,-3.643747091293335,mike is kicking the soccer ball
+306,839_5,839_2,2,sampling_speaker1,-3.643747091293335,mike is kicking the soccer ball
+307,839_5,839_2,2,sampling_speaker1,-3.643747091293335,mike is kicking the soccer ball
+308,839_5,839_2,2,sampling_speaker1,-3.643747091293335,mike is kicking the soccer ball
+309,839_5,839_2,2,sampling_speaker1,-3.643747091293335,mike is kicking the soccer ball
+310,896_3,856_2,2,sampling_speaker1,-4.091611862182617,mike is sitting on the ground
+311,896_3,856_2,2,sampling_speaker1,-4.091611862182617,the dog is standing by the table
+312,896_3,856_2,2,sampling_speaker1,-4.091611862182617,the dog is standing by the table
+313,896_3,856_2,2,sampling_speaker1,-4.091611862182617,mike is sitting on the ground
+314,896_3,856_2,2,sampling_speaker1,-4.091611862182617,the dog is standing by the table
+315,896_3,856_2,2,sampling_speaker1,-4.091611862182617,mike is kicking the dog
+316,896_3,856_2,2,sampling_speaker1,-4.091611862182617,the dog is standing by the table
+317,896_3,856_2,2,sampling_speaker1,-4.091611862182617,the dog is standing by the table
+318,896_3,856_2,2,sampling_speaker1,-4.091611862182617,mike is kicking the ball
+319,896_3,856_2,2,sampling_speaker1,-4.091611862182617,mike is sitting on the ground
+320,830_0,830_1,2,sampling_speaker1,-3.305321216583252,mike is wearing a chef hat
+321,830_0,830_1,2,sampling_speaker1,-3.305321216583252,mike is wearing a chef hat
+322,830_0,830_1,2,sampling_speaker1,-3.305321216583252,mike is wearing a chef hat
+323,830_0,830_1,2,sampling_speaker1,-3.305321216583252,mike is wearing a chef hat
+324,830_0,830_1,2,sampling_speaker1,-3.305321216583252,mike is wearing a chef hat
+325,830_0,830_1,2,sampling_speaker1,-3.305321216583252,mike is wearing a chef hat
+326,830_0,830_1,2,sampling_speaker1,-3.305321216583252,mike is wearing a chef hat
+327,830_0,830_1,2,sampling_speaker1,-3.305321216583252,mike is wearing a chef hat
+328,830_0,830_1,2,sampling_speaker1,-3.305321216583252,mike is wearing a chef hat
+329,830_0,830_1,2,sampling_speaker1,-3.305321216583252,mike is wearing a chef hat
+330,891_8,891_4,2,sampling_speaker1,-3.6319563388824463,there is a helicopter in the sky
+331,891_8,891_4,2,sampling_speaker1,-3.6319563388824463,the helicopter is flying in the sky
+332,891_8,891_4,2,sampling_speaker1,-3.6319563388824463,mike and jenny are playing catch
+333,891_8,891_4,2,sampling_speaker1,-3.6319563388824463,the helicopter is flying in the sky
+334,891_8,891_4,2,sampling_speaker1,-3.6319563388824463,mike is throwing the ball
+335,891_8,891_4,2,sampling_speaker1,-3.6319563388824463,the helicopter is flying in the sky
+336,891_8,891_4,2,sampling_speaker1,-3.6319563388824463,mike and jenny are playing catch
+337,891_8,891_4,2,sampling_speaker1,-3.6319563388824463,a helicopter is flying in the sky
+338,891_8,891_4,2,sampling_speaker1,-3.6319563388824463,a helicopter is flying in the sky
+339,891_8,891_4,2,sampling_speaker1,-3.6319563388824463,there is a helicopter in the sky
+340,882_5,831_3,2,sampling_speaker1,-3.5550832748413086,jenny is sitting in the sandbox
+341,882_5,831_3,2,sampling_speaker1,-3.5550832748413086,jenny is sitting in the grass
+342,882_5,831_3,2,sampling_speaker1,-3.5550832748413086,jenny is sitting in the sandbox
+343,882_5,831_3,2,sampling_speaker1,-3.5550832748413086,jenny is sitting in the sandbox
+344,882_5,831_3,2,sampling_speaker1,-3.5550832748413086,jenny is sitting in the sandbox
+345,882_5,831_3,2,sampling_speaker1,-3.5550832748413086,jenny is sitting in the sandbox
+346,882_5,831_3,2,sampling_speaker1,-3.5550832748413086,jenny is sitting in the sandbox
+347,882_5,831_3,2,sampling_speaker1,-3.5550832748413086,jenny is sitting in the grass
+348,882_5,831_3,2,sampling_speaker1,-3.5550832748413086,jenny is sitting in the sandbox
+349,882_5,831_3,2,sampling_speaker1,-3.5550832748413086,jenny is sitting in the grass
+350,882_7,889_6,2,sampling_speaker1,-2.9029760360717773,jenny is sitting in the grass
+351,882_7,889_6,2,sampling_speaker1,-2.9029760360717773,jenny is sitting in the grass
+352,882_7,889_6,2,sampling_speaker1,-2.9029760360717773,jenny is sitting in the grass
+353,882_7,889_6,2,sampling_speaker1,-2.9029760360717773,jenny is sitting in the grass
+354,882_7,889_6,2,sampling_speaker1,-2.9029760360717773,jenny is sitting in the grass
+355,882_7,889_6,2,sampling_speaker1,-2.9029760360717773,jenny is wearing purple sunglasses
+356,882_7,889_6,2,sampling_speaker1,-2.9029760360717773,jenny is sitting in the grass
+357,882_7,889_6,2,sampling_speaker1,-2.9029760360717773,jenny is sitting in the grass
+358,882_7,889_6,2,sampling_speaker1,-2.9029760360717773,jenny is sitting in the grass
+359,882_7,889_6,2,sampling_speaker1,-2.9029760360717773,jenny is sitting in the grass
+360,879_3,879_0,2,sampling_speaker1,-3.5008246898651123,the bear is scaring mike and jenny
+361,879_3,879_0,2,sampling_speaker1,-3.5008246898651123,the bear is scaring mike and jenny
+362,879_3,879_0,2,sampling_speaker1,-3.5008246898651123,the bear is scaring mike and jenny
+363,879_3,879_0,2,sampling_speaker1,-3.5008246898651123,the bear is scaring mike and jenny
+364,879_3,879_0,2,sampling_speaker1,-3.5008246898651123,the bear is scaring mike and jenny
+365,879_3,879_0,2,sampling_speaker1,-3.5008246898651123,the bear is scaring mike and jenny
+366,879_3,879_0,2,sampling_speaker1,-3.5008246898651123,the bear is scaring mike and jenny
+367,879_3,879_0,2,sampling_speaker1,-3.5008246898651123,the bear is scaring mike and jenny
+368,879_3,879_0,2,sampling_speaker1,-3.5008246898651123,the bear is scaring mike and jenny
+369,879_3,879_0,2,sampling_speaker1,-3.5008246898651123,the bear is scaring mike and jenny
+370,815_4,815_8,2,sampling_speaker1,-3.034571409225464,mike is wearing a viking hat
+371,815_4,815_8,2,sampling_speaker1,-3.034571409225464,mike is wearing a viking hat
+372,815_4,815_8,2,sampling_speaker1,-3.034571409225464,mike is wearing a viking hat
+373,815_4,815_8,2,sampling_speaker1,-3.034571409225464,mike is wearing a viking hat
+374,815_4,815_8,2,sampling_speaker1,-3.034571409225464,mike is wearing a viking hat
+375,815_4,815_8,2,sampling_speaker1,-3.034571409225464,mike is wearing a viking hat
+376,815_4,815_8,2,sampling_speaker1,-3.034571409225464,mike is wearing a viking hat
+377,815_4,815_8,2,sampling_speaker1,-3.034571409225464,mike is wearing a viking hat
+378,815_4,815_8,2,sampling_speaker1,-3.034571409225464,mike is wearing a viking hat
+379,815_4,815_8,2,sampling_speaker1,-3.034571409225464,mike is wearing a viking hat
+380,892_7,892_9,2,sampling_speaker1,-3.9478235244750977,jenny is mad at mike
+381,892_7,892_9,2,sampling_speaker1,-3.9478235244750977,jenny is holding a hamburger
+382,892_7,892_9,2,sampling_speaker1,-3.9478235244750977,jenny is holding a hamburger
+383,892_7,892_9,2,sampling_speaker1,-3.9478235244750977,jenny is very sad
+384,892_7,892_9,2,sampling_speaker1,-3.9478235244750977,jenny is mad at mike
+385,892_7,892_9,2,sampling_speaker1,-3.9478235244750977,jenny is very sad
+386,892_7,892_9,2,sampling_speaker1,-3.9478235244750977,jenny is very sad
+387,892_7,892_9,2,sampling_speaker1,-3.9478235244750977,jenny is mad at mike
+388,892_7,892_9,2,sampling_speaker1,-3.9478235244750977,jenny is mad at mike
+389,892_7,892_9,2,sampling_speaker1,-3.9478235244750977,jenny is very sad
+390,880_1,898_1,2,sampling_speaker1,-2.9893364906311035,jenny is holding a bat
+391,880_1,898_1,2,sampling_speaker1,-2.9893364906311035,mike is holding a bat
+392,880_1,898_1,2,sampling_speaker1,-2.9893364906311035,mike is holding a bat
+393,880_1,898_1,2,sampling_speaker1,-2.9893364906311035,mike is holding a baseball bat
+394,880_1,898_1,2,sampling_speaker1,-2.9893364906311035,jenny is holding a bat
+395,880_1,898_1,2,sampling_speaker1,-2.9893364906311035,mike is holding a bat
+396,880_1,898_1,2,sampling_speaker1,-2.9893364906311035,jenny is holding a bat
+397,880_1,898_1,2,sampling_speaker1,-2.9893364906311035,mike is holding a baseball bat
+398,880_1,898_1,2,sampling_speaker1,-2.9893364906311035,mike is holding a bat
+399,880_1,898_1,2,sampling_speaker1,-2.9893364906311035,mike is holding a baseball bat
+400,901_2,868_4,2,sampling_speaker1,-3.4450860023498535,the owl is in the apple tree
+401,901_2,868_4,2,sampling_speaker1,-3.4450860023498535,the owl is in the apple tree
+402,901_2,868_4,2,sampling_speaker1,-3.4450860023498535,an owl is sitting in the tree
+403,901_2,868_4,2,sampling_speaker1,-3.4450860023498535,the owl is in the tree
+404,901_2,868_4,2,sampling_speaker1,-3.4450860023498535,the owl is in the tree
+405,901_2,868_4,2,sampling_speaker1,-3.4450860023498535,the owl is in the apple tree
+406,901_2,868_4,2,sampling_speaker1,-3.4450860023498535,the owl is in the apple tree
+407,901_2,868_4,2,sampling_speaker1,-3.4450860023498535,the owl is in the apple tree
+408,901_2,868_4,2,sampling_speaker1,-3.4450860023498535,the owl is in the apple tree
+409,901_2,868_4,2,sampling_speaker1,-3.4450860023498535,the owl is in the apple tree
+410,832_5,832_7,2,sampling_speaker1,-3.7034127712249756,jenny is holding a hot dog
+411,832_5,832_7,2,sampling_speaker1,-3.7034127712249756,jenny is holding a hot dog
+412,832_5,832_7,2,sampling_speaker1,-3.7034127712249756,jenny is holding a hot dog
+413,832_5,832_7,2,sampling_speaker1,-3.7034127712249756,jenny is holding a hot dog
+414,832_5,832_7,2,sampling_speaker1,-3.7034127712249756,jenny is holding a hot dog
+415,832_5,832_7,2,sampling_speaker1,-3.7034127712249756,jenny is holding a hot dog
+416,832_5,832_7,2,sampling_speaker1,-3.7034127712249756,jenny is holding a hot dog
+417,832_5,832_7,2,sampling_speaker1,-3.7034127712249756,jenny is holding a hot dog
+418,832_5,832_7,2,sampling_speaker1,-3.7034127712249756,jenny is holding a hot dog
+419,832_5,832_7,2,sampling_speaker1,-3.7034127712249756,jenny is holding a hot dog
+420,898_1,880_7,2,sampling_speaker1,-2.87762451171875,mike is holding a bat
+421,898_1,880_7,2,sampling_speaker1,-2.87762451171875,mike is holding a bat
+422,898_1,880_7,2,sampling_speaker1,-2.87762451171875,mike is holding a bat
+423,898_1,880_7,2,sampling_speaker1,-2.87762451171875,mike is holding a bat
+424,898_1,880_7,2,sampling_speaker1,-2.87762451171875,mike is holding a bat
+425,898_1,880_7,2,sampling_speaker1,-2.87762451171875,mike is holding a bat
+426,898_1,880_7,2,sampling_speaker1,-2.87762451171875,mike is holding a bat
+427,898_1,880_7,2,sampling_speaker1,-2.87762451171875,mike is holding a bat
+428,898_1,880_7,2,sampling_speaker1,-2.87762451171875,mike is holding a bat
+429,898_1,880_7,2,sampling_speaker1,-2.87762451171875,mike is holding a bat
+430,893_6,883_8,2,sampling_speaker1,-3.5840935707092285,jenny is scared of the snake
+431,893_6,883_8,2,sampling_speaker1,-3.5840935707092285,jenny is running away
+432,893_6,883_8,2,sampling_speaker1,-3.5840935707092285,jenny is running away
+433,893_6,883_8,2,sampling_speaker1,-3.5840935707092285,jenny is running away
+434,893_6,883_8,2,sampling_speaker1,-3.5840935707092285,jenny is scared of the snake
+435,893_6,883_8,2,sampling_speaker1,-3.5840935707092285,jenny is running away
+436,893_6,883_8,2,sampling_speaker1,-3.5840935707092285,jenny is scared of the snake
+437,893_6,883_8,2,sampling_speaker1,-3.5840935707092285,jenny is running away
+438,893_6,883_8,2,sampling_speaker1,-3.5840935707092285,jenny is running away
+439,893_6,883_8,2,sampling_speaker1,-3.5840935707092285,jenny is running away
+440,811_4,811_6,2,sampling_speaker1,-3.176690101623535,jenny is wearing sunglasses
+441,811_4,811_6,2,sampling_speaker1,-3.176690101623535,jenny is running away
+442,811_4,811_6,2,sampling_speaker1,-3.176690101623535,jenny is wearing sunglasses
+443,811_4,811_6,2,sampling_speaker1,-3.176690101623535,jenny is running away
+444,811_4,811_6,2,sampling_speaker1,-3.176690101623535,jenny is wearing sunglasses
+445,811_4,811_6,2,sampling_speaker1,-3.176690101623535,jenny is running away
+446,811_4,811_6,2,sampling_speaker1,-3.176690101623535,jenny is running away
+447,811_4,811_6,2,sampling_speaker1,-3.176690101623535,mike is wearing sunglasses
+448,811_4,811_6,2,sampling_speaker1,-3.176690101623535,jenny is wearing sunglasses
+449,811_4,811_6,2,sampling_speaker1,-3.176690101623535,jenny is running away
+450,886_8,802_1,2,sampling_speaker1,-3.8279106616973877,mike is sitting in the grass
+451,886_8,802_1,2,sampling_speaker1,-3.8279106616973877,mike and jenny are in the sandbox
+452,886_8,802_1,2,sampling_speaker1,-3.8279106616973877,mike is sitting in the grass
+453,886_8,802_1,2,sampling_speaker1,-3.8279106616973877,mike and jenny are in the sandbox
+454,886_8,802_1,2,sampling_speaker1,-3.8279106616973877,mike and jenny are in the sandbox
+455,886_8,802_1,2,sampling_speaker1,-3.8279106616973877,mike is sitting in the grass
+456,886_8,802_1,2,sampling_speaker1,-3.8279106616973877,mike is sitting in the grass
+457,886_8,802_1,2,sampling_speaker1,-3.8279106616973877,mike is sitting in the grass
+458,886_8,802_1,2,sampling_speaker1,-3.8279106616973877,mike is sitting in the grass
+459,886_8,802_1,2,sampling_speaker1,-3.8279106616973877,mike is sitting in the sandbox
+460,821_4,835_7,2,sampling_speaker1,-3.219423532485962,jenny is kicking the soccer ball
+461,821_4,835_7,2,sampling_speaker1,-3.219423532485962,jenny is kicking the soccer ball
+462,821_4,835_7,2,sampling_speaker1,-3.219423532485962,jenny is kicking the soccer ball
+463,821_4,835_7,2,sampling_speaker1,-3.219423532485962,jenny is kicking the soccer ball
+464,821_4,835_7,2,sampling_speaker1,-3.219423532485962,jenny is kicking the soccer ball
+465,821_4,835_7,2,sampling_speaker1,-3.219423532485962,jenny is kicking the soccer ball
+466,821_4,835_7,2,sampling_speaker1,-3.219423532485962,jenny is kicking the soccer ball
+467,821_4,835_7,2,sampling_speaker1,-3.219423532485962,jenny is kicking the soccer ball
+468,821_4,835_7,2,sampling_speaker1,-3.219423532485962,jenny is kicking the soccer ball
+469,821_4,835_7,2,sampling_speaker1,-3.219423532485962,jenny is kicking the soccer ball
+470,871_3,871_1,2,sampling_speaker1,-3.853240728378296,the bear is wearing a chef hat
+471,871_3,871_1,2,sampling_speaker1,-3.853240728378296,the bear is wearing a chef hat
+472,871_3,871_1,2,sampling_speaker1,-3.853240728378296,the bear is wearing a chef hat
+473,871_3,871_1,2,sampling_speaker1,-3.853240728378296,the bear is wearing a chef hat
+474,871_3,871_1,2,sampling_speaker1,-3.853240728378296,the bear is wearing a chef hat
+475,871_3,871_1,2,sampling_speaker1,-3.853240728378296,the bear is wearing a chef hat
+476,871_3,871_1,2,sampling_speaker1,-3.853240728378296,jenny is holding a hot dog
+477,871_3,871_1,2,sampling_speaker1,-3.853240728378296,the bear is wearing a chef hat
+478,871_3,871_1,2,sampling_speaker1,-3.853240728378296,the bear is wearing a chef hat
+479,871_3,871_1,2,sampling_speaker1,-3.853240728378296,the bear is wearing a chef hat
+480,862_0,889_0,2,sampling_speaker1,-3.2625441551208496,mike and jenny are happy
+481,862_0,889_0,2,sampling_speaker1,-3.2625441551208496,mike is sitting by the tree
+482,862_0,889_0,2,sampling_speaker1,-3.2625441551208496,mike and jenny are happy
+483,862_0,889_0,2,sampling_speaker1,-3.2625441551208496,mike and jenny are happy
+484,862_0,889_0,2,sampling_speaker1,-3.2625441551208496,mike and jenny are happy
+485,862_0,889_0,2,sampling_speaker1,-3.2625441551208496,mike is sitting by the tree
+486,862_0,889_0,2,sampling_speaker1,-3.2625441551208496,mike and jenny are happy
+487,862_0,889_0,2,sampling_speaker1,-3.2625441551208496,jenny is holding a pie
+488,862_0,889_0,2,sampling_speaker1,-3.2625441551208496,mike and jenny are happy
+489,862_0,889_0,2,sampling_speaker1,-3.2625441551208496,mike is sitting by the tree
+490,838_8,894_7,2,sampling_speaker1,-3.2168562412261963,the pie is on the table
+491,838_8,894_7,2,sampling_speaker1,-3.2168562412261963,the pie is on the table
+492,838_8,894_7,2,sampling_speaker1,-3.2168562412261963,the pie is on the table
+493,838_8,894_7,2,sampling_speaker1,-3.2168562412261963,the pie is on the table
+494,838_8,894_7,2,sampling_speaker1,-3.2168562412261963,the pie is on the table
+495,838_8,894_7,2,sampling_speaker1,-3.2168562412261963,the pie is on the table
+496,838_8,894_7,2,sampling_speaker1,-3.2168562412261963,the pie is on the table
+497,838_8,894_7,2,sampling_speaker1,-3.2168562412261963,the pie is on the table
+498,838_8,894_7,2,sampling_speaker1,-3.2168562412261963,the pie is on the table
+499,838_8,894_7,2,sampling_speaker1,-3.2168562412261963,the pie is on the table
+500,879_0,879_6,2,sampling_speaker1,-3.066826820373535,jenny is scared of the bear
+501,879_0,879_6,2,sampling_speaker1,-3.066826820373535,jenny is scared of the bear
+502,879_0,879_6,2,sampling_speaker1,-3.066826820373535,jenny is scared of the bear
+503,879_0,879_6,2,sampling_speaker1,-3.066826820373535,jenny is scared of the bear
+504,879_0,879_6,2,sampling_speaker1,-3.066826820373535,jenny is scared of the bear
+505,879_0,879_6,2,sampling_speaker1,-3.066826820373535,jenny is scared of the bear
+506,879_0,879_6,2,sampling_speaker1,-3.066826820373535,jenny is scared of the bear
+507,879_0,879_6,2,sampling_speaker1,-3.066826820373535,jenny is scared of the bear
+508,879_0,879_6,2,sampling_speaker1,-3.066826820373535,jenny is scared of the bear
+509,879_0,879_6,2,sampling_speaker1,-3.066826820373535,jenny is scared of the bear
+510,853_9,871_9,2,sampling_speaker1,-3.4535071849823,jenny is scared of the bear
+511,853_9,871_9,2,sampling_speaker1,-3.4535071849823,jenny is scared of the bear
+512,853_9,871_9,2,sampling_speaker1,-3.4535071849823,jenny is scared of the bear
+513,853_9,871_9,2,sampling_speaker1,-3.4535071849823,jenny is scared of the bear
+514,853_9,871_9,2,sampling_speaker1,-3.4535071849823,jenny is scared of the bear
+515,853_9,871_9,2,sampling_speaker1,-3.4535071849823,jenny is scared of the bear
+516,853_9,871_9,2,sampling_speaker1,-3.4535071849823,jenny is scared of the bear
+517,853_9,871_9,2,sampling_speaker1,-3.4535071849823,jenny is scared of the bear
+518,853_9,871_9,2,sampling_speaker1,-3.4535071849823,jenny is scared of the bear
+519,853_9,871_9,2,sampling_speaker1,-3.4535071849823,jenny is scared of the bear
+520,901_3,901_5,2,sampling_speaker1,-3.134908676147461,the owl is in the apple tree
+521,901_3,901_5,2,sampling_speaker1,-3.134908676147461,the owl is in the apple tree
+522,901_3,901_5,2,sampling_speaker1,-3.134908676147461,an owl is in the tree
+523,901_3,901_5,2,sampling_speaker1,-3.134908676147461,the owl is sitting in the apple tree
+524,901_3,901_5,2,sampling_speaker1,-3.134908676147461,the owl is in the apple tree
+525,901_3,901_5,2,sampling_speaker1,-3.134908676147461,the owl is in the apple tree
+526,901_3,901_5,2,sampling_speaker1,-3.134908676147461,the owl is sitting in the apple tree
+527,901_3,901_5,2,sampling_speaker1,-3.134908676147461,the owl is in the tree
+528,901_3,901_5,2,sampling_speaker1,-3.134908676147461,the owl is sitting in the apple tree
+529,901_3,901_5,2,sampling_speaker1,-3.134908676147461,the owl is in the apple tree
+530,870_0,870_9,2,sampling_speaker1,-3.106208562850952,jenny is holding a pie
+531,870_0,870_9,2,sampling_speaker1,-3.106208562850952,jenny is holding a pie
+532,870_0,870_9,2,sampling_speaker1,-3.106208562850952,jenny is holding a pie
+533,870_0,870_9,2,sampling_speaker1,-3.106208562850952,jenny is holding a pie
+534,870_0,870_9,2,sampling_speaker1,-3.106208562850952,jenny is holding a pie
+535,870_0,870_9,2,sampling_speaker1,-3.106208562850952,jenny is holding a pie
+536,870_0,870_9,2,sampling_speaker1,-3.106208562850952,jenny is holding a pie
+537,870_0,870_9,2,sampling_speaker1,-3.106208562850952,jenny is holding a pie
+538,870_0,870_9,2,sampling_speaker1,-3.106208562850952,jenny is holding a pie
+539,870_0,870_9,2,sampling_speaker1,-3.106208562850952,jenny is holding a pie
+540,824_8,824_2,2,sampling_speaker1,-4.350193977355957,the owl is in the tree
+541,824_8,824_2,2,sampling_speaker1,-4.350193977355957,the owl is in the tree
+542,824_8,824_2,2,sampling_speaker1,-4.350193977355957,the owl is in the tree
+543,824_8,824_2,2,sampling_speaker1,-4.350193977355957,the owl is in the tree
+544,824_8,824_2,2,sampling_speaker1,-4.350193977355957,the owl is in the tree
+545,824_8,824_2,2,sampling_speaker1,-4.350193977355957,the owl is in the tree
+546,824_8,824_2,2,sampling_speaker1,-4.350193977355957,the owl is in the tree
+547,824_8,824_2,2,sampling_speaker1,-4.350193977355957,the owl is in the tree
+548,824_8,824_2,2,sampling_speaker1,-4.350193977355957,the owl is in the tree
+549,824_8,824_2,2,sampling_speaker1,-4.350193977355957,the owl is in the tree
+550,889_3,882_2,2,sampling_speaker1,-3.729674816131592,mike and jenny are playing soccer
+551,889_3,882_2,2,sampling_speaker1,-3.729674816131592,mike and jenny are playing soccer
+552,889_3,882_2,2,sampling_speaker1,-3.729674816131592,mike and jenny are playing soccer
+553,889_3,882_2,2,sampling_speaker1,-3.729674816131592,mike and jenny are playing soccer
+554,889_3,882_2,2,sampling_speaker1,-3.729674816131592,mike and jenny are playing soccer
+555,889_3,882_2,2,sampling_speaker1,-3.729674816131592,mike and jenny are playing soccer
+556,889_3,882_2,2,sampling_speaker1,-3.729674816131592,mike and jenny are playing soccer
+557,889_3,882_2,2,sampling_speaker1,-3.729674816131592,mike and jenny are playing soccer
+558,889_3,882_2,2,sampling_speaker1,-3.729674816131592,mike and jenny are playing soccer
+559,889_3,882_2,2,sampling_speaker1,-3.729674816131592,mike and jenny are playing soccer
+560,889_7,889_0,2,sampling_speaker1,-3.9906599521636963,jenny is near a tree
+561,889_7,889_0,2,sampling_speaker1,-3.9906599521636963,jenny is near a tree
+562,889_7,889_0,2,sampling_speaker1,-3.9906599521636963,jenny is near a tree
+563,889_7,889_0,2,sampling_speaker1,-3.9906599521636963,jenny is near a tree
+564,889_7,889_0,2,sampling_speaker1,-3.9906599521636963,jenny is standing by the tree
+565,889_7,889_0,2,sampling_speaker1,-3.9906599521636963,jenny is standing by the tree
+566,889_7,889_0,2,sampling_speaker1,-3.9906599521636963,jenny is near a tree
+567,889_7,889_0,2,sampling_speaker1,-3.9906599521636963,jenny is standing by the tree
+568,889_7,889_0,2,sampling_speaker1,-3.9906599521636963,jenny is near a tree
+569,889_7,889_0,2,sampling_speaker1,-3.9906599521636963,jenny is near a tree
+570,874_5,874_3,2,sampling_speaker1,-3.5752644538879395,jenny is sitting in the sandbox
+571,874_5,874_3,2,sampling_speaker1,-3.5752644538879395,the snake is in the sandbox
+572,874_5,874_3,2,sampling_speaker1,-3.5752644538879395,jenny is afraid of the snake
+573,874_5,874_3,2,sampling_speaker1,-3.5752644538879395,jenny is sitting in the sandbox
+574,874_5,874_3,2,sampling_speaker1,-3.5752644538879395,jenny is afraid of the snake
+575,874_5,874_3,2,sampling_speaker1,-3.5752644538879395,jenny is afraid of the snake
+576,874_5,874_3,2,sampling_speaker1,-3.5752644538879395,jenny is sitting in the sandbox
+577,874_5,874_3,2,sampling_speaker1,-3.5752644538879395,jenny is sitting in the sandbox
+578,874_5,874_3,2,sampling_speaker1,-3.5752644538879395,the snake is in the sandbox
+579,874_5,874_3,2,sampling_speaker1,-3.5752644538879395,the snake is in the sandbox
+580,819_7,882_0,2,sampling_speaker1,-3.3357365131378174,mike is sitting in the sandbox
+581,819_7,882_0,2,sampling_speaker1,-3.3357365131378174,jenny is sitting in the sand box
+582,819_7,882_0,2,sampling_speaker1,-3.3357365131378174,mike is sitting in the sandbox
+583,819_7,882_0,2,sampling_speaker1,-3.3357365131378174,jenny is sitting in the sand box
+584,819_7,882_0,2,sampling_speaker1,-3.3357365131378174,jenny is sitting in the sand box
+585,819_7,882_0,2,sampling_speaker1,-3.3357365131378174,mike is sitting in the sandbox
+586,819_7,882_0,2,sampling_speaker1,-3.3357365131378174,jenny is sitting in the sand box
+587,819_7,882_0,2,sampling_speaker1,-3.3357365131378174,jenny is sitting in the sand box
+588,819_7,882_0,2,sampling_speaker1,-3.3357365131378174,jenny is sitting in the sand box
+589,819_7,882_0,2,sampling_speaker1,-3.3357365131378174,jenny is sitting in the sand box
+590,873_5,873_3,2,sampling_speaker1,-4.347346782684326,the dog is watching mike
+591,873_5,873_3,2,sampling_speaker1,-4.347346782684326,a dog is near a table
+592,873_5,873_3,2,sampling_speaker1,-4.347346782684326,a dog is near a table
+593,873_5,873_3,2,sampling_speaker1,-4.347346782684326,a dog is near a table
+594,873_5,873_3,2,sampling_speaker1,-4.347346782684326,a dog is near a table
+595,873_5,873_3,2,sampling_speaker1,-4.347346782684326,the dog is standing by the table
+596,873_5,873_3,2,sampling_speaker1,-4.347346782684326,the dog is watching mike
+597,873_5,873_3,2,sampling_speaker1,-4.347346782684326,a dog is near a table
+598,873_5,873_3,2,sampling_speaker1,-4.347346782684326,the dog is standing by the table
+599,873_5,873_3,2,sampling_speaker1,-4.347346782684326,the dog is watching mike
+600,889_2,889_0,2,sampling_speaker1,-3.4955945014953613,jenny is standing by the tree
+601,889_2,889_0,2,sampling_speaker1,-3.4955945014953613,mike and jenny are playing soccer
+602,889_2,889_0,2,sampling_speaker1,-3.4955945014953613,mike and jenny are playing soccer
+603,889_2,889_0,2,sampling_speaker1,-3.4955945014953613,jenny is near a tree
+604,889_2,889_0,2,sampling_speaker1,-3.4955945014953613,jenny is standing by the tree
+605,889_2,889_0,2,sampling_speaker1,-3.4955945014953613,jenny is near a tree
+606,889_2,889_0,2,sampling_speaker1,-3.4955945014953613,jenny is standing by the tree
+607,889_2,889_0,2,sampling_speaker1,-3.4955945014953613,jenny is standing by the tree
+608,889_2,889_0,2,sampling_speaker1,-3.4955945014953613,mike and jenny are playing soccer
+609,889_2,889_0,2,sampling_speaker1,-3.4955945014953613,jenny is standing by the tree
+610,827_7,827_5,2,sampling_speaker1,-3.2674591541290283,mike is wearing a chef hat
+611,827_7,827_5,2,sampling_speaker1,-3.2674591541290283,mike is wearing a chef hat
+612,827_7,827_5,2,sampling_speaker1,-3.2674591541290283,mike is wearing a chef hat
+613,827_7,827_5,2,sampling_speaker1,-3.2674591541290283,mike is wearing a chef hat
+614,827_7,827_5,2,sampling_speaker1,-3.2674591541290283,mike is wearing a chef hat
+615,827_7,827_5,2,sampling_speaker1,-3.2674591541290283,mike is wearing a chef hat
+616,827_7,827_5,2,sampling_speaker1,-3.2674591541290283,mike is wearing a chef hat
+617,827_7,827_5,2,sampling_speaker1,-3.2674591541290283,mike is wearing a chef hat
+618,827_7,827_5,2,sampling_speaker1,-3.2674591541290283,mike is wearing a chef hat
+619,827_7,827_5,2,sampling_speaker1,-3.2674591541290283,mike is wearing a chef hat
+620,855_1,855_8,2,sampling_speaker1,-3.827124834060669,mike is sitting on the ground
+621,855_1,855_8,2,sampling_speaker1,-3.827124834060669,mike is sitting on the ground
+622,855_1,855_8,2,sampling_speaker1,-3.827124834060669,mike is sitting on the ground
+623,855_1,855_8,2,sampling_speaker1,-3.827124834060669,mike is sitting on the ground
+624,855_1,855_8,2,sampling_speaker1,-3.827124834060669,mike is sitting on the ground
+625,855_1,855_8,2,sampling_speaker1,-3.827124834060669,mike is sitting on the ground
+626,855_1,855_8,2,sampling_speaker1,-3.827124834060669,mike is sitting on the ground
+627,855_1,855_8,2,sampling_speaker1,-3.827124834060669,mike is sitting on the ground
+628,855_1,855_8,2,sampling_speaker1,-3.827124834060669,mike is sitting on the ground
+629,855_1,855_8,2,sampling_speaker1,-3.827124834060669,mike is sitting on the ground
+630,851_8,869_9,2,sampling_speaker1,-4.064432144165039,the cat is sitting next to jenny
+631,851_8,869_9,2,sampling_speaker1,-4.064432144165039,jenny is wearing a hat
+632,851_8,869_9,2,sampling_speaker1,-4.064432144165039,jenny is wearing a hat
+633,851_8,869_9,2,sampling_speaker1,-4.064432144165039,mike is wearing a hat
+634,851_8,869_9,2,sampling_speaker1,-4.064432144165039,jenny is wearing a hat
+635,851_8,869_9,2,sampling_speaker1,-4.064432144165039,jenny is wearing a hat
+636,851_8,869_9,2,sampling_speaker1,-4.064432144165039,jenny is wearing a hat
+637,851_8,869_9,2,sampling_speaker1,-4.064432144165039,the cat is sitting next to jenny
+638,851_8,869_9,2,sampling_speaker1,-4.064432144165039,the cat is sitting next to jenny
+639,851_8,869_9,2,sampling_speaker1,-4.064432144165039,mike is wearing a hat
+640,841_7,841_9,2,sampling_speaker1,-3.6575026512145996,mike is sliding down the slide
+641,841_7,841_9,2,sampling_speaker1,-3.6575026512145996,mike is sliding down the slide
+642,841_7,841_9,2,sampling_speaker1,-3.6575026512145996,mike is sliding down the slide
+643,841_7,841_9,2,sampling_speaker1,-3.6575026512145996,mike is sliding down the slide
+644,841_7,841_9,2,sampling_speaker1,-3.6575026512145996,mike is sliding down the slide
+645,841_7,841_9,2,sampling_speaker1,-3.6575026512145996,mike is sliding down the slide
+646,841_7,841_9,2,sampling_speaker1,-3.6575026512145996,mike is sliding down the slide
+647,841_7,841_9,2,sampling_speaker1,-3.6575026512145996,mike is sliding down the slide
+648,841_7,841_9,2,sampling_speaker1,-3.6575026512145996,mike is sliding down the slide
+649,841_7,841_9,2,sampling_speaker1,-3.6575026512145996,mike is sliding down the slide
+650,816_4,816_1,2,sampling_speaker1,-3.6129777431488037,jenny is holding a pie
+651,816_4,816_1,2,sampling_speaker1,-3.6129777431488037,jenny is holding a pie
+652,816_4,816_1,2,sampling_speaker1,-3.6129777431488037,jenny is holding a pie
+653,816_4,816_1,2,sampling_speaker1,-3.6129777431488037,jenny is holding a pie
+654,816_4,816_1,2,sampling_speaker1,-3.6129777431488037,jenny is holding a pie
+655,816_4,816_1,2,sampling_speaker1,-3.6129777431488037,jenny is holding a pie
+656,816_4,816_1,2,sampling_speaker1,-3.6129777431488037,jenny is holding a pie
+657,816_4,816_1,2,sampling_speaker1,-3.6129777431488037,jenny is holding a pie
+658,816_4,816_1,2,sampling_speaker1,-3.6129777431488037,jenny is holding a pie
+659,816_4,816_1,2,sampling_speaker1,-3.6129777431488037,jenny is holding a pie
+660,847_1,847_0,2,sampling_speaker1,-4.731289386749268,mike is sitting on the ground
+661,847_1,847_0,2,sampling_speaker1,-4.731289386749268,mike is sitting on the ground
+662,847_1,847_0,2,sampling_speaker1,-4.731289386749268,mike is sitting on the ground
+663,847_1,847_0,2,sampling_speaker1,-4.731289386749268,mike is sitting on the ground
+664,847_1,847_0,2,sampling_speaker1,-4.731289386749268,mike is sitting on the ground
+665,847_1,847_0,2,sampling_speaker1,-4.731289386749268,mike is sitting on the ground
+666,847_1,847_0,2,sampling_speaker1,-4.731289386749268,mike is sitting on the ground
+667,847_1,847_0,2,sampling_speaker1,-4.731289386749268,mike is sitting on the ground
+668,847_1,847_0,2,sampling_speaker1,-4.731289386749268,mike is sitting on the ground
+669,847_1,847_0,2,sampling_speaker1,-4.731289386749268,mike is sitting on the ground
+670,832_4,832_2,2,sampling_speaker1,-3.651536464691162,the ketchup is on the table
+671,832_4,832_2,2,sampling_speaker1,-3.651536464691162,the ketchup is on the table
+672,832_4,832_2,2,sampling_speaker1,-3.651536464691162,the ketchup is on the table
+673,832_4,832_2,2,sampling_speaker1,-3.651536464691162,the ketchup is on the table
+674,832_4,832_2,2,sampling_speaker1,-3.651536464691162,the ketchup is on the table
+675,832_4,832_2,2,sampling_speaker1,-3.651536464691162,the ketchup is on the table
+676,832_4,832_2,2,sampling_speaker1,-3.651536464691162,the ketchup is on the table
+677,832_4,832_2,2,sampling_speaker1,-3.651536464691162,the ketchup is on the table
+678,832_4,832_2,2,sampling_speaker1,-3.651536464691162,the ketchup is on the table
+679,832_4,832_2,2,sampling_speaker1,-3.651536464691162,the ketchup is on the table
+680,816_8,864_5,2,sampling_speaker1,-3.5069403648376465,the pie is on the table
+681,816_8,864_5,2,sampling_speaker1,-3.5069403648376465,mike is sitting on the ground
+682,816_8,864_5,2,sampling_speaker1,-3.5069403648376465,mike is sitting on the ground
+683,816_8,864_5,2,sampling_speaker1,-3.5069403648376465,the pie is on the table
+684,816_8,864_5,2,sampling_speaker1,-3.5069403648376465,jenny is mad at mike
+685,816_8,864_5,2,sampling_speaker1,-3.5069403648376465,the pie is on the table
+686,816_8,864_5,2,sampling_speaker1,-3.5069403648376465,the pie is on the table
+687,816_8,864_5,2,sampling_speaker1,-3.5069403648376465,the pie is on the table
+688,816_8,864_5,2,sampling_speaker1,-3.5069403648376465,jenny is mad at mike
+689,816_8,864_5,2,sampling_speaker1,-3.5069403648376465,the pie is on the table
+690,806_4,806_9,2,sampling_speaker1,-3.6066908836364746,a helicopter is flying in the sky
+691,806_4,806_9,2,sampling_speaker1,-3.6066908836364746,there is a helicopter in the sky
+692,806_4,806_9,2,sampling_speaker1,-3.6066908836364746,there is a helicopter in the sky
+693,806_4,806_9,2,sampling_speaker1,-3.6066908836364746,a helicopter is flying in the sky
+694,806_4,806_9,2,sampling_speaker1,-3.6066908836364746,there is a helicopter in the sky
+695,806_4,806_9,2,sampling_speaker1,-3.6066908836364746,there is a helicopter in the sky
+696,806_4,806_9,2,sampling_speaker1,-3.6066908836364746,there is a helicopter in the sky
+697,806_4,806_9,2,sampling_speaker1,-3.6066908836364746,there is a helicopter in the sky
+698,806_4,806_9,2,sampling_speaker1,-3.6066908836364746,there is a helicopter in the sky
+699,806_4,806_9,2,sampling_speaker1,-3.6066908836364746,there is a helicopter in the sky
+700,867_0,867_8,2,sampling_speaker1,-2.72568941116333,mike is flying a kite
+701,867_0,867_8,2,sampling_speaker1,-2.72568941116333,mike is flying a kite
+702,867_0,867_8,2,sampling_speaker1,-2.72568941116333,jenny is sitting in the grass
+703,867_0,867_8,2,sampling_speaker1,-2.72568941116333,jenny is sitting in the grass
+704,867_0,867_8,2,sampling_speaker1,-2.72568941116333,mike is flying a kite
+705,867_0,867_8,2,sampling_speaker1,-2.72568941116333,jenny is flying a kite
+706,867_0,867_8,2,sampling_speaker1,-2.72568941116333,jenny is sitting in the grass
+707,867_0,867_8,2,sampling_speaker1,-2.72568941116333,mike is flying a kite
+708,867_0,867_8,2,sampling_speaker1,-2.72568941116333,jenny is sitting in the grass
+709,867_0,867_8,2,sampling_speaker1,-2.72568941116333,jenny is flying a kite
+710,829_5,829_6,2,sampling_speaker1,-3.6155898571014404,mike is wearing a hat
+711,829_5,829_6,2,sampling_speaker1,-3.6155898571014404,mike is wearing a hat
+712,829_5,829_6,2,sampling_speaker1,-3.6155898571014404,mike is wearing a hat
+713,829_5,829_6,2,sampling_speaker1,-3.6155898571014404,mike is wearing a hat
+714,829_5,829_6,2,sampling_speaker1,-3.6155898571014404,mike is wearing a hat
+715,829_5,829_6,2,sampling_speaker1,-3.6155898571014404,mike is wearing a hat
+716,829_5,829_6,2,sampling_speaker1,-3.6155898571014404,mike is wearing a hat
+717,829_5,829_6,2,sampling_speaker1,-3.6155898571014404,mike is wearing a hat
+718,829_5,829_6,2,sampling_speaker1,-3.6155898571014404,mike is wearing a hat
+719,829_5,829_6,2,sampling_speaker1,-3.6155898571014404,mike is wearing a hat
+720,820_1,820_3,2,sampling_speaker1,-3.7558295726776123,the bear is scaring jenny
+721,820_1,820_3,2,sampling_speaker1,-3.7558295726776123,the bear is scaring jenny
+722,820_1,820_3,2,sampling_speaker1,-3.7558295726776123,the bear is scaring jenny
+723,820_1,820_3,2,sampling_speaker1,-3.7558295726776123,the bear is scaring jenny
+724,820_1,820_3,2,sampling_speaker1,-3.7558295726776123,the bear is scaring jenny
+725,820_1,820_3,2,sampling_speaker1,-3.7558295726776123,the bear is scaring jenny
+726,820_1,820_3,2,sampling_speaker1,-3.7558295726776123,the bear is scaring jenny
+727,820_1,820_3,2,sampling_speaker1,-3.7558295726776123,the bear is scaring jenny
+728,820_1,820_3,2,sampling_speaker1,-3.7558295726776123,the bear is scaring jenny
+729,820_1,820_3,2,sampling_speaker1,-3.7558295726776123,the bear is scaring jenny
+730,853_4,853_3,2,sampling_speaker1,-3.501206398010254,jenny is scared of the bear
+731,853_4,853_3,2,sampling_speaker1,-3.501206398010254,jenny is scared of the bear
+732,853_4,853_3,2,sampling_speaker1,-3.501206398010254,jenny is scared of the bear
+733,853_4,853_3,2,sampling_speaker1,-3.501206398010254,jenny is scared of the bear
+734,853_4,853_3,2,sampling_speaker1,-3.501206398010254,jenny is scared of the bear
+735,853_4,853_3,2,sampling_speaker1,-3.501206398010254,jenny is scared of the bear
+736,853_4,853_3,2,sampling_speaker1,-3.501206398010254,jenny is scared of the bear
+737,853_4,853_3,2,sampling_speaker1,-3.501206398010254,jenny is scared of the bear
+738,853_4,853_3,2,sampling_speaker1,-3.501206398010254,jenny is scared of the bear
+739,853_4,853_3,2,sampling_speaker1,-3.501206398010254,jenny is scared of the bear
+740,877_0,877_4,2,sampling_speaker1,-2.936450481414795,jenny is wearing sunglasses
+741,877_0,877_4,2,sampling_speaker1,-2.936450481414795,jenny is wearing sunglasses
+742,877_0,877_4,2,sampling_speaker1,-2.936450481414795,jenny is wearing sunglasses
+743,877_0,877_4,2,sampling_speaker1,-2.936450481414795,jenny is wearing sunglasses
+744,877_0,877_4,2,sampling_speaker1,-2.936450481414795,jenny is wearing sunglasses
+745,877_0,877_4,2,sampling_speaker1,-2.936450481414795,jenny is wearing sunglasses
+746,877_0,877_4,2,sampling_speaker1,-2.936450481414795,jenny is wearing sunglasses
+747,877_0,877_4,2,sampling_speaker1,-2.936450481414795,jenny is wearing sunglasses
+748,877_0,877_4,2,sampling_speaker1,-2.936450481414795,jenny is wearing sunglasses
+749,877_0,877_4,2,sampling_speaker1,-2.936450481414795,jenny is wearing sunglasses
+750,895_8,895_5,2,sampling_speaker1,-4.265744209289551,jenny is scared of the bear
+751,895_8,895_5,2,sampling_speaker1,-4.265744209289551,jenny is scared of the bear
+752,895_8,895_5,2,sampling_speaker1,-4.265744209289551,jenny is scared of the bear
+753,895_8,895_5,2,sampling_speaker1,-4.265744209289551,jenny is scared of the bear
+754,895_8,895_5,2,sampling_speaker1,-4.265744209289551,jenny is scared of the bear
+755,895_8,895_5,2,sampling_speaker1,-4.265744209289551,jenny is scared of the bear
+756,895_8,895_5,2,sampling_speaker1,-4.265744209289551,jenny is scared of the bear
+757,895_8,895_5,2,sampling_speaker1,-4.265744209289551,jenny is scared of the bear
+758,895_8,895_5,2,sampling_speaker1,-4.265744209289551,jenny is scared of the bear
+759,895_8,895_5,2,sampling_speaker1,-4.265744209289551,jenny is scared of the bear
+760,843_0,843_2,2,sampling_speaker1,-3.019225835800171,mike is wearing a hat
+761,843_0,843_2,2,sampling_speaker1,-3.019225835800171,mike is wearing a hat
+762,843_0,843_2,2,sampling_speaker1,-3.019225835800171,mike is wearing a hat
+763,843_0,843_2,2,sampling_speaker1,-3.019225835800171,mike is wearing a hat
+764,843_0,843_2,2,sampling_speaker1,-3.019225835800171,mike is wearing a hat
+765,843_0,843_2,2,sampling_speaker1,-3.019225835800171,mike is wearing a hat
+766,843_0,843_2,2,sampling_speaker1,-3.019225835800171,mike is wearing a hat
+767,843_0,843_2,2,sampling_speaker1,-3.019225835800171,mike is wearing a hat
+768,843_0,843_2,2,sampling_speaker1,-3.019225835800171,mike is wearing a hat
+769,843_0,843_2,2,sampling_speaker1,-3.019225835800171,mike is wearing a hat
+770,829_3,829_4,2,sampling_speaker1,-3.4283862113952637,mike is wearing a hat
+771,829_3,829_4,2,sampling_speaker1,-3.4283862113952637,mike is wearing a hat
+772,829_3,829_4,2,sampling_speaker1,-3.4283862113952637,mike is wearing a hat
+773,829_3,829_4,2,sampling_speaker1,-3.4283862113952637,the frisbee is in the tree
+774,829_3,829_4,2,sampling_speaker1,-3.4283862113952637,the frisbee is in the tree
+775,829_3,829_4,2,sampling_speaker1,-3.4283862113952637,the frisbee is in the tree
+776,829_3,829_4,2,sampling_speaker1,-3.4283862113952637,mike is wearing a hat
+777,829_3,829_4,2,sampling_speaker1,-3.4283862113952637,mike is wearing a hat
+778,829_3,829_4,2,sampling_speaker1,-3.4283862113952637,the frisbee is in the tree
+779,829_3,829_4,2,sampling_speaker1,-3.4283862113952637,mike is wearing a hat
+780,898_2,898_1,2,sampling_speaker1,-3.501674175262451,mike and jenny are playing baseball
+781,898_2,898_1,2,sampling_speaker1,-3.501674175262451,mike and jenny are playing baseball
+782,898_2,898_1,2,sampling_speaker1,-3.501674175262451,mike and jenny are playing baseball
+783,898_2,898_1,2,sampling_speaker1,-3.501674175262451,mike and jenny are playing baseball
+784,898_2,898_1,2,sampling_speaker1,-3.501674175262451,jenny is holding a bat
+785,898_2,898_1,2,sampling_speaker1,-3.501674175262451,jenny is holding a bat
+786,898_2,898_1,2,sampling_speaker1,-3.501674175262451,mike and jenny are playing baseball
+787,898_2,898_1,2,sampling_speaker1,-3.501674175262451,mike and jenny are playing baseball
+788,898_2,898_1,2,sampling_speaker1,-3.501674175262451,jenny is holding a bat
+789,898_2,898_1,2,sampling_speaker1,-3.501674175262451,mike and jenny are playing baseball
+790,813_5,813_1,2,sampling_speaker1,-2.435091733932495,jenny is very happy
+791,813_5,813_1,2,sampling_speaker1,-2.435091733932495,jenny is very happy
+792,813_5,813_1,2,sampling_speaker1,-2.435091733932495,jenny is very happy
+793,813_5,813_1,2,sampling_speaker1,-2.435091733932495,jenny is wearing sunglasses
+794,813_5,813_1,2,sampling_speaker1,-2.435091733932495,jenny is very happy
+795,813_5,813_1,2,sampling_speaker1,-2.435091733932495,jenny is wearing purple sunglasses
+796,813_5,813_1,2,sampling_speaker1,-2.435091733932495,jenny is very happy
+797,813_5,813_1,2,sampling_speaker1,-2.435091733932495,jenny is very happy
+798,813_5,813_1,2,sampling_speaker1,-2.435091733932495,jenny is very happy
+799,813_5,813_1,2,sampling_speaker1,-2.435091733932495,jenny is very happy
+800,871_9,871_3,2,sampling_speaker1,-3.3148415088653564,jenny is holding a pie
+801,871_9,871_3,2,sampling_speaker1,-3.3148415088653564,jenny is holding a pie
+802,871_9,871_3,2,sampling_speaker1,-3.3148415088653564,jenny is holding a pie
+803,871_9,871_3,2,sampling_speaker1,-3.3148415088653564,jenny is holding a pie
+804,871_9,871_3,2,sampling_speaker1,-3.3148415088653564,jenny is holding a pie
+805,871_9,871_3,2,sampling_speaker1,-3.3148415088653564,jenny is holding a pie
+806,871_9,871_3,2,sampling_speaker1,-3.3148415088653564,jenny is holding a pie
+807,871_9,871_3,2,sampling_speaker1,-3.3148415088653564,jenny is holding a pie
+808,871_9,871_3,2,sampling_speaker1,-3.3148415088653564,jenny is holding a pie
+809,871_9,871_3,2,sampling_speaker1,-3.3148415088653564,jenny is holding a pie
+810,839_2,884_4,2,sampling_speaker1,-3.386220932006836,mike and jenny are playing soccer
+811,839_2,884_4,2,sampling_speaker1,-3.386220932006836,mike and jenny are playing soccer
+812,839_2,884_4,2,sampling_speaker1,-3.386220932006836,mike and jenny are playing soccer
+813,839_2,884_4,2,sampling_speaker1,-3.386220932006836,mike and jenny are playing soccer
+814,839_2,884_4,2,sampling_speaker1,-3.386220932006836,mike and jenny are playing soccer
+815,839_2,884_4,2,sampling_speaker1,-3.386220932006836,mike and jenny are playing soccer
+816,839_2,884_4,2,sampling_speaker1,-3.386220932006836,mike is kicking the soccer ball
+817,839_2,884_4,2,sampling_speaker1,-3.386220932006836,mike and jenny are playing soccer
+818,839_2,884_4,2,sampling_speaker1,-3.386220932006836,mike and jenny are playing soccer
+819,839_2,884_4,2,sampling_speaker1,-3.386220932006836,mike and jenny are playing soccer
+820,860_2,875_3,2,sampling_speaker1,-3.6892030239105225,jenny is standing by the tree
+821,860_2,875_3,2,sampling_speaker1,-3.6892030239105225,jenny is standing by the tree
+822,860_2,875_3,2,sampling_speaker1,-3.6892030239105225,mike and jenny are playing soccer
+823,860_2,875_3,2,sampling_speaker1,-3.6892030239105225,jenny is standing by the tree
+824,860_2,875_3,2,sampling_speaker1,-3.6892030239105225,mike and jenny are playing catch
+825,860_2,875_3,2,sampling_speaker1,-3.6892030239105225,jenny is standing by the tree
+826,860_2,875_3,2,sampling_speaker1,-3.6892030239105225,jenny is standing by the tree
+827,860_2,875_3,2,sampling_speaker1,-3.6892030239105225,jenny is standing by the tree
+828,860_2,875_3,2,sampling_speaker1,-3.6892030239105225,jenny is standing by the tree
+829,860_2,875_3,2,sampling_speaker1,-3.6892030239105225,mike and jenny are playing catch
+830,859_4,826_9,2,sampling_speaker1,-4.187213897705078,the owl is in the tree
+831,859_4,826_9,2,sampling_speaker1,-4.187213897705078,the owl is in the tree
+832,859_4,826_9,2,sampling_speaker1,-4.187213897705078,the owl is in the tree
+833,859_4,826_9,2,sampling_speaker1,-4.187213897705078,mike is near a fire
+834,859_4,826_9,2,sampling_speaker1,-4.187213897705078,there is a cloud in the sky
+835,859_4,826_9,2,sampling_speaker1,-4.187213897705078,the owl is in the tree
+836,859_4,826_9,2,sampling_speaker1,-4.187213897705078,the owl is in the tree
+837,859_4,826_9,2,sampling_speaker1,-4.187213897705078,the owl is in the tree
+838,859_4,826_9,2,sampling_speaker1,-4.187213897705078,the owl is in the tree
+839,859_4,826_9,2,sampling_speaker1,-4.187213897705078,the owl is in the tree
+840,845_4,845_1,2,sampling_speaker1,-3.461634635925293,mike is kicking the soccer ball
+841,845_4,845_1,2,sampling_speaker1,-3.461634635925293,mike is kicking the soccer ball
+842,845_4,845_1,2,sampling_speaker1,-3.461634635925293,mike is kicking the soccer ball
+843,845_4,845_1,2,sampling_speaker1,-3.461634635925293,mike is kicking the soccer ball
+844,845_4,845_1,2,sampling_speaker1,-3.461634635925293,mike is kicking the soccer ball
+845,845_4,845_1,2,sampling_speaker1,-3.461634635925293,mike is kicking the soccer ball
+846,845_4,845_1,2,sampling_speaker1,-3.461634635925293,mike is kicking the soccer ball
+847,845_4,845_1,2,sampling_speaker1,-3.461634635925293,mike is kicking the soccer ball
+848,845_4,845_1,2,sampling_speaker1,-3.461634635925293,mike is kicking the soccer ball
+849,845_4,845_1,2,sampling_speaker1,-3.461634635925293,mike is kicking the soccer ball
+850,851_1,851_9,2,sampling_speaker1,-3.7329840660095215,mike and jenny are happy
+851,851_1,851_9,2,sampling_speaker1,-3.7329840660095215,mike and jenny are happy
+852,851_1,851_9,2,sampling_speaker1,-3.7329840660095215,mike and jenny are happy
+853,851_1,851_9,2,sampling_speaker1,-3.7329840660095215,mike and jenny are happy
+854,851_1,851_9,2,sampling_speaker1,-3.7329840660095215,mike and jenny are happy
+855,851_1,851_9,2,sampling_speaker1,-3.7329840660095215,jenny is sitting in the grass
+856,851_1,851_9,2,sampling_speaker1,-3.7329840660095215,mike and jenny are happy
+857,851_1,851_9,2,sampling_speaker1,-3.7329840660095215,mike and jenny are happy
+858,851_1,851_9,2,sampling_speaker1,-3.7329840660095215,mike and jenny are happy
+859,851_1,851_9,2,sampling_speaker1,-3.7329840660095215,jenny is sitting on the grass
+860,824_5,824_2,2,sampling_speaker1,-2.971126079559326,jenny is running away
+861,824_5,824_2,2,sampling_speaker1,-2.971126079559326,jenny is running away
+862,824_5,824_2,2,sampling_speaker1,-2.971126079559326,jenny is scared of the snake
+863,824_5,824_2,2,sampling_speaker1,-2.971126079559326,jenny is scared of the snake
+864,824_5,824_2,2,sampling_speaker1,-2.971126079559326,jenny is running away
+865,824_5,824_2,2,sampling_speaker1,-2.971126079559326,jenny is running away
+866,824_5,824_2,2,sampling_speaker1,-2.971126079559326,mike is scared of the snake
+867,824_5,824_2,2,sampling_speaker1,-2.971126079559326,jenny is running away
+868,824_5,824_2,2,sampling_speaker1,-2.971126079559326,mike is near a snake
+869,824_5,824_2,2,sampling_speaker1,-2.971126079559326,mike is scared of the snake
+870,899_9,899_7,2,sampling_speaker1,-4.175831317901611,jenny is standing by the tree
+871,899_9,899_7,2,sampling_speaker1,-4.175831317901611,jenny is standing by the tree
+872,899_9,899_7,2,sampling_speaker1,-4.175831317901611,jenny is happy to see mike
+873,899_9,899_7,2,sampling_speaker1,-4.175831317901611,jenny is happy to see mike
+874,899_9,899_7,2,sampling_speaker1,-4.175831317901611,jenny is standing by the tree
+875,899_9,899_7,2,sampling_speaker1,-4.175831317901611,jenny is standing by the tree
+876,899_9,899_7,2,sampling_speaker1,-4.175831317901611,jenny is standing by the tree
+877,899_9,899_7,2,sampling_speaker1,-4.175831317901611,jenny is standing by the tree
+878,899_9,899_7,2,sampling_speaker1,-4.175831317901611,jenny is standing by the tree
+879,899_9,899_7,2,sampling_speaker1,-4.175831317901611,jenny is standing by the tree
+880,855_9,855_8,2,sampling_speaker1,-3.5502114295959473,mike is wearing a hat
+881,855_9,855_8,2,sampling_speaker1,-3.5502114295959473,mike is wearing a hat
+882,855_9,855_8,2,sampling_speaker1,-3.5502114295959473,jenny is wearing a crown
+883,855_9,855_8,2,sampling_speaker1,-3.5502114295959473,mike is wearing a hat
+884,855_9,855_8,2,sampling_speaker1,-3.5502114295959473,jenny is wearing a crown
+885,855_9,855_8,2,sampling_speaker1,-3.5502114295959473,mike is wearing a hat
+886,855_9,855_8,2,sampling_speaker1,-3.5502114295959473,mike is wearing a hat
+887,855_9,855_8,2,sampling_speaker1,-3.5502114295959473,jenny is wearing a crown
+888,855_9,855_8,2,sampling_speaker1,-3.5502114295959473,mike is wearing a hat
+889,855_9,855_8,2,sampling_speaker1,-3.5502114295959473,mike is wearing a hat
+890,852_9,852_6,2,sampling_speaker1,-3.6867852210998535,jenny is sitting on the ground
+891,852_9,852_6,2,sampling_speaker1,-3.6867852210998535,mike is wearing a colorful hat
+892,852_9,852_6,2,sampling_speaker1,-3.6867852210998535,mike is wearing a colorful hat
+893,852_9,852_6,2,sampling_speaker1,-3.6867852210998535,jenny is sitting on the ground
+894,852_9,852_6,2,sampling_speaker1,-3.6867852210998535,jenny is sitting on the ground
+895,852_9,852_6,2,sampling_speaker1,-3.6867852210998535,mike is wearing the hat
+896,852_9,852_6,2,sampling_speaker1,-3.6867852210998535,mike is wearing a hat
+897,852_9,852_6,2,sampling_speaker1,-3.6867852210998535,mike is wearing a colorful hat
+898,852_9,852_6,2,sampling_speaker1,-3.6867852210998535,mike is wearing a colorful hat
+899,852_9,852_6,2,sampling_speaker1,-3.6867852210998535,mike is wearing a colorful hat
+900,882_4,819_7,2,sampling_speaker1,-3.1678466796875,mike and jenny are playing in the sandbox
+901,882_4,819_7,2,sampling_speaker1,-3.1678466796875,mike and jenny are playing in the sandbox
+902,882_4,819_7,2,sampling_speaker1,-3.1678466796875,jenny is playing in the sandbox
+903,882_4,819_7,2,sampling_speaker1,-3.1678466796875,jenny is playing in the sandbox
+904,882_4,819_7,2,sampling_speaker1,-3.1678466796875,mike and jenny are playing in the sandbox
+905,882_4,819_7,2,sampling_speaker1,-3.1678466796875,mike and jenny are playing in the sandbox
+906,882_4,819_7,2,sampling_speaker1,-3.1678466796875,mike and jenny are happy
+907,882_4,819_7,2,sampling_speaker1,-3.1678466796875,mike and jenny are playing in the sandbox
+908,882_4,819_7,2,sampling_speaker1,-3.1678466796875,jenny is playing in the sandbox
+909,882_4,819_7,2,sampling_speaker1,-3.1678466796875,mike and jenny are playing in the sandbox
+910,812_6,855_5,2,sampling_speaker1,-3.7533681392669678,jenny is near a cat
+911,812_6,855_5,2,sampling_speaker1,-3.7533681392669678,jenny is near a cat
+912,812_6,855_5,2,sampling_speaker1,-3.7533681392669678,jenny is near a cat
+913,812_6,855_5,2,sampling_speaker1,-3.7533681392669678,jenny is near a cat
+914,812_6,855_5,2,sampling_speaker1,-3.7533681392669678,jenny is near a cat
+915,812_6,855_5,2,sampling_speaker1,-3.7533681392669678,jenny is near a cat
+916,812_6,855_5,2,sampling_speaker1,-3.7533681392669678,jenny is near a cat
+917,812_6,855_5,2,sampling_speaker1,-3.7533681392669678,jenny is near a cat
+918,812_6,855_5,2,sampling_speaker1,-3.7533681392669678,jenny is near a cat
+919,812_6,855_5,2,sampling_speaker1,-3.7533681392669678,jenny is near a cat
+920,832_1,832_9,2,sampling_speaker1,-4.043398857116699,the ketchup and mustard are on the table
+921,832_1,832_9,2,sampling_speaker1,-4.043398857116699,the ketchup and mustard are on the table
+922,832_1,832_9,2,sampling_speaker1,-4.043398857116699,the ketchup and mustard are on the table
+923,832_1,832_9,2,sampling_speaker1,-4.043398857116699,the ketchup and mustard are on the table
+924,832_1,832_9,2,sampling_speaker1,-4.043398857116699,the ketchup and mustard are on the table
+925,832_1,832_9,2,sampling_speaker1,-4.043398857116699,the ketchup and mustard are on the table
+926,832_1,832_9,2,sampling_speaker1,-4.043398857116699,the ketchup and mustard are on the table
+927,832_1,832_9,2,sampling_speaker1,-4.043398857116699,the ketchup and mustard are on the table
+928,832_1,832_9,2,sampling_speaker1,-4.043398857116699,the ketchup and mustard are on the table
+929,832_1,832_9,2,sampling_speaker1,-4.043398857116699,the ketchup and mustard are on the table
+930,884_4,839_3,2,sampling_speaker1,-3.7760403156280518,jenny is sitting in the grass
+931,884_4,839_3,2,sampling_speaker1,-3.7760403156280518,jenny is sitting in the grass
+932,884_4,839_3,2,sampling_speaker1,-3.7760403156280518,jenny is sitting in the grass
+933,884_4,839_3,2,sampling_speaker1,-3.7760403156280518,jenny is sitting in the grass
+934,884_4,839_3,2,sampling_speaker1,-3.7760403156280518,jenny is sitting in the grass
+935,884_4,839_3,2,sampling_speaker1,-3.7760403156280518,jenny is sitting in the grass
+936,884_4,839_3,2,sampling_speaker1,-3.7760403156280518,jenny is sitting in the grass
+937,884_4,839_3,2,sampling_speaker1,-3.7760403156280518,jenny is sitting in the grass
+938,884_4,839_3,2,sampling_speaker1,-3.7760403156280518,jenny is sitting in the grass
+939,884_4,839_3,2,sampling_speaker1,-3.7760403156280518,jenny is sitting in the grass
+940,877_7,877_2,2,sampling_speaker1,-3.1662333011627197,mike is wearing sunglasses
+941,877_7,877_2,2,sampling_speaker1,-3.1662333011627197,mike is wearing sunglasses
+942,877_7,877_2,2,sampling_speaker1,-3.1662333011627197,mike is wearing sunglasses
+943,877_7,877_2,2,sampling_speaker1,-3.1662333011627197,mike is wearing sunglasses
+944,877_7,877_2,2,sampling_speaker1,-3.1662333011627197,mike is wearing sunglasses
+945,877_7,877_2,2,sampling_speaker1,-3.1662333011627197,mike is wearing sunglasses
+946,877_7,877_2,2,sampling_speaker1,-3.1662333011627197,mike is wearing sunglasses
+947,877_7,877_2,2,sampling_speaker1,-3.1662333011627197,mike is wearing sunglasses
+948,877_7,877_2,2,sampling_speaker1,-3.1662333011627197,mike is wearing sunglasses
+949,877_7,877_2,2,sampling_speaker1,-3.1662333011627197,mike is wearing sunglasses
+950,890_7,890_1,2,sampling_speaker1,-3.397705316543579,jenny is running away
+951,890_7,890_1,2,sampling_speaker1,-3.397705316543579,jenny is wearing sunglasses
+952,890_7,890_1,2,sampling_speaker1,-3.397705316543579,jenny is wearing sunglasses
+953,890_7,890_1,2,sampling_speaker1,-3.397705316543579,mike is wearing sunglasses
+954,890_7,890_1,2,sampling_speaker1,-3.397705316543579,jenny is running away
+955,890_7,890_1,2,sampling_speaker1,-3.397705316543579,jenny is running away
+956,890_7,890_1,2,sampling_speaker1,-3.397705316543579,jenny is running away
+957,890_7,890_1,2,sampling_speaker1,-3.397705316543579,mike is wearing sunglasses
+958,890_7,890_1,2,sampling_speaker1,-3.397705316543579,jenny is running away
+959,890_7,890_1,2,sampling_speaker1,-3.397705316543579,jenny is running away
+960,880_7,880_2,2,sampling_speaker1,-3.1960558891296387,mike is holding a baseball bat
+961,880_7,880_2,2,sampling_speaker1,-3.1960558891296387,mike is holding a bat
+962,880_7,880_2,2,sampling_speaker1,-3.1960558891296387,mike is holding a bat
+963,880_7,880_2,2,sampling_speaker1,-3.1960558891296387,mike is holding the bat
+964,880_7,880_2,2,sampling_speaker1,-3.1960558891296387,mike is holding a bat
+965,880_7,880_2,2,sampling_speaker1,-3.1960558891296387,mike is sitting by the tree
+966,880_7,880_2,2,sampling_speaker1,-3.1960558891296387,mike is holding a bat
+967,880_7,880_2,2,sampling_speaker1,-3.1960558891296387,mike is holding a baseball bat
+968,880_7,880_2,2,sampling_speaker1,-3.1960558891296387,mike is holding a bat
+969,880_7,880_2,2,sampling_speaker1,-3.1960558891296387,mike is holding a bat
+970,886_3,895_6,2,sampling_speaker1,-3.12380313873291,jenny is afraid of the snake
+971,886_3,895_6,2,sampling_speaker1,-3.12380313873291,the snake is scaring jenny
+972,886_3,895_6,2,sampling_speaker1,-3.12380313873291,mike is scared of the snake
+973,886_3,895_6,2,sampling_speaker1,-3.12380313873291,the snake is chasing jenny
+974,886_3,895_6,2,sampling_speaker1,-3.12380313873291,jenny is scared of the snake
+975,886_3,895_6,2,sampling_speaker1,-3.12380313873291,a snake is near mike
+976,886_3,895_6,2,sampling_speaker1,-3.12380313873291,jenny is afraid of the snake
+977,886_3,895_6,2,sampling_speaker1,-3.12380313873291,the snake is scaring jenny
+978,886_3,895_6,2,sampling_speaker1,-3.12380313873291,a snake is near mike
+979,886_3,895_6,2,sampling_speaker1,-3.12380313873291,a snake is near mike
+980,836_8,836_6,2,sampling_speaker1,-4.296727180480957,jenny is sitting on the ground
+981,836_8,836_6,2,sampling_speaker1,-4.296727180480957,jenny is sitting on the ground
+982,836_8,836_6,2,sampling_speaker1,-4.296727180480957,jenny is sitting on the ground
+983,836_8,836_6,2,sampling_speaker1,-4.296727180480957,jenny is sitting on the ground
+984,836_8,836_6,2,sampling_speaker1,-4.296727180480957,jenny is sitting on the ground
+985,836_8,836_6,2,sampling_speaker1,-4.296727180480957,jenny is sitting on the ground
+986,836_8,836_6,2,sampling_speaker1,-4.296727180480957,jenny is sitting on the ground
+987,836_8,836_6,2,sampling_speaker1,-4.296727180480957,jenny is sitting on the ground
+988,836_8,836_6,2,sampling_speaker1,-4.296727180480957,jenny is sitting on the ground
+989,836_8,836_6,2,sampling_speaker1,-4.296727180480957,jenny is sitting on the ground
+990,867_9,867_5,2,sampling_speaker1,-3.020256519317627,the frisbee is in the tree
+991,867_9,867_5,2,sampling_speaker1,-3.020256519317627,the frisbee is in the tree
+992,867_9,867_5,2,sampling_speaker1,-3.020256519317627,mike and jenny are playing frisbee
+993,867_9,867_5,2,sampling_speaker1,-3.020256519317627,mike and jenny are playing frisbee
+994,867_9,867_5,2,sampling_speaker1,-3.020256519317627,mike and jenny are playing frisbee
+995,867_9,867_5,2,sampling_speaker1,-3.020256519317627,mike and jenny are playing frisbee
+996,867_9,867_5,2,sampling_speaker1,-3.020256519317627,mike and jenny are playing frisbee
+997,867_9,867_5,2,sampling_speaker1,-3.020256519317627,mike and jenny are playing frisbee
+998,867_9,867_5,2,sampling_speaker1,-3.020256519317627,mike and jenny are playing frisbee
+999,867_9,867_5,2,sampling_speaker1,-3.020256519317627,mike and jenny are playing frisbee
