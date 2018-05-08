@@ -92,7 +92,7 @@ def download_file(surveyId, model_name, exp_name):
 
     downloadRequestResponse = requests.request("POST", downloadRequestUrl, data=downloadRequestPayload, headers=headers)
     progressId = downloadRequestResponse.json()["result"]["id"]
-    print(downloadRequestResponse.text)
+    # print(downloadRequestResponse.text)
 
     # Step 2: Checking on Data Export Progress and waiting until export is ready
     while requestCheckProgress < 100 and progressStatus is not "complete":
