@@ -1,0 +1,101 @@
+id,target,distractor,similarity,model_name,speaker_score,listener_score,description
+0,877_3,877_7,3,speaker0,-4.5530781745910645,the bear is scaring jenny
+1,868_0,825_9,3,speaker0,-3.607471227645874,the owl is in the tree
+2,851_9,851_7,2,speaker0,-3.8051934242248535,a rocket is flying in the sky
+3,869_5,869_8,2,speaker0,-3.623398542404175,mike is wearing a hat
+4,889_4,879_6,3,speaker0,-2.710416793823242,jenny is wearing sunglasses
+5,894_3,816_8,4,speaker0,-3.1059203147888184,jenny is holding a pie
+6,805_0,818_2,4,speaker0,-2.9106087684631348,mike is very happy
+7,860_4,845_9,3,speaker0,-3.72601580619812,jenny is very happy
+8,808_3,824_2,4,speaker0,-3.6025867462158203,mike is wearing a viking hat
+9,826_2,826_4,4,speaker0,-3.68298077583313,jenny is very happy
+10,855_5,899_3,4,speaker0,-3.5552656650543213,mike is wearing a hat
+11,841_9,841_3,1,speaker0,-3.6910622119903564,jenny is holding the balloons
+12,898_8,898_4,2,speaker0,-3.1316583156585693,mike is holding a bat
+13,888_6,888_0,3,speaker0,-3.7343857288360596,mike is kicking the soccer ball
+14,899_6,860_0,3,speaker0,-3.5919132232666016,mike is wearing sunglasses
+15,878_4,887_2,4,speaker0,-3.5465688705444336,the bear is scaring jenny
+16,832_9,832_0,2,speaker0,-4.158489227294922,jenny is holding a pie
+17,880_1,842_4,2,speaker0,-2.9893364906311035,mike is holding a bat
+18,886_8,854_1,4,speaker0,-3.8279106616973877,mike is sitting in the grass
+19,821_4,895_6,3,speaker0,-3.219423532485962,jenny is kicking the soccer ball
+20,879_0,878_6,4,speaker0,-3.066826820373535,jenny is scared of the bear
+21,897_5,892_9,1,speaker0,-3.58825945854187,jenny is very happy
+22,889_2,824_8,4,speaker0,-3.4955945014953613,mike and jenny are playing soccer
+23,816_4,862_0,3,speaker0,-3.6129777431488037,jenny is holding a pie
+24,832_4,832_5,4,speaker0,-3.651536464691162,mike is wearing sunglasses
+25,867_0,883_6,3,speaker0,-2.72568941116333,jenny is flying a kite
+26,820_1,820_6,2,speaker0,-3.7558295726776123,the bear is scaring jenny
+27,898_2,875_8,4,speaker0,-3.501674175262451,mike is wearing a hat
+28,899_3,855_6,2,speaker0,-3.738253116607666,mike is near a cat
+29,851_1,812_3,4,speaker0,-3.7329840660095215,mike is sitting on the ground
+30,824_5,824_7,4,speaker0,-2.971126079559326,jenny is scared of the snake
+31,884_5,888_0,4,speaker0,-3.1807656288146973,mike is kicking the soccer ball
+32,875_5,812_2,4,speaker0,-4.003882884979248,mike is mad at jenny
+33,848_4,848_2,2,speaker0,-2.8749754428863525,jenny is wearing sunglasses
+34,852_9,852_3,1,speaker0,-3.6867852210998535,mike is wearing a hat
+35,882_4,805_0,4,speaker0,-3.1678466796875,jenny is sitting in the sandbox
+36,848_8,848_2,2,speaker0,-3.1427226066589355,the pizza is on the table
+37,880_7,898_2,4,speaker0,-3.1960558891296387,mike is holding a bat
+38,888_1,845_2,4,speaker0,-3.397953987121582,jenny is very happy
+39,865_4,865_1,1,speaker0,-4.096439838409424,mike is near a cat
+40,861_7,861_0,1,speaker0,-3.2304978370666504,mike is wearing a chef hat
+41,845_8,845_7,3,speaker0,-2.9443671703338623,mike is kicking the soccer ball
+42,873_7,873_0,3,speaker0,-4.498045444488525,mike is mad at jenny
+43,838_3,838_9,2,speaker0,-3.233804702758789,jenny is holding a pie
+44,814_2,888_5,4,speaker0,-2.8929684162139893,the pizza is on the table
+45,844_1,817_9,4,speaker0,-3.3374061584472656,mike is holding a bat
+46,831_2,831_6,2,speaker0,-3.3947157859802246,mike is holding balloons
+47,806_0,806_1,1,speaker0,-3.4018428325653076,jenny is kicking the soccer ball
+48,815_3,815_0,2,speaker0,-2.8722035884857178,jenny is wearing a crown
+49,873_1,873_3,1,speaker0,-4.7206010818481445,jenny is mad at mike
+50,819_8,819_7,2,speaker0,-3.410623788833618,mike is very happy
+51,811_9,811_8,4,speaker0,-4.073206901550293,mike is wearing sunglasses
+52,802_9,802_2,2,speaker0,-3.6941311359405518,mike is sitting on the ground
+53,863_2,887_5,3,speaker0,-3.5098376274108887,the bear is scaring jenny
+54,854_0,888_3,3,speaker0,-2.9698479175567627,mike is kicking the soccer ball
+55,881_9,802_1,4,speaker0,-4.043243885040283,jenny is very happy
+56,881_2,881_6,2,speaker0,-3.835999011993408,jenny is holding a drink
+57,836_4,836_8,1,speaker0,-3.537635564804077,jenny is holding a pizza
+58,854_8,875_6,4,speaker0,-2.346737861633301,jenny is wearing sunglasses
+59,847_6,847_9,4,speaker0,-4.3382344245910645,jenny is scared of the snake
+60,880_9,812_1,4,speaker0,-3.596813440322876,mike is wearing a hat
+61,898_6,817_4,3,speaker0,-3.1165051460266113,mike is holding a bat
+62,829_4,829_1,2,speaker0,-3.2469513416290283,mike is wearing a pirate hat
+63,888_7,821_1,3,speaker0,-3.252762794494629,mike is kicking the soccer ball
+64,840_4,895_9,4,speaker0,-3.390967845916748,mike is wearing sunglasses
+65,870_2,870_0,1,speaker0,-3.13450026512146,jenny is holding a pie
+66,814_0,814_3,1,speaker0,-3.159334182739258,the pizza is on the table
+67,854_6,897_8,4,speaker0,-2.9586198329925537,mike is kicking the soccer ball
+68,810_5,891_4,4,speaker0,-3.064321994781494,the owl is in the tree
+69,818_6,818_9,1,speaker0,-3.2824933528900146,mike is very happy
+70,893_3,848_0,4,speaker0,-3.53228497505188,mike is wearing a viking hat
+71,805_5,818_2,4,speaker0,-3.0848875045776367,mike is wearing a chef hat
+72,831_6,831_5,1,speaker0,-3.044098138809204,mike is holding balloons
+73,816_1,892_7,3,speaker0,-3.772075891494751,mike is sitting on the ground
+74,888_0,880_3,4,speaker0,-2.9968771934509277,mike is kicking the soccer ball
+75,892_6,892_0,3,speaker0,-3.8647959232330322,jenny is mad at mike
+76,867_1,867_9,2,speaker0,-3.0094568729400635,jenny is flying a kite
+77,880_5,880_3,2,speaker0,-3.214170455932617,mike is holding a bat
+78,819_3,879_5,4,speaker0,-3.8699052333831787,jenny is afraid of the snake
+79,868_2,901_0,4,speaker0,-3.616529941558838,the owl is in the tree
+80,896_0,866_4,2,speaker0,-3.7879867553710938,jenny is holding a hamburger
+81,871_8,871_7,3,speaker0,-3.77581524848938,jenny is holding a hot dog
+82,810_2,810_8,3,speaker0,-3.1580426692962646,the owl is sitting in the tree
+83,901_7,894_7,4,speaker0,-3.4474899768829346,the owl is in the tree
+84,867_5,867_1,2,speaker0,-2.8698525428771973,jenny is flying a kite
+85,845_0,864_2,4,speaker0,-2.840698480606079,mike is wearing sunglasses
+86,826_4,859_8,4,speaker0,-2.9206931591033936,mike is wearing a chef hat
+87,842_1,842_4,4,speaker0,-4.081686973571777,jenny is scared of the bear
+88,854_1,854_7,2,speaker0,-3.236506700515747,jenny is very happy
+89,854_7,854_8,2,speaker0,-3.178839921951294,jenny is kicking the soccer ball
+90,880_3,888_0,4,speaker0,-3.514129638671875,mike is holding a bat
+91,868_3,870_4,3,speaker0,-3.650891065597534,the owl is in the tree
+92,812_2,826_0,4,speaker0,-4.201335430145264,mike is near a grill
+93,900_2,892_5,4,speaker0,-3.413513660430908,the owl is sitting in the tree
+94,883_5,893_0,4,speaker0,-3.167848825454712,jenny is scared of the snake
+95,894_0,838_5,4,speaker0,-2.3853065967559814,the pizza is on the table
+96,901_5,855_1,4,speaker0,-3.2046279907226562,the owl is in the tree
+97,875_6,802_1,4,speaker0,-3.6206185817718506,jenny is mad at mike
+98,884_0,888_0,4,speaker0,-2.8929715156555176,mike is kicking the soccer ball
+99,839_3,839_2,2,speaker0,-3.1029562950134277,mike is kicking the soccer ball
