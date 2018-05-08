@@ -566,3 +566,55 @@ class MLPStringDecoder(nn.Module):
         output = torch.cat(losses, dim=0) # [(batch_sz * len) x vocab_sz]
         return output
 
+    def sample(self, scene_enc, max_words, viterbi, k=10):
+        # self.eval()
+        # samples = []
+        # probs = []
+        # for i, scene in enumerate(scene_enc):
+        #     # logging.info(i)
+        #     prob, sample = self.beam_sample(scene.unsqueeze(1), max_words, viterbi, k=k)
+        #     samples.append(sample)
+        #     probs.append(prob)
+        #     # for i, x in enumerate(sample):
+        #         # logging.info([WORD_INDEX.get(word.data[0]) for word in x])
+
+        # return torch.stack(probs), torch.stack(samples) # [100 x  5 x 21]
+
+        def get_samples(scene, max_words, viterbi, k=10):
+            start_of_sentence = torch.ones(k).long()
+            samples = torch.zeros(k, self.vocab_sz)
+            samples[:,0] = start_of_sentence
+            probs = torch.zeros(k)
+
+            d_prev = Variable(torch.zeros(batch_sz, self.vocab_sz))
+            d_n = Variable(self.one_hot(start_of_sentence, self.vocab_sz))
+
+            for i in range(max_words):
+                if torch.cuda().is_available():
+                    d_n, d_prev = d_n.cuda(), d_prev.cuda()
+                out = self.forward_step(d_n, d_prev, scene_enc)
+                values, indices = torch.max(out, 1)
+                d_prev += d_n
+                d_n = Variable(self.one_hot(indices.data, self.vocab_sz))
+                
+                # add the indices onto the samples
+                samples[:,i] = indices
+                probs[i] += np.log(values)
+
+            # somehow needs to get here UNDONE.
+            return torch.Tensor(probs), torch.stack(sentences)
+
+        #### MODIFIED CODE
+        
+        batch_size = len(scene_enc)
+        samples = []
+        probs = []
+
+        for scene in scene_enc:
+            prob, sample = get_samples(scene, max_words, viterbi, k)
+            probs.append(prob)
+            samples.append(sample)
+
+        samples = torch.stack(samples, 1)
+        probs = torch.stack(probs, 1)
+        return probs, samples
