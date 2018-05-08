@@ -223,6 +223,7 @@ def train(train_scenes, val_scenes, model, optimizer, args, target_func):
                 n_correct = (predicted.data == targets.data).sum()
                 total_correct += n_correct
 
+            pdb.set_trace()
             loss = criterion(outputs, targets) # what should these be?
             loss.backward()
             optimizer.step()
