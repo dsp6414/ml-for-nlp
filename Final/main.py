@@ -138,7 +138,7 @@ elif args.model == 'ss1':
 models = {"sampling_speaker1": sampling_speaker1_model,}
 
 
-util.run_experiment("one_different", "abstract", "base", models, dev_scenes, corpus.WORD_INDEX, args)
+# util.run_experiment("one_different", "abstract", "base", models, dev_scenes, corpus.WORD_INDEX, args)
 #util.run_experiment("by_similarity", "abstract", "base", models, dev_scenes)
 #util.run_experiment("all_same", "abstract", "base", models, dev_scenes)
 # util.run_experiment("one_different", "abstract", "base", models, dev_scenes, corpus.WORD_INDEX, args)

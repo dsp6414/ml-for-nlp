@@ -341,10 +341,7 @@ def save_image_pairs(sentences, data, alt_data, WORD_INDEX):
         for im in images:
             new_im.paste(im, (x_offset,0))
             x_offset += im.size[0] + 10
-<<<<<<< HEAD
 
-=======
->>>>>>> e559a2bbe20963248befcacef96f92c6d07cabad
         new_im.save(combined_img)
 
 def run_experiment(name, cname, rname, models, data, WORD_INDEX, args):
