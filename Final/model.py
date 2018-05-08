@@ -252,6 +252,7 @@ class IntrospectiveSpeakerModel(nn.Module):
         self.hidden_sz = hidden_sz
         self.scene_input_sz = N_PROP_OBJECTS * N_PROP_TYPES
         self.scene_encoder = LinearSceneEncoder("Speaker0SceneEncoder", self.scene_input_sz, hidden_sz, dropout)
+        self.dropout_p = dropout
 
         embedding_dim = self.hidden_sz
 
@@ -259,11 +260,6 @@ class IntrospectiveSpeakerModel(nn.Module):
             self.string_decoder = LSTMStringDecoder("Speaker0StringDecoder", self.vocab_sz, embedding_dim, self.hidden_sz, dropout)
         else:
             self.string_decoder = MLPStringDecoder("Speaker0StringDecoder", self.hidden_sz, self.vocab_sz, dropout) # Not sure what the input and hidden size are for this
-        
-        # name, vocab_sz, embedding_dim, hidden_sz, dropout, num_layers=2):
-        # self.fc = nn.Linear() #Insert something here Why is this needed?
-
-        self.dropout_p = dropout
 
     def forward(self, data, alt_data):
         scene_enc = self.scene_encoder(data)
@@ -276,6 +272,14 @@ class IntrospectiveSpeakerModel(nn.Module):
         max_len = max(len(scene.description) for scene in data) # 15
         probs, sampled_ids = self.string_decoder.sample(scene_enc, max_len, viterbi, k=k) # used to return probs, sample
         return probs, sampled_ids # used to return probs, np.zeros(probs.shape), sample
+
+class IntrospectorModel(nn.Module):
+    def __init__(self, speaker0):
+        super(IntrospectorModel, self).__init__()
+        self.speaker0 = speaker0
+
+    def forward(self, data, alt_data):
+        self.speaker0(data, alt_data)
 
 class LinearStringEncoder(nn.Module):
     def __init__(self, name, vocab_sz, hidden_sz, dropout): #figure out what parameters later
@@ -364,9 +368,8 @@ class LSTMStringDecoder(nn.Module):
         embedding = torch.cat((scene_enc.unsqueeze(1), embedding), 1) # after: [100 x 16 x 50]?
         output, hidden = self.lstm(embedding, hidden)
         output = self.dropout(output) # [100 x 15 x 50]
-        output = self.linear(output.view(-1, self.hidden_sz)) # -> [1400 x 50] (batch, max_words x hidden_size) # [1400 x 2713] (to vocab size?
+        output = self.linear(output.view(-1, self.hidden_sz)) # [max_len x vocab_sz]
         return output
-
 
     def forward_step(self, source, last_hidden, encoder_outputs, use_embeddings=True):
         word_embeddings = self.embedding(source) if use_embeddings else source
@@ -522,7 +525,7 @@ class MLPStringDecoder(nn.Module):
             nn.ReLU(),
             nn.Linear(vocab_sz, vocab_sz)
             )
-        self.max_words = 20 #?????
+        self.max_words = 20
 
     def one_hot(self, batch, depth):
         if torch.cuda.is_available():
@@ -531,7 +534,7 @@ class MLPStringDecoder(nn.Module):
         return ones.index_select(0,batch)
 
     def forward_step(self, d_n, d_prev, e_r):
-        # d_n = indicator feature on previous word, should be of size vocab_sz?
+        # d_n = indicator feature on previous word, should be of size vocab_sz
         # d_prev: also vocab_sz, indicator feature on all previous (basically BOW)
         # e_r: hidden_sz
         inp = torch.cat([d_n, d_prev, e_r], dim=1) # result has size batch_sz x [2 * vocab + hidden]
@@ -540,24 +543,26 @@ class MLPStringDecoder(nn.Module):
     def forward(self, scene_enc, targets, max_words): # Input is image encoding
         # Input is scene_enc: [batch_sz x hidden_sz]
         # max_words = self.max_words
-        batch_sz = len(scene_enc)
+        pdb.set_trace()
 
+        batch_sz = len(scene_enc)
         start_of_sentence = torch.ones(batch_sz).long() # ones to signal <s> [batch_sz]
         d_n = Variable(self.one_hot(start_of_sentence, self.vocab_sz)) # [batch_sz x vocab_sz]
         d_prev = Variable(torch.zeros(batch_sz, self.vocab_sz)) # [batch_sz x vocab_sz]
 
         losses = []
 
-        for i in range(1, max_words):
+        pdb.set_trace()
+        for i in range(0, max_words):
             if torch.cuda.is_available():
                 d_n, d_prev = d_n.cuda(), d_prev.cuda()
-
             out = self.forward_step(d_n, d_prev, scene_enc) # [batch_sz x vocab_sz]
             losses.append(out)
             values, indices = torch.max(out, 1)
             d_prev += d_n # Add last word to d_prev
             d_n = Variable(self.one_hot(indices.data, self.vocab_sz))
 
+        pdb.set_trace()
         output = torch.cat(losses, dim=0) # [(batch_sz * len) x vocab_sz]
         return output
 
