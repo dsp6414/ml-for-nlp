@@ -134,7 +134,7 @@ def speaker0_targets(args, scenes):
     return targets
 
 def print_tensor_1d(data, WORD_INDEX):
-    loggin.info([WORD_INDEX.get(word) for word in data])
+    logging.info([WORD_INDEX.get(word) for word in data])
 def print_tensor(data, WORD_INDEX):
     for x in data:
         logging.info([WORD_INDEX.get(word) for word in x])
@@ -152,7 +152,6 @@ def print_datas_and_desc(data, alt_data, sentences, WORD_INDEX):
 
 def tensor_to_caption(s, WORD_INDEX):
     index_of_end = (s == 2).nonzero()[0][0] if len((s == 2).nonzero()) > 0 else MAX_LEN
-    pdb.set_trace()
     s_chopped = s[1:index_of_end.data[0]] if index_of_end.data[0] > 1 else []
     s_joined = ' '.join([WORD_INDEX.get(i.data[0]) for i in s_chopped])
     return s_joined
@@ -303,7 +302,7 @@ def get_examples(model, train_scenes, args, word_index):
         print_tensor3d(sentences.data, word_index)
         logging.info([(i, (scene.image_id, alt_scene.image_id)) for i, (scene, alt_scene) in enumerate(zip(batch_data, alt_data[0]))])
 
-        # save_image_pairs(sentences.squeeze(), batch_data, alt_data, word_index)
+        save_image_pairs(sentences.squeeze(), batch_data, alt_data, word_index)
 
         # scores = calculate_bleu(batch_data, sentences.squeeze())
         # for _, score in scores:
@@ -314,14 +313,16 @@ def get_examples(model, train_scenes, args, word_index):
     return bleu_score
 
 def save_image_pairs(sentences, data, alt_data, WORD_INDEX):
+    new_dir = 'pairs/ss1' + str(experiment_counter)
+    if not os.path.exists(new_dir):
+        os.makedirs(new_dir)
     for i, (scene, alt_scene) in enumerate(zip(data, alt_data[0])):
-        pdb.set_trace()
         s = sentences[i] # this is the sentence
         s_joined = tensor_to_caption(s, WORD_INDEX)
 
         img1 = data_path + 'RenderedScenes/Scene' + str(scene.image_id) + '.png'
         img2 = data_path + 'RenderedScenes/Scene' + str(alt_scene.image_id) + '.png'
-        combined_img = 'pairs/ss1' + str(experiment_counter) + '_' + str(scene.image_id) + '_&_' + str(alt_scene.image_id) + '.png'
+        combined_img = new_dir + '/ss1' + str(experiment_counter) + '_' + str(scene.image_id) + '_&_' + str(alt_scene.image_id) + '.png'
 
         images = map(Image.open, [img1, img2])
         widths, heights = zip(*(i.size for i in images))
@@ -340,6 +341,7 @@ def save_image_pairs(sentences, data, alt_data, WORD_INDEX):
         for im in images:
             new_im.paste(im, (x_offset,0))
             x_offset += im.size[0] + 10
+
         new_im.save(combined_img)
 
 def run_experiment(name, cname, rname, models, data, WORD_INDEX, args):
@@ -373,7 +375,7 @@ def run_experiment(name, cname, rname, models, data, WORD_INDEX, args):
                     # listener_scores[0].squeeze(0)[0],
                     sentence
                 ]
-                pdb.set_trace()
+
                 save_image_pairs(samples.unsqueeze(0), [d1], [[d2]], WORD_INDEX)
 
                 results_f.write(",".join([str(s) for s in parts]))
