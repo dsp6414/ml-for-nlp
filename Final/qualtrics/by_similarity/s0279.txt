@@ -1,0 +1,500 @@
+1. Desciption : the bear is scaring jenny
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene877_3.png" target="_blank">877_3</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene877_7.png" target="_blank">877_7</a> 
+
+2. Desciption : the owl is in the tree
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene825_9.png" target="_blank">825_9</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene868_0.png" target="_blank">868_0</a> 
+
+3. Desciption : a rocket is flying in the sky
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene851_9.png" target="_blank">851_9</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene851_7.png" target="_blank">851_7</a> 
+
+4. Desciption : mike is wearing a hat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene869_5.png" target="_blank">869_5</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene869_8.png" target="_blank">869_8</a> 
+
+5. Desciption : jenny is wearing sunglasses
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene889_4.png" target="_blank">889_4</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene879_6.png" target="_blank">879_6</a> 
+
+6. Desciption : jenny is holding a pie
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene816_8.png" target="_blank">816_8</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene894_3.png" target="_blank">894_3</a> 
+
+7. Desciption : mike is very happy
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene818_2.png" target="_blank">818_2</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene805_0.png" target="_blank">805_0</a> 
+
+8. Desciption : jenny is very happy
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene845_9.png" target="_blank">845_9</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene860_4.png" target="_blank">860_4</a> 
+
+9. Desciption : mike is wearing a viking hat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene824_2.png" target="_blank">824_2</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene808_3.png" target="_blank">808_3</a> 
+
+10. Desciption : jenny is very happy
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene826_4.png" target="_blank">826_4</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene826_2.png" target="_blank">826_2</a> 
+
+11. Desciption : mike is wearing a hat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene899_3.png" target="_blank">899_3</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene855_5.png" target="_blank">855_5</a> 
+
+12. Desciption : jenny is holding the balloons
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene841_3.png" target="_blank">841_3</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene841_9.png" target="_blank">841_9</a> 
+
+13. Desciption : mike is holding a bat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene898_4.png" target="_blank">898_4</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene898_8.png" target="_blank">898_8</a> 
+
+14. Desciption : mike is kicking the soccer ball
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene888_6.png" target="_blank">888_6</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene888_0.png" target="_blank">888_0</a> 
+
+15. Desciption : mike is wearing sunglasses
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene899_6.png" target="_blank">899_6</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene860_0.png" target="_blank">860_0</a> 
+
+16. Desciption : the bear is scaring jenny
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene878_4.png" target="_blank">878_4</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene887_2.png" target="_blank">887_2</a> 
+
+17. Desciption : jenny is holding a pie
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene832_9.png" target="_blank">832_9</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene832_0.png" target="_blank">832_0</a> 
+
+18. Desciption : mike is holding a bat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene880_1.png" target="_blank">880_1</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene842_4.png" target="_blank">842_4</a> 
+
+19. Desciption : mike is sitting in the grass
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene886_8.png" target="_blank">886_8</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene854_1.png" target="_blank">854_1</a> 
+
+20. Desciption : jenny is kicking the soccer ball
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene895_6.png" target="_blank">895_6</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene821_4.png" target="_blank">821_4</a> 
+
+21. Desciption : jenny is scared of the bear
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene879_0.png" target="_blank">879_0</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene878_6.png" target="_blank">878_6</a> 
+
+22. Desciption : jenny is very happy
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene892_9.png" target="_blank">892_9</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene897_5.png" target="_blank">897_5</a> 
+
+23. Desciption : mike and jenny are playing soccer
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene889_2.png" target="_blank">889_2</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene824_8.png" target="_blank">824_8</a> 
+
+24. Desciption : jenny is holding a pie
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene862_0.png" target="_blank">862_0</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene816_4.png" target="_blank">816_4</a> 
+
+25. Desciption : mike is wearing sunglasses
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene832_5.png" target="_blank">832_5</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene832_4.png" target="_blank">832_4</a> 
+
+26. Desciption : jenny is flying a kite
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene867_0.png" target="_blank">867_0</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene883_6.png" target="_blank">883_6</a> 
+
+27. Desciption : the bear is scaring jenny
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene820_6.png" target="_blank">820_6</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene820_1.png" target="_blank">820_1</a> 
+
+28. Desciption : mike is wearing a hat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene898_2.png" target="_blank">898_2</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene875_8.png" target="_blank">875_8</a> 
+
+29. Desciption : mike is near a cat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene855_6.png" target="_blank">855_6</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene899_3.png" target="_blank">899_3</a> 
+
+30. Desciption : mike is sitting on the ground
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene851_1.png" target="_blank">851_1</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene812_3.png" target="_blank">812_3</a> 
+
+31. Desciption : jenny is scared of the snake
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene824_7.png" target="_blank">824_7</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene824_5.png" target="_blank">824_5</a> 
+
+32. Desciption : mike is kicking the soccer ball
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene888_0.png" target="_blank">888_0</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene884_5.png" target="_blank">884_5</a> 
+
+33. Desciption : mike is mad at jenny
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene875_5.png" target="_blank">875_5</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene812_2.png" target="_blank">812_2</a> 
+
+34. Desciption : jenny is wearing sunglasses
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene848_2.png" target="_blank">848_2</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene848_4.png" target="_blank">848_4</a> 
+
+35. Desciption : mike is wearing a hat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene852_9.png" target="_blank">852_9</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene852_3.png" target="_blank">852_3</a> 
+
+36. Desciption : jenny is sitting in the sandbox
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene805_0.png" target="_blank">805_0</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene882_4.png" target="_blank">882_4</a> 
+
+37. Desciption : the pizza is on the table
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene848_2.png" target="_blank">848_2</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene848_8.png" target="_blank">848_8</a> 
+
+38. Desciption : mike is holding a bat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene898_2.png" target="_blank">898_2</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene880_7.png" target="_blank">880_7</a> 
+
+39. Desciption : jenny is very happy
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene888_1.png" target="_blank">888_1</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene845_2.png" target="_blank">845_2</a> 
+
+40. Desciption : mike is near a cat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene865_4.png" target="_blank">865_4</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene865_1.png" target="_blank">865_1</a> 
+
+41. Desciption : mike is wearing a chef hat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene861_7.png" target="_blank">861_7</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene861_0.png" target="_blank">861_0</a> 
+
+42. Desciption : mike is kicking the soccer ball
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene845_7.png" target="_blank">845_7</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene845_8.png" target="_blank">845_8</a> 
+
+43. Desciption : mike is mad at jenny
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene873_7.png" target="_blank">873_7</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene873_0.png" target="_blank">873_0</a> 
+
+44. Desciption : jenny is holding a pie
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene838_3.png" target="_blank">838_3</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene838_9.png" target="_blank">838_9</a> 
+
+45. Desciption : the pizza is on the table
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene888_5.png" target="_blank">888_5</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene814_2.png" target="_blank">814_2</a> 
+
+46. Desciption : mike is holding a bat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene817_9.png" target="_blank">817_9</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene844_1.png" target="_blank">844_1</a> 
+
+47. Desciption : mike is holding balloons
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene831_2.png" target="_blank">831_2</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene831_6.png" target="_blank">831_6</a> 
+
+48. Desciption : jenny is kicking the soccer ball
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene806_1.png" target="_blank">806_1</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene806_0.png" target="_blank">806_0</a> 
+
+49. Desciption : jenny is wearing a crown
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene815_0.png" target="_blank">815_0</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene815_3.png" target="_blank">815_3</a> 
+
+50. Desciption : jenny is mad at mike
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene873_3.png" target="_blank">873_3</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene873_1.png" target="_blank">873_1</a> 
+
+51. Desciption : mike is very happy
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene819_8.png" target="_blank">819_8</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene819_7.png" target="_blank">819_7</a> 
+
+52. Desciption : mike is wearing sunglasses
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene811_8.png" target="_blank">811_8</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene811_9.png" target="_blank">811_9</a> 
+
+53. Desciption : mike is sitting on the ground
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene802_2.png" target="_blank">802_2</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene802_9.png" target="_blank">802_9</a> 
+
+54. Desciption : the bear is scaring jenny
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene887_5.png" target="_blank">887_5</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene863_2.png" target="_blank">863_2</a> 
+
+55. Desciption : mike is kicking the soccer ball
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene888_3.png" target="_blank">888_3</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene854_0.png" target="_blank">854_0</a> 
+
+56. Desciption : jenny is very happy
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene881_9.png" target="_blank">881_9</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene802_1.png" target="_blank">802_1</a> 
+
+57. Desciption : jenny is holding a drink
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene881_6.png" target="_blank">881_6</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene881_2.png" target="_blank">881_2</a> 
+
+58. Desciption : jenny is holding a pizza
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene836_8.png" target="_blank">836_8</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene836_4.png" target="_blank">836_4</a> 
+
+59. Desciption : jenny is wearing sunglasses
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene854_8.png" target="_blank">854_8</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene875_6.png" target="_blank">875_6</a> 
+
+60. Desciption : jenny is scared of the snake
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene847_9.png" target="_blank">847_9</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene847_6.png" target="_blank">847_6</a> 
+
+61. Desciption : mike is wearing a hat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene812_1.png" target="_blank">812_1</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene880_9.png" target="_blank">880_9</a> 
+
+62. Desciption : mike is holding a bat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene817_4.png" target="_blank">817_4</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene898_6.png" target="_blank">898_6</a> 
+
+63. Desciption : mike is wearing a pirate hat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene829_1.png" target="_blank">829_1</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene829_4.png" target="_blank">829_4</a> 
+
+64. Desciption : mike is kicking the soccer ball
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene888_7.png" target="_blank">888_7</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene821_1.png" target="_blank">821_1</a> 
+
+65. Desciption : mike is wearing sunglasses
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene840_4.png" target="_blank">840_4</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene895_9.png" target="_blank">895_9</a> 
+
+66. Desciption : jenny is holding a pie
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene870_2.png" target="_blank">870_2</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene870_0.png" target="_blank">870_0</a> 
+
+67. Desciption : the pizza is on the table
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene814_0.png" target="_blank">814_0</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene814_3.png" target="_blank">814_3</a> 
+
+68. Desciption : mike is kicking the soccer ball
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene854_6.png" target="_blank">854_6</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene897_8.png" target="_blank">897_8</a> 
+
+69. Desciption : the owl is in the tree
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene810_5.png" target="_blank">810_5</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene891_4.png" target="_blank">891_4</a> 
+
+70. Desciption : mike is very happy
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene818_9.png" target="_blank">818_9</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene818_6.png" target="_blank">818_6</a> 
+
+71. Desciption : mike is wearing a viking hat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene848_0.png" target="_blank">848_0</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene893_3.png" target="_blank">893_3</a> 
+
+72. Desciption : mike is wearing a chef hat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene805_5.png" target="_blank">805_5</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene818_2.png" target="_blank">818_2</a> 
+
+73. Desciption : mike is holding balloons
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene831_5.png" target="_blank">831_5</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene831_6.png" target="_blank">831_6</a> 
+
+74. Desciption : mike is sitting on the ground
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene892_7.png" target="_blank">892_7</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene816_1.png" target="_blank">816_1</a> 
+
+75. Desciption : mike is kicking the soccer ball
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene880_3.png" target="_blank">880_3</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene888_0.png" target="_blank">888_0</a> 
+
+76. Desciption : jenny is mad at mike
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene892_6.png" target="_blank">892_6</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene892_0.png" target="_blank">892_0</a> 
+
+77. Desciption : jenny is flying a kite
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene867_1.png" target="_blank">867_1</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene867_9.png" target="_blank">867_9</a> 
+
+78. Desciption : mike is holding a bat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene880_5.png" target="_blank">880_5</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene880_3.png" target="_blank">880_3</a> 
+
+79. Desciption : jenny is afraid of the snake
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene819_3.png" target="_blank">819_3</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene879_5.png" target="_blank">879_5</a> 
+
+80. Desciption : the owl is in the tree
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene868_2.png" target="_blank">868_2</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene901_0.png" target="_blank">901_0</a> 
+
+81. Desciption : jenny is holding a hamburger
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene896_0.png" target="_blank">896_0</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene866_4.png" target="_blank">866_4</a> 
+
+82. Desciption : jenny is holding a hot dog
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene871_7.png" target="_blank">871_7</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene871_8.png" target="_blank">871_8</a> 
+
+83. Desciption : the owl is sitting in the tree
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene810_8.png" target="_blank">810_8</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene810_2.png" target="_blank">810_2</a> 
+
+84. Desciption : the owl is in the tree
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene901_7.png" target="_blank">901_7</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene894_7.png" target="_blank">894_7</a> 
+
+85. Desciption : jenny is flying a kite
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene867_5.png" target="_blank">867_5</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene867_1.png" target="_blank">867_1</a> 
+
+86. Desciption : mike is wearing sunglasses
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene864_2.png" target="_blank">864_2</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene845_0.png" target="_blank">845_0</a> 
+
+87. Desciption : mike is wearing a chef hat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene826_4.png" target="_blank">826_4</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene859_8.png" target="_blank">859_8</a> 
+
+88. Desciption : jenny is scared of the bear
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene842_4.png" target="_blank">842_4</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene842_1.png" target="_blank">842_1</a> 
+
+89. Desciption : jenny is very happy
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene854_1.png" target="_blank">854_1</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene854_7.png" target="_blank">854_7</a> 
+
+90. Desciption : jenny is kicking the soccer ball
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene854_7.png" target="_blank">854_7</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene854_8.png" target="_blank">854_8</a> 
+
+91. Desciption : mike is holding a bat
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene880_3.png" target="_blank">880_3</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene888_0.png" target="_blank">888_0</a> 
+
+92. Desciption : the owl is in the tree
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene870_4.png" target="_blank">870_4</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene868_3.png" target="_blank">868_3</a> 
+
+93. Desciption : mike is near a grill
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene826_0.png" target="_blank">826_0</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene812_2.png" target="_blank">812_2</a> 
+
+94. Desciption : the owl is sitting in the tree
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene900_2.png" target="_blank">900_2</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene892_5.png" target="_blank">892_5</a> 
+
+95. Desciption : jenny is scared of the snake
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene893_0.png" target="_blank">893_0</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene883_5.png" target="_blank">883_5</a> 
+
+96. Desciption : the pizza is on the table
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene838_5.png" target="_blank">838_5</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene894_0.png" target="_blank">894_0</a> 
+
+97. Desciption : the owl is in the tree
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene901_5.png" target="_blank">901_5</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene855_1.png" target="_blank">855_1</a> 
+
+98. Desciption : jenny is mad at mike
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene802_1.png" target="_blank">802_1</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene875_6.png" target="_blank">875_6</a> 
+
+99. Desciption : mike is kicking the soccer ball
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene884_0.png" target="_blank">884_0</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene888_0.png" target="_blank">888_0</a> 
+
+100. Desciption : mike is kicking the soccer ball
+
+Image choice 1: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene839_2.png" target="_blank">839_2</a> 
+Image choice 2: <a href="https://s3.amazonaws.com/cs287project/by_similarity/Scene839_3.png" target="_blank">839_3</a> 
+
