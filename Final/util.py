@@ -304,10 +304,10 @@ def get_examples(model, train_scenes, args, word_index):
 
         save_image_pairs(sentences.squeeze(), batch_data, alt_data, word_index)
 
-        scores = calculate_bleu(batch_data, sentences.squeeze())
-        for _, score in scores:
-            bleu_score += score
-        logging.info('Current BLEU Score: %f' % (bleu_score / ((i_batch+1) * args.batch_size)))
+        # scores = calculate_bleu(batch_data, sentences.squeeze())
+        # for _, score in scores:
+            # bleu_score += score
+        # logging.info('Current BLEU Score: %f' % (bleu_score / ((i_batch+1) * args.batch_size)))
 
     bleu_score /= n_train
     return bleu_score
@@ -317,7 +317,6 @@ def save_image_pairs(sentences, data, alt_data, WORD_INDEX):
     if not os.path.exists(new_dir):
         os.makedirs(new_dir)
     for i, (scene, alt_scene) in enumerate(zip(data, alt_data[0])):
-
         s = sentences[i] # this is the sentence
         s_joined = tensor_to_caption(s, WORD_INDEX)
 
@@ -342,7 +341,10 @@ def save_image_pairs(sentences, data, alt_data, WORD_INDEX):
         for im in images:
             new_im.paste(im, (x_offset,0))
             x_offset += im.size[0] + 10
+<<<<<<< HEAD
 
+=======
+>>>>>>> e559a2bbe20963248befcacef96f92c6d07cabad
         new_im.save(combined_img)
 
 def run_experiment(name, cname, rname, models, data, WORD_INDEX, args):
@@ -376,6 +378,7 @@ def run_experiment(name, cname, rname, models, data, WORD_INDEX, args):
                     # listener_scores[0].squeeze(0)[0],
                     sentence
                 ]
+
                 save_image_pairs(samples.unsqueeze(0), [d1], [[d2]], WORD_INDEX)
 
                 results_f.write(",".join([str(s) for s in parts]))

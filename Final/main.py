@@ -120,7 +120,11 @@ elif args.model == 'ss1':
         sampling_speaker1_model = model.SamplingSpeaker1Model(listener0_model, speaker0_model)
 
     if args.load is not None:
+<<<<<<< HEAD
         util.load_model(listener0_model, 'l0239.pth')
+=======
+        util.load_model(listener0_model, 'l0242.pth')
+>>>>>>> e559a2bbe20963248befcacef96f92c6d07cabad
         util.load_model(speaker0_model, 's0231.pth')
         sampling_speaker1_model = model.SamplingSpeaker1Model(listener0_model, speaker0_model)
         # util.load_model(sampling_speaker1_model, args.load)
@@ -137,7 +141,13 @@ elif args.model == 'ss1':
 
 models = {"sampling_speaker1": sampling_speaker1_model,}
 
+<<<<<<< HEAD
 util.run_experiment("one_different", "abstract", "base", models, dev_scenes, corpus.WORD_INDEX, args)
 #util.run_experiment("by_similarity", "abstract", "base", models, dev_scenes)
 #util.run_experiment("all_same", "abstract", "base", models, dev_scenes)
+=======
+# util.run_experiment("one_different", "abstract", "base", models, dev_scenes, corpus.WORD_INDEX, args)
+util.run_experiment("by_similarity", "abstract", "base", models, dev_scenes, corpus.WORD_INDEX, args)
+# run_experiment("all_same", "abstract", "base", models, dev_scenes)
+>>>>>>> e559a2bbe20963248befcacef96f92c6d07cabad
 
