@@ -21,8 +21,7 @@ torch.manual_seed(1)
 
 def print_tensor(data):
     for x in data:
-        logging.info([WORD_INDEX.get(word) for word in x])
-
+        logging.info([WORD_INDEX.get(word.data[0]) for word in x])
 
 # 1-d tensor
 def pad_end1d(tensor, length):
@@ -70,16 +69,16 @@ class Listener0Model(nn.Module):
 
 
     def forward(self, data, alt_data): # data and alt_data are both lists of length n_sample. data is target scene with descriptions replaced
-        
         scene_enc = self.scene_encoder(data)                            # [len(data) x 50]
-        alt_scene_enc = [self.scene_encoder(alt) for alt in alt_data]   # [100 x 50]
-        pdb.set_trace()
+        alt_scene_enc = [self.scene_encoder(alt) for alt in alt_data]   # [len(alt_data[0]) x 50]
+
+        # logging.info('Alt Data')
+        # logging.info([alt.image_id for alt in alt_data[0]])
 
         string_enc = self.string_encoder(data)                          # [100 x 50]
-        scenes = [scene_enc] + alt_scene_enc                            # List of length 2
-        labels = torch.zeros((len(data),))                              # length 100
-        log_probs = self.scorer(string_enc, scenes, labels)
-
+        scenes = [scene_enc] + alt_scene_enc                            # List of length 2                            # Float, size 10    
+        log_probs = self.scorer(string_enc, scenes)
+        # logging.info(log_probs)
         return log_probs
 
 class Speaker0Model(nn.Module):
@@ -116,8 +115,10 @@ class Speaker0Model(nn.Module):
     def sample(self, data, alt_data, viterbi=False, k=10):
         scene_enc = self.scene_encoder(data) # [100 x 50]
         max_len = max(len(scene.description) for scene in data) # 15
+        # logging.info([(i, scene.image_id) for i, scene in enumerate(data)])
         probs, sampled_ids = self.string_decoder.sample(scene_enc, max_len, viterbi, k=k) # used to return probs, sample
-        return probs, sampled_ids # used to return probs, np.zeros(probs.shape), sample
+        pdb.set_trace()
+        return probs, sampled_ids
 
 
 class CompiledSpeaker1Model(nn.Module):
@@ -202,8 +203,10 @@ class SamplingSpeaker1Model(nn.Module):
 
         def select_best_description(scores, fake_description_ids):
             # Scores should be [k x 2]
-            scores_for_correct = scores[:, 0]
-            value, ind = scores_for_correct.max(dim=0) #
+            pdb.set_trace()
+            scores_for_correct = F.log_softmax(scores, dim=1)[:, 0]
+            # scores_for_correct = scores[:, 0]
+            value, ind = scores_for_correct.max(dim=0)
             return fake_description_ids[ind]
 
         # Lambda trades off between L0 and S0. This is joint probability of sentence by both listener and speaker
@@ -222,13 +225,13 @@ class SamplingSpeaker1Model(nn.Module):
 
         # listener_scores = torch.stack(listener_scores, 2)
 
-        pdb.set_trace()
         # best_descriptions = [select_best_weighted_description(listener_scores, speaker_scores, fake_description_ids, 0.02) for listener_scores, speaker_scores, \
                             # fake_description_ids in zip(all_listener_log_probs, all_speaker_log_probs, ids_split)]
-        best_descriptions = [select_best_description(scores, fake_description_ids) for scores, fake_description_ids in zip(all_listener_log_probs, ids_split)]
-
-        out_descriptions = torch.stack(best_descriptions)
         pdb.set_trace()
+        best_descriptions = [select_best_description(scores, fake_description_ids) for scores, fake_description_ids in zip(all_listener_log_probs, ids_split)]
+        pdb.set_trace()
+        out_descriptions = torch.stack(best_descriptions)
+        # logging.info(print_tensor(out_descriptions.squeeze(0)))
         return (all_listener_log_probs, all_speaker_log_probs), out_descriptions
 
 
@@ -374,10 +377,14 @@ class LSTMStringDecoder(nn.Module):
         self.eval()
         samples = []
         probs = []
-        for scene in scene_enc:
+        for i, scene in enumerate(scene_enc):
+            # logging.info(i)
             prob, sample = self.beam_sample(scene.unsqueeze(1), max_words, viterbi, k=k)
             samples.append(sample)
             probs.append(prob)
+            # for i, x in enumerate(sample):
+                # logging.info([WORD_INDEX.get(word.data[0]) for word in x])
+
         return torch.stack(probs), torch.stack(samples) # [100 x  5 x 21]
 
 
@@ -475,32 +482,34 @@ class MLPScorer(nn.Module):
         self.linear_3 = nn.Linear(self.intermediate_sz, 1) # what size is this supposed to be?
 
 
-    def forward(self, query, targets, labels): # string_enc, scenes, labels
+    def forward(self, query, targets): # string_enc, scenes
         # targets = scenes? each is [100 x 50] = batch_size x hidden_sz -> 
-        num_targets = len(targets) # 2 
+        num_targets = len(targets) # 2
 
-        targets_after_linear = [self.linear_4(target).unsqueeze(1) for target in targets]
-        targets = torch.cat(targets_after_linear, dim=1)
+        # targets_after_linear = [self.linear_4(target).unsqueeze(1) for target in targets]
+        # targets = torch.cat(targets_after_linear, dim=1)
+        # string_enc = self.linear_5(query).unsqueeze(1) # w_5 * e_d
 
-        string_enc = self.linear_5(query).unsqueeze(1) # w_5 * e_d
+        # pdb.set_trace()
+        # linear_combination = targets + string_enc # batch_sz x 2 x output?
+        # pdb.set_trace()
 
-        linear_combination = targets + string_enc # batch_sz x 2 x output?
+        # post_relu = F.relu(linear_combination)
+        # pdb.set_trace()
+        # ss = self.linear_3(self.dropout(post_relu)).squeeze() # [batch_size x 2] after squeeze
+        # return ss
 
-        post_relu = F.relu(linear_combination)
+        ##### NOT USED
+        # # should we output the log softmaxes???
+        # return F.log_softmax(ss, dim=1).squeeze() #i guess not for cross entropy
+        ##### NOT USED
 
-        ss = self.linear_3(self.dropout(post_relu)).squeeze() # [batch_size x 2] after squeeze
-
-        return ss
-
-        # should we output the log softmaxes???
-        return F.log_softmax(ss, dim=1).squeeze() #i guess not for cross entropy
-
-        # # query.unsqueeze_(1) # should be batch_sz, 1, n_dims = 50 (hidden size)
-        # new_query = query.expand(-1, num_targets)
-        # new_sum = new_query + targets # element wise summation. MAY NOT WORK
-
-        # result = self.linear(new_sum).squeeze(1) # should now be batch_sz, n_dims
-        # return result
+        #### Anna tries again
+        targets_after_linear = [self.linear_4(target) for target in targets]
+        string_enc = self.linear_5(query)                           # [n_samples x 1 x hidden_sz]
+        s1 = self.linear_3(self.dropout(F.relu(targets_after_linear[0] + string_enc)))    # []
+        s2 = self.linear_3(self.dropout(F.relu(targets_after_linear[1] + string_enc)))
+        return torch.stack((s1, s2), dim=1).squeeze(2)
 
 class MLPStringDecoder(nn.Module):
     def __init__(self, name, hidden_sz, vocab_sz, dropout):
