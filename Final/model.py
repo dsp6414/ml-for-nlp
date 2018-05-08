@@ -73,7 +73,7 @@ class Listener0Model(nn.Module):
         
         scene_enc = self.scene_encoder(data)                            # [len(data) x 50]
         alt_scene_enc = [self.scene_encoder(alt) for alt in alt_data]   # [100 x 50]
-        pdb.set_trace()
+        # pdb.set_trace()
 
         string_enc = self.string_encoder(data)                          # [100 x 50]
         scenes = [scene_enc] + alt_scene_enc                            # List of length 2
@@ -215,20 +215,18 @@ class SamplingSpeaker1Model(nn.Module):
 
         # get 10 samples for each image pair, max length 20
         ids_split = torch.unbind(all_sampled_ids, dim=0) # tuple of batch size 100, each of which is [10 x 20]
+        pdb.set_trace()
         all_fake_scenes = [create_fake_scenes(fake_description_ids, original_scene) for fake_description_ids, original_scene in zip(ids_split, data)]
 
         # 100 tensors of size [10 x 2]
         all_listener_log_probs = [self.listener0(fake_scenes, [[alt_data[0][i]] * n_samples]) for i, fake_scenes in enumerate(all_fake_scenes)] 
 
         # listener_scores = torch.stack(listener_scores, 2)
-
-        pdb.set_trace()
         # best_descriptions = [select_best_weighted_description(listener_scores, speaker_scores, fake_description_ids, 0.02) for listener_scores, speaker_scores, \
                             # fake_description_ids in zip(all_listener_log_probs, all_speaker_log_probs, ids_split)]
         best_descriptions = [select_best_description(scores, fake_description_ids) for scores, fake_description_ids in zip(all_listener_log_probs, ids_split)]
 
         out_descriptions = torch.stack(best_descriptions)
-        pdb.set_trace()
         return (all_listener_log_probs, all_speaker_log_probs), out_descriptions
 
 
