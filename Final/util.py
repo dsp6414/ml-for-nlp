@@ -362,10 +362,20 @@ def run_experiment(name, cname, rname, models, data, WORD_INDEX, args):
             d2 = data_by_image[img2][0]
             for model_name, model in models.items():
                 # for i_sample in range(10):
-                (listener_scores, speaker_scores), samples = \
-                        model.sample([d1], [[d2]], viterbi=False, k=args.k)
-                samples = samples.squeeze(0).squeeze(0)
-                sentence = tensor_to_caption(samples, WORD_INDEX)
+                if model_name == 'speaker0':
+                    speaker_scores, all_samples = model.sample([d1], [[d2]], viterbi=False, k=args.k)
+                    pdb.set_trace()
+                    best_sentence = all_samples.squeeze(0)[0]
+                    sentence = tensor_to_caption(best_sentence, WORD_INDEX)
+                    save_image_pairs(best_sentence.unsqueeze(0), [d1], [[d2]], WORD_INDEX)
+
+                else:
+                    (listener_scores, speaker_scores), samples = \
+                            model.sample([d1], [[d2]], viterbi=False, k=args.k)
+                    samples = samples.squeeze(0).squeeze(0)
+                    sentence = tensor_to_caption(samples, WORD_INDEX)
+                    save_image_pairs(samples.unsqueeze(0), [d1], [[d2]], WORD_INDEX)
+
                 parts = [
                     counter,
                     img1,
@@ -376,8 +386,6 @@ def run_experiment(name, cname, rname, models, data, WORD_INDEX, args):
                     # listener_scores[0].squeeze(0)[0],
                     sentence
                 ]
-
-                save_image_pairs(samples.unsqueeze(0), [d1], [[d2]], WORD_INDEX)
 
                 results_f.write(",".join([str(s) for s in parts]))
                 results_f.write('\n')

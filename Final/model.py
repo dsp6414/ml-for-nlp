@@ -543,8 +543,6 @@ class MLPStringDecoder(nn.Module):
     def forward(self, scene_enc, targets, max_words): # Input is image encoding
         # Input is scene_enc: [batch_sz x hidden_sz]
         # max_words = self.max_words
-        pdb.set_trace()
-
         batch_sz = len(scene_enc)
         start_of_sentence = torch.ones(batch_sz).long() # ones to signal <s> [batch_sz]
         d_n = Variable(self.one_hot(start_of_sentence, self.vocab_sz)) # [batch_sz x vocab_sz]
@@ -552,7 +550,6 @@ class MLPStringDecoder(nn.Module):
 
         losses = []
 
-        pdb.set_trace()
         for i in range(0, max_words):
             if torch.cuda.is_available():
                 d_n, d_prev = d_n.cuda(), d_prev.cuda()
@@ -580,38 +577,43 @@ class MLPStringDecoder(nn.Module):
 
         # return torch.stack(probs), torch.stack(samples) # [100 x  5 x 21]
 
-        def get_samples(scene, max_words, viterbi, k=10):
-            start_of_sentence = torch.ones(k).long()
-            samples = torch.zeros(k, self.vocab_sz)
+        def get_samples(scene, batch_size, max_words, viterbi, k=10):
+            start_of_sentence = torch.ones(batch_size).long()
+            samples = torch.zeros(batch_size, self.vocab_sz)
             samples[:,0] = start_of_sentence
-            probs = torch.zeros(k)
+            probs = torch.zeros(batch_size)
 
-            d_prev = Variable(torch.zeros(batch_sz, self.vocab_sz))
+            d_prev = Variable(torch.zeros(batch_size, self.vocab_sz))
             d_n = Variable(self.one_hot(start_of_sentence, self.vocab_sz))
 
-            for i in range(max_words):
-                if torch.cuda().is_available():
-                    d_n, d_prev = d_n.cuda(), d_prev.cuda()
-                out = self.forward_step(d_n, d_prev, scene_enc)
+            for i in range(1, max_words):
+
+                # if torch.cuda().is_available():
+                #     d_n, d_prev = d_n.cuda(), d_prev.cuda()
+
+                out = self.forward_step(d_n, d_prev, scene.unsqueeze(0))
                 values, indices = torch.max(out, 1)
                 d_prev += d_n
                 d_n = Variable(self.one_hot(indices.data, self.vocab_sz))
                 
                 # add the indices onto the samples
-                samples[:,i] = indices
-                probs[i] += np.log(values)
+
+                pdb.set_trace()
+                samples[:,i] = indices.data
+            probs[i] += torch.log(values)
 
             # somehow needs to get here UNDONE.
             return torch.Tensor(probs), torch.stack(sentences)
 
         #### MODIFIED CODE
-        
+        pdb.set_trace()
         batch_size = len(scene_enc)
         samples = []
         probs = []
 
         for scene in scene_enc:
-            prob, sample = get_samples(scene, max_words, viterbi, k)
+            pdb.set_trace()
+            prob, sample = get_samples(scene, batch_size, max_words, viterbi, k)
             probs.append(prob)
             samples.append(sample)
 
