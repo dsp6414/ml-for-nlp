@@ -22,7 +22,7 @@ def score_qualtrics_csv(model_name, exp_name):
     csv_path = os.path.join(csv_dir, model_name + '.csv')
     db = pd.read_csv(csv_path)
     # The submissions are in the last 100 rows.
-    submissions = db.iloc[2:, 12:112] # lol
+    submissions = db.iloc[2:, 12:112] 
 
     n_correct = 0.0
     n_total = 0.0
@@ -41,13 +41,13 @@ def score_qualtrics_csv(model_name, exp_name):
                 pass
                 # don't do anything
             elif correct_target in x:
-                # Correct, thank god
+                # Correct
                 by_sim_correct[correct_sim] += 1
                 by_sim_total[correct_sim] += 1
                 n_correct += 1
                 n_total += 1
             else:
-                # Rip
+                # Wrong
                 by_sim_total[correct_sim] += 1
                 n_total += 1
 
@@ -73,9 +73,9 @@ def model_num_from_name(model_name):
 
 def download_file(surveyId, model_name, exp_name):
     # model name: 'ss1252', etc.
-    # exp_name: 'by_similarity' or whatever
+    # exp_name: 'by_similarity', etc.
     # Setting user Parameters
-    apiToken = "vCC3UDC8iFk2BWDZsx05xNJOtX1Rty6q0azLSlBT"
+    apiToken = "vCC3UDC8iFk2BWDZsx05xNJOtX1Rty6q0azLSlBT" # Replace with your own.
 
     fileFormat = "csv"
     dataCenter = 'az1'
