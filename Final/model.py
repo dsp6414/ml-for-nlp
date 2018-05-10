@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 import torch
 import torch.autograd as autograd
@@ -6,8 +7,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import pdb
+
 from corpus import WORD_INDEX
-import logging
 
 N_PROP_TYPES = 8
 N_PROP_OBJECTS = 35
@@ -62,36 +63,28 @@ class Listener0Model(nn.Module):
 
         self.scene_input_sz = N_PROP_TYPES * N_PROP_OBJECTS
 
-        self.scene_encoder = LinearSceneEncoder("Listener0", self.scene_input_sz, hidden_sz, dropout) #figure out what parameters later
-        self.string_encoder = LinearStringEncoder("Listener0", vocab_sz, hidden_sz, dropout) #figure out what parameters later
-        self.scorer = MLPScorer("Listener0", hidden_sz, output_sz, dropout) #figure out what parameters later
-        # self.fc = nn.Linear() #Insert something here what is this?
+        self.scene_encoder = LinearSceneEncoder("Listener0", self.scene_input_sz, hidden_sz, dropout)
+        self.string_encoder = LinearStringEncoder("Listener0", vocab_sz, hidden_sz, dropout)
+        self.scorer = MLPScorer("Listener0", hidden_sz, output_sz, dropout)
 
 
-    def forward(self, data, alt_data): # data and alt_data are both lists of length n_sample. data is target scene with descriptions replaced
+    # data and alt_data are lists of length n_sample
+    def forward(self, data, alt_data):
         scene_enc = self.scene_encoder(data)                            # [len(data) x 50]
         alt_scene_enc = [self.scene_encoder(alt) for alt in alt_data]   # [100 x 50]
-        # pdb.set_trace()
-
-        # logging.info('Alt Data')
-        # logging.info([alt.image_id for alt in alt_data[0]])
 
         string_enc = self.string_encoder(data)                          # [100 x 50]
-        scenes = [scene_enc] + alt_scene_enc                            # List of length 2                            # Float, size 10    
+        scenes = [scene_enc] + alt_scene_enc                            # List of length 2
         log_probs = self.scorer(string_enc, scenes)
-        # logging.info(log_probs)
         return log_probs
 
 class Speaker0Model(nn.Module):
-    def __init__(self, vocab_sz, hidden_sz, dropout, string_decoder='LSTM'): #figure out what parameters later
+    def __init__(self, vocab_sz, hidden_sz, dropout, string_decoder='LSTM'):
         super(Speaker0Model, self).__init__()
-
         self.name='Speaker0'
-
         self.vocab_sz = vocab_sz
         self.hidden_sz = hidden_sz
         self.scene_input_sz = N_PROP_OBJECTS * N_PROP_TYPES
-
         self.scene_encoder = LinearSceneEncoder("Speaker0SceneEncoder", self.scene_input_sz, hidden_sz, dropout)
 
         embedding_dim = self.hidden_sz
@@ -99,70 +92,21 @@ class Speaker0Model(nn.Module):
         if string_decoder == 'LSTM':
             self.string_decoder = LSTMStringDecoder("Speaker0StringDecoder", self.vocab_sz, embedding_dim, self.hidden_sz, dropout)
         else:
-            self.string_decoder = MLPStringDecoder("Speaker0StringDecoder", self.hidden_sz, self.vocab_sz, dropout) # Not sure what the input and hidden size are for this
-        
-        # name, vocab_sz, embedding_dim, hidden_sz, dropout, num_layers=2):
-        # self.fc = nn.Linear() #Insert something here Why is this needed?
+            self.string_decoder = MLPStringDecoder("Speaker0StringDecoder", self.hidden_sz, self.vocab_sz, dropout)
 
         self.dropout_p = dropout
 
     def forward(self, data, alt_data):
         scene_enc = self.scene_encoder(data)
         max_len = max(len(scene.description) for scene in data)
-        losses = self.string_decoder(scene_enc, data, max_len) # losses was [1400 x 2713]
-        # should probs be like
+        losses = self.string_decoder(scene_enc, data, max_len)
         return losses
 
     def sample(self, data, alt_data, viterbi=False, k=10):
         scene_enc = self.scene_encoder(data) # [100 x 50]
         max_len = max(len(scene.description) for scene in data) # 15
-        # logging.info([(i, scene.image_id) for i, scene in enumerate(data)])
-        probs, sampled_ids = self.string_decoder.sample(scene_enc, max_len, viterbi, k=k) # used to return probs, sample
-        pdb.set_trace()
+        probs, sampled_ids = self.string_decoder.sample(scene_enc, max_len, viterbi, k=k)
         return probs, sampled_ids
-
-
-class CompiledSpeaker1Model(nn.Module):
-    def __init__(self, vocab_sz, num_scenes, hidden_sz, output_sz, dropout): #figure out what parameters later
-        super(CompiledSpeaker1Model, self).__init__()
-        self.vocab_sz = vocab_sz
-        self.num_scenes = num_scenes
-        self.hidden_sz = hidden_sz
-        self.output_sz = output_sz
-
-        self.scene_input_sz = N_PROP_TYPES * N_PROP_OBJECTS
-
-        self.sampler = SamplingSpeaker1Model(vocab_sz, num_scenes, hidden_sz, output_sz, dropout) # send params
-        self.scene_encoder = LinearSceneEncoder("CompSpeaker1Model", self.scene_input_sz, hidden_sz, dropout)
-        self.string_decoder = MLPStringDecoder("CompSpeaker1Model", hidden_sz, vocab_sz, dropout)
-
-        # self.fc = nn.Linear()
-        self.dropout_p = dropout
-
-    def forward(self, data, alt_data):
-        _, _, samples = self.sampler.sample(data, alt_data)
-
-        scene_enc = self.scene_encoder(data)
-        alt_scene_enc = [self.scene_encoder(alt) for alt in alt_data]
-
-        scenes = [scene_enc] + alt_scene_enc
-
-        fake_data = [d._replace(description=s) for d, s in zip(data, samples)]
-        losses = self.string_decoder(fake_data)
-        return losses, np.asarray(0)
-
-    def sample(self, data, alt_data, viterbi, quantile=None):
-        scene_enc = self.scene_encoder.forward("true", data, self.dropout_p)
-        alt_scene_enc = [self.scene_encoder.forward("alt%d" % i, alt, self.dropout_p)
-                            for i, alt in enumerate(alt_data)]
-        ### figure out how to translate these lines
-        l_cat = "CompSpeaker1Model_concat"
-        self.apollo_net.f(Concat(
-            l_cat, bottoms=[scene_enc] + alt_scene_enc))
-        ###
-
-        probs, sample = self.string_decoder.sample("", l_cat, viterbi)
-        return probs, np.zeros(probs.shape), sample
 
 def tensor_to_caption(tensor):
     caption = []
@@ -173,13 +117,9 @@ def tensor_to_caption(tensor):
             break
     return (' '.join(caption))
 
-
 class SamplingSpeaker1Model(nn.Module):
-    def __init__(self, listener0, speaker0): #figure out what parameters later
+    def __init__(self, listener0, speaker0):
         super(SamplingSpeaker1Model, self).__init__()
-
-        # self.listener0 = Listener0Model(vocab_sz, num_scenes, hidden_sz, output_sz, dropout)
-        # self.speaker0 = Speaker0Model(vocab_sz, hidden_sz, dropout)
         self.listener0 = listener0
         self.speaker0 = speaker0
         self.name = 'SamplingSpeaker1'
@@ -190,9 +130,7 @@ class SamplingSpeaker1Model(nn.Module):
         speaker_scores = []
         listener_scores = []
 
-        all_speaker_log_probs, all_sampled_ids = self.speaker0.sample(data, alt_data, viterbi=False, k=n_samples) # used to output [speaker_log_probs, _, sample]
-        # all_sampled_ids is  # [100 x  k x 20]
-        # all_speaker_log_probs = [100 x k]
+        all_speaker_log_probs, all_sampled_ids = self.speaker0.sample(data, alt_data, viterbi=False, k=n_samples)
 
         # Create fake scenes were the Target scene's description is replaced with another scene's
         def create_fake_scenes(fake_description_ids, original_scene):
@@ -204,85 +142,28 @@ class SamplingSpeaker1Model(nn.Module):
 
         def select_best_description(scores, fake_description_ids):
             # Scores should be [k x 2]
-            pdb.set_trace()
             scores_for_correct = F.log_softmax(scores, dim=1)[:, 0]
-            # scores_for_correct = scores[:, 0]
             value, ind = scores_for_correct.max(dim=0)
             return fake_description_ids[ind]
 
         # Lambda trades off between L0 and S0. This is joint probability of sentence by both listener and speaker
-        def select_best_weighted_description(listener_scores, speaker_scores, fake_description_ids, lam): # lambda controls weighing of speaker to listener
-            pdb.set_trace()
-            scores_for_correct = (listener_scores[: 0] ** (1-lam)) * (speaker_scores[: 0] ** lam) # Check this is element-wise mult
+        def select_best_weighted_description(listener_scores, speaker_scores, fake_description_ids, lam):
+            scores_for_correct = (listener_scores[: 0] ** (1-lam)) * (speaker_scores[: 0] ** lam)
             value, ind = scores_for_correct.max(dim=0)
             return fake_description_ids[ind]
 
         # get 10 samples for each image pair, max length 20
-        ids_split = torch.unbind(all_sampled_ids, dim=0) # tuple of batch size 100, each of which is [10 x 20]
-        pdb.set_trace()
+        ids_split = torch.unbind(all_sampled_ids, dim=0)
         all_fake_scenes = [create_fake_scenes(fake_description_ids, original_scene) for fake_description_ids, original_scene in zip(ids_split, data)]
 
         # 100 tensors of size [10 x 2]
         all_listener_log_probs = [self.listener0(fake_scenes, [[alt_data[0][i]] * n_samples]) for i, fake_scenes in enumerate(all_fake_scenes)] 
-
-        # listener_scores = torch.stack(listener_scores, 2)
-
-        # best_descriptions = [select_best_weighted_description(listener_scores, speaker_scores, fake_description_ids, 0.02) for listener_scores, speaker_scores, \
-                            # fake_description_ids in zip(all_listener_log_probs, all_speaker_log_probs, ids_split)]
-        pdb.set_trace()
         best_descriptions = [select_best_description(scores, fake_description_ids) for scores, fake_description_ids in zip(all_listener_log_probs, ids_split)]
-
         out_descriptions = torch.stack(best_descriptions)
-        # logging.info(print_tensor(out_descriptions.squeeze(0)))
         return (all_listener_log_probs, all_speaker_log_probs), out_descriptions
 
-
-        # speaker_scores = torch.stack(speaker_scores, 2)         # [100 x 20 x 10] , 20 from max sample length
-        # listener_scores = torch.stack(listener_scores, 2)       # [100 x 2 x 10]
-
-        # stacked_sentences = Variable(torch.stack(out_sentences)) # [100 x 20]
-        # return (out_speaker_scores, out_listener_scores), stacked_sentences
-
-class IntrospectiveSpeakerModel(nn.Module):
-    def __init__(self, vocab_sz, hidden_sz, dropout, string_decoder='LSTM'):
-        super(IntrospectiveSpeakerModel, self).__init__()
-
-        self.name='IntrospectiveSpeaker'
-        self.vocab_sz = vocab_sz
-        self.hidden_sz = hidden_sz
-        self.scene_input_sz = N_PROP_OBJECTS * N_PROP_TYPES
-        self.scene_encoder = LinearSceneEncoder("Speaker0SceneEncoder", self.scene_input_sz, hidden_sz, dropout)
-        self.dropout_p = dropout
-
-        embedding_dim = self.hidden_sz
-
-        if string_decoder == 'LSTM':
-            self.string_decoder = LSTMStringDecoder("Speaker0StringDecoder", self.vocab_sz, embedding_dim, self.hidden_sz, dropout)
-        else:
-            self.string_decoder = MLPStringDecoder("Speaker0StringDecoder", self.hidden_sz, self.vocab_sz, dropout) # Not sure what the input and hidden size are for this
-
-    def forward(self, data, alt_data):
-        scene_enc = self.scene_encoder(data)
-        max_len = max(len(scene.description) for scene in data)
-        losses = self.string_decoder(scene_enc, data, max_len) # losses was [1400 x 2713]
-        return losses
-
-    def sample(self, data, alt_data, viterbi=False, k=10):
-        scene_enc = self.scene_encoder(data) # [100 x 50]
-        max_len = max(len(scene.description) for scene in data) # 15
-        probs, sampled_ids = self.string_decoder.sample(scene_enc, max_len, viterbi, k=k) # used to return probs, sample
-        return probs, sampled_ids # used to return probs, np.zeros(probs.shape), sample
-
-class IntrospectorModel(nn.Module):
-    def __init__(self, speaker0):
-        super(IntrospectorModel, self).__init__()
-        self.speaker0 = speaker0
-
-    def forward(self, data, alt_data):
-        self.speaker0(data, alt_data)
-
 class LinearStringEncoder(nn.Module):
-    def __init__(self, name, vocab_sz, hidden_sz, dropout): #figure out what parameters later
+    def __init__(self, name, vocab_sz, hidden_sz, dropout):
         super(LinearStringEncoder, self).__init__()
         self.name = name
         self.vocab_sz = vocab_sz
@@ -296,17 +177,14 @@ class LinearStringEncoder(nn.Module):
             feature_data = feature_data.cuda()
 
         for i_scene, scene in enumerate(scenes):
-            for word in scene.description:
-                # feature_data[i_scene, word.data[0]] = feature_data[i_scene, word.data[0]] + 1
+            for word in scene.description:1
                 feature_data[i_scene, word] = feature_data[i_scene, word] + 1
-        # logging.info("LinearStringEncoder_" + prefix)
-        # logging.info("LinearStringEncoder_")
 
         result = self.fc(feature_data)
         return result
 
 class LinearSceneEncoder(nn.Module):
-    def __init__(self, name, input_sz, hidden_sz, dropout): #figure out what parameters later
+    def __init__(self, name, input_sz, hidden_sz, dropout):
         super(LinearSceneEncoder, self).__init__()
         self.name = name
         self.input_sz = input_sz
@@ -323,20 +201,17 @@ class LinearSceneEncoder(nn.Module):
             for prop in scene.props:
                 feature_data[i_scene, prop.type_index * N_PROP_OBJECTS +
                         prop.object_index] = 1
-        # logging.info("LinearSceneEncoder_" + prefix)
-        # logging.info("LinearSceneEncoder_")
         result = self.fc(feature_data)
         return result
 
 class LSTMStringDecoder(nn.Module):
-    def __init__(self, name, vocab_sz, embedding_dim, hidden_sz, dropout, num_layers=2): #figure out what parameters later
+    def __init__(self, name, vocab_sz, embedding_dim, hidden_sz, dropout, num_layers=2):
         super(LSTMStringDecoder, self).__init__()
         self.name = name
         self.vocab_sz = vocab_sz
         self.embedding_dim = embedding_dim
         self.hidden_sz = hidden_sz
         self.num_layers = num_layers
-
         self.dropout_p = dropout
 
         self.embedding = nn.Embedding(vocab_sz, embedding_dim)
@@ -360,14 +235,14 @@ class LSTMStringDecoder(nn.Module):
             Variable(torch.zeros(self.num_layers, batch_size, self.hidden_sz)))
 
     def forward(self, scene_enc, scenes, max_words):
-        batch_size = len(scene_enc) # [100 x 50]
-        word_data = scenes_to_vec(scenes) # [100 x 15]
+        batch_size = len(scene_enc)                         # [100 x 50]
+        word_data = scenes_to_vec(scenes)                   # [100 x 15]
 
         hidden = self.init_hidden(batch_size)
-        embedding = self.embedding(word_data) # dimensions = [100 x 15 x 50]
-        embedding = torch.cat((scene_enc.unsqueeze(1), embedding), 1) # after: [100 x 16 x 50]?
+        embedding = self.embedding(word_data)               # dimensions = [100 x 15 x 50]
+        embedding = torch.cat((scene_enc.unsqueeze(1), embedding), 1)
         output, hidden = self.lstm(embedding, hidden)
-        output = self.dropout(output) # [100 x 15 x 50]
+        output = self.dropout(output)                       # [100 x 15 x 50]
         output = self.linear(output.view(-1, self.hidden_sz)) # [max_len x vocab_sz]
         return output
 
@@ -383,27 +258,23 @@ class LSTMStringDecoder(nn.Module):
         samples = []
         probs = []
         for i, scene in enumerate(scene_enc):
-            # logging.info(i)
             prob, sample = self.beam_sample(scene.unsqueeze(1), max_words, viterbi, k=k)
             samples.append(sample)
             probs.append(prob)
-            # for i, x in enumerate(sample):
-                # logging.info([WORD_INDEX.get(word.data[0]) for word in x])
 
-        return torch.stack(probs), torch.stack(samples) # [100 x  5 x 21]
+        return torch.stack(probs), torch.stack(samples)
 
 
     def beam_sample(self, scene_enc, max_words, viterbi, k=10):
         batch_size = 1
         encoder_outputs = None
-        # Change scene_enc to be [1 x 1 x 50]
         scene_enc = scene_enc.transpose(0,1).unsqueeze(0)
-        initial_guess =  Variable(torch.LongTensor([SOS]).view(1, 1)) # [1 x 1]
-        initial_hidden = self.init_hidden(batch_size) # [2 x 1 x 50] or maybe scene_enc??
+        initial_guess =  Variable(torch.LongTensor([SOS]).view(1, 1))
+        initial_hidden = self.init_hidden(batch_size)
         zeroth, decoder_hidden = self.forward_step(scene_enc, initial_hidden, encoder_outputs, use_embeddings=False)
         if torch.cuda.is_available():
             initial_guess = initial_guess.cuda()
-        current_hypotheses = [(0, initial_guess, decoder_hidden)] # (prob, )
+        current_hypotheses = [(0, initial_guess, decoder_hidden)]
 
         completed_guesses = []
 
@@ -414,7 +285,6 @@ class LSTMStringDecoder(nn.Module):
                 log_prob, last_sequence_guess, decoder_hidden = current_hypotheses.pop(0)
 
                 last_word = last_sequence_guess[-1:, :]
-                # EOS token:
                 if last_word.squeeze().data[0] == EOS: 
                     completed_guesses.append((log_prob, last_sequence_guess, None))
                 else:
@@ -427,7 +297,6 @@ class LSTMStringDecoder(nn.Module):
                     new_probs = new_probs.squeeze().data
                     new_sequences = [torch.cat([last_sequence_guess, n_index.view(1, 1)],dim=0) for n_index in n_indices.squeeze()] # check this
                     new_hidden = [decoder_hidden] * k
-                    # decoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
                     seq_w_probs = list(zip(new_probs, new_sequences, new_hidden))
                     guesses_for_this_length = guesses_for_this_length + seq_w_probs
 
@@ -460,8 +329,7 @@ class LSTMStringDecoder(nn.Module):
             output, hidden = self.lstm(inputs, hidden)  # [100 x 1 x 50], [2 x 100 x 50]
             output = self.linear(output.squeeze(1))     # [100 x 2713] (vocab size)
 
-            # need to figure out if I need to check if predicted had 2 (end of sentence) in it.
-            out_prob, predicted = output.max(1) # predicted is size [100]
+            out_prob, predicted = output.max(1) #        predicted is size [100]
             out_log_probs.append(torch.log(out_prob))
             sampled_ids.append(predicted)
             inputs = self.embedding(predicted)
@@ -521,7 +389,7 @@ class MLPStringDecoder(nn.Module):
         super(MLPStringDecoder, self).__init__()
         self.vocab_sz = vocab_sz
         self.forward_net = nn.Sequential(
-            nn.Linear(2 * vocab_sz + hidden_sz, vocab_sz), # Linear 7
+            nn.Linear(2 * vocab_sz + hidden_sz, vocab_sz),
             nn.ReLU(),
             nn.Linear(vocab_sz, vocab_sz)
             )
@@ -538,45 +406,31 @@ class MLPStringDecoder(nn.Module):
         # d_prev: also vocab_sz, indicator feature on all previous (basically BOW)
         # e_r: hidden_sz
         inp = torch.cat([d_n, d_prev, e_r], dim=1) # result has size batch_sz x [2 * vocab + hidden]
-        return self.forward_net(inp) # Log softmax or not?? result rn has size [100 x 2713]
+        return self.forward_net(inp)
 
-    def forward(self, scene_enc, targets, max_words): # Input is image encoding
+    def forward(self, scene_enc, targets, max_words):
         # Input is scene_enc: [batch_sz x hidden_sz]
         # max_words = self.max_words
         batch_sz = len(scene_enc)
-        start_of_sentence = torch.ones(batch_sz).long() # ones to signal <s> [batch_sz]
-        d_n = Variable(self.one_hot(start_of_sentence, self.vocab_sz)) # [batch_sz x vocab_sz]
-        d_prev = Variable(torch.zeros(batch_sz, self.vocab_sz)) # [batch_sz x vocab_sz]
+        start_of_sentence = torch.ones(batch_sz).long()
+        d_n = Variable(self.one_hot(start_of_sentence, self.vocab_sz))   [batch_sz x vocab_sz]
+        d_prev = Variable(torch.zeros(batch_sz, self.vocab_sz))         # [batch_sz x vocab_sz]
 
         losses = []
 
         for i in range(0, max_words):
             if torch.cuda.is_available():
                 d_n, d_prev = d_n.cuda(), d_prev.cuda()
-            out = self.forward_step(d_n, d_prev, scene_enc) # [batch_sz x vocab_sz]
+            out = self.forward_step(d_n, d_prev, scene_enc)             # [batch_sz x vocab_sz]
             losses.append(out)
             values, indices = torch.max(out, 1)
-            d_prev += d_n # Add last word to d_prev
+            d_prev += d_n                                               # Add last word to d_prev
             d_n = Variable(self.one_hot(indices.data, self.vocab_sz))
 
-        pdb.set_trace()
-        output = torch.cat(losses, dim=0) # [(batch_sz * len) x vocab_sz]
+        output = torch.cat(losses, dim=0)                               # [(batch_sz * len) x vocab_sz]
         return output
 
     def sample(self, scene_enc, max_words, viterbi, k=10):
-        # self.eval()
-        # samples = []
-        # probs = []
-        # for i, scene in enumerate(scene_enc):
-        #     # logging.info(i)
-        #     prob, sample = self.beam_sample(scene.unsqueeze(1), max_words, viterbi, k=k)
-        #     samples.append(sample)
-        #     probs.append(prob)
-        #     # for i, x in enumerate(sample):
-        #         # logging.info([WORD_INDEX.get(word.data[0]) for word in x])
-
-        # return torch.stack(probs), torch.stack(samples) # [100 x  5 x 21]
-
         def get_samples(scene, batch_size, max_words, viterbi, k=10):
             start_of_sentence = torch.ones(batch_size).long()
             samples = torch.zeros(batch_size, self.vocab_sz)
@@ -587,36 +441,25 @@ class MLPStringDecoder(nn.Module):
             d_n = Variable(self.one_hot(start_of_sentence, self.vocab_sz))
 
             for i in range(1, max_words):
-
-                # if torch.cuda().is_available():
-                #     d_n, d_prev = d_n.cuda(), d_prev.cuda()
-
+                if torch.cuda().is_available():
+                    d_n, d_prev = d_n.cuda(), d_prev.cuda()
                 out = self.forward_step(d_n, d_prev, scene.unsqueeze(0))
                 values, indices = torch.max(out, 1)
                 d_prev += d_n
                 d_n = Variable(self.one_hot(indices.data, self.vocab_sz))
-                
-                # add the indices onto the samples
-
-                pdb.set_trace()
                 samples[:,i] = indices.data
             probs[i] += torch.log(values)
 
-            # somehow needs to get here UNDONE.
             return torch.Tensor(probs), torch.stack(sentences)
 
-        #### MODIFIED CODE
-        pdb.set_trace()
         batch_size = len(scene_enc)
         samples = []
         probs = []
 
         for scene in scene_enc:
-            pdb.set_trace()
             prob, sample = get_samples(scene, batch_size, max_words, viterbi, k)
             probs.append(prob)
             samples.append(sample)
-
         samples = torch.stack(samples, 1)
         probs = torch.stack(probs, 1)
         return probs, samples
