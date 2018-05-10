@@ -122,8 +122,6 @@ def download_file(surveyId, model_name, exp_name):
     new_path = os.path.join('qualtrics', exp_name, model_name +'.csv')
     os.rename(extracted_path, new_path)
 
-# surveyId = "SV_9v14qCgBotNEvPv" # 251
-# "SV_e985tYRmNHdZGG9" # 252
 
 # surveys = [("SV_e985tYRmNHdZGG9", 'ss1252', 'by_similarity'), 
 #             ("SV_9v14qCgBotNEvPv", 'ss1251', 'one_different'),
@@ -137,5 +135,3 @@ for surveyId, model_name, exp_name in surveys:
     download_file(surveyId, model_name, exp_name)
     score_qualtrics_csv(model_name, exp_name)
 
-#download_file(surveyId, 'ss1251', 'one_different')
-#print(score_qualtrics_csv('ss1251', 'one_different'))

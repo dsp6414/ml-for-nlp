@@ -5,6 +5,8 @@ import pdb
 
 random.seed(1)
 
+# For generating qualtrics surveys in .txt form.
+
 def gen_dropbox_link(image_id):
     dropbox_link = 'https://s3.amazonaws.com/cs287project/by_similarity/Scene' + image_id + '.png'
     return dropbox_link 
@@ -37,6 +39,3 @@ def experiment_to_qualtrics(model_name, exp_name):
 # experiment_to_qualtrics('ss1251', 'one_different')
 # experiment_to_qualtrics('s0280', 'one_different')
 # experiment_to_qualtrics('s0279', 'by_similarity')
-
-
-# print(score_qualtrics_csv('ss1252', 'by_similarity'))

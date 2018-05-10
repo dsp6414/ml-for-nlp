@@ -87,40 +87,12 @@ class Index:
     def __iter__(self):
         return iter(self.ordered_contents)
 
-def flatten(lol):
-    if isinstance(lol, tuple) or isinstance(lol, list):
-        return sum([flatten(l) for l in lol], [])
-    else:
-        return [lol]
-
-def postorder(tree):
-    if isinstance(tree, tuple):
-        for subtree in tree[1:]:
-            for node in postorder(subtree):
-                yield node
-        yield tree[0]
-    else:
-        yield tree
-
-def tree_map(function, tree):
-    if isinstance(tree, tuple):
-        head = function(tree)
-        tail = tuple(tree_map(function, subtree) for subtree in tree[1:])
-        return (head,) + tail
-    return function(tree)
-
-def tree_zip(*trees):
-    if isinstance(trees[0], tuple):
-        zipped_children = [[t[i] for t in trees] for i in range(len(trees[0]))]
-        zipped_children_rec = [tree_zip(*z) for z in zipped_children]
-        return tuple(zipped_children_rec)
-    return trees
 
 # listener (all zeros because the correct choice is the 0th one)
 def listener_targets(args, scenes):
     return Variable(torch.zeros(args.batch_size)).long()
 
-# speaker (this is annoying)
+# speaker 
 def speaker0_targets(args, scenes):
     max_words = max(len(scene.description) for scene in scenes)
 
@@ -182,7 +154,7 @@ def validate(val_scenes, model, optimizer, args, target_func, epoch):
             n_correct = (predicted.data == targets.data).sum()
             total_correct += n_correct
 
-        loss = criterion(outputs, targets) # what should these be?
+        loss = criterion(outputs, targets)
         epoch_loss += loss.data[0]
 
     logging.info('====> Epoch %d: Validation loss: %.4f' % (epoch, epoch_loss))
@@ -197,7 +169,7 @@ def train(train_scenes, val_scenes, model, optimizer, args, target_func):
 
     criterion = nn.CrossEntropyLoss()
 
-    n_train_batches = int(n_train / args.batch_size) # just truncate this i guess
+    n_train_batches = int(n_train / args.batch_size)
 
     for epoch in range(1, args.epochs + 1):
         epoch_loss = 0.0
@@ -223,8 +195,7 @@ def train(train_scenes, val_scenes, model, optimizer, args, target_func):
                 n_correct = (predicted.data == targets.data).sum()
                 total_correct += n_correct
 
-            pdb.set_trace()
-            loss = criterion(outputs, targets) # what should these be?
+            loss = criterion(outputs, targets) 
             loss.backward()
             optimizer.step()
             epoch_loss += loss.data[0]
@@ -240,50 +211,6 @@ def train(train_scenes, val_scenes, model, optimizer, args, target_func):
 
         validate(val_scenes, model, optimizer, args, target_func, epoch)
 
-def sample(decoder, scene_enc): # Predict with beam search based on scene enc
-    initial_guess = scene_enc
-    decoder_hidden = decoder.init_hidden()# [SOMETHING] or maybe scene_enc??
-    if torch.cuda.is_available():
-        initial_guess = initial_guess.cuda()
-    current_hypotheses = [(0, initial_guess, decoder_hidden)]
-
-    completed_guesses = []
-
-    for i in range(MAX_LEN):
-        guesses_for_this_length = []
-        while (current_hypotheses != []):
-            # Pop something off the current hypotheses
-            hypothesis = current_hypotheses.pop(0)
-            log_prob, last_sequence_guess, decoder_hidden = hypothesis
-            
-            last_word = last_sequence_guess[-1:, :]
-            # EOS token:
-            if last_word.squeeze().data[0] == EOS: 
-                completed_guesses.append((log_prob, last_sequence_guess, None))
-            else:
-                decoder_outputs, decoder_hidden = decoder(last_word, decoder_hidden, encoder_outputs)
-                # # Get k hypotheses for each 
-                # decoder outputs is [target_len x batch x en_vocab_sz] -> [1 x 1 x vocab]
-                vocab_size = len(decoder_outputs[0][0])
-                n_probs, n_indices = torch.topk(decoder_outputs, k, dim=2)
-                new_probs = F.log_softmax(n_probs, dim=2) + log_prob# this should be tensor of size k 
-                new_probs = new_probs.squeeze().data
-                new_sequences = [torch.cat([last_sequence_guess, n_index.view(1, 1)],dim=0) for n_index in n_indices.squeeze()] # check this
-                new_hidden = [decoder_hidden] * k
-                # decoder_hidden: # tuple, each of which is [num_layers x batch x hidden]
-                seq_w_probs = list(zip(new_probs, new_sequences, new_hidden))
-                guesses_for_this_length = guesses_for_this_length + seq_w_probs
-
-        # Top k current hypotheses after this time step:
-        guesses_for_this_length = sorted(guesses_for_this_length, key= lambda tup: -1*tup[0])[:k]
-
-        current_hypotheses = current_hypotheses + guesses_for_this_length
-
-    # Return top result
-    completed_guesses = completed_guesses + guesses_for_this_length
-
-    completed_guesses.sort(key= lambda tup: -1*tup[0])
-    return [x[1] for x in completed_guesses]
 
 def get_examples(model, train_scenes, args, word_index):
     model.eval()
@@ -361,10 +288,10 @@ def run_experiment(name, cname, rname, models, data, WORD_INDEX, args):
             d1 = data_by_image[img1][0]
             d2 = data_by_image[img2][0]
             for model_name, model in models.items():
-                # for i_sample in range(10):
+
                 if model_name == 'speaker0':
                     speaker_scores, all_samples = model.sample([d1], [[d2]], viterbi=False, k=args.k)
-                    pdb.set_trace()
+
                     best_sentence = all_samples.squeeze(0)[0]
                     sentence = tensor_to_caption(best_sentence, WORD_INDEX)
                     save_image_pairs(best_sentence.unsqueeze(0), [d1], [[d2]], WORD_INDEX)
@@ -383,7 +310,6 @@ def run_experiment(name, cname, rname, models, data, WORD_INDEX, args):
                     similarity,
                     model_name,
                     speaker_scores.squeeze(0)[0],
-                    # listener_scores[0].squeeze(0)[0],
                     sentence
                 ]
 
@@ -406,7 +332,6 @@ def calculate_bleu(batch, candidates):
         index_of_end = (candidate.data == 2).nonzero()[0][0] if len((candidate.data == 2).nonzero()) > 0 else MAX_LEN
         candidate_chopped = candidate.data[1:index_of_end] if index_of_end > 1 else []
         score = sentence_bleu(scene_to_description[img_id], candidate_chopped)
-        # print("BLEU Score: " + str(score))
         ids_with_scores.append((img_id, score))
     return ids_with_scores
 
