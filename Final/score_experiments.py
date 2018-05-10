@@ -11,11 +11,11 @@ def output_targets(model_name, exp_name):
     exp_file_name = 'abstract.results.base_' + model_name +'.txt'
     exp_file_path = os.path.join(exp_dir, exp_file_name)
     targets = pd.read_csv(exp_file_path)
-    return targets['target'].values
+    return targets['target'].values, targets['similarity'].values
 
 
-def get_target(targets, question_num):
-    return targets[question_num]
+def get_target(targets, similarity, question_num):
+    return targets[question_num], similarity[question_num]
 
 def score_qualtrics_csv(model_name, exp_name):
     csv_dir = os.path.join('qualtrics', exp_name)
@@ -27,27 +27,34 @@ def score_qualtrics_csv(model_name, exp_name):
     n_correct = 0.0
     n_total = 0.0
 
-    targets = output_targets(model_name, exp_name)
+    targets, similarity = output_targets(model_name, exp_name)
 
+    by_sim_correct = {1: 0, 2: 0, 3: 0, 4: 0}
+    by_sim_total = {1: 0, 2: 0, 3: 0, 4: 0}
     for question_num in range(100):
         # Get that column
         question_subs = submissions[str(question_num + 1)] # Qualtrics is 1-100 rather than 0-99
         # Correct target
-        correct_target = get_target(targets, question_num)
+        correct_target, correct_sim = get_target(targets, similarity, question_num)
         for x in question_subs.values:
             if pd.isnull(x):
                 pass
                 # don't do anything
             elif correct_target in x:
                 # Correct, thank god
+                by_sim_correct[correct_sim] += 1
+                by_sim_total[correct_sim] += 1
                 n_correct += 1
                 n_total += 1
             else:
                 # Rip
+                by_sim_total[correct_sim] += 1
                 n_total += 1
 
     accuracy = n_correct / n_total
     print('Model Name: %s, Experiment Name: %s, Accuracy: %f' % (model_name, exp_name, accuracy))
+    for num, total in by_sim_total.items():
+        print(str(num) + ' Similar: %f' % (by_sim_correct[num] / by_sim_total[num]))
 
 # print(score_qualtrics_csv('ss1252', 'by_similarity'))
 
@@ -118,10 +125,13 @@ def download_file(surveyId, model_name, exp_name):
 # surveyId = "SV_9v14qCgBotNEvPv" # 251
 # "SV_e985tYRmNHdZGG9" # 252
 
+# surveys = [("SV_e985tYRmNHdZGG9", 'ss1252', 'by_similarity'), 
+#             ("SV_9v14qCgBotNEvPv", 'ss1251', 'one_different'),
+#             ("SV_9Y7wryBq8bVE5nf", 's0279', 'by_similarity'),
+#             ("SV_bBJecbwsZKFaKtD", 's0280', 'one_different')]
+
 surveys = [("SV_e985tYRmNHdZGG9", 'ss1252', 'by_similarity'), 
-            ("SV_9v14qCgBotNEvPv", 'ss1251', 'one_different'),
-            ("SV_9Y7wryBq8bVE5nf", 's0279', 'by_similarity'),
-            ("SV_bBJecbwsZKFaKtD", 's0280', 'one_different')]
+            ("SV_9Y7wryBq8bVE5nf", 's0279', 'by_similarity')]
 
 for surveyId, model_name, exp_name in surveys:
     download_file(surveyId, model_name, exp_name)
